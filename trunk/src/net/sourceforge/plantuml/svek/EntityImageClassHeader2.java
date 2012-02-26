@@ -73,7 +73,7 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 			fontConfigurationName = fontConfigurationName.italic();
 		}
 		final TextBlock name = TextBlockUtils.withMargin(
-				TextBlockUtils.create(entity.getDisplay2(), fontConfigurationName, HorizontalAlignement.CENTER), 3, 3,
+				TextBlockUtils.create(entity.getDisplay2(), fontConfigurationName, HorizontalAlignement.CENTER, skinParam), 3, 3,
 				0, 0);
 
 		final TextBlock stereo;
@@ -84,7 +84,7 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 			stereo = TextBlockUtils.withMargin(TextBlockUtils.create(
 					stereotype.getLabels(),
 					new FontConfiguration(getFont(FontParam.CLASS_STEREOTYPE, stereotype), getFontColor(
-							FontParam.CLASS_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER), 1, 0);
+							FontParam.CLASS_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER, skinParam), 1, 0);
 		}
 
 		TextBlock genericBlock;
@@ -94,7 +94,7 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 			genericBlock = TextBlockUtils.create(
 					Arrays.asList(generic),
 					new FontConfiguration(getFont(FontParam.CLASS_STEREOTYPE, stereotype), getFontColor(
-							FontParam.CLASS_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER);
+							FontParam.CLASS_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER, skinParam);
 			genericBlock = TextBlockUtils.withMargin(genericBlock, 1, 1);
 			final HtmlColor classBackground = getColor(ColorParam.background, stereotype);
 			// final HtmlColor classBorder = getColor(ColorParam.classBorder, stereotype);
@@ -105,15 +105,20 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 
 		final TextBlock circledCharacter;
 		if (portionShower.showPortion(EntityPortion.CIRCLED_CHARACTER, getEntity())) {
-			circledCharacter = TextBlockUtils.withMargin(getCircledCharacter(entity), 4, 0, 5, 5);
+			circledCharacter = TextBlockUtils.withMargin(getCircledCharacter(entity, skinParam), 4, 0, 5, 5);
 		} else {
 			circledCharacter = null;
 		}
 		this.headerLayout = new HeaderLayout(circledCharacter, stereo, name, genericBlock);
 	}
+	
 
-	private CircledCharacter getCircledCharacter(IEntity entity) {
+
+	private TextBlock getCircledCharacter(IEntity entity, ISkinParam skinParam) {
 		final Stereotype stereotype = entity.getStereotype();
+		if (stereotype != null && stereotype.getSprite() != null) {
+			return skinParam.getSprite(stereotype.getSprite()).asTextBlock(stereotype.getHtmlColor());
+		}
 		if (stereotype != null && stereotype.getCharacter() != 0) {
 			final HtmlColor classBorder = getColor(ColorParam.classBorder, stereotype);
 			final UFont font = getFont(FontParam.CIRCLED_CHARACTER, null);

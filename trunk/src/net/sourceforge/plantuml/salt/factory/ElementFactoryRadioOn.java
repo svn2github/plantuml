@@ -37,6 +37,7 @@ import java.awt.Font;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.salt.DataSource;
 import net.sourceforge.plantuml.salt.Terminated;
 import net.sourceforge.plantuml.salt.element.Element;
@@ -46,9 +47,11 @@ import net.sourceforge.plantuml.ugraphic.UFont;
 public class ElementFactoryRadioOn implements ElementFactory {
 
 	final private DataSource dataSource;
+	final private SpriteContainer spriteContainer;
 
-	public ElementFactoryRadioOn(DataSource dataSource) {
+	public ElementFactoryRadioOn(DataSource dataSource, SpriteContainer spriteContainer) {
 		this.dataSource = dataSource;
+		this.spriteContainer = spriteContainer;
 	}
 
 	public Terminated<Element> create() {
@@ -58,15 +61,14 @@ public class ElementFactoryRadioOn implements ElementFactory {
 		final Terminated<String> next = dataSource.next();
 		final String text = next.getElement();
 		final UFont font = new UFont("Default", Font.PLAIN, 12);
-		return new Terminated<Element>(new ElementRadioCheckbox(extracted(text), font, true,
-				true), next.getTerminator());
-	}
-	
-	private List<String> extracted(final String text) {
-		final int x = text.indexOf(')');
-		return Arrays.asList(text.substring(x+1).trim());
+		return new Terminated<Element>(new ElementRadioCheckbox(extracted(text), font, true, true, spriteContainer),
+				next.getTerminator());
 	}
 
+	private List<String> extracted(final String text) {
+		final int x = text.indexOf(')');
+		return Arrays.asList(text.substring(x + 1).trim());
+	}
 
 	public boolean ready() {
 		final String text = dataSource.peek(0).getElement();

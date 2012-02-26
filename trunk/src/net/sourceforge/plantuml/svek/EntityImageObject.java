@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.PortionShower;
@@ -55,7 +56,7 @@ import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.ugraphic.PlacementStrategyY1Y2;
 import net.sourceforge.plantuml.ugraphic.Shadowable;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.UGroup;
+import net.sourceforge.plantuml.ugraphic.ULayoutGroup;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
@@ -64,19 +65,20 @@ public class EntityImageObject extends AbstractEntityImage {
 	final private TextBlock name;
 	final private TextBlock stereo;
 	final private TextBlockWidth fields;
+	final private Url url;
 
 	public EntityImageObject(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		this.name = TextBlockUtils.withMargin(TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
 				getFont(FontParam.OBJECT, stereotype), getFontColor(FontParam.OBJECT, stereotype)),
-				HorizontalAlignement.CENTER), 2, 2);
+				HorizontalAlignement.CENTER, skinParam), 2, 2);
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
 			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.OBJECT_STEREOTYPE, stereotype), getFontColor(
-							FontParam.OBJECT_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER);
+							FontParam.OBJECT_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER, skinParam);
 		}
 
 		if (entity.getFieldsToDisplay().size() == 0) {
@@ -92,6 +94,7 @@ public class EntityImageObject extends AbstractEntityImage {
 			}).asTextBlock(FontParam.OBJECT_ATTRIBUTE, skinParam);
 
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -147,6 +150,9 @@ public class EntityImageObject extends AbstractEntityImage {
 
 		ug.getParam().setColor(getColor(ColorParam.objectBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.objectBackground, getStereo()));
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 
 		double x = xTheoricalPosition;
 		double y = yTheoricalPosition;
@@ -154,7 +160,7 @@ public class EntityImageObject extends AbstractEntityImage {
 		ug.draw(x, y, rect);
 		ug.getParam().setStroke(new UStroke());
 
-		final UGroup header = new UGroup(new PlacementStrategyY1Y2(ug.getStringBounder()));
+		final ULayoutGroup header = new ULayoutGroup(new PlacementStrategyY1Y2(ug.getStringBounder()));
 		if (stereo != null) {
 			header.add(stereo);
 		}
@@ -169,6 +175,9 @@ public class EntityImageObject extends AbstractEntityImage {
 		// ug.draw(x, y, new ULine(widthTotal, 0));
 		// ug.getParam().setStroke(new UStroke());
 		fields.drawU(ug, x, y, widthTotal);
+		if (url != null) {
+			ug.closeAction();
+		}
 
 	}
 

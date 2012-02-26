@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7635 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -1401,7 +1401,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 		final UFont font = getData().getSkinParam().getFont(FontParam.CLASS_ATTRIBUTE, null);
 		final HtmlColor color = getFontHtmlColor(FontParam.CLASS_ATTRIBUTE, null);
 		final TextBlock text = TextBlockUtils.create(texts, new FontConfiguration(font, color),
-				HorizontalAlignement.LEFT);
+				HorizontalAlignement.LEFT, getData().getSkinParam());
 		final File feps = FileUtils.createTempFile("member", ".eps");
 		UGraphicEps.copyEpsToFile(getData().getColorMapper(), new UDrawable() {
 			public void drawU(UGraphic ug) {

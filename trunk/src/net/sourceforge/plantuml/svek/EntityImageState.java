@@ -72,7 +72,7 @@ public class EntityImageState extends AbstractEntityImage {
 		final Stereotype stereotype = entity.getStereotype();
 
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.STATE,
-				stereotype), getFontColor(FontParam.STATE, stereotype)), HorizontalAlignement.CENTER);
+				stereotype), getFontColor(FontParam.STATE, stereotype)), HorizontalAlignement.CENTER, skinParam);
 
 		final List<String> list = new ArrayList<String>();
 		for (Member att : entity.getFieldsToDisplay()) {
@@ -80,7 +80,7 @@ public class EntityImageState extends AbstractEntityImage {
 		}
 
 		this.fields = TextBlockUtils.create(list, new FontConfiguration(getFont(FontParam.STATE_ATTRIBUTE, stereotype),
-				getFontColor(FontParam.STATE_ATTRIBUTE, stereotype)), HorizontalAlignement.LEFT);
+				getFontColor(FontParam.STATE_ATTRIBUTE, stereotype)), HorizontalAlignement.LEFT, skinParam);
 
 	}
 

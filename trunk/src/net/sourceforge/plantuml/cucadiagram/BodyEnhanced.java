@@ -39,6 +39,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -97,7 +98,7 @@ public class BodyEnhanced implements TextBlockWidth {
 				blocks.add(decorate(stringBounder, new MethodsOrFieldsArea(members, fontParam, skinParam), separator,
 						title));
 				separator = s.charAt(0);
-				title = getTitle(s);
+				title = getTitle(s, skinParam);
 				members = new ArrayList<Member>();
 			} else {
 				final Member m = new MemberImpl(s, StringUtils.isMethod(s));
@@ -130,12 +131,12 @@ public class BodyEnhanced implements TextBlockWidth {
 		return false;
 	}
 
-	private TextBlock getTitle(String s) {
+	private TextBlock getTitle(String s, SpriteContainer spriteContainer) {
 		if (s.length() <= 4) {
 			return null;
 		}
 		s = s.substring(2, s.length() - 2).trim();
-		return TextBlockUtils.create(StringUtils.getWithNewlines(s), titleConfig, HorizontalAlignement.LEFT);
+		return TextBlockUtils.create(StringUtils.getWithNewlines(s), titleConfig, HorizontalAlignement.LEFT, spriteContainer);
 	}
 
 }

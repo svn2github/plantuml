@@ -160,6 +160,10 @@ public abstract class EntityUtils {
 				return ent.getBody(portionShower);
 			}
 
+			public BlockMember getMouseOver() {
+				return ent.getMouseOver();
+			}
+
 		};
 	}
 

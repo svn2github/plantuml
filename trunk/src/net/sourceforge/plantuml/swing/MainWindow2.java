@@ -41,7 +41,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -67,6 +66,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -166,8 +168,8 @@ public class MainWindow2 extends JFrame {
 		extensions.setText(getExtensions());
 
 		labelFileExtensions.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
-		south.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3), BorderFactory
-				.createEtchedBorder()));
+		south.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3),
+				BorderFactory.createEtchedBorder()));
 		south.add(labelFileExtensions, BorderLayout.WEST);
 		south.add(extensions, BorderLayout.CENTER);
 
@@ -175,9 +177,6 @@ public class MainWindow2 extends JFrame {
 
 		getContentPane().add(south, BorderLayout.SOUTH);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
-		setSize(320, 200);
-		setVisible(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		final MouseListener mouseListener = new MouseAdapter() {
 			@Override
@@ -220,6 +219,31 @@ public class MainWindow2 extends JFrame {
 				changeExtensions(extensions.getText());
 			}
 		});
+
+		final JMenuBar menuBar = new JMenuBar();
+		final JMenu mFile = new JMenu("File");
+		menuBar.add(mFile);
+		// setJMenuBar(menuBar);
+
+		final JMenuItem exit = new JMenuItem("Exit");
+		mFile.add(exit);
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
+		final JMenuItem sprite = new JMenuItem("Open sprite Window");
+		mFile.add(sprite);
+		sprite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new SpriteWindow();
+			}
+		});
+
+		setSize(320, 200);
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		startTimer();
 	}

@@ -28,35 +28,17 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 3837 $
+ * Revision $Revision: 7696 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
 
-import java.awt.geom.Point2D;
-import java.util.Map;
+public interface UGroup {
 
-import net.sourceforge.plantuml.graphic.TextBlock;
+	public void draw(double x, double y, UShape shape);
+	
+	public void close();
 
-public class UGroup {
-
-	private final PlacementStrategy placementStrategy;
-
-	public UGroup(PlacementStrategy placementStrategy) {
-		this.placementStrategy = placementStrategy;
-	}
-
-	public void drawU(UGraphic ug, double x, double y, double width, double height) {
-		for (Map.Entry<TextBlock, Point2D> ent : placementStrategy.getPositions(width, height).entrySet()) {
-			final TextBlock block = ent.getKey();
-			final Point2D pos = ent.getValue();
-			block.drawU(ug, x + pos.getX(), y + pos.getY());
-		}
-	}
-
-	public void add(TextBlock block) {
-		placementStrategy.add(block);
-
-	}
+	public void centerChar(double x, double y, char c, UFont font);
 
 }

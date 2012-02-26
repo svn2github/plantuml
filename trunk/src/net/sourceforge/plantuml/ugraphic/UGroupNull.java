@@ -28,23 +28,20 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 7696 $
  *
  */
-package net.sourceforge.plantuml.graphic;
+package net.sourceforge.plantuml.ugraphic;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
+public class UGroupNull implements UGroup {
 
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
-import net.sourceforge.plantuml.ugraphic.UGraphic;
+	public void draw(double x, double y, UShape shape) {
+	}
 
-interface Tile {
+	public void close() {
+	}
 
-	Dimension2D calculateDimension(StringBounder stringBounder);
-
-	void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y);
-
-	void drawU(UGraphic ug, double x, double y);
+	public void centerChar(double x, double y, char c, UFont font) {
+	}
 
 }

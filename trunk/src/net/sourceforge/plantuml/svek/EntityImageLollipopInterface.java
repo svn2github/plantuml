@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -54,12 +55,14 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 
 	private static final int SIZE = 10;
 	private final TextBlock desc;
+	final private Url url;
 
 	public EntityImageLollipopInterface(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.CLASS,
-				stereotype), getFontColor(FontParam.CLASS, stereotype)), HorizontalAlignement.CENTER);
+				stereotype), getFontColor(FontParam.CLASS, stereotype)), HorizontalAlignement.CENTER, skinParam);
+		this.url = entity.getUrl();
 
 	}
 
@@ -76,6 +79,9 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 		ug.getParam().setStroke(new UStroke(1.5));
 		ug.getParam().setColor(getColor(ColorParam.classBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.classBackground, getStereo()));
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 		ug.draw(xTheoricalPosition, yTheoricalPosition, circle);
 		ug.getParam().setStroke(new UStroke());
 
@@ -86,6 +92,9 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 		final double x = xTheoricalPosition + SIZE / 2 - widthDesc / 2;
 		final double y = yTheoricalPosition + SIZE;
 		desc.drawU(ug, x, y);
+		if (url != null) {
+			ug.closeAction();
+		}
 	}
 
 	public ShapeType getShapeType() {

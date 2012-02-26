@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.salt.element;
 import java.awt.geom.Dimension2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -51,9 +52,9 @@ public class ElementText implements Element {
 	private final boolean show;
 	private final String text;
 
-	public ElementText(List<String> text, UFont font) {
+	public ElementText(List<String> text, UFont font, SpriteContainer spriteContainer) {
 		final FontConfiguration config = new FontConfiguration(font, HtmlColor.BLACK);
-		this.block = TextBlockUtils.create(text, config, HorizontalAlignement.LEFT);
+		this.block = TextBlockUtils.create(text, config, HorizontalAlignement.LEFT, spriteContainer);
 		this.show = text.get(0).equals(".") == false;
 		this.text = text.get(0);
 	}

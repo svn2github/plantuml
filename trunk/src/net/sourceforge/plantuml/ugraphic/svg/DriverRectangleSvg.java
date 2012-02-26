@@ -60,10 +60,10 @@ public class DriverRectangleSvg implements UDriver<SvgGraphics> {
 		double width = rect.getWidth();
 		double height = rect.getHeight();
 		
-		// Shadow
-		if (rect.getDeltaShadow() != 0) {
-			svg.svgRectangleShadow(x, y, width, height, rx / 2, ry / 2, rect.getDeltaShadow());
-		}
+//		// Shadow
+//		if (rect.getDeltaShadow() != 0) {
+//			svg.svgRectangleShadow(x, y, width, height, rx / 2, ry / 2, rect.getDeltaShadow());
+//		}
 
 
 		final UGradient gr = param.getGradient();
@@ -92,6 +92,6 @@ public class DriverRectangleSvg implements UDriver<SvgGraphics> {
 			height = r.height;
 		}
 
-		svg.svgRectangle(x, y, width, height, rx / 2, ry / 2);
+		svg.svgRectangle(x, y, width, height, rx / 2, ry / 2, rect.getDeltaShadow());
 	}
 }

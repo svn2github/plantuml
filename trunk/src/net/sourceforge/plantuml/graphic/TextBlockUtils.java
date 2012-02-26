@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7642 $
+ * Revision $Revision: 7661 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -38,6 +38,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableImpl;
@@ -49,26 +50,26 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 public class TextBlockUtils {
 
 	public static TextBlock create(List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
-			HorizontalAlignement horizontalAlignement) {
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
 		if (texts.size() > 0 && texts.get(0) instanceof Stereotype) {
-			return createStereotype(texts, fontConfiguration, horizontalAlignement);
+			return createStereotype(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 		}
 		if (texts.size() > 0 && texts.get(0) instanceof MessageNumber) {
-			return createMessageNumber(texts, fontConfiguration, horizontalAlignement);
+			return createMessageNumber(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 		}
-		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement);
+		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 	}
 
 	private static TextBlock createMessageNumber(List<? extends CharSequence> texts,
-			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement) {
+			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
 		final MessageNumber number = (MessageNumber) texts.get(0);
 		return new TextBlockWithNumber(number.getNumber(), texts.subList(1, texts.size()), fontConfiguration,
-				horizontalAlignement);
+				horizontalAlignement, spriteContainer);
 
 	}
 
 	private static TextBlock createStereotype(List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
-			HorizontalAlignement horizontalAlignement) {
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
 		final Stereotype stereotype = (Stereotype) texts.get(0);
 		if (stereotype.isSpotted()) {
 			final CircledCharacter circledCharacter = new CircledCharacter(stereotype.getCharacter(),
@@ -76,11 +77,11 @@ public class TextBlockUtils {
 					fontConfiguration.getColor());
 			if (stereotype.getLabel() == null) {
 				return new TextBlockSpotted(circledCharacter, texts.subList(1, texts.size()), fontConfiguration,
-						horizontalAlignement);
+						horizontalAlignement, spriteContainer);
 			}
-			return new TextBlockSpotted(circledCharacter, texts, fontConfiguration, horizontalAlignement);
+			return new TextBlockSpotted(circledCharacter, texts, fontConfiguration, horizontalAlignement, spriteContainer);
 		}
-		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement);
+		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 	}
 
 	public static TextBlock withMargin(TextBlock textBlock, double marginX, double marginY) {
@@ -124,7 +125,7 @@ public class TextBlockUtils {
 			}
 		};
 	}
-
+	
 	public static TextBlock mergeLR(TextBlock b1, TextBlock b2) {
 		return new TextBlockHorizontal(b1, b2);
 	}

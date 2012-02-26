@@ -90,12 +90,20 @@ public abstract class UGraphicUtils {
 				g.setAntiAliasing(trueForOn);
 			}
 
-			public void setUrl(String url, String tooltip) {
-				g.setUrl(url, tooltip);
+			public void startUrl(String url, String tooltip) {
+				g.startUrl(url, tooltip);
+			}
+			
+			public void closeAction() {
+				g.closeAction();
 			}
 
 			public ColorMapper getColorMapper() {
 				return g.getColorMapper();
+			}
+
+			public UGroup createGroup() {
+				return g.createGroup();
 			}
 		};
 	}

@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class UPath implements UShape, Iterable<USegment> {
+public class UPath extends AbstractShadowable implements Iterable<USegment> {
 
 	private final List<USegment> segments = new ArrayList<USegment>();
 

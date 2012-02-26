@@ -28,10 +28,13 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6576 $
+ * Revision $Revision: 7658 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
@@ -80,5 +83,15 @@ public class UParam {
 	public UStroke getStroke() {
 		return stroke;
 	}
+	
+//	private Map<String, Sprite> sprites = new HashMap<String, Sprite>();
+//
+//	public final Map<String, Sprite> getSprites() {
+//		return sprites;
+//	}
+//
+//	public final void setSprites(Map<String, Sprite> sprites) {
+//		this.sprites = sprites;
+//	}
 
 }

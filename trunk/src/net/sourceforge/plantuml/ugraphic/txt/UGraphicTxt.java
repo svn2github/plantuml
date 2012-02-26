@@ -41,6 +41,8 @@ import net.sourceforge.plantuml.ugraphic.AbstractCommonUGraphic;
 import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
 import net.sourceforge.plantuml.ugraphic.UClip;
 import net.sourceforge.plantuml.ugraphic.UFont;
+import net.sourceforge.plantuml.ugraphic.UGroup;
+import net.sourceforge.plantuml.ugraphic.UGroupNull;
 import net.sourceforge.plantuml.ugraphic.UShape;
 import net.sourceforge.plantuml.ugraphic.UText;
 
@@ -86,7 +88,15 @@ public class UGraphicTxt extends AbstractCommonUGraphic {
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void setUrl(String url, String tooltip) {
+	public void startUrl(String url, String tooltip) {
+	}
+	
+	public void closeAction() {
+	}
+
+
+	public UGroup createGroup() {
+		return new UGroupNull();
 	}
 
 }

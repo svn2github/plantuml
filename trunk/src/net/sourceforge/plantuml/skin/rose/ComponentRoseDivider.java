@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.skin.rose;
 import java.awt.geom.Dimension2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -55,8 +56,8 @@ public class ComponentRoseDivider extends AbstractTextualComponent {
 	private final boolean empty;
 
 	public ComponentRoseDivider(HtmlColor fontColor, UFont font, HtmlColor background,
-			List<? extends CharSequence> stringsToDisplay) {
-		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 4, 4, 4);
+			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer) {
+		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 4, 4, 4, spriteContainer);
 		this.background = background;
 		this.empty = stringsToDisplay.get(0).length() == 0;
 	}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6923 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -39,6 +39,7 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -60,7 +61,7 @@ class EntityImageNote extends AbstractEntityImage {
 	public EntityImageNote(Entity entity) {
 		super(entity);
 		this.text = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER);
+				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 	}
 
 	@Override

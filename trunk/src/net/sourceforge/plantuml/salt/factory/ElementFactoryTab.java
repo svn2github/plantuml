@@ -57,7 +57,7 @@ public class ElementFactoryTab extends AbstractElementFactoryComplex {
 		assert header.startsWith("{/");
 
 		final UFont font = new UFont("Default", Font.PLAIN, 12);
-		final ElementTabBar result = new ElementTabBar(font);
+		final ElementTabBar result = new ElementTabBar(font, getDictionary());
 
 		while (getDataSource().peek(0).getElement().equals("}") == false) {
 			final Terminated<String> t = getDataSource().next();

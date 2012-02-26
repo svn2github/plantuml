@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.skin.rose;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -50,8 +51,8 @@ final public class ComponentRoseNoteBox extends AbstractTextualComponent {
 	private final HtmlColor foregroundColor;
 
 	public ComponentRoseNoteBox(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> strings) {
-		super(strings, fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4);
+			List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+		super(strings, fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
 	}

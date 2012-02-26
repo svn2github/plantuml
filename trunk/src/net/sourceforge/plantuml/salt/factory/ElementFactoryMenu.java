@@ -57,7 +57,7 @@ public class ElementFactoryMenu extends AbstractElementFactoryComplex {
 		assert header.startsWith("{*");
 
 		final UFont font = new UFont("Default", Font.PLAIN, 12);
-		final ElementMenuBar result = new ElementMenuBar(font);
+		final ElementMenuBar result = new ElementMenuBar(font, getDictionary());
 
 		String subentry = null;
 

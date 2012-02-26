@@ -95,16 +95,16 @@ public class SaltUtils {
 		cpxFactory.addFactory(new ElementFactoryMenu(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryTab(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryLine(source));
-		cpxFactory.addFactory(new ElementFactoryTextField(source));
-		cpxFactory.addFactory(new ElementFactoryButton(source));
-		cpxFactory.addFactory(new ElementFactoryDroplist(source));
-		cpxFactory.addFactory(new ElementFactoryRadioOn(source));
-		cpxFactory.addFactory(new ElementFactoryRadioOff(source));
-		cpxFactory.addFactory(new ElementFactoryCheckboxOn(source));
-		cpxFactory.addFactory(new ElementFactoryCheckboxOff(source));
+		cpxFactory.addFactory(new ElementFactoryTextField(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryButton(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryDroplist(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryRadioOn(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryRadioOff(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryCheckboxOn(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryCheckboxOff(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryImage(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryRetrieveFromDictonnary(source, dictionnary));
-		cpxFactory.addFactory(new ElementFactoryText(source));
+		cpxFactory.addFactory(new ElementFactoryText(source, dictionnary));
 	}
 
 }

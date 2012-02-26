@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7342 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.directdot.DotText;
 import net.sourceforge.plantuml.eps.EpsStrategy;
@@ -176,7 +177,7 @@ public class GraphicStrings implements IEntityImage {
 
 	public Dimension2D drawU(final UGraphic ug) {
 		final TextBlock textBlock = TextBlockUtils.create(strings, new FontConfiguration(font, green),
-				HorizontalAlignement.LEFT);
+				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		Dimension2D size = getSizeWithMin(textBlock.calculateDimension(ug.getStringBounder()));
 		textBlock.drawU(ug, 0, 0);
 
@@ -197,7 +198,7 @@ public class GraphicStrings implements IEntityImage {
 
 	public Dimension2D getDimension(StringBounder stringBounder) {
 		final TextBlock textBlock = TextBlockUtils.create(strings, new FontConfiguration(font, green),
-				HorizontalAlignement.LEFT);
+				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		return getSizeWithMin(textBlock.calculateDimension(stringBounder));
 	}
 

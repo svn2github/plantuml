@@ -56,7 +56,7 @@ import net.sourceforge.plantuml.ugraphic.PlacementStrategyVisibility;
 import net.sourceforge.plantuml.ugraphic.PlacementStrategyY1Y2Left;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.UGroup;
+import net.sourceforge.plantuml.ugraphic.ULayoutGroup;
 
 public class MethodsOrFieldsArea implements TextBlockWidth {
 
@@ -110,7 +110,7 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 		if (m.isStatic()) {
 			config = config.underline();
 		}
-		final TextBlock bloc = TextBlockUtils.create(StringUtils.getWithNewlines(s), config, HorizontalAlignement.LEFT);
+		final TextBlock bloc = TextBlockUtils.create(StringUtils.getWithNewlines(s), config, HorizontalAlignement.LEFT, skinParam);
 		return bloc;
 	}
 
@@ -120,9 +120,9 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 
 	public void drawU(UGraphic ug, double x, double y, double widthToUse) {
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
-		final UGroup group;
+		final ULayoutGroup group;
 		if (hasSmallIcon()) {
-			group = new UGroup(new PlacementStrategyVisibility(ug.getStringBounder(),
+			group = new ULayoutGroup(new PlacementStrategyVisibility(ug.getStringBounder(),
 					skinParam.getCircledCharacterRadius() + 3));
 			for (Member att : members) {
 				final TextBlock bloc = createTextBlock(att);
@@ -131,7 +131,7 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 				group.add(bloc);
 			}
 		} else {
-			group = new UGroup(new PlacementStrategyY1Y2Left(ug.getStringBounder()));
+			group = new ULayoutGroup(new PlacementStrategyY1Y2Left(ug.getStringBounder()));
 			for (Member att : members) {
 				final TextBlock bloc = createTextBlock(att);
 				group.add(bloc);

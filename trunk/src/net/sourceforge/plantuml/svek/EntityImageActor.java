@@ -39,8 +39,8 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
-import net.sourceforge.plantuml.MathUtils;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -56,6 +56,7 @@ public class EntityImageActor extends AbstractEntityImage {
 	private final StickMan stickman;
 	private final TextBlock name;
 	private final TextBlock stereo;
+	final private Url url;
 
 	public EntityImageActor(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
@@ -63,7 +64,7 @@ public class EntityImageActor extends AbstractEntityImage {
 
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
 				getFont(FontParam.USECASE_ACTOR, stereotype), getFontColor(FontParam.USECASE_ACTOR, stereotype)),
-				HorizontalAlignement.CENTER);
+				HorizontalAlignement.CENTER, skinParam);
 		this.stickman = new StickMan(getColor(ColorParam.usecaseActorBackground, getStereo()), getColor(
 				ColorParam.usecaseActorBorder, getStereo()));
 		if (skinParam.shadowing()) {
@@ -75,8 +76,9 @@ public class EntityImageActor extends AbstractEntityImage {
 		} else {
 			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.USECASE_ACTOR_STEREOTYPE, stereotype), getFontColor(
-							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER);
+							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -105,6 +107,9 @@ public class EntityImageActor extends AbstractEntityImage {
 		final double dy = ug.getTranslateY();
 		final double manX = (dimTotal.getWidth() - stickman.getPreferredWidth(stringBounder)) / 2;
 		final double manY = dimStereo.getHeight();
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 		ug.translate(xTheoricalPosition + manX, yTheoricalPosition + manY);
 		stickman.drawU(ug);
 		ug.setTranslate(dx, dy);
@@ -115,6 +120,9 @@ public class EntityImageActor extends AbstractEntityImage {
 		if (stereo != null) {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition);
+		}
+		if (url != null) {
+			ug.closeAction();
 		}
 
 	}

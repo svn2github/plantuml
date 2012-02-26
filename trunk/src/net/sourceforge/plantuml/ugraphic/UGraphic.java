@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6590 $
+ * Revision $Revision: 7700 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
@@ -57,8 +57,12 @@ public interface UGraphic {
 
 	public void setAntiAliasing(boolean trueForOn);
 
-	public void setUrl(String url, String tooltip);
-	
 	public ColorMapper getColorMapper();
+
+	public void startUrl(String url, String tooltip);
+
+	public void closeAction();
+
+	public UGroup createGroup();
 
 }

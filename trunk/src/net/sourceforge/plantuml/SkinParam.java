@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7504 $
+ * Revision $Revision: 7658 $
  *
  */
 package net.sourceforge.plantuml;
@@ -52,6 +52,7 @@ import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
 import net.sourceforge.plantuml.ugraphic.ColorMapperMonochrome;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class SkinParam implements ISkinParam {
@@ -342,9 +343,9 @@ public class SkinParam implements ISkinParam {
 
 	public boolean isSvek() {
 		boolean defaultValue = false;
-//		if (OptionFlags.SVEK && type == UmlDiagramType.CLASS) {
-//			defaultValue = true;
-//		}
+		// if (OptionFlags.SVEK && type == UmlDiagramType.CLASS) {
+		// defaultValue = true;
+		// }
 		if (type == UmlDiagramType.CLASS) {
 			defaultValue = true;
 		}
@@ -377,7 +378,7 @@ public class SkinParam implements ISkinParam {
 		}
 		return true;
 	}
-	
+
 	public PackageStyle getPackageStyle() {
 		final String value = getValue("packageStyle");
 		if ("rect".equalsIgnoreCase(value)) {
@@ -386,5 +387,14 @@ public class SkinParam implements ISkinParam {
 		return PackageStyle.FOLDER;
 	}
 
+	private final Map<String, Sprite> sprites = new HashMap<String, Sprite>();
+
+	public void addSprite(String name, Sprite sprite) {
+		sprites.put(name, sprite);
+	}
+
+	public Sprite getSprite(String name) {
+		return sprites.get(name);
+	}
 
 }

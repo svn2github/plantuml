@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7635 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -38,6 +38,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
@@ -65,7 +66,7 @@ class EntityImageClass extends AbstractEntityImage {
 	public EntityImageClass(Entity entity) {
 		super(entity);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER);
+				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.methods = new MethodsOrFieldsArea(entity.getMethodsToDisplay(), getFont14());
 		this.fields = new MethodsOrFieldsArea(entity.getFieldsToDisplay(), getFont14());
 

@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -54,9 +55,9 @@ public class ElementMenuEntry implements Element {
 	private HtmlColor background;
 	private double x;
 	
-	public ElementMenuEntry(String text, UFont font) {
+	public ElementMenuEntry(String text, UFont font, SpriteContainer spriteContainer) {
 		final FontConfiguration config = new FontConfiguration(font, HtmlColor.BLACK);
-		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT);
+		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT, spriteContainer);
 		this.text = text;
 	}
 

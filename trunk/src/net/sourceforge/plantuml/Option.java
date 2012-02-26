@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7393 $
+ * Revision $Revision: 7692 $
  *
  */
 package net.sourceforge.plantuml;
@@ -224,6 +224,8 @@ public class Option {
 				OptionPrint.printLanguage();
 			} else if (s.equalsIgnoreCase("-gui")) {
 				OptionFlags.getInstance().setGui(true);
+			} else if (s.equalsIgnoreCase("-encodesprite")) {
+				OptionFlags.getInstance().setEncodesprite(true);
 			} else if (s.equalsIgnoreCase("-nosuggestengine")) {
 				OptionFlags.getInstance().setUseSuggestEngine(false);
 			} else if (s.equalsIgnoreCase("-failonerror")) {

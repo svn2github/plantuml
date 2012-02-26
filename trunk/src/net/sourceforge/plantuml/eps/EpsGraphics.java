@@ -46,6 +46,7 @@ import net.sourceforge.plantuml.ugraphic.UGradient;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegment;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
+import net.sourceforge.plantuml.version.Version;
 
 public class EpsGraphics {
 
@@ -71,7 +72,7 @@ public class EpsGraphics {
 
 	public EpsGraphics() {
 		header.append("%!PS-Adobe-3.0 EPSF-3.0\n");
-		header.append("%%Creator: PlantUML\n");
+		header.append("%%Creator: PlantUML v" + Version.version() + "\n");
 		header.append("%%Title: noTitle\n");
 		header.append("%%CreationDate: " + new Date() + "\n");
 		setcolorgradient.add(new PostScriptCommandRaw("3 index 7 index sub 1 index mul 7 index add", true));

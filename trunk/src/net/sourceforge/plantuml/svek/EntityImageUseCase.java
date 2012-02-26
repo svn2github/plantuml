@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -56,21 +57,23 @@ public class EntityImageUseCase extends AbstractEntityImage {
 	final private TextBlock desc;
 	final private static int MARGIN = 10;
 	final private TextBlock stereo;
+	final private Url url;
 
 	public EntityImageUseCase(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.USECASE,
-				stereotype), getFontColor(FontParam.USECASE, stereotype)), HorizontalAlignement.CENTER);
+				stereotype), getFontColor(FontParam.USECASE, stereotype)), HorizontalAlignement.CENTER, skinParam);
 
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
 			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.USECASE_ACTOR_STEREOTYPE, stereotype), getFontColor(
-							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER);
+							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -100,6 +103,9 @@ public class EntityImageUseCase extends AbstractEntityImage {
 		if (getSkinParam().shadowing()) {
 			ellipse.setDeltaShadow(3);
 		}
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 
 		ug.getParam().setStroke(new UStroke(1.5));
 		ug.getParam().setColor(getColor(ColorParam.usecaseBorder, getStereo()));
@@ -114,6 +120,9 @@ public class EntityImageUseCase extends AbstractEntityImage {
 		if (stereo != null) {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition + MARGIN);
+		}
+		if (url != null) {
+			ug.closeAction();
 		}
 
 	}

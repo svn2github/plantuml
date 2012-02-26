@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6591 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.sudoku;
@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.plantuml.EmptyImageBuilder;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -95,7 +96,7 @@ public class GraphicsSudoku {
 				final int num = sudoku.getGiven(x, y);
 				if (num > 0) {
 					final TextBlock text = TextBlockUtils.create(Arrays.asList("" + num), new FontConfiguration(
-							numberFont, HtmlColor.BLACK), HorizontalAlignement.CENTER);
+							numberFont, HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 					text.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, numberxOffset + x * cellWidth, numberyOffset
 							+ y * cellHeight);
 				}
@@ -119,7 +120,7 @@ public class GraphicsSudoku {
 		texts.add("Seed " + Long.toString(sudoku.getSeed(), 36));
 		texts.add("Difficulty " + sudoku.getRatting());
 		final TextBlock textBlock = TextBlockUtils.create(texts, new FontConfiguration(font, HtmlColor.BLACK),
-				HorizontalAlignement.LEFT);
+				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		textBlock.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, 0, 0);
 
 		g2d.dispose();

@@ -66,8 +66,12 @@ public abstract class AbstractElementFactoryComplex implements ElementFactory {
 		throw new IllegalStateException(dataSource.peek(0).getElement());
 	}
 
-	protected DataSource getDataSource() {
+	protected final DataSource getDataSource() {
 		return dataSource;
+	}
+
+	protected final Dictionary getDictionary() {
+		return dictionary;
 	}
 
 }

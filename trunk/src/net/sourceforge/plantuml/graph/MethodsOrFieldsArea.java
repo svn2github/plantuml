@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7614 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -83,7 +84,7 @@ public class MethodsOrFieldsArea {
 
 	private TextBlock createTextBlock(String s) {
 		return TextBlockUtils.create(Arrays.asList(s), new FontConfiguration(font, HtmlColor.BLACK),
-				HorizontalAlignement.LEFT);
+				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 	}
 
 	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {

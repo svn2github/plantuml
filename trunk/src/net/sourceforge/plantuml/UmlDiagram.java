@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7394 $
+ * Revision $Revision: 7658 $
  *
  */
 package net.sourceforge.plantuml;
@@ -47,8 +47,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -57,6 +59,7 @@ import net.sourceforge.plantuml.code.CompressionZlib;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.mjpeg.MJPEGGenerator;
 import net.sourceforge.plantuml.pdf.PdfConverter;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -368,5 +371,15 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 			return "The image is " + ((int) actualWidth) + " pixel width. (Warning limit is " + widthwarning + ")";
 		}
 		return null;
+	}
+
+//	public final Map<String, Sprite> getSprites() {
+//		return Collections.unmodifiableMap(sprites);
+//	}
+//	private final Map<String, Sprite> sprites = new HashMap<String, Sprite>();
+
+
+	public void addSprite(String name, Sprite sprite) {
+		skinParam.addSprite(name, sprite);
 	}
 }

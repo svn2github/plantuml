@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7270 $
+ * Revision $Revision: 7663 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -68,7 +68,7 @@ public class DriverEllipseG2d extends DriverShadowedG2d implements UDriver<Graph
 				g2d.setColor(mapper.getMappedColor(param.getBackcolor()));
 				g2d.fill(ellipse);
 			}
-			if (param.getColor() != null) {
+			if (param.getColor() != null && param.getColor().equals(param.getBackcolor()) == false) {
 				g2d.setColor(mapper.getMappedColor(param.getColor()));
 				g2d.draw(ellipse);
 			}
@@ -79,7 +79,7 @@ public class DriverEllipseG2d extends DriverShadowedG2d implements UDriver<Graph
 				g2d.setColor(mapper.getMappedColor(param.getBackcolor()));
 				g2d.fill(arc);
 			}
-			if (param.getColor() != null) {
+			if (param.getColor() != null && param.getColor().equals(param.getBackcolor()) == false) {
 				g2d.setColor(mapper.getMappedColor(param.getColor()));
 				g2d.draw(arc);
 			}

@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.salt.factory;
 
 import java.awt.Font;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.salt.DataSource;
 import net.sourceforge.plantuml.salt.Terminated;
 import net.sourceforge.plantuml.salt.element.Element;
@@ -44,9 +45,11 @@ import net.sourceforge.plantuml.ugraphic.UFont;
 public class ElementFactoryTextField implements ElementFactory {
 
 	final private DataSource dataSource;
+	final private SpriteContainer spriteContainer;
 
-	public ElementFactoryTextField(DataSource dataSource) {
+	public ElementFactoryTextField(DataSource dataSource, SpriteContainer spriteContainer) {
 		this.dataSource = dataSource;
+		this.spriteContainer = spriteContainer;
 	}
 
 	public Terminated<Element> create() {
@@ -56,8 +59,8 @@ public class ElementFactoryTextField implements ElementFactory {
 		final Terminated<String> next = dataSource.next();
 		final String text = next.getElement();
 		final UFont font = new UFont("Default", Font.PLAIN, 12);
-		return new Terminated<Element>(new ElementTextField(text.substring(1, text.length() - 1), font),
-				next.getTerminator());
+		return new Terminated<Element>(
+				new ElementTextField(text.substring(1, text.length() - 1), font, spriteContainer), next.getTerminator());
 	}
 
 	public boolean ready() {

@@ -63,6 +63,7 @@ public class DriverShadowedG2d {
 	}
 
 	private final Color color = new Color(170, 170, 170);
+	private final Color colorLine = new Color(30, 30, 30);
 
 	protected void drawShadow(Graphics2D g2d, Shape shape, double deltaShadow, double dpiFactor) {
 		if (dpiFactor < 1) {
@@ -75,15 +76,18 @@ public class DriverShadowedG2d {
 		final double h = (bounds.getMaxY() + deltaShadow * 2 + 6) * dpiFactor;
 		BufferedImage destination = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D gg = destination.createGraphics();
-		gg.setColor(color);
 		gg.scale(dpiFactor, dpiFactor);
 		gg.translate(deltaShadow - bounds.getMinX(), deltaShadow - bounds.getMinY());
-		if (shape instanceof Line2D.Double) {
+		final boolean isLine = shape instanceof Line2D.Double;
+		if (isLine) {
+			gg.setColor(colorLine);
 			gg.draw(shape);
 		} else {
+			gg.setColor(color);
 			gg.fill(shape);
 		}
 		gg.dispose();
+		// final ConvolveOp simpleBlur = getConvolveOp(isLine ? 5 : 6, dpiFactor);
 		final ConvolveOp simpleBlur = getConvolveOp(6, dpiFactor);
 		destination = simpleBlur.filter(destination, null);
 		final AffineTransform at = g2d.getTransform();

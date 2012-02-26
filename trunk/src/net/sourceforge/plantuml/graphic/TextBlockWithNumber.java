@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
@@ -47,9 +48,9 @@ class TextBlockWithNumber extends TextBlockSimple {
 	private final TextBlock numText;
 
 	public TextBlockWithNumber(String number, List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
-			HorizontalAlignement horizontalAlignement) {
-		super(texts, fontConfiguration, horizontalAlignement);
-		this.numText = TextBlockUtils.create(Arrays.asList(number), fontConfiguration, HorizontalAlignement.LEFT);
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
+		super(texts, fontConfiguration, horizontalAlignement, spriteContainer);
+		this.numText = TextBlockUtils.create(Arrays.asList(number), fontConfiguration, HorizontalAlignement.LEFT, spriteContainer);
 	}
 
 	@Override

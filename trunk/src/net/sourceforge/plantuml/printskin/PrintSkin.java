@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7512 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.printskin;
@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SkinParam;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -153,7 +154,7 @@ class PrintSkin extends AbstractPSystem {
 
 	private void println(String s) {
 		final TextBlock textBlock = TextBlockUtils.create(Arrays.asList(s), new FontConfiguration(FONT1,
-				HtmlColor.BLACK), HorizontalAlignement.LEFT);
+				HtmlColor.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		textBlock.drawU(ug, xpos, ypos);
 		ypos += textBlock.calculateDimension(ug.getStringBounder()).getHeight();
 	}

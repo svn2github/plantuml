@@ -33,7 +33,7 @@
  */
 package net.sourceforge.plantuml.objectdiagram;
 
-import net.sourceforge.plantuml.classdiagram.command.CommandLinkClass2;
+import net.sourceforge.plantuml.classdiagram.command.CommandLinkClass3;
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
 import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
 import net.sourceforge.plantuml.command.CommandEndPackage;
@@ -63,7 +63,7 @@ public class ObjectDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommand(new CommandPage(system));
 		addCommand(new CommandAddData(system));
-		addCommand(new CommandLinkClass2(system));
+		addCommand(new CommandLinkClass3(system));
 		//
 		addCommand(new CommandCreateEntityObject(system));
 		final FactoryNoteCommand factoryNoteCommand = new FactoryNoteCommand();

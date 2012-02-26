@@ -72,9 +72,9 @@ public class DriverPolygonSvg implements UDriver<SvgGraphics> {
 			}
 		}
 		
-		if (shape.getDeltaShadow() != 0) {
-			svg.svgPolygonShadow(shape.getDeltaShadow(), points);
-		}
+//		if (shape.getDeltaShadow() != 0) {
+//			svg.svgPolygonShadow(shape.getDeltaShadow(), points);
+//		}
 
 
 		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getColor()));
@@ -84,6 +84,6 @@ public class DriverPolygonSvg implements UDriver<SvgGraphics> {
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
 
-		svg.svgPolygon(points);
+		svg.svgPolygon(shape.getDeltaShadow(), points);
 	}
 }

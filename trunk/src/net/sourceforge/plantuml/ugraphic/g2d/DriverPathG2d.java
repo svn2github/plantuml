@@ -34,7 +34,9 @@
 package net.sourceforge.plantuml.ugraphic.g2d;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
@@ -44,9 +46,15 @@ import net.sourceforge.plantuml.ugraphic.USegment;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
-public class DriverPathG2d implements UDriver<Graphics2D> {
+public class DriverPathG2d extends DriverShadowedG2d implements UDriver<Graphics2D> {
 
-	public void draw(UShape ushape, double x, double y, ColorMapper mapper, UParam param, Graphics2D g2d) {
+	private final double dpiFactor;
+
+	public DriverPathG2d(double dpiFactor) {
+		this.dpiFactor = dpiFactor;
+	}
+
+	public void draw(UShape ushape, final double x, final double y, ColorMapper mapper, UParam param, Graphics2D g2d) {
 		final UPath shape = (UPath) ushape;
 		DriverLineG2d.manageStroke(param, g2d);
 
@@ -71,6 +79,28 @@ public class DriverPathG2d implements UDriver<Graphics2D> {
 			// p.append(bez, true);
 		}
 		// p.closePath();
+
+		// Shadow
+		if (shape.getDeltaShadow() != 0) {
+			double lastX = 0;
+			double lastY = 0;
+			for (USegment seg : shape) {
+				final USegmentType type = seg.getSegmentType();
+				final double coord[] = seg.getCoord();
+				// Cast float for Java 1.5
+				if (type == USegmentType.SEG_MOVETO) {
+					lastX = x + coord[0];
+					lastY = y + coord[1];
+				} else if (type == USegmentType.SEG_LINETO) {
+					final Shape line = new Line2D.Double(lastX, lastY, x + coord[0], y + coord[1]);
+					drawShadow(g2d, line, shape.getDeltaShadow(), dpiFactor);
+					lastX = x + coord[0];
+					lastY = y + coord[1];
+				} else {
+					throw new UnsupportedOperationException();
+				}
+			}
+		}
 
 		if (param.getBackcolor() != null) {
 			g2d.setColor(mapper.getMappedColor(param.getBackcolor()));

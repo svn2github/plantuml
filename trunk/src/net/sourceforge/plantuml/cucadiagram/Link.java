@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7601 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.command.Position;
@@ -48,6 +49,7 @@ import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class Link implements Imaged {
@@ -77,6 +79,7 @@ public class Link implements Imaged {
 	private HtmlColor specificColor;
 	private boolean constraint = true;
 	private boolean inverted = false;
+	private LinkArrow linkArrow = LinkArrow.NONE;
 
 	public final boolean isInverted() {
 		return inverted;
@@ -249,7 +252,7 @@ public class Link implements Imaged {
 	public final List<? extends CharSequence> getNote() {
 		return note;
 	}
-	
+
 	public final HtmlColor getNoteColor() {
 		return noteColor;
 	}
@@ -341,22 +344,22 @@ public class Link implements Imaged {
 		throw new IllegalArgumentException();
 	}
 
-	public double getMarginDecors1(StringBounder stringBounder, UFont fontQualif) {
-		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier1);
+	public double getMarginDecors1(StringBounder stringBounder, UFont fontQualif, SpriteContainer spriteContainer) {
+		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier1, spriteContainer);
 		final LinkDecor decor = getType().getDecor1();
 		return decor.getSize() + q;
 	}
 
-	public double getMarginDecors2(StringBounder stringBounder, UFont fontQualif) {
-		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier2);
+	public double getMarginDecors2(StringBounder stringBounder, UFont fontQualif, SpriteContainer spriteContainer) {
+		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier2, spriteContainer);
 		final LinkDecor decor = getType().getDecor2();
 		return decor.getSize() + q;
 	}
 
-	private double getQualifierMargin(StringBounder stringBounder, UFont fontQualif, String qualif) {
+	private double getQualifierMargin(StringBounder stringBounder, UFont fontQualif, String qualif, SpriteContainer spriteContainer) {
 		if (qualif != null) {
 			final TextBlock b = TextBlockUtils.create(Arrays.asList(qualif), new FontConfiguration(fontQualif,
-					HtmlColor.BLACK), HorizontalAlignement.LEFT);
+					HtmlColor.BLACK), HorizontalAlignement.LEFT, spriteContainer);
 			final Dimension2D dim = b.calculateDimension(stringBounder);
 			return Math.max(dim.getWidth(), dim.getHeight());
 		}
@@ -406,6 +409,17 @@ public class Link implements Imaged {
 
 	public final boolean isHorizontalSolitary() {
 		return horizontalSolitary;
+	}
+
+	public final LinkArrow getLinkArrow() {
+		if (inverted) {
+			return linkArrow.reverse();
+		}
+		return linkArrow;
+	}
+
+	public final void setLinkArrow(LinkArrow linkArrow) {
+		this.linkArrow = linkArrow;
 	}
 
 }

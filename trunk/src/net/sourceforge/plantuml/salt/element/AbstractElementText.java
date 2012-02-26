@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -52,7 +53,7 @@ abstract class AbstractElementText implements Element {
 	private final FontConfiguration config;
 	private final int charLength;
 
-	public AbstractElementText(String text, UFont font, boolean manageLength) {
+	public AbstractElementText(String text, UFont font, boolean manageLength, SpriteContainer spriteContainer) {
 		config = new FontConfiguration(font, HtmlColor.BLACK);
 		if (manageLength) {
 			this.charLength = text.length();
@@ -60,7 +61,7 @@ abstract class AbstractElementText implements Element {
 		} else {
 			this.charLength = 0;
 		}
-		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT);
+		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT, spriteContainer);
 	}
 
 	protected void drawText(UGraphic ug, double x, double y) {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7638 $
+ * Revision $Revision: 7695 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -425,5 +425,22 @@ public class Entity implements IEntity {
 				return new BodyEnhanced(rawBody, fontParam, skinParam);
 			}
 		};
+	}
+
+	public BlockMember getMouseOver() {
+		if (mouseOver.size() == 0) {
+			return null;
+		}
+		return new BlockMember() {
+			public TextBlockWidth asTextBlock(FontParam fontParam, ISkinParam skinParam) {
+				return new BodyEnhanced(mouseOver, fontParam, skinParam);
+			}
+		};
+	}
+
+	private final List<String> mouseOver = new ArrayList<String>();
+
+	public void mouseOver(String s) {
+		mouseOver.add(s);
 	}
 }

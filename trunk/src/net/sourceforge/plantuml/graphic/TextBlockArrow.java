@@ -37,47 +37,54 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
-import net.sourceforge.plantuml.ugraphic.URectangle;
 
 public class TextBlockArrow implements TextBlock {
 
 	private final double size;
-	private final char arrow;
+	private final LinkArrow arrow;
 	private final HtmlColor color;
 
-	public TextBlockArrow(char arrow, FontConfiguration fontConfiguration) {
-		if (arrow != '<' && arrow != '>') {
+	public TextBlockArrow(LinkArrow arrow, FontConfiguration fontConfiguration) {
+		if (arrow != LinkArrow.DIRECT_NORMAL && arrow != LinkArrow.BACKWARD) {
 			throw new IllegalArgumentException();
 		}
 		this.arrow = arrow;
-		this.size = fontConfiguration.getFont().getSize2D() * 0 + 30;
-		// this.size = fontConfiguration.getFont().getSize2D();
-		System.err.println("size=" + size);
+		// this.size = fontConfiguration.getFont().getSize2D() * 0 + 30;
+		this.size = fontConfiguration.getFont().getSize2D();
 		this.color = fontConfiguration.getColor();
 
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
-		//ug.draw(x, y, new URectangle(size, size));
+		// ug.draw(x, y, new URectangle(size, size));
 		ug.getParam().setBackcolor(color);
 		ug.getParam().setColor(color);
+		int triSize = (int) (size * .8 - 3);
+		if (triSize % 2 == 1) {
+			triSize--;
+		}
+		final UPolygon triangle = getTriangle(triSize);
+		ug.draw(x + 2, y + (size - triSize) - 2, triangle);
+	}
+
+	private UPolygon getTriangle(int triSize) {
 		final UPolygon triangle = new UPolygon();
-		int x1 = (int) (size * .8 - 3);
-		if (x1 % 2 == 1) {
-			x1--;
+		if (arrow == LinkArrow.DIRECT_NORMAL) {
+			triangle.addPoint(0, 0);
+			triangle.addPoint(triSize, triSize / 2);
+			triangle.addPoint(0, triSize);
+			triangle.addPoint(0, 0);
+		} else {
+			triangle.addPoint(triSize, 0);
+			triangle.addPoint(0, triSize / 2);
+			triangle.addPoint(triSize, triSize);
+			triangle.addPoint(triSize, 0);
 		}
-		int y1 = (int) (size * .8 - 3);
-		if (y1 % 2 == 1) {
-			y1--;
-		}
-		triangle.addPoint(0, 0);
-		triangle.addPoint(x1, y1 / 2);
-		triangle.addPoint(0, y1);
-		triangle.addPoint(0, 0);
-		ug.draw(x + 2, y + (size - y1) - 2, triangle);
+		return triangle;
 	}
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {

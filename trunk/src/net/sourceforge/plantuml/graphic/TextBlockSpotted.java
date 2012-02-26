@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -38,6 +38,7 @@ import java.awt.geom.Dimension2D;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
@@ -46,8 +47,8 @@ class TextBlockSpotted extends TextBlockSimple {
 	private final CircledCharacter circledCharacter;
 
 	public TextBlockSpotted(CircledCharacter circledCharacter, List<? extends CharSequence> texts,
-			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement) {
-		super(texts, fontConfiguration, horizontalAlignement);
+			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
+		super(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 		this.circledCharacter = circledCharacter;
 	}
 

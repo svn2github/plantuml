@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7605 $
+ * Revision $Revision: 7694 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -45,6 +45,7 @@ import net.sourceforge.plantuml.classdiagram.command.CommandHideShow3;
 import net.sourceforge.plantuml.classdiagram.command.CommandImport;
 import net.sourceforge.plantuml.classdiagram.command.CommandLinkClass3;
 import net.sourceforge.plantuml.classdiagram.command.CommandLinkLollipop2;
+import net.sourceforge.plantuml.classdiagram.command.CommandMouseOver;
 import net.sourceforge.plantuml.classdiagram.command.CommandStereotype;
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
 import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
@@ -111,6 +112,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(factoryNoteOnLinkCommand.createMultiLine(system));
 
 		addCommand(new CommandDiamondAssociation(system));
+		addCommand(new CommandMouseOver(system));
 
 		addCommand(new CommandHideShow3(system));
 		addCommand(new CommandHideShow(system));

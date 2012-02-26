@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6590 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -60,13 +61,13 @@ public abstract class AbstractTextualComponent extends AbstractComponent {
 	private final HtmlColor fontColor;
 
 	public AbstractTextualComponent(CharSequence label, HtmlColor fontColor, UFont font,
-			HorizontalAlignement horizontalAlignement, int marginX1, int marginX2, int marginY) {
+			HorizontalAlignement horizontalAlignement, int marginX1, int marginX2, int marginY, SpriteContainer spriteContainer) {
 		this(Arrays.asList(label == null ? "" : label), fontColor, font, horizontalAlignement, marginX1, marginX2,
-				marginY);
+				marginY, spriteContainer);
 	}
 
 	public AbstractTextualComponent(List<? extends CharSequence> strings, HtmlColor fontColor, UFont font,
-			HorizontalAlignement horizontalAlignement, int marginX1, int marginX2, int marginY) {
+			HorizontalAlignement horizontalAlignement, int marginX1, int marginX2, int marginY, SpriteContainer spriteContainer) {
 		this.font = font;
 		this.fontColor = fontColor;
 		this.marginX1 = marginX1;
@@ -77,7 +78,7 @@ public abstract class AbstractTextualComponent extends AbstractComponent {
 		if (strings.size() == 1 && strings.get(0).length() == 0) {
 			textBlock = new TextBlockEmpty();
 		} else {
-			textBlock = TextBlockUtils.create(strings, new FontConfiguration(font, fontColor), horizontalAlignement);
+			textBlock = TextBlockUtils.create(strings, new FontConfiguration(font, fontColor), horizontalAlignement, spriteContainer);
 		}
 	}
 

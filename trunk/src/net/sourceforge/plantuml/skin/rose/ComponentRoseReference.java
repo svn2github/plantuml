@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.skin.rose;
 import java.awt.geom.Dimension2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -63,15 +64,15 @@ public class ComponentRoseReference extends AbstractTextualComponent {
 
 	public ComponentRoseReference(HtmlColor fontColor, HtmlColor fontHeaderColor, UFont font, HtmlColor borderColor,
 			HtmlColor backgroundHeader, HtmlColor background, UFont header,
-			List<? extends CharSequence> stringsToDisplay, HorizontalAlignement position) {
-		super(stringsToDisplay.subList(1, stringsToDisplay.size()), fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4);
+			List<? extends CharSequence> stringsToDisplay, HorizontalAlignement position, SpriteContainer spriteContainer) {
+		super(stringsToDisplay.subList(1, stringsToDisplay.size()), fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4, spriteContainer);
 		this.position = position;
 		this.backgroundHeader = backgroundHeader;
 		this.background = background;
 		this.borderColor = borderColor;
 
 		textHeader = TextBlockUtils.create(stringsToDisplay.subList(0, 1), new FontConfiguration(header,
-				fontHeaderColor), HorizontalAlignement.LEFT);
+				fontHeaderColor), HorizontalAlignement.LEFT, spriteContainer);
 
 	}
 

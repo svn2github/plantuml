@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 6170 $
+ * Revision $Revision: 7672 $
  *
  */
 package net.sourceforge.plantuml.code;
@@ -67,7 +67,11 @@ public class AsciiEncoder implements URLEncoder {
 		return data;
 	}
 
-	private char encode6bit(byte b) {
+	public int decode6bit(char c) {
+		return decode6bit[c];
+	}
+
+	public char encode6bit(byte b) {
 		assert b >= 0 && b < 64;
 		if (b < 10) {
 			return (char) ('0' + b);

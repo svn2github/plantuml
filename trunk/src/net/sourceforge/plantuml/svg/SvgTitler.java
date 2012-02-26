@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMaker;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -72,7 +73,7 @@ public final class SvgTitler {
 		} else {
 			final UFont normalFont = new UFont(fontFamily, Font.PLAIN, fontSize);
 			textBloc = TextBlockUtils.create(text, new FontConfiguration(normalFont, textColor),
-					HorizontalAlignement.LEFT);
+					HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		}
 	}
 

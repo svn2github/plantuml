@@ -56,7 +56,7 @@ import net.sourceforge.plantuml.ugraphic.PlacementStrategyX1Y2Y3;
 import net.sourceforge.plantuml.ugraphic.PlacementStrategyY1Y2;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.UGroup;
+import net.sourceforge.plantuml.ugraphic.ULayoutGroup;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 
@@ -71,7 +71,7 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 	public EntityImageClass2(IEntity entity, ISkinParam skinParam, Collection<Link> links) {
 		super(entity, skinParam);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.CLASS),
-				HtmlColor.BLACK), HorizontalAlignement.CENTER);
+				HtmlColor.BLACK), HorizontalAlignement.CENTER, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
@@ -79,7 +79,7 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 			this.stereo = TextBlockUtils
 					.create(StringUtils.getWithNewlines(stereotype.getLabel()), new FontConfiguration(
 							getFont(FontParam.CLASS_STEREOTYPE), getFontColor(FontParam.CLASS_STEREOTYPE)),
-							HorizontalAlignement.CENTER);
+							HorizontalAlignement.CENTER, skinParam);
 		}
 //		this.methods = entity.getMethodsToDisplay().asTextBlock(FontParam.CLASS_ATTRIBUTE, skinParam);
 //		this.fields = entity.getFieldsToDisplay().asTextBlock(FontParam.CLASS_ATTRIBUTE, skinParam);
@@ -189,11 +189,11 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 		double y = yTheoricalPosition;
 		ug.draw(x, y, rect);
 
-		final UGroup header;
+		final ULayoutGroup header;
 		if (circledCharacter == null) {
-			header = new UGroup(new PlacementStrategyY1Y2(ug.getStringBounder()));
+			header = new ULayoutGroup(new PlacementStrategyY1Y2(ug.getStringBounder()));
 		} else {
-			header = new UGroup(new PlacementStrategyX1Y2Y3(ug.getStringBounder()));
+			header = new ULayoutGroup(new PlacementStrategyX1Y2Y3(ug.getStringBounder()));
 			header.add(circledCharacter);
 		}
 		if (stereo != null) {

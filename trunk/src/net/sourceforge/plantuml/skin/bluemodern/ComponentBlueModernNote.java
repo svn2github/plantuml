@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7328 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -53,8 +54,8 @@ final public class ComponentBlueModernNote extends AbstractTextualComponent {
 	private final HtmlColor foregroundColor;
 
 	public ComponentBlueModernNote(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> strings) {
-		super(strings, fontColor, font, HorizontalAlignement.LEFT, 6, 15, 5);
+			List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+		super(strings, fontColor, font, HorizontalAlignement.LEFT, 6, 15, 5, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
 	}

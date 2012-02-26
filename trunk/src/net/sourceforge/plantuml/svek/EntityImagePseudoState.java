@@ -61,7 +61,7 @@ public class EntityImagePseudoState extends AbstractEntityImage {
 		final Stereotype stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(Arrays.asList("H"), new FontConfiguration(
 				getFont(FontParam.STATE, stereotype), getFontColor(FontParam.STATE, stereotype)),
-				HorizontalAlignement.CENTER);
+				HorizontalAlignement.CENTER, skinParam);
 
 	}
 

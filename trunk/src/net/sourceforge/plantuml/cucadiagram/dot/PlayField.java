@@ -184,11 +184,11 @@ public final class PlayField {
 		for (Link link : links) {
 			if (link.getEntity2() == ent) {
 				// final LinkDecor decor = link.getType().getDecor1();
-				result = Math.max(result, link.getMarginDecors2(stringBounder, fontQualif));
+				result = Math.max(result, link.getMarginDecors2(stringBounder, fontQualif, skinParam));
 			}
 			if (link.getEntity1() == ent) {
 				// final LinkDecor decor = link.getType().getDecor2();
-				result = Math.max(result, link.getMarginDecors1(stringBounder, fontQualif));
+				result = Math.max(result, link.getMarginDecors1(stringBounder, fontQualif, skinParam));
 			}
 
 		}
@@ -261,7 +261,7 @@ public final class PlayField {
 			final String qual1 = link.getQualifier1();
 			if (qual1 != null) {
 				final TextBlock b = TextBlockUtils.create(Arrays.asList(qual1), new FontConfiguration(fontQualif,
-						skinParam.getFontHtmlColor(FontParam.CLASS_ARROW, null)), HorizontalAlignement.LEFT);
+						skinParam.getFontHtmlColor(FontParam.CLASS_ARROW, null)), HorizontalAlignement.LEFT, skinParam);
 				final Point2D pos = p.getDotPath().getStartPoint();
 				b.drawU(ug, pos.getX(), pos.getY());
 			}
@@ -269,7 +269,7 @@ public final class PlayField {
 			final String qual2 = link.getQualifier2();
 			if (qual2 != null) {
 				final TextBlock b = TextBlockUtils.create(Arrays.asList(qual2), new FontConfiguration(fontQualif,
-						skinParam.getFontHtmlColor(FontParam.CLASS_ARROW, null)), HorizontalAlignement.LEFT);
+						skinParam.getFontHtmlColor(FontParam.CLASS_ARROW, null)), HorizontalAlignement.LEFT, skinParam);
 				final Point2D pos = p.getDotPath().getEndPoint();
 				b.drawU(ug, pos.getX(), pos.getY());
 			}

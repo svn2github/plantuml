@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7328 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -64,8 +65,8 @@ public class ComponentRoseGroupingHeader extends AbstractTextualComponent {
 	private final HtmlColor background;
 
 	public ComponentRoseGroupingHeader(HtmlColor fontColor, HtmlColor background, HtmlColor groupBackground, HtmlColor groupBorder, UFont bigFont,
-			UFont smallFont, List<? extends CharSequence> strings) {
-		super(strings.get(0), fontColor, bigFont, HorizontalAlignement.LEFT, 15, 30, 1);
+			UFont smallFont, List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+		super(strings.get(0), fontColor, bigFont, HorizontalAlignement.LEFT, 15, 30, 1, spriteContainer);
 		this.groupBackground = groupBackground;
 		this.groupBorder = groupBorder;
 		this.background = background;
@@ -73,7 +74,7 @@ public class ComponentRoseGroupingHeader extends AbstractTextualComponent {
 			this.commentTextBlock = null;
 		} else {
 			this.commentTextBlock = TextBlockUtils.create(Arrays.asList("[" + strings.get(1) + "]"),
-					new FontConfiguration(smallFont, fontColor), HorizontalAlignement.LEFT);
+					new FontConfiguration(smallFont, fontColor), HorizontalAlignement.LEFT, spriteContainer);
 		}
 	}
 

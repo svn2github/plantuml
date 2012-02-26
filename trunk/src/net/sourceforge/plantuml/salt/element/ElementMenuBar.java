@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
@@ -51,13 +52,15 @@ public class ElementMenuBar implements Element {
 	private final Collection<ElementMenuEntry> entries = new ArrayList<ElementMenuEntry>();
 	private final Map<ElementMenuEntry, ElementMenuPopup> popups = new HashMap<ElementMenuEntry, ElementMenuPopup>();
 	private final UFont font;
+	private final SpriteContainer spriteContainer;
 
-	public ElementMenuBar(UFont font) {
+	public ElementMenuBar(UFont font, SpriteContainer spriteContainer) {
 		this.font = font;
+		this.spriteContainer = spriteContainer;
 	}
 
 	public void addEntry(String s) {
-		entries.add(new ElementMenuEntry(s, font));
+		entries.add(new ElementMenuEntry(s, font, spriteContainer));
 	}
 
 	public void addSubEntry(String s, String sub) {
@@ -68,7 +71,7 @@ public class ElementMenuBar implements Element {
 	private ElementMenuPopup getPopup(ElementMenuEntry s) {
 		ElementMenuPopup popup = popups.get(s);
 		if (popup == null) {
-			popup = new ElementMenuPopup(font);
+			popup = new ElementMenuPopup(font, spriteContainer);
 			popups.put(s, popup);
 		}
 		return popup;

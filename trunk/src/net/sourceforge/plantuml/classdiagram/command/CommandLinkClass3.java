@@ -52,6 +52,7 @@ import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -133,16 +134,12 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 			}
 		}
 		if (arg.get("ENT1").get(2) != null) {
-			cl1
-					.setStereotype(new Stereotype(arg.get("ENT1").get(2), getSystem().getSkinParam()
-							.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(
-							FontParam.CIRCLED_CHARACTER, null)));
+			cl1.setStereotype(new Stereotype(arg.get("ENT1").get(2), getSystem().getSkinParam()
+					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
 		if (arg.get("ENT2").get(2) != null) {
-			cl2
-					.setStereotype(new Stereotype(arg.get("ENT2").get(2), getSystem().getSkinParam()
-							.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(
-							FontParam.CIRCLED_CHARACTER, null)));
+			cl2.setStereotype(new Stereotype(arg.get("ENT2").get(2), getSystem().getSkinParam()
+					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
 
 		final LinkType linkType = getLinkType(arg);
@@ -153,9 +150,9 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		} else {
 			queue = getQueueLength(arg);
 		}
-//		if (dir != null && linkType.isExtendsOrAgregationOrCompositionOrPlus()) {
-//			dir = dir.getInv();
-//		}
+		// if (dir != null && linkType.isExtendsOrAgregationOrCompositionOrPlus()) {
+		// dir = dir.getInv();
+		// }
 
 		String firstLabel = arg.get("FIRST_LABEL").get(0);
 		String secondLabel = arg.get("SECOND_LABEL").get(0);
@@ -192,12 +189,35 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 			}
 			labelLink = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(labelLink);
 		}
+
+		LinkArrow linkArrow = LinkArrow.NONE;
+		if ("<".equals(labelLink)) {
+			linkArrow = LinkArrow.BACKWARD;
+			labelLink = null;
+		} else if (">".equals(labelLink)) {
+			linkArrow = LinkArrow.DIRECT_NORMAL;
+			labelLink = null;
+		} else if (labelLink != null && labelLink.startsWith("< ")) {
+			linkArrow = LinkArrow.BACKWARD;
+			labelLink = labelLink.substring(2).trim();
+		} else if (labelLink != null && labelLink.startsWith("> ")) {
+			linkArrow = LinkArrow.DIRECT_NORMAL;
+			labelLink = labelLink.substring(2).trim();
+		} else if (labelLink != null && labelLink.endsWith(" >")) {
+			linkArrow = LinkArrow.DIRECT_NORMAL;
+			labelLink = labelLink.substring(0, labelLink.length() - 2).trim();
+		} else if (labelLink != null && labelLink.endsWith(" <")) {
+			linkArrow = LinkArrow.BACKWARD;
+			labelLink = labelLink.substring(0, labelLink.length() - 2).trim();
+		}
+
 		Link link = new Link(cl1, cl2, linkType, labelLink, queue, firstLabel, secondLabel, getSystem()
 				.getLabeldistance(), getSystem().getLabelangle());
 
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
 		}
+		link.setLinkArrow(linkArrow);
 
 		addLink(link, arg.get("HEADER").get(0));
 
@@ -244,11 +264,11 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		final String labelLink = arg.get("LABEL_LINK").get(0);
 		final String firstLabel = arg.get("FIRST_LABEL").get(0);
 		final String secondLabel = arg.get("SECOND_LABEL").get(0);
-		final Link link = new Link(cl1.getEntityCluster(), cl2.getEntityCluster(), linkType, labelLink, queue, firstLabel,
-				secondLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
-//		if (dir == Direction.LEFT || dir == Direction.UP) {
-//			link = link.getInv();
-//		}
+		final Link link = new Link(cl1.getEntityCluster(), cl2.getEntityCluster(), linkType, labelLink, queue,
+				firstLabel, secondLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
+		// if (dir == Direction.LEFT || dir == Direction.UP) {
+		// link = link.getInv();
+		// }
 
 		getSystem().resetPragmaLabel();
 		addLink(link, arg.get("HEADER").get(0));
@@ -388,11 +408,11 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		final RegexPartialMatch match = arg.get("ARROW");
 		final LinkDecor decors1 = getDecors1(match.get(1));
 		final LinkDecor decors2 = getDecors2(match.get(5));
-//		System.err.println("Bdecors1=" + decors1);
-//		System.err.println("Bdecors2=" + decors2);
+		// System.err.println("Bdecors1=" + decors1);
+		// System.err.println("Bdecors2=" + decors2);
 
 		String s = arg.get("ARROW").get(0);
-//		System.err.println("direction1=" + s);
+		// System.err.println("direction1=" + s);
 		s = s.replaceAll("[^-.=\\w]", "");
 		if (s.startsWith("o")) {
 			s = s.substring(1);
@@ -400,25 +420,24 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		if (s.endsWith("o")) {
 			s = s.substring(0, s.length() - 1);
 		}
-//		System.err.println("direction2=" + s);
+		// System.err.println("direction2=" + s);
 
-//		if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.NONE) {
-//			return StringUtils.getQueueDirection(s);
-//		}
-//		if (decors1 == LinkDecor.ARROW && decors2 == LinkDecor.NONE) {
-//			return StringUtils.getQueueDirection(s);
-//		}
-//		if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.ARROW) {
-//			return StringUtils.getQueueDirection(s);
-//		}
-		
+		// if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.NONE) {
+		// return StringUtils.getQueueDirection(s);
+		// }
+		// if (decors1 == LinkDecor.ARROW && decors2 == LinkDecor.NONE) {
+		// return StringUtils.getQueueDirection(s);
+		// }
+		// if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.ARROW) {
+		// return StringUtils.getQueueDirection(s);
+		// }
 
 		Direction result = StringUtils.getQueueDirection(s);
 		if (isInversed(decors1, decors2) && s.matches(".*\\w.*")) {
 			result = result.getInv();
 		}
-		
-//		System.err.println("result="+result);
+
+		// System.err.println("result="+result);
 		return result;
 	}
 

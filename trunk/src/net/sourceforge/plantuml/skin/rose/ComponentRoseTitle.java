@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7328 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.skin.rose;
 import java.awt.geom.Dimension2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -49,8 +50,8 @@ public class ComponentRoseTitle extends AbstractTextualComponent {
 
 	private final int outMargin = 5;
 
-	public ComponentRoseTitle(HtmlColor fontColor, UFont font, List<? extends CharSequence> stringsToDisplay) {
-		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7);
+	public ComponentRoseTitle(HtmlColor fontColor, UFont font, List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer) {
+		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7, spriteContainer);
 	}
 
 	@Override

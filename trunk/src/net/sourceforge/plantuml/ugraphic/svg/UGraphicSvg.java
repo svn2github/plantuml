@@ -51,11 +51,13 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UClip;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UFont;
+import net.sourceforge.plantuml.ugraphic.UGroup;
 import net.sourceforge.plantuml.ugraphic.UImage;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
+import net.sourceforge.plantuml.ugraphic.UShape;
 import net.sourceforge.plantuml.ugraphic.UText;
 
 public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipContainer {
@@ -115,11 +117,13 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 		return clip;
 	}
 
-//	public void centerCharOld(double x, double y, char c, Font font) {
-//		final UText uText = new UText("" + c, new FontConfiguration(font, getParam().getColor()));
-//		final UnusedSpace unusedSpace = UnusedSpace.getUnusedSpace(font, c);
-//		draw(x - unusedSpace.getCenterX() + getTranslateX(), y - unusedSpace.getCenterY() + getTranslateY(), uText);
-//	}
+	// public void centerCharOld(double x, double y, char c, Font font) {
+	// final UText uText = new UText("" + c, new FontConfiguration(font,
+	// getParam().getColor()));
+	// final UnusedSpace unusedSpace = UnusedSpace.getUnusedSpace(font, c);
+	// draw(x - unusedSpace.getCenterX() + getTranslateX(), y -
+	// unusedSpace.getCenterY() + getTranslateY(), uText);
+	// }
 
 	public void centerChar(double x, double y, char c, UFont font) {
 		final UnusedSpace unusedSpace = UnusedSpace.getUnusedSpace(font, c);
@@ -128,7 +132,8 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 		final double ypos = y - unusedSpace.getCenterY() - 0.5;
 
 		final TextLayout t = new TextLayout("" + c, font.getFont(), imDummy.getFontRenderContext());
-		getGraphicObject().setStrokeColor(StringUtils.getAsHtml(getColorMapper().getMappedColor(getParam().getColor())));
+		getGraphicObject()
+				.setStrokeColor(StringUtils.getAsHtml(getColorMapper().getMappedColor(getParam().getColor())));
 		DriverTextAsPathSvg.drawPathIterator(getGraphicObject(), xpos + getTranslateX(), ypos + getTranslateY(), t
 				.getOutline(null).getPathIterator(null));
 	}
@@ -136,12 +141,40 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void setUrl(String url, String tooltip) {
-		if (url == null) {
-			getGraphicObject().closeLink();
-		} else {
-			getGraphicObject().openLink(url, tooltip);
+	public void startUrl(String url, String tooltip) {
+		getGraphicObject().openLink(url, tooltip);
+	}
+
+	public void closeAction() {
+		getGraphicObject().closeLink();
+	}
+	
+	class SvgGroup implements UGroup {
+		public void draw(double x, double y, UShape shape) {
+		}
+
+		public void close() {
+		}
+
+		public void centerChar(double x, double y, char c, UFont font) {
 		}
 	}
+	
+	@Override
+	public UGroup createGroup() {
+		return new SvgGroup();
+	}
+
+//	@Override
+//	public String startHiddenGroup() {
+//		getGraphicObject().startHiddenGroup();
+//		return null;
+//	}
+//
+//	@Override
+//	public String closeHiddenGroup() {
+//		getGraphicObject().closeHiddenGroup();
+//		return null;
+//	}
 
 }

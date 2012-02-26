@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6934 $
+ * Revision $Revision: 7658 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -45,12 +45,15 @@ import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class Stereotype implements CharSequence {
 
-	private final static Pattern circle = Pattern
+	private final static Pattern circleChar = Pattern
 			.compile("\\<\\<\\s*\\(?(\\S)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
+	private final static Pattern circleSprite = Pattern
+			.compile("\\<\\<\\s*\\(?\\$([\\p{L}0-9_]+)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
 
 	private final String label;
 	private final HtmlColor htmlColor;
 	private final char character;
+	private final String sprite;
 	private final double radius;
 	private final UFont circledFont;
 
@@ -63,20 +66,33 @@ public class Stereotype implements CharSequence {
 		}
 		this.radius = radius;
 		this.circledFont = circledFont;
-		final Matcher m = circle.matcher(label);
-		if (m.find()) {
-			if (StringUtils.isNotEmpty(m.group(3))) {
-				this.label = "<<" + m.group(3) + ">>";
+		final Matcher mCircleChar = circleChar.matcher(label);
+		final Matcher mCircleSprite = circleSprite.matcher(label);
+		if (mCircleSprite.find()) {
+			if (StringUtils.isNotEmpty(mCircleSprite.group(3))) {
+				this.label = "<<" + mCircleSprite.group(3) + ">>";
 			} else {
 				this.label = null;
 			}
-			final String colName = m.group(2);
+			final String colName = mCircleSprite.group(2);
 			this.htmlColor = HtmlColor.getColorIfValid(colName);
-			this.character = m.group(1).charAt(0);
+			this.sprite = mCircleSprite.group(1);
+			this.character = '\0';
+		} else if (mCircleChar.find()) {
+			if (StringUtils.isNotEmpty(mCircleChar.group(3))) {
+				this.label = "<<" + mCircleChar.group(3) + ">>";
+			} else {
+				this.label = null;
+			}
+			final String colName = mCircleChar.group(2);
+			this.htmlColor = HtmlColor.getColorIfValid(colName);
+			this.character = mCircleChar.group(1).charAt(0);
+			this.sprite = null;
 		} else {
 			this.label = label;
 			this.character = '\0';
 			this.htmlColor = null;
+			this.sprite = null;
 		}
 	}
 
@@ -86,6 +102,7 @@ public class Stereotype implements CharSequence {
 		this.character = '\0';
 		this.radius = 0;
 		this.circledFont = null;
+		this.sprite = null;
 	}
 
 	public HtmlColor getHtmlColor() {
@@ -94,6 +111,10 @@ public class Stereotype implements CharSequence {
 
 	public char getCharacter() {
 		return character;
+	}
+	
+	public final String getSprite() {
+		return sprite;
 	}
 
 	public String getLabel() {
@@ -137,7 +158,7 @@ public class Stereotype implements CharSequence {
 	}
 
 	public List<String> getLabels() {
-		if (label==null) {
+		if (label == null) {
 			return null;
 		}
 		final List<String> result = new ArrayList<String>();

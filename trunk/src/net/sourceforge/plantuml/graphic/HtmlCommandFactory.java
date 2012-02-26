@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7379 $
+ * Revision $Revision: 7661 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -101,6 +101,10 @@ class HtmlCommandFactory {
 
 		if (s.matches(Splitter.fontFamilyPattern)) {
 			return new FontFamilyChange(s);
+		}
+
+		if (s.matches(Splitter.spritePattern)) {
+			return new SpriteCommand(s);
 		}
 
 		return null;

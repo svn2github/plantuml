@@ -103,7 +103,7 @@ public final class GroupPngMaker2 {
 	public IEntityImage getImage() throws IOException, InterruptedException {
 		final String display = group.getDisplay();
 		final TextBlock title = TextBlockUtils.create(StringUtils.getWithNewlines(display), new FontConfiguration(
-				getFont(FontParam.STATE), HtmlColor.BLACK), HorizontalAlignement.CENTER);
+				getFont(FontParam.STATE), HtmlColor.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.entities().size() == 0) {
 			return new EntityImageState(group.getEntityCluster(), diagram.getSkinParam());

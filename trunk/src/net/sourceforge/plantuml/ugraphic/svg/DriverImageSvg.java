@@ -31,16 +31,24 @@
  */
 package net.sourceforge.plantuml.ugraphic.svg;
 
+import java.io.IOException;
+
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.svg.SvgGraphics;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
+import net.sourceforge.plantuml.ugraphic.UImage;
 import net.sourceforge.plantuml.ugraphic.UParam;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
 public class DriverImageSvg implements UDriver<SvgGraphics> {
 
 	public void draw(UShape ushape, double x, double y, ColorMapper mapper, UParam param, SvgGraphics svg) {
-		// Not supported
+		final UImage image = (UImage) ushape;
+		try {
+			svg.svgImage(image.getImage(), x, y);
+		} catch (IOException e) {
+			Log.error("Error in svg for image " + e);
+		}
 	}
-
 }

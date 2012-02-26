@@ -36,10 +36,12 @@ package net.sourceforge.plantuml.salt;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.salt.element.Element;
 import net.sourceforge.plantuml.salt.element.WrappedElement;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 
-public class Dictionary {
+public class Dictionary implements SpriteContainer {
 
 	private final Map<String, Element> data = new HashMap<String, Element>();
 
@@ -53,5 +55,9 @@ public class Dictionary {
 			throw new IllegalArgumentException();
 		}
 		return new WrappedElement(result);
+	}
+
+	public Sprite getSprite(String name) {
+		return null;
 	}
 }

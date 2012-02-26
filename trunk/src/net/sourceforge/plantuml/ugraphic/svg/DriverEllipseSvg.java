@@ -49,16 +49,11 @@ public class DriverEllipseSvg implements UDriver<SvgGraphics> {
 		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getColor()));
 		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getBackcolor()));
 
-		// Shadow
-		if (shape.getDeltaShadow() != 0) {
-			svg.svgEllipseShadow(x + width / 2, y + height / 2, width / 2, height / 2, shape.getDeltaShadow());
-		}
-		
 		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth(""+param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
 
-		svg.svgEllipse(x + width / 2, y + height / 2, width / 2, height / 2);
+		svg.svgEllipse(x + width / 2, y + height / 2, width / 2, height / 2, shape.getDeltaShadow());
 	}
 
 }

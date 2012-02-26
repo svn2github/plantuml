@@ -285,7 +285,7 @@ public final class CucaDiagramFileMakerSvek2 {
 			title = TextBlockUtils.create(StringUtils.getWithNewlines(label),
 					new FontConfiguration(dotData.getSkinParam().getFont(fontParam, g.getStereotype()), dotData
 							.getSkinParam().getFontHtmlColor(fontParam, g.getStereotype())),
-					HorizontalAlignement.CENTER);
+					HorizontalAlignement.CENTER, dotData.getSkinParam());
 
 			final Dimension2D dimLabel = title.calculateDimension(stringBounder);
 			titleWidth = (int) dimLabel.getWidth();

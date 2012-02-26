@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6936 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -41,6 +41,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmbededDiagram;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -50,24 +51,26 @@ class TextBlockSimple implements TextBlock {
 	private final List<Line> lines = new ArrayList<Line>();
 
 	protected TextBlockSimple(List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
-			HorizontalAlignement horizontalAlignement) {
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
 		for (CharSequence s : texts) {
 			if (s instanceof Stereotype) {
-				lines.addAll(createLinesForStereotype(fontConfiguration, (Stereotype) s, horizontalAlignement));
+				lines.addAll(createLinesForStereotype(fontConfiguration, (Stereotype) s, horizontalAlignement,
+						spriteContainer));
 			} else if (s instanceof EmbededDiagram) {
 				lines.add(new EmbededSystemLine((EmbededDiagram) s));
 			} else {
-				lines.add(new SingleLine(s.toString(), fontConfiguration, horizontalAlignement));
+				lines.add(new SingleLine(s.toString(), fontConfiguration, horizontalAlignement, spriteContainer));
 			}
 		}
 	}
 
 	private List<SingleLine> createLinesForStereotype(FontConfiguration fontConfiguration, Stereotype s,
-			HorizontalAlignement horizontalAlignement) {
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
 		assert s.getLabel() != null;
 		final List<SingleLine> result = new ArrayList<SingleLine>();
 		for (String st : s.getLabels()) {
-			result.add(new SingleLine(st, fontConfiguration.add(FontStyle.ITALIC), horizontalAlignement));
+			result.add(new SingleLine(st, fontConfiguration.add(FontStyle.ITALIC), horizontalAlignement,
+					spriteContainer));
 		}
 		return Collections.unmodifiableList(result);
 	}

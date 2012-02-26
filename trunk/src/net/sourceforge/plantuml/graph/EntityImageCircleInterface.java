@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6923 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -37,6 +37,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -56,7 +57,7 @@ class EntityImageCircleInterface extends AbstractEntityImage {
 	public EntityImageCircleInterface(Entity entity) {
 		super(entity);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER);
+				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.circleInterface = new CircleInterface(getYellow(), getRed());
 	}
 

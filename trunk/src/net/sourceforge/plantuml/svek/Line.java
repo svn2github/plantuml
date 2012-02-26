@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.svek;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
@@ -44,12 +45,14 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.TextBlockArrow;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.graphic.UDrawable3;
 import net.sourceforge.plantuml.posimo.BezierUtils;
@@ -57,7 +60,9 @@ import net.sourceforge.plantuml.posimo.DotPath;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableUtils;
+import net.sourceforge.plantuml.skin.ArrowBody;
 import net.sourceforge.plantuml.svek.SvekUtils.PointListIterator;
+import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -92,6 +97,47 @@ public class Line implements Moveable {
 
 	private final StringBounder stringBounder;
 
+	class DirectionalTextBlock implements TextBlock {
+
+		private final TextBlock direct;
+		private final TextBlock reverse;
+
+		DirectionalTextBlock(TextBlock direct, TextBlock reverse) {
+			this.direct = direct;
+			this.reverse = reverse;
+		}
+
+		public void drawU(UGraphic ug, double x, double y) {
+			boolean isDirect = isDirect();
+			if (getLinkArrow() == LinkArrow.BACKWARD) {
+				isDirect = !isDirect;
+			}
+			if (isDirect) {
+				direct.drawU(ug, x, y);
+			} else {
+				reverse.drawU(ug, x, y);
+			}
+		}
+
+		public Dimension2D calculateDimension(StringBounder stringBounder) {
+			return direct.calculateDimension(stringBounder);
+		}
+
+		public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
+			throw new UnsupportedOperationException();
+		}
+
+		private boolean isDirect() {
+			final Point2D start = dotPath.getStartPoint();
+			final Point2D end = dotPath.getEndPoint();
+			if (end.getX() == start.getX()) {
+				return end.getY() > start.getY();
+			}
+			return end.getX() > start.getX();
+		}
+
+	}
+
 	public Line(String startUid, String endUid, Link link, ColorSequence colorSequence, String ltail, String lhead,
 			ISkinParam skinParam, StringBounder stringBounder, FontConfiguration labelFont) {
 		if (startUid == null || endUid == null || link == null) {
@@ -111,10 +157,25 @@ public class Line implements Moveable {
 
 		final TextBlock labelOnly;
 		if (link.getLabel() == null) {
-			labelOnly = null;
+			if (getLinkArrow() == LinkArrow.NONE) {
+				labelOnly = null;
+			} else {
+				labelOnly = new DirectionalTextBlock(new TextBlockArrow(LinkArrow.DIRECT_NORMAL, labelFont),
+						new TextBlockArrow(LinkArrow.BACKWARD, labelFont));
+			}
 		} else {
-			labelOnly = TextBlockUtils.create(StringUtils.getWithNewlines(link.getLabel()), labelFont,
-					HorizontalAlignement.CENTER);
+			final TextBlock label = TextBlockUtils.create(StringUtils.getWithNewlines(link.getLabel()), labelFont,
+					HorizontalAlignement.CENTER, skinParam);
+			if (getLinkArrow() == LinkArrow.NONE) {
+				labelOnly = label;
+			} else {
+				final TextBlock direct = TextBlockUtils.mergeLR(label, new TextBlockArrow(LinkArrow.DIRECT_NORMAL,
+						labelFont));
+				final TextBlock reverse = TextBlockUtils.mergeLR(new TextBlockArrow(LinkArrow.BACKWARD, labelFont),
+						label);
+
+				labelOnly = new DirectionalTextBlock(direct, reverse);
+			}
 		}
 
 		final TextBlock noteOnly;
@@ -147,16 +208,20 @@ public class Line implements Moveable {
 			startTailText = null;
 		} else {
 			startTailText = TextBlockUtils.create(StringUtils.getWithNewlines(link.getQualifier1()), labelFont,
-					HorizontalAlignement.CENTER);
+					HorizontalAlignement.CENTER, skinParam);
 		}
 
 		if (link.getQualifier2() == null) {
 			endHeadText = null;
 		} else {
 			endHeadText = TextBlockUtils.create(StringUtils.getWithNewlines(link.getQualifier2()), labelFont,
-					HorizontalAlignement.CENTER);
+					HorizontalAlignement.CENTER, skinParam);
 		}
 
+	}
+
+	private LinkArrow getLinkArrow() {
+		return link.getLinkArrow();
 	}
 
 	public void appendLine(StringBuilder sb) {
@@ -344,18 +409,18 @@ public class Line implements Moveable {
 		}
 
 		if (this.noteLabelText != null) {
-			this.noteLabelXY = TextBlockUtils.asPositionable(noteLabelText, stringBounder, getXY(svg,
-					this.noteLabelColor, fullHeight));
+			this.noteLabelXY = TextBlockUtils.asPositionable(noteLabelText, stringBounder,
+					getXY(svg, this.noteLabelColor, fullHeight));
 		}
 
 		if (this.startTailText != null) {
-			this.startTailLabelXY = TextBlockUtils.asPositionable(startTailText, stringBounder, getXY(svg,
-					this.startTailColor, fullHeight));
+			this.startTailLabelXY = TextBlockUtils.asPositionable(startTailText, stringBounder,
+					getXY(svg, this.startTailColor, fullHeight));
 		}
 
 		if (this.endHeadText != null) {
-			this.endHeadLabelXY = TextBlockUtils.asPositionable(endHeadText, stringBounder, getXY(svg,
-					this.endHeadColor, fullHeight));
+			this.endHeadLabelXY = TextBlockUtils.asPositionable(endHeadText, stringBounder,
+					getXY(svg, this.endHeadColor, fullHeight));
 		}
 
 		if (isOpalisable() == false) {

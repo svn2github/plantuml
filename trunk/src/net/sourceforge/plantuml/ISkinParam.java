@@ -39,9 +39,10 @@ import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public interface ISkinParam {
+public interface ISkinParam extends SpriteContainer {
 
 	public HtmlColor getBackgroundColor();
 
@@ -52,29 +53,29 @@ public interface ISkinParam {
 	public HtmlColor getFontHtmlColor(FontParam param, String stereotype);
 
 	public UFont getFont(FontParam fontParam, String stereotype);
-	
+
 	public HorizontalAlignement getHorizontalAlignement(AlignParam param);
 
 	public int getCircledCharacterRadius();
 
 	public boolean isClassCollapse();
-	
+
 	public int classAttributeIconSize();
-	
+
 	public ColorMapper getColorMapper();
-	
+
 	public int getDpi();
-	
+
 	public boolean useOctagonForActivity();
-	
+
 	public DotSplines getDotSplines();
-	
+
 	public GraphvizLayoutStrategy getStrategy();
-	
+
 	public boolean isSvek();
-	
+
 	public boolean shadowing();
-	
+
 	public PackageStyle getPackageStyle();
 
 }

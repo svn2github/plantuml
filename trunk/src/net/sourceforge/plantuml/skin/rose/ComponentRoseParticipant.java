@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7328 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -51,8 +52,8 @@ public class ComponentRoseParticipant extends AbstractTextualComponent {
 	private final HtmlColor foregroundColor;
 
 	public ComponentRoseParticipant(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> stringsToDisplay) {
-		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7);
+			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer) {
+		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
 	}

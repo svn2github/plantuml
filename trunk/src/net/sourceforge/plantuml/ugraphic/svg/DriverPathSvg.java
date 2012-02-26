@@ -38,9 +38,12 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
 import net.sourceforge.plantuml.ugraphic.UParam;
 import net.sourceforge.plantuml.ugraphic.UPath;
+import net.sourceforge.plantuml.ugraphic.USegment;
+import net.sourceforge.plantuml.ugraphic.USegmentType;
 import net.sourceforge.plantuml.ugraphic.UShape;
+import net.sourceforge.plantuml.ugraphic.g2d.DriverShadowedG2d;
 
-public class DriverPathSvg implements UDriver<SvgGraphics> {
+public class DriverPathSvg extends DriverShadowedG2d implements UDriver<SvgGraphics> {
 
 	private final ClipContainer clipContainer;
 
@@ -55,12 +58,33 @@ public class DriverPathSvg implements UDriver<SvgGraphics> {
 				.getColor()));
 		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper
 				.getMappedColor(param.getBackcolor()));
+		
+//		// Shadow
+//		if (shape.getDeltaShadow() != 0) {
+//			double lastX = 0;
+//			double lastY = 0;
+//			for (USegment seg : shape) {
+//				final USegmentType type = seg.getSegmentType();
+//				final double coord[] = seg.getCoord();
+//				if (type == USegmentType.SEG_MOVETO) {
+//					lastX = x + coord[0];
+//					lastY = y + coord[1];
+//				} else if (type == USegmentType.SEG_LINETO) {
+//					svg.svgLineShadow(lastX, lastY, x + coord[0], y + coord[1], shape.getDeltaShadow());
+//					lastX = x + coord[0];
+//					lastY = y + coord[1];
+//				} else {
+//					throw new UnsupportedOperationException();
+//				}
+//			}
+//		}
+
 
 		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
 
-		svg.svgPath(x, y, shape);
+		svg.svgPath(x, y, shape, shape.getDeltaShadow());
 
 	}
 }

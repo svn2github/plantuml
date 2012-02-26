@@ -197,9 +197,9 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 			return original;
 		}
 		final TextBlock textFooter = footer == null ? null : TextBlockUtils.create(footer, new FontConfiguration(
-				getFont(FontParam.FOOTER), getFontColor(FontParam.FOOTER, null)), diagram.getFooterAlignement());
+				getFont(FontParam.FOOTER), getFontColor(FontParam.FOOTER, null)), diagram.getFooterAlignement(), diagram.getSkinParam());
 		final TextBlock textHeader = header == null ? null : TextBlockUtils.create(header, new FontConfiguration(
-				getFont(FontParam.HEADER), getFontColor(FontParam.HEADER, null)), diagram.getHeaderAlignement());
+				getFont(FontParam.HEADER), getFontColor(FontParam.HEADER, null)), diagram.getHeaderAlignement(), diagram.getSkinParam());
 
 		return new DecorateEntityImage(original, textHeader, diagram.getHeaderAlignement(), textFooter,
 				diagram.getFooterAlignement());
@@ -211,7 +211,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 			return original;
 		}
 		final TextBlock text = TextBlockUtils.create(title, new FontConfiguration(getFont(FontParam.TITLE),
-				getFontColor(FontParam.TITLE, null)), HorizontalAlignement.CENTER);
+				getFontColor(FontParam.TITLE, null)), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		return new DecorateEntityImage(original, text, HorizontalAlignement.CENTER);
 	}
@@ -257,6 +257,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 		}
 		final UGraphic ug = new UGraphicG2d(diagram.getSkinParam().getColorMapper(), graphics2D,
 				builder.getBufferedImage(), dpiFactor);
+		// ug.getParam().setSprites(diagram.getSprites());
 		result.drawU(ug, 0, 0);
 
 		final BufferedImage im = ((UGraphicG2d) ug).getBufferedImage();
@@ -276,6 +277,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 		} else {
 			ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), StringUtils.getAsHtml(backColor), false);
 		}
+		// ug.getParam().setSprites(diagram.getSprites());
 
 		result.drawU(ug, 0, 0);
 
@@ -287,6 +289,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 			final Dimension2D dim) throws IOException {
 
 		final UGraphicEps ug = new UGraphicEps(diagram.getSkinParam().getColorMapper(), EpsStrategy.getDefault2());
+		// ug.getParam().setSprites(diagram.getSprites());
 
 		result.drawU(ug, 0, 0);
 		os.write(ug.getEPSCode().getBytes());

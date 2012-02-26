@@ -140,12 +140,12 @@ public class UGraphicEps extends AbstractUGraphic<EpsGraphics> implements ClipCo
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void setUrl(String url, String tooltip) {
-		if (url == null) {
-			getGraphicObject().closeLink();
-		} else {
-			getGraphicObject().openLink(url);
-		}
+	public void startUrl(String url, String tooltip) {
+		getGraphicObject().openLink(url);
+	}
+
+	public void closeAction() {
+		getGraphicObject().closeLink();
 	}
 
 }

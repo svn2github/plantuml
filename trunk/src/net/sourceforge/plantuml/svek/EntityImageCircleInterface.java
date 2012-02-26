@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -57,6 +58,7 @@ public class EntityImageCircleInterface extends AbstractEntityImage {
 
 	private final TextBlock name;
 	private final TextBlock stereo;
+	final private Url url;
 
 	public EntityImageCircleInterface(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
@@ -65,15 +67,16 @@ public class EntityImageCircleInterface extends AbstractEntityImage {
 
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
 				getFont(FontParam.COMPONENT, stereotype), getFontColor(FontParam.COMPONENT, stereotype)),
-				HorizontalAlignement.CENTER);
+				HorizontalAlignement.CENTER, skinParam);
 
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
 			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.COMPONENT_STEREOTYPE, stereotype), getFontColor(
-							FontParam.COMPONENT_STEREOTYPE, null)), HorizontalAlignement.CENTER);
+							FontParam.COMPONENT_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -108,6 +111,9 @@ public class EntityImageCircleInterface extends AbstractEntityImage {
 		ug.getParam().setStroke(new UStroke(2));
 		ug.getParam().setColor(getColor(ColorParam.componentInterfaceBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.componentInterfaceBackground, getStereo()));
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 		ug.draw(xTheoricalPosition + circleX, yTheoricalPosition + circleY, circle);
 		ug.getParam().setStroke(new UStroke());
 
@@ -118,6 +124,9 @@ public class EntityImageCircleInterface extends AbstractEntityImage {
 		if (stereo != null) {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition);
+		}
+		if (url != null) {
+			ug.closeAction();
 		}
 
 	}

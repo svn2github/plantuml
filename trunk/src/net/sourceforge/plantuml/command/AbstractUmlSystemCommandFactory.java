@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6750 $
+ * Revision $Revision: 7680 $
  *
  */
 package net.sourceforge.plantuml.command;
@@ -57,7 +57,6 @@ public abstract class AbstractUmlSystemCommandFactory implements PSystemCommandF
 	public String checkFinalError() {
 		return null;
 	}
-
 
 	final public CommandControl isValid(List<String> lines) {
 		for (Command cmd : cmds) {
@@ -111,6 +110,9 @@ public abstract class AbstractUmlSystemCommandFactory implements PSystemCommandF
 		addCommand(new CommandScaleWidthAndHeight(system));
 		addCommand(new CommandScaleWidthOrHeight(system));
 		addCommand(new CommandHideUnlinked(system));
+		final FactorySpriteCommand factorySpriteCommand = new FactorySpriteCommand();
+		addCommand(factorySpriteCommand.createMultiLine(system));
+		addCommand(factorySpriteCommand.createSingleLine(system));
 
 	}
 

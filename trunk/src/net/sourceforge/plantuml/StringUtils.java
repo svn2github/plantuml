@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7638 $
+ * Revision $Revision: 7688 $
  *
  */
 package net.sourceforge.plantuml;
@@ -149,7 +149,7 @@ public class StringUtils {
 	}
 
 	public static String manageArrowForSequence(String s) {
-		s = s.replace('=', '-');
+		s = s.replace('=', '-').toLowerCase();
 		return s;
 	}
 

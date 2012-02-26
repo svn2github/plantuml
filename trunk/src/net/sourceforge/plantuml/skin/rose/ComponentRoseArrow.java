@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7520 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -58,8 +59,8 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 
 	public ComponentRoseArrow(HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
 			List<? extends CharSequence> stringsToDisplay, ArrowConfiguration arrowConfiguration,
-			HorizontalAlignement messagePosition) {
-		super(foregroundColor, fontColor, font, stringsToDisplay, arrowConfiguration);
+			HorizontalAlignement messagePosition, SpriteContainer spriteContainer) {
+		super(foregroundColor, fontColor, font, stringsToDisplay, arrowConfiguration, spriteContainer);
 		this.messagePosition = messagePosition;
 	}
 

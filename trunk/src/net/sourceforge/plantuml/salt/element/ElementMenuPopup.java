@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
@@ -49,13 +50,15 @@ public class ElementMenuPopup implements Element {
 
 	private final Collection<ElementMenuEntry> entries = new ArrayList<ElementMenuEntry>();
 	private final UFont font;
+	private final SpriteContainer spriteContainer;
 
-	public ElementMenuPopup(UFont font) {
+	public ElementMenuPopup(UFont font, SpriteContainer spriteContainer) {
 		this.font = font;
+		this.spriteContainer = spriteContainer;
 	}
 
 	public void addEntry(String s) {
-		entries.add(new ElementMenuEntry(s, font));
+		entries.add(new ElementMenuEntry(s, font, spriteContainer));
 	}
 
 	public Dimension2D getPreferredDimension(StringBounder stringBounder, double x, double y) {

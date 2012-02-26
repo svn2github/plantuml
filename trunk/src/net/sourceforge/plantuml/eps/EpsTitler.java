@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -59,7 +60,8 @@ public final class EpsTitler {
 	private final EpsStrategy epsStrategy;
 	private final ColorMapper colorMapper;
 
-	public EpsTitler(ColorMapper colorMapper, EpsStrategy epsStrategy, HtmlColor textColor, List<? extends CharSequence> text, int fontSize, String fontFamily,
+	public EpsTitler(ColorMapper colorMapper, EpsStrategy epsStrategy, HtmlColor textColor,
+			List<? extends CharSequence> text, int fontSize, String fontFamily,
 			HorizontalAlignement horizontalAlignement, VerticalPosition verticalPosition, int margin) {
 		this.text = text;
 		this.colorMapper = colorMapper;
@@ -72,7 +74,7 @@ public final class EpsTitler {
 		} else {
 			final UFont normalFont = new UFont(fontFamily, Font.PLAIN, fontSize);
 			textBloc = TextBlockUtils.create(text, new FontConfiguration(normalFont, textColor),
-					HorizontalAlignement.LEFT);
+					HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		}
 	}
 
@@ -80,7 +82,8 @@ public final class EpsTitler {
 		if (textBloc == null) {
 			return 0;
 		}
-		return textBloc.calculateDimension(new UGraphicEps(colorMapper, epsStrategy).getStringBounder()).getHeight() + margin;
+		return textBloc.calculateDimension(new UGraphicEps(colorMapper, epsStrategy).getStringBounder()).getHeight()
+				+ margin;
 	}
 
 	public String addTitleEps(String eps) throws IOException {

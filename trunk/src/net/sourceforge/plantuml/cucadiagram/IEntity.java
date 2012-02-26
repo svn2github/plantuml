@@ -83,5 +83,8 @@ public interface IEntity extends Imaged, SpecificBackcolorable, Comparable<IEnti
 	public IEntityImage getSvekImage();
 	
 	public String getGeneric();
+	
+	public BlockMember getMouseOver();
+
 
 }

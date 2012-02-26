@@ -46,6 +46,7 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.MathUtils;
 import net.sourceforge.plantuml.SkinParamBackcolored;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graph2.GeomUtils;
@@ -74,6 +75,7 @@ public class EntityImageNote extends AbstractEntityImage {
 	private final int marginX2 = 15;
 	private final int marginY = 5;
 	private final boolean withShadow;
+	final private Url url;
 
 	private final TextBlock textBlock;
 
@@ -98,8 +100,9 @@ public class EntityImageNote extends AbstractEntityImage {
 			textBlock = new TextBlockEmpty();
 		} else {
 			textBlock = TextBlockUtils.create(strings, new FontConfiguration(fontNote, fontColor),
-					HorizontalAlignement.LEFT);
+					HorizontalAlignement.LEFT, skinParam);
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -172,6 +175,9 @@ public class EntityImageNote extends AbstractEntityImage {
 		final double dx = ug.getTranslateX();
 		final double dy = ug.getTranslateY();
 		ug.translate(xTheoricalPosition, yTheoricalPosition);
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 		if (opaleLine == null || opaleLine.isOpale() == false) {
 			drawNormal(ug, xTheoricalPosition, yTheoricalPosition);
 		} else {
@@ -190,6 +196,9 @@ public class EntityImageNote extends AbstractEntityImage {
 			}
 			final Direction strategy = getOpaleStrategy(textWidth, textHeight, p1);
 			drawOpale(ug, xTheoricalPosition, yTheoricalPosition, path, strategy);
+		}
+		if (url != null) {
+			ug.closeAction();
 		}
 		ug.setTranslate(dx, dy);
 	}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7622 $
+ * Revision $Revision: 7692 $
  *
  */
 package net.sourceforge.plantuml;
@@ -71,6 +71,7 @@ public class OptionFlags {
 		printFonts = false;
 		useSuggestEngine = true;
 		failOnError = false;
+		encodesprite = false;
 	}
 
 	public boolean useJavaInsteadOfDot() {
@@ -94,6 +95,7 @@ public class OptionFlags {
 	private boolean printFonts;
 	private boolean useSuggestEngine;
 	private boolean failOnError;
+	private boolean encodesprite;
 	private File logData;
 
 	private OptionFlags() {
@@ -288,6 +290,14 @@ public class OptionFlags {
 
 	public final void setFailOnError(boolean failOnError) {
 		this.failOnError = failOnError;
+	}
+
+	public final boolean isEncodesprite() {
+		return encodesprite;
+	}
+
+	public final void setEncodesprite(boolean encodesprite) {
+		this.encodesprite = encodesprite;
 	}
 
 }

@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class SkinParamBackcolored implements ISkinParam {
@@ -130,6 +131,10 @@ public class SkinParamBackcolored implements ISkinParam {
 
 	public PackageStyle getPackageStyle() {
 		return skinParam.getPackageStyle();
+	}
+
+	public Sprite getSprite(String name) {
+		return skinParam.getSprite(name);
 	}
 
 }

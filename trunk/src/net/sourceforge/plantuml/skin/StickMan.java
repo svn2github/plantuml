@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7236 $
+ * Revision $Revision: 7685 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -46,6 +46,7 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
+import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class StickMan implements UDrawable {
@@ -111,29 +112,24 @@ public class StickMan implements UDrawable {
 		final UEllipse head = new UEllipse(headDiam, headDiam);
 		final double centerX = startX + headDiam / 2;
 
-		final ULine body = new ULine(0, bodyLenght);
-		final ULine arms = new ULine(armsLenght * 2, 0);
-
-		final double y = headDiam + thickness + bodyLenght;
-
-		final ULine legs1 = new ULine(-legsX, legsY);
-		final ULine legs2 = new ULine(legsX, legsY);
+		final UPath path = new UPath();
+		path.moveTo(0, 0);
+		path.lineTo(0, bodyLenght);
+		path.moveTo(- armsLenght, armsY);
+		path.lineTo(armsLenght, armsY);
+		path.moveTo(0, bodyLenght);
+		path.lineTo(-legsX, bodyLenght + legsY);
+		path.moveTo(0, bodyLenght);
+		path.lineTo(legsX, bodyLenght + legsY);
 		if (deltaShadow != 0) {
 			head.setDeltaShadow(deltaShadow);
-			body.setDeltaShadow(deltaShadow);
-			arms.setDeltaShadow(deltaShadow);
-			legs1.setDeltaShadow(deltaShadow);
-			legs2.setDeltaShadow(deltaShadow);
+			path.setDeltaShadow(deltaShadow);
 		}
 
 		ug.getParam().setBackcolor(backgroundColor);
 		ug.getParam().setColor(foregroundColor);
 		ug.draw(startX, thickness, head);
-
-		ug.draw(centerX, headDiam + thickness, body);
-		ug.draw(centerX - armsLenght, headDiam + thickness + armsY, arms);
-		ug.draw(centerX, y, legs1);
-		ug.draw(centerX, y, legs2);
+		ug.draw(centerX, headDiam + thickness, path);
 
 		ug.getParam().setStroke(new UStroke());
 	}

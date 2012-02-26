@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6590 $
+ * Revision $Revision: 7663 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UText;
 
-class TileText implements Tile {
+class TileText implements TextBlock {
 
 	private final String text;
 	private final FontConfiguration fontConfiguration;
@@ -71,7 +71,7 @@ class TileText implements Tile {
 		return fontConfiguration.getFont().getSize2D();
 	}
 
-	public void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
+	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
 		// TO be removed
 		g2d.setFont(fontConfiguration.getFont().getFont());
 		g2d.setPaint(colorMapper.getMappedColor(fontConfiguration.getColor()));

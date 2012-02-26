@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7511 $
+ * Revision $Revision: 7696 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -299,11 +299,11 @@ class DrawableSet {
 			}
 			final Url url = p.getUrl();
 			if (url != null) {
-				ug.setUrl(url.getUrl(), url.getTooltip());
+				ug.startUrl(url.getUrl(), url.getTooltip());
 			}
 			box.getParticipantBox().drawHeadTailU(ug, topStartingY, showHead, positionTail);
 			if (url != null) {
-				ug.setUrl(null, null);
+				ug.closeAction();
 			}
 		}
 	}

@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -48,6 +49,7 @@ public class ElementTabBar implements Element {
 
 	private final Collection<Element> tabs = new ArrayList<Element>();
 	private final UFont font;
+	private final SpriteContainer spriteContainer;
 
 	private final double margin1 = 2;
 	private final double margin2 = 3;
@@ -55,12 +57,13 @@ public class ElementTabBar implements Element {
 
 	private boolean vertical = false;
 
-	public ElementTabBar(UFont font) {
+	public ElementTabBar(UFont font, SpriteContainer spriteContainer) {
 		this.font = font;
+		this.spriteContainer = spriteContainer;
 	}
 
 	public void addTab(String tab) {
-		final Element elt = new ElementText(Arrays.asList(tab), font);
+		final Element elt = new ElementText(Arrays.asList(tab), font, spriteContainer);
 		tabs.add(elt);
 	}
 

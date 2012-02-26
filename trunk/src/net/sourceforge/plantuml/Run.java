@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7325 $
+ * Revision $Revision: 7692 $
  *
  */
 package net.sourceforge.plantuml;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +48,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.imageio.ImageIO;
 import javax.swing.UIManager;
 
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagramFactory;
@@ -62,6 +64,8 @@ import net.sourceforge.plantuml.preproc.Defines;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagramFactory;
 import net.sourceforge.plantuml.statediagram.StateDiagramFactory;
 import net.sourceforge.plantuml.swing.MainWindow2;
+import net.sourceforge.plantuml.ugraphic.SpriteGrayLevel;
+import net.sourceforge.plantuml.ugraphic.SpriteUtils;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagramFactory;
 
 public class Run {
@@ -69,6 +73,10 @@ public class Run {
 	public static void main(String[] argsArray) throws IOException, InterruptedException {
 		final long start = System.currentTimeMillis();
 		final Option option = new Option(argsArray);
+		if (OptionFlags.getInstance().isEncodesprite()) {
+			encodeSprite(option.getResult());
+			return;
+		}
 		if (OptionFlags.getInstance().isVerbose()) {
 			Log.info("GraphicsEnvironment.isHeadless() " + GraphicsEnvironment.isHeadless());
 		}
@@ -109,10 +117,53 @@ public class Run {
 			Log.error("Some diagram description contains errors");
 			System.exit(1);
 		}
-		
+
 		if (forceQuit && OptionFlags.getInstance().isSystemExit()) {
 			System.exit(0);
 		}
+	}
+
+	private static void encodeSprite(List<String> result) throws IOException {
+		SpriteGrayLevel level = SpriteGrayLevel.GRAY_16;
+		boolean compressed = false;
+		final File f;
+		if (result.size() > 1 && result.get(0).matches("(4|8|16)z?")) {
+			if (result.get(0).startsWith("8")) {
+				level = SpriteGrayLevel.GRAY_8;
+			}
+			if (result.get(0).startsWith("4")) {
+				level = SpriteGrayLevel.GRAY_4;
+			}
+			compressed = result.get(0).toLowerCase().endsWith("z");
+			f = new File(result.get(1));
+		} else {
+			f = new File(result.get(0));
+		}
+		final BufferedImage im = ImageIO.read(f);
+		String name = getSpriteName(f);
+		final String s = compressed ? SpriteUtils.encodeCompressed(im, name, level) : SpriteUtils.encode(im, name,
+				level);
+		System.out.println(s);
+	}
+
+	private static String getSpriteName(File f) {
+		final String s = getSpriteNameInternal(f);
+		if (s.length() == 0) {
+			return "test";
+		}
+		return s;
+	}
+
+	private static String getSpriteNameInternal(File f) {
+		final StringBuilder sb = new StringBuilder();
+		for (char c : f.getName().toCharArray()) {
+			if (("" + c).matches("[\\p{L}0-9_]")) {
+				sb.append(c);
+			} else {
+				return sb.toString();
+			}
+		}
+		return sb.toString();
 	}
 
 	private static void goFtp(Option option) throws IOException {
@@ -293,11 +344,11 @@ public class Run {
 		}
 		final ISourceFileReader sourceFileReader;
 		if (option.getOutputFile() == null) {
-			sourceFileReader = new SourceFileReader(option.getDefaultDefines(), f, option.getOutputDir(), option
-					.getConfig(), option.getCharset(), option.getFileFormatOption());
+			sourceFileReader = new SourceFileReader(option.getDefaultDefines(), f, option.getOutputDir(),
+					option.getConfig(), option.getCharset(), option.getFileFormatOption());
 		} else {
-			sourceFileReader = new SourceFileReader2(option.getDefaultDefines(), f, option.getOutputFile(), option
-					.getConfig(), option.getCharset(), option.getFileFormatOption());
+			sourceFileReader = new SourceFileReader2(option.getDefaultDefines(), f, option.getOutputFile(),
+					option.getConfig(), option.getCharset(), option.getFileFormatOption());
 		}
 		if (option.isComputeurl()) {
 			final List<String> urls = sourceFileReader.getEncodedUrl();

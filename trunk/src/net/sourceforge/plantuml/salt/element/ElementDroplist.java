@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.salt.element;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -47,8 +48,8 @@ public class ElementDroplist extends AbstractElementText implements Element {
 
 	private final int box = 12;
 
-	public ElementDroplist(String text, UFont font) {
-		super(text, font, true);
+	public ElementDroplist(String text, UFont font, SpriteContainer spriteContainer) {
+		super(text, font, true, spriteContainer);
 	}
 
 	public Dimension2D getPreferredDimension(StringBounder stringBounder, double x, double y) {

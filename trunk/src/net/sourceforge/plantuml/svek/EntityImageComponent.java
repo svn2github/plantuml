@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -57,21 +58,23 @@ public class EntityImageComponent extends AbstractEntityImage {
 	final private TextBlock desc;
 	private final TextBlock stereo;
 	final private static int MARGIN = 10;
+	final private Url url;
 
 	public EntityImageComponent(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
 				getFont(FontParam.COMPONENT, stereotype), getFontColor(FontParam.COMPONENT, stereotype)),
-				HorizontalAlignement.CENTER);
+				HorizontalAlignement.CENTER, skinParam);
 
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
 			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.COMPONENT_STEREOTYPE, stereotype), getFontColor(
-							FontParam.COMPONENT_STEREOTYPE, null)), HorizontalAlignement.CENTER);
+							FontParam.COMPONENT_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
+		this.url = entity.getUrl();
 
 	}
 
@@ -107,6 +110,9 @@ public class EntityImageComponent extends AbstractEntityImage {
 		ug.getParam().setStroke(new UStroke(1.5));
 		ug.getParam().setColor(getColor(ColorParam.componentBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.componentBackground, getStereo()));
+		if (url != null) {
+			ug.startUrl(url.getUrl(), url.getTooltip());
+		}
 		ug.draw(xTheoricalPosition, yTheoricalPosition, form);
 		ug.draw(xTheoricalPosition - 5, yTheoricalPosition + 5, small);
 		ug.draw(xTheoricalPosition - 5, yTheoricalPosition + heightTotal - MARGIN, small);
@@ -119,6 +125,9 @@ public class EntityImageComponent extends AbstractEntityImage {
 		if (stereo != null) {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition + MARGIN);
+		}
+		if (url != null) {
+			ug.closeAction();
 		}
 
 	}

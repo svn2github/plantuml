@@ -40,6 +40,7 @@ import java.util.List;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.SkinParam;
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.skin.Area;
@@ -108,7 +109,7 @@ public class PostIt {
 		final SkinParam param = new SkinParam(null);
 		final UFont fontNote = param.getFont(FontParam.NOTE, null);
 		final ComponentRoseNote note = new ComponentRoseNote(noteBackgroundColor, borderColor, HtmlColor.BLACK,
-				fontNote, text, 0, 0);
+				fontNote, text, 0, 0, new SpriteContainerEmpty());
 		return note;
 	}
 }

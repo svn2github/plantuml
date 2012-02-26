@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 7692 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -39,15 +39,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 class SingleLine implements Line {
 
-	private final List<Tile> blocs = new ArrayList<Tile>();
+	private final List<TextBlock> blocs = new ArrayList<TextBlock>();
 	private final HorizontalAlignement horizontalAlignement;
 
-	public SingleLine(String text, FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement) {
+	public SingleLine(String text, FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement,
+			SpriteContainer spriteContainer) {
 		if (text.length() == 0) {
 			text = " ";
 		}
@@ -60,6 +63,11 @@ class SingleLine implements Line {
 				blocs.add(new TileText(s, fontConfiguration));
 			} else if (cmd instanceof Img) {
 				blocs.add(((Img) cmd).createMonoImage());
+			} else if (cmd instanceof SpriteCommand) {
+				final Sprite sprite = spriteContainer.getSprite(((SpriteCommand) cmd).getSprite());
+				if (sprite != null) {
+					blocs.add(sprite.asTextBlock(fontConfiguration.getColor()));
+				}
 			} else if (cmd instanceof FontChange) {
 				fontConfiguration = ((FontChange) cmd).apply(fontConfiguration);
 			}
@@ -69,7 +77,7 @@ class SingleLine implements Line {
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		double width = 0;
 		double height = 0;
-		for (Tile b : blocs) {
+		for (TextBlock b : blocs) {
 			final Dimension2D size2D = b.calculateDimension(stringBounder);
 			width += size2D.getWidth();
 			height = Math.max(height, size2D.getHeight());
@@ -80,7 +88,7 @@ class SingleLine implements Line {
 	private double maxDeltaY(Graphics2D g2d) {
 		double result = 0;
 		final Dimension2D dim = calculateDimension(StringBounderUtils.asStringBounder(g2d));
-		for (Tile b : blocs) {
+		for (TextBlock b : blocs) {
 			if (b instanceof TileText == false) {
 				continue;
 			}
@@ -94,7 +102,7 @@ class SingleLine implements Line {
 	private double maxDeltaY(UGraphic ug) {
 		double result = 0;
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
-		for (Tile b : blocs) {
+		for (TextBlock b : blocs) {
 			if (b instanceof TileText == false) {
 				continue;
 			}
@@ -107,11 +115,11 @@ class SingleLine implements Line {
 
 	public void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
 		final double deltaY = maxDeltaY(g2d);
-		for (Tile b : blocs) {
+		for (TextBlock b : blocs) {
 			if (b instanceof TileImage) {
-				b.draw(colorMapper, g2d, x, y);
+				b.drawTOBEREMOVED(colorMapper, g2d, x, y);
 			} else {
-				b.draw(colorMapper, g2d, x, y + deltaY);
+				b.drawTOBEREMOVED(colorMapper, g2d, x, y + deltaY);
 			}
 			x += b.calculateDimension(StringBounderUtils.asStringBounder(g2d)).getWidth();
 		}
@@ -119,13 +127,16 @@ class SingleLine implements Line {
 
 	public void drawU(UGraphic ug, double x, double y) {
 		final double deltaY = maxDeltaY(ug);
-		for (Tile b : blocs) {
-			if (b instanceof TileImage) {
-				b.drawU(ug, x, y);
-			} else {
+		final StringBounder stringBounder = ug.getStringBounder();
+		final Dimension2D dim = calculateDimension(stringBounder);
+		for (TextBlock b : blocs) {
+			if (b instanceof TileText) {
 				b.drawU(ug, x, y + deltaY);
+			} else {
+				final double dy = dim.getHeight() - b.calculateDimension(stringBounder).getHeight();
+				b.drawU(ug, x, y + dy);
 			}
-			x += b.calculateDimension(ug.getStringBounder()).getWidth();
+			x += b.calculateDimension(stringBounder).getWidth();
 		}
 	}
 

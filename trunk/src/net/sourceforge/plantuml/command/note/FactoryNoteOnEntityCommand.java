@@ -86,6 +86,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
 				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("\\s*\\{?"), //
 				new RegexLeaf("$") //
 		);
 	}
@@ -106,7 +107,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 
 			@Override
 			public String getPatternEnd() {
-				return "(?i)^end ?note$";
+				return "(?i)^(end ?note|\\})$";
 			}
 
 			public CommandExecutionResult execute(List<String> lines) {

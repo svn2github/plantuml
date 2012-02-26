@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 7659 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -42,7 +42,7 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UImage;
 
-class TileImage implements Tile {
+class TileImage implements TextBlock {
 
 	private final BufferedImage image;
 	private final int vspace;
@@ -56,7 +56,7 @@ class TileImage implements Tile {
 		return new Dimension2DDouble(image.getWidth(), image.getHeight() + 2 * vspace);
 	}
 
-	public void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
+	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
 		g2d.drawImage(image, (int) x, (int) y + vspace, null);
 	}
 

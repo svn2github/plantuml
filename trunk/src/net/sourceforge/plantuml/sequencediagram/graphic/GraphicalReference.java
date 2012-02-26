@@ -77,11 +77,11 @@ class GraphicalReference extends GraphicalElement implements InGroupable {
 
 		final Dimension2D dim = new Dimension2DDouble(width, comp.getPreferredHeight(stringBounder));
 		if (url != null) {
-			ug.setUrl(url.getUrl(), url.getTooltip());
+			ug.startUrl(url.getUrl(), url.getTooltip());
 		}
 		comp.drawU(ug, new Area(dim), context);
 		if (url != null) {
-			ug.setUrl(null, null);
+			ug.closeAction();
 		}
 	}
 

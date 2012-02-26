@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7328 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -51,8 +52,8 @@ public class ComponentRoseActor extends AbstractTextualComponent {
 	private final boolean head;
 
 	public ComponentRoseActor(HtmlColor yellow, HtmlColor red, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> stringsToDisplay, boolean head) {
-		super(stringsToDisplay, fontColor, font, HorizontalAlignement.LEFT, 3, 3, 0);
+			List<? extends CharSequence> stringsToDisplay, boolean head, SpriteContainer spriteContainer) {
+		super(stringsToDisplay, fontColor, font, HorizontalAlignement.LEFT, 3, 3, 0, spriteContainer);
 		this.head = head;
 		stickman = new StickMan(yellow, red);
 	}

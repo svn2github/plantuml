@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7469 $
+ * Revision $Revision: 7668 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -42,6 +42,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.plantuml.ugraphic.ColorChangerMonochrome;
+import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
+import net.sourceforge.plantuml.ugraphic.UGradient;
 
 public class HtmlColor {
 
@@ -210,6 +212,19 @@ public class HtmlColor {
 	private final Color color;
 	private final boolean monochrome;
 
+	@Override
+	public int hashCode() {
+		return color.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof HtmlColor == false) {
+			return false;
+		}
+		return this.color.equals(((HtmlColor) other).color);
+	}
+
 	public static final HtmlColor BLACK = HtmlColor.getColorIfValid("black");
 	public static final HtmlColor WHITE = HtmlColor.getColorIfValid("white");
 	public static final HtmlColor RED = HtmlColor.getColorIfValid("#FF0000");
@@ -232,6 +247,10 @@ public class HtmlColor {
 		monochrome = false;
 		assert isValid(s);
 	}
+
+	// public static HtmlColor fromColor(Color c) {
+	// return new HtmlColor(c, false);
+	// }
 
 	private HtmlColor(Color c, boolean monochrome) {
 		this.color = c;
@@ -279,4 +298,5 @@ public class HtmlColor {
 	public static Collection<String> names() {
 		return Collections.unmodifiableSet(names);
 	}
+
 }

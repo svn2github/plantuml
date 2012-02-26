@@ -65,7 +65,7 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 		this.desc = TextBlockUtils.create(
 				entity.getDisplay2(),
 				new FontConfiguration(getFont(FontParam.PACKAGE, stereotype), getFontColor(FontParam.PACKAGE,
-						stereotype)), HorizontalAlignement.CENTER);
+						stereotype)), HorizontalAlignement.CENTER, skinParam);
 	}
 
 	@Override

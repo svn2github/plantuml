@@ -119,11 +119,11 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 	private boolean decorationAtPosition(Map<String, RegexPartialMatch> arg2, int posDirect, int posReverse,
 			String decoration) {
 		final String s1 = arg2.get("ARROW_DIRECT").get(posDirect);
-		if (s1 != null && s1.contains(decoration)) {
+		if (s1 != null && s1.toLowerCase().contains(decoration)) {
 			return true;
 		}
 		final String s2 = arg2.get("ARROW_REVERSE").get(posReverse);
-		if (s2 != null && s2.contains(decoration)) {
+		if (s2 != null && s2.toLowerCase().contains(decoration)) {
 			return true;
 		}
 		return false;

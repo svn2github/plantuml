@@ -37,6 +37,7 @@ import java.awt.Font;
 import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 
+import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -69,7 +70,7 @@ class ItemHeader {
 
 		for (Item it : project.getValidItems()) {
 			final TextBlock b = TextBlockUtils.create(Arrays.asList("" + it.getCode()), fontConfig,
-					HorizontalAlignement.LEFT);
+					HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 			final Dimension2D dim = b.calculateDimension(stringBounder);
 			b.drawU(ug, x, y);
 			y += dim.getHeight();

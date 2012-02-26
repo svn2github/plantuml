@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7331 $
+ * Revision $Revision: 7660 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.skin.Area;
@@ -54,8 +55,8 @@ public class ComponentRoseSelfArrow extends AbstractComponentRoseArrow {
 	private final double arrowWidth = 45;
 
 	public ComponentRoseSelfArrow(HtmlColor foregroundColor, HtmlColor colorFont, UFont font,
-			List<? extends CharSequence> stringsToDisplay, ArrowConfiguration arrowConfiguration) {
-		super(foregroundColor, colorFont, font, stringsToDisplay, arrowConfiguration);
+			List<? extends CharSequence> stringsToDisplay, ArrowConfiguration arrowConfiguration, SpriteContainer spriteContainer) {
+		super(foregroundColor, colorFont, font, stringsToDisplay, arrowConfiguration, spriteContainer);
 	}
 
 	@Override

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7371 $
+ * Revision $Revision: 7696 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -91,7 +91,7 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 		registerDriver(UEllipse.class, new DriverEllipseG2d(dpiFactor));
 		registerDriver(UImage.class, new DriverImageG2d());
 		registerDriver(DotPath.class, new DriverDotPathG2d());
-		registerDriver(UPath.class, new DriverPathG2d());
+		registerDriver(UPath.class, new DriverPathG2d(dpiFactor));
 	}
 
 	public StringBounder getStringBounder() {
@@ -144,7 +144,10 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 
 	}
 
-	public void setUrl(String url, String tooltip) {
+	public void startUrl(String url, String tooltip) {
+	}
+	
+	public void closeAction() {
 	}
 
 }
