@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7511 $
+ * Revision $Revision: 7704 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -83,7 +83,8 @@ class LifeLine {
 		if (events.size() > 0) {
 			final Variation last = events.get(events.size() - 1);
 			if (y < last.y) {
-				throw new IllegalArgumentException();
+				return;
+//				throw new IllegalArgumentException();
 			}
 			if (y == last.y && type != last.type) {
 				return;

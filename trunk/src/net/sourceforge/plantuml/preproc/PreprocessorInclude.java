@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6502 $
+ * Revision $Revision: 7705 $
  *
  */
 package net.sourceforge.plantuml.preproc;
@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.FileSystem;
+import net.sourceforge.plantuml.OptionFlags;
 
 class PreprocessorInclude implements ReadLine {
 
@@ -86,10 +87,12 @@ class PreprocessorInclude implements ReadLine {
 		if (s == null) {
 			return null;
 		}
-		final Matcher m = includePattern.matcher(s);
-		assert included == null;
-		if (m.find()) {
-			return manageInclude(m);
+		if (OptionFlags.ALLOW_INCLUDE) {
+			final Matcher m = includePattern.matcher(s);
+			assert included == null;
+			if (m.find()) {
+				return manageInclude(m);
+			}
 		}
 
 		return s;

@@ -275,11 +275,12 @@ public class DotStringFactory implements Moveable {
 		}
 
 		for (Cluster cluster : allCluster) {
-			final String key = "=\"" + StringUtils.getAsHtml(cluster.getColor()).toLowerCase() + "\"";
-			int idx = svg.indexOf(key);
-			if (idx == -1) {
-				throw new IllegalStateException(key);
-			}
+			// final String key = "=\"" + StringUtils.getAsHtml(cluster.getColor()).toLowerCase() + "\"";
+			int idx = getClusterIndex(svg, cluster.getColor());
+//			int idx = svg.indexOf(key);
+//			if (idx == -1) {
+//				throw new IllegalStateException(key);
+//			}
 			final List<Point2D.Double> points = SvekUtils.extractPointsList(svg, idx, fullHeight);
 			final double minX = SvekUtils.getMinX(points);
 			final double minY = SvekUtils.getMinY(points);
@@ -290,11 +291,7 @@ public class DotStringFactory implements Moveable {
 			if (cluster.getTitleWidth() == 0 || cluster.getTitleHeight() == 0) {
 				continue;
 			}
-			final String keyTitle = "=\"" + StringUtils.getAsHtml(cluster.getTitleColor()).toLowerCase() + "\"";
-			idx = svg.indexOf(keyTitle);
-			if (idx == -1) {
-				throw new IllegalStateException(keyTitle);
-			}
+			idx = getClusterIndex(svg, cluster.getTitleColor());
 			final List<Point2D.Double> pointsTitle = SvekUtils.extractPointsList(svg, idx, fullHeight);
 			final double minXtitle = SvekUtils.getMinX(pointsTitle);
 			final double minYtitle = SvekUtils.getMinY(pointsTitle);
@@ -311,6 +308,20 @@ public class DotStringFactory implements Moveable {
 		}
 
 		return new Dimension2DDouble(fullWidth, fullHeight);
+	}
+
+	private int getClusterIndex(final String svg, int colorInt) {
+		final String colorString = StringUtils.getAsHtml(colorInt).toLowerCase();
+		final String keyTitle1 = "=\"" + colorString + "\"";
+		int idx = svg.indexOf(keyTitle1);
+		if (idx == -1) {
+			final String keyTitle2 = "stroke:" + colorString + ";";
+			idx = svg.indexOf(keyTitle2);
+		}
+		if (idx == -1) {
+			throw new IllegalStateException("Cannot find color " + colorString);
+		}
+		return idx;
 	}
 
 	public void addLine(Line line) {

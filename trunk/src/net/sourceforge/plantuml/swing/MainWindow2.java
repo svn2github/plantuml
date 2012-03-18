@@ -223,7 +223,15 @@ public class MainWindow2 extends JFrame {
 		final JMenuBar menuBar = new JMenuBar();
 		final JMenu mFile = new JMenu("File");
 		menuBar.add(mFile);
-		// setJMenuBar(menuBar);
+		setJMenuBar(menuBar);
+
+		final JMenuItem sprite = new JMenuItem("Open Sprite Window");
+		mFile.add(sprite);
+		sprite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new SpriteWindow();
+			}
+		});
 
 		final JMenuItem exit = new JMenuItem("Exit");
 		mFile.add(exit);
@@ -233,13 +241,6 @@ public class MainWindow2 extends JFrame {
 			}
 		});
 
-		final JMenuItem sprite = new JMenuItem("Open sprite Window");
-		mFile.add(sprite);
-		sprite.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new SpriteWindow();
-			}
-		});
 
 		setSize(320, 200);
 		setVisible(true);
