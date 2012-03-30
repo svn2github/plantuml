@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -291,18 +291,19 @@ public class DotPath implements UShape, Moveable {
 	}
 
 	public void draw(EpsGraphics eps, double x, double y) {
-		eps.newpathDot(false);
+		final boolean dashed = false;
+		eps.newpathDot();
 		boolean first = true;
 		for (CubicCurve2D.Double bez : beziers) {
 			bez = new CubicCurve2D.Double(x + bez.x1, y + bez.y1, x + bez.ctrlx1, y + bez.ctrly1, x + bez.ctrlx2, y
 					+ bez.ctrly2, x + bez.x2, y + bez.y2);
 			if (first) {
 				eps.movetoNoMacro(bez.x1, bez.y1);
-				first = false;
+				first = dashed;
 			}
 			eps.curvetoNoMacro(bez.ctrlx1, bez.ctrly1, bez.ctrlx2, bez.ctrly2, bez.x2, bez.y2);
 		}
-		eps.closepathDot(false);
+		eps.closepathDot();
 	}
 
 	public UPath toUPath() {

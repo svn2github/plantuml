@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6575 $
+ * Revision $Revision: 7721 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram;
@@ -84,10 +84,10 @@ public class Participant implements SpecificBackcolorable {
 		return type;
 	}
 
-	public final void setStereotype(Stereotype stereotype) {
-		if (type == ParticipantType.ACTOR) {
-			return;
-		}
+	public final void setStereotype(Stereotype stereotype, boolean stereotypePositionTop) {
+//		if (type == ParticipantType.ACTOR) {
+//			return;
+//		}
 		if (this.stereotype != null) {
 			throw new IllegalStateException();
 		}
@@ -95,7 +95,11 @@ public class Participant implements SpecificBackcolorable {
 			throw new IllegalArgumentException();
 		}
 		this.stereotype = stereotype;
-		display.add(0, stereotype);
+		if (stereotypePositionTop) {
+			display.add(0, stereotype);
+		} else {
+			display.add(stereotype);
+		}
 	}
 
 	public final int getInitialLife() {

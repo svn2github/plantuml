@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7649 $
+ * Revision $Revision: 7725 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.componentdiagram.command.CommandCreateActorInComponent;
 import net.sourceforge.plantuml.componentdiagram.command.CommandCreateCircleInterface;
-import net.sourceforge.plantuml.componentdiagram.command.CommandCreateComponent;
+import net.sourceforge.plantuml.componentdiagram.command.CommandCreateComponent2;
 import net.sourceforge.plantuml.componentdiagram.command.CommandLinkComponent;
 import net.sourceforge.plantuml.componentdiagram.command.CommandLinkComponent2;
 import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
@@ -88,7 +88,7 @@ public class ComponentDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommand(factoryNoteCommand.createSingleLine(system));
 		addCommand(new CommandUrl(system));
-		addCommand(new CommandCreateComponent(system));
+		addCommand(new CommandCreateComponent2(system));
 		addCommand(new CommandCreateCircleInterface(system));
 		addCommand(new CommandCreateActorInComponent(system));
 

@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7692 $
+ * Revision $Revision: 7720 $
  *
  */
 package net.sourceforge.plantuml;
@@ -208,6 +208,8 @@ public class Option {
 				this.decodeurl = true;
 			} else if (s.equalsIgnoreCase("-version")) {
 				OptionPrint.printVersion();
+			} else if (s.matches("(?i)^-li[sc][ea]n[sc]e\\s*$")) {
+				OptionPrint.printLicense();
 			} else if (s.equalsIgnoreCase("-checkversion")) {
 				OptionPrint.checkVersion();
 			} else if (s.startsWith("-D")) {

@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7341 $
+ * Revision $Revision: 7718 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -67,6 +67,7 @@ public class LivingParticipantBox implements InGroupable {
 		final double right = lifeLine.getRightShift(y);
 		assert right >= 0 : "right=" + right;
 		final double centerX = participantBox.getCenterX(stringBounder);
+		// System.err.println("AZERTY " + y + " centerX=" + centerX + " left=" + left + " right=" + right);
 		// System.err.println("Attention, null for segment");
 		return new SegmentColored(centerX - left, centerX + right, null);
 	}

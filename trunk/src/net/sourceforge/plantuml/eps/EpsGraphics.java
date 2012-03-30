@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -189,7 +189,8 @@ public class EpsGraphics {
 	private double dashVisible = 0;
 	private double dashSpace = 0;
 
-	public void newpathDot(boolean dashed) {
+	public void newpathDot() {
+		final boolean dashed = dashVisible != 0 || dashSpace != 0;
 		checkCloseDone();
 		append(strokeWidth + " setlinewidth", true);
 		appendColor(color);
@@ -200,7 +201,8 @@ public class EpsGraphics {
 		append("newpath", true);
 	}
 
-	public void closepathDot(boolean dashed) {
+	public void closepathDot() {
+		final boolean dashed = dashVisible != 0 || dashSpace != 0;
 		append("stroke", true);
 		if (dashed) {
 			append("[] 0 setdash", true);

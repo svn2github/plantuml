@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7330 $
+ * Revision $Revision: 7718 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -72,13 +72,16 @@ class MessageSelfArrow extends Arrow {
 		ug.translate(getStartingX(stringBounder), getStartingY() + deltaY);
 		final Area area = new Area(new Dimension2DDouble(getPreferredWidth(stringBounder),
 				getPreferredHeight(stringBounder)));
+		// System.err.println("AZERTY deltaY="+deltaY);
 		area.setDeltaX1(deltaY);
 		getArrowComponent().drawU(ug, area, context);
 	}
 
 	@Override
 	public double getStartingX(StringBounder stringBounder) {
-		return p1.getLiveThicknessAt(stringBounder, getArrowYStartLevel(stringBounder)).getSegment().getPos2();
+		final double pos2 = p1.getLiveThicknessAt(stringBounder, getArrowYStartLevel(stringBounder)).getSegment().getPos2();
+		// System.err.println("AZERTY pos2="+pos2);
+		return pos2;
 	}
 
 	@Override

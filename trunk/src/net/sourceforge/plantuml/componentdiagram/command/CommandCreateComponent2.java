@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -28,29 +28,44 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6923 $
+ * Revision $Revision: 7715 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram.command;
 
-import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.command.SingleLineCommand2;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
 import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.graphic.HtmlColor;
 
-public class CommandCreateComponent extends SingleLineCommand<ComponentDiagram> {
+public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram> {
 
-	public CommandCreateComponent(ComponentDiagram diagram) {
+	public CommandCreateComponent2(ComponentDiagram diagram) {
 		super(
-				diagram,
-				"(?i)^(?:component\\s+)?([\\p{L}0-9_.]+|\\[[^\\]*]+[^\\]]*\\]|\"[^\"]+\")\\s*(?:as\\s+\\[?([\\p{L}0-9_.]+)\\]?)?(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?$");
+				diagram, getRegexConcat());
+				// "(?i)^(?:component\\s+)?([\\p{L}0-9_.]+|\\[[^\\]*]+[^\\]]*\\]|\"[^\"]+\")\\s*(?:as\\s+\\[?([\\p{L}0-9_.]+)\\]?)?(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?$");
 	}
+
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexLeaf("(?:component\\s+)?"), //
+				new RegexLeaf("CODE", "([\\p{L}0-9_.]+|\\[[^\\]*]+[^\\]]*\\]|\"[^\"]+\")\\s*"), //
+				new RegexLeaf("AS", "(?:as\\s+\\[?([\\p{L}0-9_.]+)\\]?)?"), //
+				new RegexLeaf("STEREOTYPE", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("$"));
+	}
+
 
 	@Override
 	protected boolean isForbidden(String line) {
@@ -61,25 +76,25 @@ public class CommandCreateComponent extends SingleLineCommand<ComponentDiagram> 
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
+	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 		final EntityType type = EntityType.COMPONENT;
 		final String code;
 		final String display;
-		if (arg.get(1) == null) {
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
+		if (arg.get("AS").get(0) == null) {
+			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("CODE").get(0));
 			display = code;
 		} else {
-			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
+			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("CODE").get(0));
+			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("AS").get(0));
 		}
-		final String stereotype = arg.get(2);
-		// final Entity entity = getSystem().createEntity(code, display, type);
+		final String stereotype = arg.get("STEREOTYPE").get(0);
 		final Entity entity = (Entity) getSystem().getOrCreateEntity(code, type);
 		entity.setDisplay2(display);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+		entity.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
 		return CommandExecutionResult.ok();
 	}
 

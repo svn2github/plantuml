@@ -2,7 +2,7 @@
  * PlantUML : a free UML diagram generator
  * ========================================================================
  *
- * (C) Copyright 2009, Arnaud Roques
+ * (C) Copyright 2009-2012, Arnaud Roques
  *
  * Project Info:  http://plantuml.sourceforge.net
  * 
@@ -15,7 +15,7 @@
  *
  * PlantUML distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
  * License for more details.
  *
  * You should have received a copy of the GNU General Public
@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
+import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
@@ -48,6 +49,7 @@ import net.sourceforge.plantuml.sequencediagram.LifeEventType;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.ParticipantType;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
+import net.sourceforge.plantuml.ugraphic.UFont;
 
 public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiagram> {
 
@@ -83,9 +85,11 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 		final String stereotype = arg2.get("STEREO").get(0);
 
 		if (stereotype != null) {
-			participant.setStereotype(new Stereotype(stereotype,
-					getSystem().getSkinParam().getCircledCharacterRadius(), getSystem().getSkinParam().getFont(
-							FontParam.CIRCLED_CHARACTER, null)));
+			final ISkinParam skinParam = getSystem().getSkinParam();
+			final boolean stereotypePositionTop = skinParam.stereotypePositionTop();
+			final UFont font = skinParam.getFont(FontParam.CIRCLED_CHARACTER, null);
+			participant.setStereotype(new Stereotype(stereotype, skinParam.getCircledCharacterRadius(), font),
+					stereotypePositionTop);
 		}
 		participant.setSpecificBackcolor(HtmlColor.getColorIfValid(arg2.get("COLOR").get(0)));
 
