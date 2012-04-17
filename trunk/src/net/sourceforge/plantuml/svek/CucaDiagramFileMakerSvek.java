@@ -54,7 +54,8 @@ import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
-import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifier2;
+import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierActivity;
+import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierState;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.cucadiagram.dot.ICucaDiagramFileMaker;
 import net.sourceforge.plantuml.eps.EpsStrategy;
@@ -104,9 +105,10 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 
 	private CucaDiagramFileMakerResult createFileInternal(OutputStream os, List<String> dotStrings,
 			FileFormatOption fileFormatOption) throws IOException, InterruptedException {
-		if (diagram.getUmlDiagramType() == UmlDiagramType.STATE
-				|| diagram.getUmlDiagramType() == UmlDiagramType.ACTIVITY) {
-			new CucaDiagramSimplifier2(diagram, dotStrings);
+		if (diagram.getUmlDiagramType() == UmlDiagramType.ACTIVITY) {
+			new CucaDiagramSimplifierActivity(diagram, dotStrings);
+		} else if (diagram.getUmlDiagramType() == UmlDiagramType.STATE) {
+			new CucaDiagramSimplifierState(diagram, dotStrings);
 		}
 
 		double deltaX = 0;
@@ -197,9 +199,11 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 			return original;
 		}
 		final TextBlock textFooter = footer == null ? null : TextBlockUtils.create(footer, new FontConfiguration(
-				getFont(FontParam.FOOTER), getFontColor(FontParam.FOOTER, null)), diagram.getFooterAlignement(), diagram.getSkinParam());
+				getFont(FontParam.FOOTER), getFontColor(FontParam.FOOTER, null)), diagram.getFooterAlignement(),
+				diagram.getSkinParam());
 		final TextBlock textHeader = header == null ? null : TextBlockUtils.create(header, new FontConfiguration(
-				getFont(FontParam.HEADER), getFontColor(FontParam.HEADER, null)), diagram.getHeaderAlignement(), diagram.getSkinParam());
+				getFont(FontParam.HEADER), getFontColor(FontParam.HEADER, null)), diagram.getHeaderAlignement(),
+				diagram.getSkinParam());
 
 		return new DecorateEntityImage(original, textHeader, diagram.getHeaderAlignement(), textFooter,
 				diagram.getFooterAlignement());

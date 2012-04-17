@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7745 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -190,14 +190,14 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		// }
 		Group g = groups.get(code);
 		if (g == null) {
-			g = new Group(code, display, namespace, type, parent);
+			g = new GroupImpl(code, display, namespace, type, parent);
 			groups.put(code, g);
 
 			Entity entityGroup = entities.get(code);
 			if (entityGroup == null) {
 				entityGroup = new Entity("$$" + code, code, EntityType.GROUP, g, getHides());
 			} else {
-				entityGroup.muteToCluster(g);
+				entityGroup.muteToCluster(g, groups.values());
 			}
 			g.setEntityCluster(entityGroup);
 			nbLinks.put(entityGroup, 0);
@@ -240,7 +240,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 	}
 
 	private Group getRootGroup() {
-		final Group result = new Group(null, null, null, GroupType.ROOT, null);
+		final Group result = new GroupImpl(null, null, null, GroupType.ROOT, null);
 		for (IEntity ent : entities.values()) {
 			if (ent.getParent() == null) {
 				result.addEntity(ent);

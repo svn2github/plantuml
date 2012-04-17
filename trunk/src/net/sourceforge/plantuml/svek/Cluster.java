@@ -239,7 +239,7 @@ public class Cluster implements Moveable {
 		}
 		final PackageStyle style = dotData.getSkinParam().getPackageStyle();
 		if (title != null) {
-			final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype());
+			final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype()==null?null:group.getStereotype().getLabel());
 			final ClusterDecoration decoration = new ClusterDecoration(style, title, stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
@@ -248,7 +248,7 @@ public class Cluster implements Moveable {
 		if (dotData.getSkinParam().shadowing()) {
 			rect.setDeltaShadow(3.0);
 		}
-		final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype());
+		final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype()==null?null:group.getStereotype().getLabel());
 		ug.getParam().setBackcolor(stateBack);
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setStroke(new UStroke(2));
@@ -273,11 +273,11 @@ public class Cluster implements Moveable {
 		}
 		HtmlColor stateBack = getBackColor();
 		if (stateBack == null) {
-			stateBack = getColor(dotData, ColorParam.stateBackground, group.getStereotype());
+			stateBack = getColor(dotData, ColorParam.stateBackground, group.getStereotype()==null?null:group.getStereotype().getLabel());
 		}
 		final HtmlColor background = getColor(dotData, ColorParam.background, null);
 		final RoundedContainer r = new RoundedContainer(total, suppY, borderColor, stateBack, background);
-		r.drawU(ug, x + minX, y + minY);
+		r.drawU(ug, x + minX, y + minY, dotData.getSkinParam().shadowing());
 
 		if (title != null) {
 			title.drawU(ug, x + xTitle, y + yTitle);

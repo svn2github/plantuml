@@ -92,21 +92,23 @@ public final class CucaDiagramFileMakerSvek2 {
 
 	private String getShapeUid(IEntity ent) {
 		final Shape result = shapeMap.get(ent);
-		if (result == null && ent.getType() == EntityType.GROUP) {
+		if (result != null) {
+			String uid = result.getUid();
+			if (result.isShielded()) {
+				uid = uid + ":h";
+			}
+			return uid;
+		}
+		assert result == null;
+		if (ent.getType() == EntityType.GROUP) {
 			for (IEntity i : shapeMap.keySet()) {
 				if (ent.getParent().getCode().equals(i.getCode())) {
 					return shapeMap.get(i).getUid();
 				}
 			}
-			if (result == null) {
-				return Cluster.CENTER_ID + ent.getParent().getUid2();
-			}
+			return Cluster.CENTER_ID + ent.getParent().getUid2();
 		}
-		String uid = result.getUid();
-		if (result.isShielded()) {
-			uid = uid + ":h";
-		}
-		return uid;
+		throw new IllegalStateException();
 	}
 
 	public Shape getShape(IEntity ent) {
@@ -137,8 +139,9 @@ public final class CucaDiagramFileMakerSvek2 {
 		printEntities(getUnpackagedEntities());
 
 		// final Map<Link, Line> lineMap = new HashMap<Link, Line>();
-
+		
 		for (Link link : dotData.getLinks()) {
+			try {
 			final String shapeUid1 = getShapeUid(link.getEntity1());
 			final String shapeUid2 = getShapeUid(link.getEntity2());
 
@@ -155,7 +158,6 @@ public final class CucaDiagramFileMakerSvek2 {
 
 			final Line line = new Line(shapeUid1, shapeUid2, link, colorSequence, ltail, lhead, dotData.getSkinParam(),
 					stringBounder, labelFont);
-			// lineMap.put(link, line);
 			dotStringFactory.addLine(line);
 
 			if (link.getEntity1().getType() == EntityType.NOTE && onlyOneLink(link.getEntity1())) {
@@ -166,6 +168,9 @@ public final class CucaDiagramFileMakerSvek2 {
 				final Shape shape = shapeMap.get(link.getEntity2());
 				((EntityImageNote) shape.getImage()).setOpaleLine(line, shape);
 				line.setOpale(true);
+			}
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -281,10 +286,12 @@ public final class CucaDiagramFileMakerSvek2 {
 		TextBlock title = null;
 		if (label != null) {
 			final FontParam fontParam = g.getType() == GroupType.STATE ? FontParam.STATE : FontParam.PACKAGE;
+			
+			final String stereo = g.getStereotype()==null?null:g.getStereotype().getLabel(); 
 
 			title = TextBlockUtils.create(StringUtils.getWithNewlines(label),
-					new FontConfiguration(dotData.getSkinParam().getFont(fontParam, g.getStereotype()), dotData
-							.getSkinParam().getFontHtmlColor(fontParam, g.getStereotype())),
+					new FontConfiguration(dotData.getSkinParam().getFont(fontParam, stereo), dotData
+							.getSkinParam().getFontHtmlColor(fontParam, stereo)),
 					HorizontalAlignement.CENTER, dotData.getSkinParam());
 
 			final Dimension2D dimLabel = title.calculateDimension(stringBounder);

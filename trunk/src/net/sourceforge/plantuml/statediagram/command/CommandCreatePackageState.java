@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7743 $
  *
  */
 package net.sourceforge.plantuml.statediagram.command;
@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
 
@@ -60,7 +61,7 @@ public class CommandCreatePackageState extends SingleLineCommand<StateDiagram> {
 		p.setRounded(true);
 		final String stereotype = arg.get(2);
 		if (stereotype != null) {
-			p.setStereotype(stereotype);
+			p.setStereotype(new Stereotype(stereotype));
 		}
 		if (arg.get(3) != null && HtmlColor.isValid(arg.get(3))) {
 			p.setBackColor(HtmlColor.getColorIfValid(arg.get(3)));

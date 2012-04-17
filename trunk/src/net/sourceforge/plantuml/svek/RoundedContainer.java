@@ -60,12 +60,16 @@ public final class RoundedContainer {
 
 	public final static double THICKNESS_BORDER = 1.5;
 
-	public void drawU(UGraphic ug, double x, double y) {
+	public void drawU(UGraphic ug, double x, double y, boolean shadowing) {
 
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(backColor);
 		ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
-		ug.draw(x, y, new URectangle(dim.getWidth(), dim.getHeight(), EntityImageState.CORNER, EntityImageState.CORNER));
+		final URectangle rect = new URectangle(dim.getWidth(), dim.getHeight(), EntityImageState.CORNER, EntityImageState.CORNER);
+		if (shadowing) {
+			rect.setDeltaShadow(3.0);
+		}
+		ug.draw(x, y, rect);
 
 		final double yLine = y + titleHeight;
 

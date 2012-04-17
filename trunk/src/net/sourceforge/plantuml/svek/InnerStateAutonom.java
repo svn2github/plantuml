@@ -47,12 +47,14 @@ public final class InnerStateAutonom implements IEntityImage {
 	private final TextBlock title;
 	private final HtmlColor borderColor;
 	private final HtmlColor backColor;
+	private final boolean shadowing;
 
-	public InnerStateAutonom(final IEntityImage im, final TextBlock title, HtmlColor borderColor, HtmlColor backColor) {
+	public InnerStateAutonom(final IEntityImage im, final TextBlock title, HtmlColor borderColor, HtmlColor backColor, boolean shadowing) {
 		this.im = im;
 		this.title = title;
 		this.borderColor = borderColor;
 		this.backColor = backColor;
+		this.shadowing = shadowing;
 	}
 
 	
@@ -65,7 +67,7 @@ public final class InnerStateAutonom implements IEntityImage {
 		final double suppY = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
 		final RoundedContainer r = new RoundedContainer(total, suppY, borderColor, backColor, im.getBackcolor()); 
 		
-		r.drawU(ug, x, y);
+		r.drawU(ug, x, y, shadowing);
 		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + EntityImageState.MARGIN);
 
 		im.drawU(ug, x + EntityImageState.MARGIN, y+suppY + EntityImageState.MARGIN_LINE);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7744 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -90,7 +90,14 @@ final public class ComponentRoseNote extends AbstractTextualComponent {
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textHeight = (int) getTextHeight(stringBounder);
 
-		final int x2 = (int) getTextWidth(stringBounder);
+		int x2 = (int) getTextWidth(stringBounder);
+		final double diffX = area.getDimensionToUse().getWidth() - getPreferredWidth(stringBounder);
+		if (diffX < 0) {
+			throw new IllegalArgumentException();
+		}
+		if (area.getDimensionToUse().getWidth() > getPreferredWidth(stringBounder)) {
+			x2 = (int) (area.getDimensionToUse().getWidth() - 2 * getPaddingX());
+		}
 
 		final UPolygon polygon = new UPolygon();
 		polygon.addPoint(0, 0);
@@ -110,7 +117,7 @@ final public class ComponentRoseNote extends AbstractTextualComponent {
 		ug.draw(x2 - cornersize, 0, new ULine(0, cornersize));
 		ug.draw(x2, cornersize, new ULine(-cornersize, 0));
 
-		getTextBlock().drawU(ug, getMarginX1(), getMarginY());
+		getTextBlock().drawU(ug, getMarginX1() + diffX / 2, getMarginY());
 
 	}
 

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7732 $
  *
  */
 package net.sourceforge.plantuml.png;
@@ -43,12 +43,21 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.FileFormat;
+import net.sourceforge.plantuml.FileUtils;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.sequencediagram.graphic.SequenceDiagramFileMaker;
 
 public class PngSplitter {
 
 	private final List<File> files = new ArrayList<File>();
+	
+	public static void main(String[] args) throws IOException {
+		File f = new File(args[0]);
+		File cp = new File(f.getParent(), f.getName().replaceAll("\\.png$", "_000.png"));
+		FileUtils.copyToFile(f, cp);
+		new PngSplitter(cp, 1, 3, "", 96);
+		
+	}
 
 	public PngSplitter(File pngFile, int horizontalPages, int verticalPages, String source, int dpi) throws IOException {
 		if (horizontalPages == 1 && verticalPages == 1) {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7736 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.cucadiagram;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -262,9 +263,12 @@ public class Entity implements IEntity {
 		return display2 + "(" + getType() + ") " + xposition + " " + getUid();
 	}
 
-	public void muteToCluster(Group newGroup) {
+	public void muteToCluster(Group newGroup, Collection<Group> others) {
 		if (type == EntityType.GROUP) {
 			throw new IllegalStateException();
+		}
+		for (Group other : others) {
+			other.removeInternal(this);
 		}
 		this.type = EntityType.GROUP;
 		this.container = newGroup;

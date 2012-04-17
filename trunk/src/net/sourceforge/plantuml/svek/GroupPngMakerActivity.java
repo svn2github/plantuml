@@ -58,11 +58,10 @@ import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
-import net.sourceforge.plantuml.sequencediagram.GroupingType;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public final class GroupPngMaker2 {
+public final class GroupPngMakerActivity {
 
 	private final CucaDiagram diagram;
 	private final Group group;
@@ -82,7 +81,7 @@ public final class GroupPngMaker2 {
 
 	}
 
-	public GroupPngMaker2(CucaDiagram diagram, Group group) {
+	public GroupPngMakerActivity(CucaDiagram diagram, Group group) {
 		this.diagram = diagram;
 		this.group = group;
 	}
@@ -118,15 +117,9 @@ public final class GroupPngMaker2 {
 
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
 
-		if (group.getType() == GroupType.CONCURRENT_STATE) {
-			return new InnerStateConcurrent(svek2.createFile());
-		} else if (group.getType() == GroupType.INNER_ACTIVITY) {
+		if (group.getType() == GroupType.INNER_ACTIVITY) {
 			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
 			return new InnerActivity(svek2.createFile(), borderColor);
-		} else if (group.getType() == GroupType.STATE) {
-			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
-			final HtmlColor backColor = getColor(ColorParam.stateBackground, null);
-			return new InnerStateAutonom(svek2.createFile(), title, borderColor, backColor);
 		}
 
 		throw new UnsupportedOperationException(group.getType().toString());

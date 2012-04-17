@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7744 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.Context2D;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-class NoteBox extends GraphicalElement implements InGroupable {
+final class NoteBox extends GraphicalElement implements InGroupable {
 
 	private final NotePosition position;
 	private final Url url;
@@ -75,7 +75,16 @@ class NoteBox extends GraphicalElement implements InGroupable {
 
 	@Override
 	final public double getPreferredWidth(StringBounder stringBounder) {
-		return comp.getPreferredWidth(stringBounder);
+		final double preferredWidth = comp.getPreferredWidth(stringBounder);
+		if (position == NotePosition.OVER_SEVERAL) {
+			assert p1 != p2;
+			final double diff1 = p2.getParticipantBox().getMaxX(stringBounder) - p1.getParticipantBox().getMinX();
+			if (diff1 > preferredWidth) {
+				return diff1;
+			}
+
+		}
+		return preferredWidth;
 	}
 
 	@Override
@@ -88,7 +97,7 @@ class NoteBox extends GraphicalElement implements InGroupable {
 		final StringBounder stringBounder = ug.getStringBounder();
 		final double xStart = getStartingX(stringBounder);
 		ug.translate(xStart, getStartingY());
-		final Dimension2D dimensionToUse = new Dimension2DDouble(comp.getPreferredWidth(stringBounder), comp
+		final Dimension2D dimensionToUse = new Dimension2DDouble(getPreferredWidth(stringBounder), comp
 				.getPreferredHeight(stringBounder));
 		if (url != null) {
 			ug.startUrl(url.getUrl(), url.getTooltip());

@@ -28,257 +28,79 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7743 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
-public class Group {
+public interface Group {
 
-	private final Map<String, IEntity> entities = new LinkedHashMap<String, IEntity>();
-	private final String code;
-	private final String display;
-	private final String namespace;
+	public void addEntity(IEntity entity);
 
-	private HtmlColor backColor;
-	private final Group parent;
-	private final Collection<Group> children = new ArrayList<Group>();
+	public boolean contains(IEntity entity);
 
-	private boolean dashed;
-	private boolean rounded;
-	private boolean bold;
+	public CrossingType getCrossingType(Link link);
 
-	private final GroupType type;
+	public Map<String, IEntity> entities();
 
-	private IEntity entityCluster;
-	private boolean autonom = true;
-	private Rankdir rankdir = Rankdir.TOP_TO_BOTTOM;
+	public String getCode();
 
-	private final int cpt = UniqueSequence.getValue();
+	public String getUid();
 
-	public Group(String code, String display, String namespace, GroupType type, Group parent) {
-		if (type != GroupType.ROOT) {
-			if (type == null) {
-				throw new IllegalArgumentException();
-			}
-			if (code == null || code.length() == 0) {
-				throw new IllegalArgumentException();
-			}
-			if (parent != null) {
-				if (parent.children.contains(this)) {
-					throw new IllegalArgumentException();
-				}
-				parent.children.add(this);
-			}
-		}
-		this.namespace = namespace;
-		this.type = type;
-		this.parent = parent;
-		this.code = code;
-		this.display = display;
-	}
+	public String getUid1();
 
-	@Override
-	public String toString() {
-		return "G[code=" + code + "]" + entities + " autonom=" + isAutonom();
-	}
+	public int getUid2();
 
-	public void addEntity(IEntity entity) {
-		if (entities.containsValue(entity)) {
-			throw new IllegalArgumentException();
-		}
-		if (entities.containsKey(entity.getCode())) {
-			throw new IllegalArgumentException(entity.getCode());
-		}
-		if (entity.getType() == EntityType.GROUP) {
-			throw new IllegalArgumentException();
-		}
-		entities.put(entity.getCode(), entity);
-	}
+	public HtmlColor getBackColor();
 
-	// private boolean containsFully(Link link) {
-	// return contains((Entity) link.getEntity1()) && contains((Entity)
-	// link.getEntity2());
-	// }
+	public void setBackColor(HtmlColor backColor);
 
-	public boolean contains(IEntity entity) {
-		if (entity == null) {
-			throw new IllegalArgumentException();
-		}
-		if (entity.equals(entityCluster)) {
-			throw new IllegalArgumentException();
-		}
-		if (entities.containsValue(entity)) {
-			return true;
-		}
-		for (Group child : getChildren()) {
-			if (child.contains(entity)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	public Group getParent();
 
-	public CrossingType getCrossingType(Link link) {
-		if (link.getEntity1().equals(this.entityCluster) && link.getEntity2().equals(this.entityCluster)) {
-			return CrossingType.SELF;
-		}
-		if (link.getEntity1().equals(this.entityCluster)) {
-			if (contains(link.getEntity2())) {
-				return CrossingType.TOUCH_INSIDE;
-			}
-			return CrossingType.TOUCH_OUTSIDE;
-		}
-		if (link.getEntity2().equals(this.entityCluster)) {
-			if (contains(link.getEntity1())) {
-				return CrossingType.TOUCH_INSIDE;
-			}
-			return CrossingType.TOUCH_OUTSIDE;
-		}
-		final boolean contains1 = contains(link.getEntity1());
-		final boolean contains2 = contains(link.getEntity2());
-		if (contains1 && contains2) {
-			return CrossingType.INSIDE;
-		}
-		if (contains1 == false && contains2 == false) {
-			return CrossingType.OUTSIDE;
-		}
-		return CrossingType.CUT;
+	public boolean isDashed();
 
-	}
+	public void setDashed(boolean dashed);
 
-	public Map<String, IEntity> entities() {
-		return Collections.unmodifiableMap(entities);
-	}
+	public boolean isRounded();
 
-	public String getCode() {
-		return code;
-	}
+	public void setRounded(boolean rounded);
 
-	public String getUid() {
-		return StringUtils.getUid(getUid1(), getUid2());
-	}
+	public GroupType getType();
 
-	public String getUid1() {
-		return "cluster";
-	}
+	public IEntity getEntityCluster();
 
-	public int getUid2() {
-		return cpt;
-	}
+	public void setEntityCluster(IEntity entityCluster);
 
-	public final HtmlColor getBackColor() {
-		return backColor;
-	}
+	public String getDisplay();
 
-	public final void setBackColor(HtmlColor backColor) {
-		this.backColor = backColor;
-	}
+	public boolean isBold();
 
-	public final Group getParent() {
-		return parent;
-	}
+	public void setBold(boolean bold);
 
-	public final boolean isDashed() {
-		return dashed;
-	}
+	public void moveEntitiesTo(Group dest);
 
-	public final void setDashed(boolean dashed) {
-		this.dashed = dashed;
-	}
+	public String getNamespace();
 
-	public final boolean isRounded() {
-		return rounded;
-	}
+	public Collection<Group> getChildren();
 
-	public final void setRounded(boolean rounded) {
-		this.rounded = rounded;
-	}
+	public boolean isAutonom();
 
-	public GroupType getType() {
-		return type;
-	}
+	public void setAutonom(boolean autonom);
 
-	public final IEntity getEntityCluster() {
-		if (entityCluster == null) {
-			throw new IllegalStateException();
-		}
-		return entityCluster;
-	}
+	public Rankdir getRankdir();
 
-	public final void setEntityCluster(IEntity entityCluster) {
-		if (entityCluster == null) {
-			throw new IllegalArgumentException();
-		}
-		this.entityCluster = entityCluster;
-	}
+	public void setRankdir(Rankdir rankdir);
 
-	// public boolean isEmpty() {
-	// return entities.isEmpty();
-	// }
+	public void setStereotype(Stereotype stereotype);
 
-	public String getDisplay() {
-		return display;
-	}
+	public Stereotype getStereotype();
 
-	public boolean isBold() {
-		return bold;
-	}
+	void removeInternal(Entity entity);
 
-	public void setBold(boolean bold) {
-		this.bold = bold;
-	}
-
-	public void moveEntitiesTo(Group dest) {
-		for (IEntity ent : entities.values()) {
-			((Entity) ent).moveTo(dest);
-		}
-		entities.clear();
-
-	}
-
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public final Collection<Group> getChildren() {
-		return Collections.unmodifiableCollection(children);
-	}
-
-	public final boolean isAutonom() {
-		return autonom;
-	}
-
-	public final void setAutonom(boolean autonom) {
-		this.autonom = autonom;
-	}
-
-	public final Rankdir getRankdir() {
-		return rankdir;
-	}
-
-	public final void setRankdir(Rankdir rankdir) {
-		this.rankdir = rankdir;
-	}
-
-	private String stereotype;
-
-	public final void setStereotype(String stereotype) {
-		this.stereotype = stereotype;
-	}
-
-	public final String getStereotype() {
-		return stereotype;
-	}
-
+	public void removeInternal(Group group);
 }

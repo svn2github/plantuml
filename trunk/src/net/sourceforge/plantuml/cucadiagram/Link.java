@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7745 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -49,7 +49,6 @@ import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
-import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class Link implements Imaged {
@@ -100,6 +99,12 @@ public class Link implements Imaged {
 			throw new IllegalArgumentException();
 		}
 		if (cl1 == null || cl2 == null) {
+			throw new IllegalArgumentException();
+		}
+		if (cl1.getType()==EntityType.STATE_CONCURRENT) {
+			throw new IllegalArgumentException();
+		}
+		if (cl2.getType()==EntityType.STATE_CONCURRENT) {
 			throw new IllegalArgumentException();
 		}
 		this.cl1 = cl1;
@@ -173,7 +178,9 @@ public class Link implements Imaged {
 
 	private static IEntity muteProxy(IEntity ent, Group g, IEntity proxy) {
 		if (ent.getParent() == g) {
-			return proxy;
+			if (ent.getType()==EntityType.GROUP) {
+				return proxy;
+			}
 		}
 		return ent;
 	}

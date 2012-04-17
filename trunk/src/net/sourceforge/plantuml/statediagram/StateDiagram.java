@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7745 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.Link;
 
 public class StateDiagram extends AbstractEntityDiagram {
 
@@ -80,7 +81,7 @@ public class StateDiagram extends AbstractEntityDiagram {
 	}
 
 	public IEntity getHistorical(String codeGroup) {
-		final Group g = getOrCreateGroup(codeGroup, null, null, GroupType.STATE, null);
+		final Group g = getOrCreateGroup(codeGroup, codeGroup, null, GroupType.STATE, null);
 		final IEntity result = getOrCreateEntity("*historical*" + g.getCode(), EntityType.PSEUDO_STATE);
 		endGroup();
 		return result;
@@ -88,11 +89,13 @@ public class StateDiagram extends AbstractEntityDiagram {
 
 	public boolean concurrentState() {
 		final Group cur = getCurrentGroup();
+//		printlink("BEFORE");
 		if (cur != null && cur.getType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
 		final Group conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null, GroupType.CONCURRENT_STATE,
 				getCurrentGroup());
+		cur.removeInternal(conc1);
 		conc1.setDashed(true);
 		if (cur != null && cur.getType() == GroupType.STATE) {
 			cur.moveEntitiesTo(conc1);
@@ -101,8 +104,16 @@ public class StateDiagram extends AbstractEntityDiagram {
 					GroupType.CONCURRENT_STATE, getCurrentGroup());
 			conc2.setDashed(true);
 		}
+//		printlink("AFTER");
 		return true;
 	}
+
+//	private void printlink(String comment) {
+//		System.err.println("COMMENT="+comment);
+//		for (Link l : getLinks()) {
+//			System.err.println(l);
+//		}
+//	}
 
 	@Override
 	public void endGroup() {
@@ -127,9 +138,6 @@ public class StateDiagram extends AbstractEntityDiagram {
 	public final boolean isHideEmptyDescription() {
 		return hideEmptyDescription;
 	}
-	
-
-
 
 	// @Override
 	// final protected List<String> getDotStrings() {

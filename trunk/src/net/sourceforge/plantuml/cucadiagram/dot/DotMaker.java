@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7743 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -230,7 +230,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void printGroupNormal(StringBuilder sb, Group g) throws IOException {
 
-		final String stereo = g.getStereotype();
+		final String stereo = g.getStereotype()==null?null:g.getStereotype().getLabel();
 
 		sb.append("subgraph " + g.getUid() + " {");
 		// sb.append("margin=10;");

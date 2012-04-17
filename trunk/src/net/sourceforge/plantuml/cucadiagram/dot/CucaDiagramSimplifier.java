@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7743 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -156,11 +156,11 @@ public final class CucaDiagramSimplifier {
 		}
 		assert g.getBackColor() == null;
 		if (g.getStereotype() != null) {
-			proxy.setStereotype(new Stereotype(g.getStereotype()));
+			proxy.setStereotype(g.getStereotype());
 		}
 		// PBBACK
 		final Rose rose = new Rose();
-		final HtmlColor back = rose.getHtmlColor(diagram.getSkinParam(), ColorParam.stateBackground, g.getStereotype());
+		final HtmlColor back = rose.getHtmlColor(diagram.getSkinParam(), ColorParam.stateBackground, g.getStereotype()==null?null:g.getStereotype().getLabel());
 		// final HtmlColor back = diagram.getSkinParam().getHtmlColor(ColorParam.stateBackground, g.getStereotype());
 		// if (back != null) {
 		// proxy.setSpecificBackcolor(back.getAsHtml());
