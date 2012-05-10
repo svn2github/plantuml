@@ -88,7 +88,7 @@ public class EntityImageActor extends AbstractEntityImage {
 		final Dimension2D dimStereo = getStereoDimension(stringBounder);
 		final Dimension2D dimActor = new Dimension2DDouble(stickman.getPreferredWidth(stringBounder), stickman
 				.getPreferredHeight(stringBounder));
-		return Dimension2DDouble.mergeTB(dimStereo, dimActor, dimName);
+		return Dimension2DDouble.mergeLayoutT12B3(dimStereo, dimActor, dimName);
 	}
 
 	private Dimension2D getStereoDimension(StringBounder stringBounder) {

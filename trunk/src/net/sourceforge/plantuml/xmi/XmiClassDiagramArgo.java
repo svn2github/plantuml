@@ -51,7 +51,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -108,7 +107,7 @@ public class XmiClassDiagramArgo implements IXmiClassDiagram {
 		this.ownedElement = document.createElement("UML:Namespace.ownedElement");
 		model.appendChild(ownedElement);
 
-		for (final Entity ent : classDiagram.entities().values()) {
+		for (final IEntity ent : classDiagram.getEntities().values()) {
 			if (classDiagram.isStandalone(ent) == false) {
 				continue;
 			}

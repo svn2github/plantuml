@@ -39,8 +39,8 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.objectdiagram.ObjectDiagram;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
@@ -62,7 +62,7 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines<Objec
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, true);
 		final List<String> line0 = StringUtils.getSplit(getStartingPattern(), lines.get(0).trim());
-		final Entity entity = executeArg0(line0);
+		final IEntity entity = executeArg0(line0);
 		if (entity == null) {
 			return CommandExecutionResult.error("No such entity");
 		}
@@ -76,14 +76,14 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines<Objec
 		return CommandExecutionResult.ok();
 	}
 
-	private Entity executeArg0(List<String> arg) {
+	private IEntity executeArg0(List<String> arg) {
 		final String code = arg.get(2);
 		final String display = arg.get(1);
 		final String stereotype = arg.get(3);
 		if (getSystem().entityExist(code)) {
-			return (Entity) getSystem().getOrCreateClass(code);
+			return getSystem().getOrCreateClass(code);
 		}
-		final Entity entity = getSystem().createEntity(code, display, EntityType.OBJECT);
+		final IEntity entity = getSystem().createEntity(code, display, EntityType.OBJECT);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

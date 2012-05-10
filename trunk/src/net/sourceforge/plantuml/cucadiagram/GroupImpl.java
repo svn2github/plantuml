@@ -36,23 +36,23 @@ package net.sourceforge.plantuml.cucadiagram;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.svek.PackageStyle;
 
 public class GroupImpl implements Group {
 
-	private final Map<String, IEntity> entities = new LinkedHashMap<String, IEntity>();
+	private final Collection<IEntity> allEntities;
+	private final Collection<? extends Group> allGroups;
 	private final String code;
 	private final String display;
 	private final String namespace;
 
 	private HtmlColor backColor;
 	private Group parent;
-	private final Collection<Group> children = new ArrayList<Group>();
 
 	private boolean dashed;
 	private boolean rounded;
@@ -60,13 +60,14 @@ public class GroupImpl implements Group {
 
 	private final GroupType type;
 
-	private IEntity entityCluster;
+	// private IEntity entityCluster;
 	private boolean autonom = true;
 	private Rankdir rankdir = Rankdir.TOP_TO_BOTTOM;
 
 	private final int cpt = UniqueSequence.getValue();
 
-	public GroupImpl(String code, String display, String namespace, GroupType type, Group parent) {
+	public GroupImpl(String code, String display, String namespace, GroupType type, Group parent,
+			Collection<IEntity> allEntities, Collection<? extends Group> allGroups) {
 		if (type != GroupType.ROOT) {
 			if (type == null) {
 				throw new IllegalArgumentException();
@@ -74,224 +75,189 @@ public class GroupImpl implements Group {
 			if (code == null || code.length() == 0) {
 				throw new IllegalArgumentException();
 			}
-			if (parent != null) {
-				if (((GroupImpl)parent).children.contains(this)) {
-					throw new IllegalArgumentException();
-				}
-				((GroupImpl)parent).children.add(this);
-			}
 		}
 		this.namespace = namespace;
 		this.type = type;
 		this.parent = parent;
 		this.code = code;
 		this.display = display;
+		this.allEntities = allEntities;
+		this.allGroups = allGroups;
 	}
 
 	@Override
 	public String toString() {
-		return "G[code=" + code + "]" + entities.keySet() + " autonom=" + isAutonom();
+		return "G[code=" + code + "] autonom=" + zisAutonom();
 	}
 
-	public void addEntity(IEntity entity) {
-		if (entities.containsValue(entity)) {
-			throw new IllegalArgumentException();
-		}
-		if (entities.containsKey(entity.getCode())) {
-			throw new IllegalArgumentException(entity.getCode());
-		}
-		// if (entity.getType() == EntityType.GROUP) {
-		// throw new IllegalArgumentException();
-		// }
-		entities.put(entity.getCode(), entity);
-	}
-
-	// private boolean containsFully(Link link) {
-	// return contains((Entity) link.getEntity1()) && contains((Entity)
-	// link.getEntity2());
-	// }
-
-	public boolean contains(IEntity entity) {
+	public boolean zcontains(IEntity entity) {
 		if (entity == null) {
 			throw new IllegalArgumentException();
 		}
-		if (entity.equals(entityCluster)) {
-			throw new IllegalArgumentException();
-		}
-		if (entities.containsValue(entity)) {
+		final Group toTest = type == GroupType.ROOT ? null : this;
+		if (EntityUtils.equals(entity.getContainer(), toTest)) {
 			return true;
 		}
-		for (Group child : getChildren()) {
-			if (child.contains(entity)) {
+		for (Group child : zgetChildren()) {
+			if (child.zcontains(entity)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public CrossingType getCrossingType(Link link) {
-		if (link.getEntity1().equals(this.entityCluster) && link.getEntity2().equals(this.entityCluster)) {
-			return CrossingType.SELF;
-		}
-		if (link.getEntity1().equals(this.entityCluster)) {
-			if (contains(link.getEntity2())) {
-				return CrossingType.TOUCH_INSIDE;
+	public Collection<IEntity> zentities() {
+		final List<IEntity> result = new ArrayList<IEntity>();
+		final Group toTest = type == GroupType.ROOT ? null : this;
+		for (IEntity ent : allEntities) {
+			if (((IEntityMutable) ent).isGroup()) {
+				continue;
 			}
-			return CrossingType.TOUCH_OUTSIDE;
-		}
-		if (link.getEntity2().equals(this.entityCluster)) {
-			if (contains(link.getEntity1())) {
-				return CrossingType.TOUCH_INSIDE;
+			if (EntityUtils.equals(ent.getContainer(), toTest)) {
+				result.add(ent);
 			}
-			return CrossingType.TOUCH_OUTSIDE;
 		}
-		final boolean contains1 = contains(link.getEntity1());
-		final boolean contains2 = contains(link.getEntity2());
-		if (contains1 && contains2) {
-			return CrossingType.INSIDE;
-		}
-		if (contains1 == false && contains2 == false) {
-			return CrossingType.OUTSIDE;
-		}
-		return CrossingType.CUT;
-
+		return Collections.unmodifiableCollection(result);
 	}
 
-	public Map<String, IEntity> entities() {
-		return Collections.unmodifiableMap(entities);
+	public int zsize() {
+		return zentities().size();
 	}
 
-	public String getCode() {
+	public String zgetGroupCode() {
 		return code;
 	}
 
-	public String getUid() {
-		return StringUtils.getUid(getUid1(), getUid2());
+	public String zgetUid() {
+		return StringUtils.getUid(zgetUid1(), zgetUid2());
 	}
 
-	public String getUid1() {
+	public String zgetUid1() {
 		return "cluster";
 	}
 
-	public int getUid2() {
+	public int zgetUid2() {
 		return cpt;
 	}
 
-	public final HtmlColor getBackColor() {
+	public final HtmlColor zgetBackColor() {
 		return backColor;
 	}
 
-	public final void setBackColor(HtmlColor backColor) {
+	public final void zsetBackColor(HtmlColor backColor) {
 		this.backColor = backColor;
 	}
 
-	public final Group getParent() {
+	public final Group zgetParent() {
 		return parent;
 	}
 
-	public final boolean isDashed() {
+	public final boolean zisDashed() {
 		return dashed;
 	}
 
-	public final void setDashed(boolean dashed) {
+	public final void zsetDashed(boolean dashed) {
 		this.dashed = dashed;
 	}
 
-	public final boolean isRounded() {
+	public final boolean zisRounded() {
 		return rounded;
 	}
 
-	public final void setRounded(boolean rounded) {
+	public final void zsetRounded(boolean rounded) {
 		this.rounded = rounded;
 	}
 
-	public GroupType getType() {
+	public GroupType zgetGroupType() {
 		return type;
 	}
 
-	public final IEntity getEntityCluster() {
-		if (entityCluster == null) {
-			throw new IllegalStateException();
-		}
-		return entityCluster;
+	public final EntityMutable zgetEntityCluster() {
+		throw new UnsupportedOperationException();
 	}
 
-	public final void setEntityCluster(IEntity entityCluster) {
-		if (entityCluster == null) {
-			throw new IllegalArgumentException();
-		}
-		this.entityCluster = entityCluster;
+	public final void zsetEntityCluster(EntityMutable entityCluster) {
+		throw new UnsupportedOperationException();
 	}
 
-	// public boolean isEmpty() {
-	// return entities.isEmpty();
-	// }
-
-	public String getDisplay() {
+	public String zgetDisplay() {
 		return display;
 	}
 
-	public boolean isBold() {
+	public boolean zisBold() {
 		return bold;
 	}
 
-	public void setBold(boolean bold) {
+	public void zsetBold(boolean bold) {
 		this.bold = bold;
 	}
 
-	public void moveEntitiesTo(Group dest) {
-		for (IEntity ent : entities.values()) {
-			((Entity) ent).moveTo(dest);
+	public void zmoveEntitiesTo(IEntityMutable dest) {
+		for (IEntity ent : zentities()) {
+			ent.setContainer(dest);
 		}
-		entities.clear();
-		((GroupImpl) dest).children.addAll(this.children);
-		for (Group g : ((GroupImpl) dest).children) {
+		for (Group g : dest.zgetChildren()) {
 			((GroupImpl) g).parent = (GroupImpl) dest;
 		}
-		this.children.clear();
 
 	}
 
-	public String getNamespace() {
+	public String zgetNamespace() {
 		return namespace;
 	}
 
-	public final Collection<Group> getChildren() {
-		return Collections.unmodifiableCollection(children);
+	public final Collection<Group> zgetChildren() {
+		final Collection<Group> result = new ArrayList<Group>();
+		for (Group g : allGroups) {
+			if (g.zgetUid2() != this.zgetUid2() && g.zgetParent() != null
+					&& g.zgetParent().zgetUid2() == this.zgetUid2()) {
+				result.add(g);
+			}
+		}
+		return Collections.unmodifiableCollection(result);
 	}
 
-	public final boolean isAutonom() {
+	public final boolean zisAutonom() {
 		return autonom;
 	}
 
-	public final void setAutonom(boolean autonom) {
+	public final void zsetAutonom(boolean autonom) {
 		this.autonom = autonom;
 	}
 
-	public final Rankdir getRankdir() {
+	public final Rankdir zgetRankdir() {
 		return rankdir;
 	}
 
-	public final void setRankdir(Rankdir rankdir) {
+	public final void zsetRankdir(Rankdir rankdir) {
 		this.rankdir = rankdir;
 	}
 
 	private Stereotype stereotype;
 
-	public final void setStereotype(Stereotype stereotype) {
+	public final void zsetStereotype(Stereotype stereotype) {
 		this.stereotype = stereotype;
 	}
 
-	public final Stereotype getStereotype() {
+	public final Stereotype zgetStereotype() {
 		return stereotype;
 	}
 
-	public void removeInternal(Entity entity) {
-		entities.values().remove(entity);
+	@Override
+	public int hashCode() {
+		throw new UnsupportedOperationException();
 	}
 
-	public void removeInternal(Group group) {
-		children.remove(group);
+	@Override
+	public boolean equals(Object o) {
+		throw new UnsupportedOperationException();
+	}
+
+	public PackageStyle zgetPackageStyle() {
+		if (stereotype == null) {
+			return null;
+		}
+		return stereotype.getPackageStyle();
 	}
 
 }

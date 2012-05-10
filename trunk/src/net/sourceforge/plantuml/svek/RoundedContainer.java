@@ -45,17 +45,19 @@ public final class RoundedContainer {
 
 	private final Dimension2D dim;
 	private final double titleHeight;
+	private final double attributeHeight;
 	private final HtmlColor borderColor;
 	private final HtmlColor backColor;
 	private final HtmlColor imgBackcolor;
 
-	public RoundedContainer(Dimension2D dim, double titleHeight, HtmlColor borderColor, HtmlColor backColor,
-			HtmlColor imgBackcolor) {
+	public RoundedContainer(Dimension2D dim, double titleHeight, double attributeHeight, HtmlColor borderColor,
+			HtmlColor backColor, HtmlColor imgBackcolor) {
 		this.dim = dim;
 		this.imgBackcolor = imgBackcolor;
 		this.titleHeight = titleHeight;
 		this.borderColor = borderColor;
 		this.backColor = backColor;
+		this.attributeHeight = attributeHeight;
 	}
 
 	public final static double THICKNESS_BORDER = 1.5;
@@ -65,25 +67,33 @@ public final class RoundedContainer {
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(backColor);
 		ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
-		final URectangle rect = new URectangle(dim.getWidth(), dim.getHeight(), EntityImageState.CORNER, EntityImageState.CORNER);
+		final URectangle rect = new URectangle(dim.getWidth(), dim.getHeight(), EntityImageState.CORNER,
+				EntityImageState.CORNER);
 		if (shadowing) {
 			rect.setDeltaShadow(3.0);
 		}
 		ug.draw(x, y, rect);
 
-		final double yLine = y + titleHeight;
+		final double yLine = y + titleHeight + attributeHeight;
 
 		ug.getParam().setBackcolor(imgBackcolor);
 		ug.getParam().setColor(imgBackcolor);
 		ug.getParam().setStroke(new UStroke());
-		ug.draw(x + 2 * THICKNESS_BORDER, yLine + 2 * THICKNESS_BORDER, new URectangle(dim.getWidth() - 4
-				* THICKNESS_BORDER, dim.getHeight() - titleHeight - 4 * THICKNESS_BORDER, EntityImageState.CORNER,
-				EntityImageState.CORNER));
+		final URectangle inner = new URectangle(dim.getWidth() - 4 * THICKNESS_BORDER, dim.getHeight() - titleHeight
+				- 4 * THICKNESS_BORDER - attributeHeight, EntityImageState.CORNER, EntityImageState.CORNER);
+		ug.draw(x + 2 * THICKNESS_BORDER, yLine + 2 * THICKNESS_BORDER, inner);
 
 		if (titleHeight > 0) {
 			ug.getParam().setColor(borderColor);
 			ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
 			ug.draw(x, yLine, new ULine(dim.getWidth(), 0));
+			ug.getParam().setStroke(new UStroke());
+		}
+
+		if (attributeHeight > 0) {
+			ug.getParam().setColor(borderColor);
+			ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
+			ug.draw(x, yLine - attributeHeight, new ULine(dim.getWidth(), 0));
 			ug.getParam().setStroke(new UStroke());
 		}
 

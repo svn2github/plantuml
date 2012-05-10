@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -46,6 +47,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.sequencediagram.AbstractMessage;
+import net.sourceforge.plantuml.sequencediagram.Note;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
 
@@ -59,7 +61,7 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 	}
 
 	private RegexConcat getRegexConcatSingleLine() {
-		return new RegexConcat(new RegexLeaf("^note\\s+"),//
+		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left)\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
@@ -96,13 +98,23 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 		};
 	}
 
-	private CommandExecutionResult executeInternal(SequenceDiagram system,
-			final Map<String, RegexPartialMatch> line0, final List<String> in) {
+	private CommandExecutionResult executeInternal(SequenceDiagram system, final Map<String, RegexPartialMatch> line0,
+			final List<String> in) {
 		final AbstractMessage m = system.getLastMessage();
 		if (m != null) {
 			final NotePosition position = NotePosition.valueOf(line0.get("POSITION").get(0).toUpperCase());
-			final List<CharSequence> strings = StringUtils.manageEmbededDiagrams(in);
-			m.setNote(strings, position, line0.get("COLOR").get(0), null);
+			List<CharSequence> strings = StringUtils.manageEmbededDiagrams(in);
+			final Url url;
+			if (strings.size() > 0) {
+				url = Note.extractUrl(strings.get(0).toString());
+			} else {
+				url = null;
+			}
+			if (url != null) {
+				strings = strings.subList(1, strings.size());
+			}
+
+			m.setNote(strings, position, line0.get("COLOR").get(0), url);
 		}
 
 		return CommandExecutionResult.ok();

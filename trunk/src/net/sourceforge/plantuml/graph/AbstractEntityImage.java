@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7754 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -37,7 +37,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.ugraphic.UFont;
 
 abstract class AbstractEntityImage {
 
-	private final Entity entity;
+	private final IEntity entity;
 
 	final private HtmlColor red = HtmlColor.getColorIfValid("#A80036");
 	
@@ -59,7 +59,7 @@ abstract class AbstractEntityImage {
 	final private HtmlColor blue = HtmlColor.getColorIfValid("#A9DCDF");
 	final private HtmlColor rose = HtmlColor.getColorIfValid("#EB937F");
 
-	public AbstractEntityImage(Entity entity) {
+	public AbstractEntityImage(IEntity entity) {
 		if (entity == null) {
 			throw new IllegalArgumentException("entity null");
 		}
@@ -70,7 +70,7 @@ abstract class AbstractEntityImage {
 
 	public abstract void draw(ColorMapper colorMapper, Graphics2D g2d);
 
-	protected final Entity getEntity() {
+	protected final IEntity getEntity() {
 		return entity;
 	}
 

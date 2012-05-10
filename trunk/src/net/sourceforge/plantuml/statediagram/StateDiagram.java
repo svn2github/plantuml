@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7745 $
+ * Revision $Revision: 7833 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class StateDiagram extends AbstractEntityDiagram {
 
@@ -50,59 +50,58 @@ public class StateDiagram extends AbstractEntityDiagram {
 			throw new IllegalArgumentException();
 		}
 		if (isGroup(code)) {
-			return getGroup(code).getEntityCluster();
+			return getGroup(code);
 		}
 		final IEntity result = getOrCreateEntity(code, EntityType.STATE);
 		return result;
 	}
 
 	public IEntity getStart() {
-		final Group g = getCurrentGroup();
+		final IEntityMutable g = getCurrentGroup();
 		if (g == null) {
 			return getOrCreateEntity("*start", EntityType.CIRCLE_START);
 		}
-		return getOrCreateEntity("*start*" + g.getCode(), EntityType.CIRCLE_START);
+		return getOrCreateEntity("*start*" + g.zgetGroupCode(), EntityType.CIRCLE_START);
 	}
 
 	public IEntity getEnd() {
-		final Group p = getCurrentGroup();
+		final IEntityMutable p = getCurrentGroup();
 		if (p == null) {
 			return getOrCreateEntity("*end", EntityType.CIRCLE_END);
 		}
-		return getOrCreateEntity("*end*" + p.getCode(), EntityType.CIRCLE_END);
+		return getOrCreateEntity("*end*" + p.zgetGroupCode(), EntityType.CIRCLE_END);
 	}
 
 	public IEntity getHistorical() {
-		final Group g = getCurrentGroup();
+		final IEntityMutable g = getCurrentGroup();
 		if (g == null) {
 			return getOrCreateEntity("*historical", EntityType.PSEUDO_STATE);
 		}
-		return getOrCreateEntity("*historical*" + g.getCode(), EntityType.PSEUDO_STATE);
+		return getOrCreateEntity("*historical*" + g.zgetGroupCode(), EntityType.PSEUDO_STATE);
 	}
 
 	public IEntity getHistorical(String codeGroup) {
-		final Group g = getOrCreateGroup(codeGroup, codeGroup, null, GroupType.STATE, null);
-		final IEntity result = getOrCreateEntity("*historical*" + g.getCode(), EntityType.PSEUDO_STATE);
+		final IEntityMutable g = getOrCreateGroup(codeGroup, codeGroup, null, GroupType.STATE, null);
+		final IEntity result = getOrCreateEntity("*historical*" + g.zgetGroupCode(), EntityType.PSEUDO_STATE);
 		endGroup();
 		return result;
 	}
 
 	public boolean concurrentState() {
-		final Group cur = getCurrentGroup();
+		final IEntityMutable cur = getCurrentGroup();
 //		printlink("BEFORE");
-		if (cur != null && cur.getType() == GroupType.CONCURRENT_STATE) {
+		if (cur != null && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
-		final Group conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null, GroupType.CONCURRENT_STATE,
+		final IEntityMutable conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null, GroupType.CONCURRENT_STATE,
 				getCurrentGroup());
-		cur.removeInternal(conc1);
-		conc1.setDashed(true);
-		if (cur != null && cur.getType() == GroupType.STATE) {
-			cur.moveEntitiesTo(conc1);
+		conc1.zsetDashed(true);
+		if (cur != null && cur.zgetGroupType() == GroupType.STATE) {
+			cur.zmoveEntitiesTo(conc1);
 			super.endGroup();
-			final Group conc2 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null,
+			final IEntityMutable conc2 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null,
 					GroupType.CONCURRENT_STATE, getCurrentGroup());
-			conc2.setDashed(true);
+			conc2.zsetDashed(true);
 		}
 //		printlink("AFTER");
 		return true;
@@ -117,8 +116,8 @@ public class StateDiagram extends AbstractEntityDiagram {
 
 	@Override
 	public void endGroup() {
-		final Group cur = getCurrentGroup();
-		if (cur != null && cur.getType() == GroupType.CONCURRENT_STATE) {
+		final IEntityMutable cur = getCurrentGroup();
+		if (cur != null && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
 		super.endGroup();

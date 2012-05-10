@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7745 $
+ * Revision $Revision: 7875 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -101,10 +101,16 @@ public class Link implements Imaged {
 		if (cl1 == null || cl2 == null) {
 			throw new IllegalArgumentException();
 		}
-		if (cl1.getType()==EntityType.STATE_CONCURRENT) {
+		if (cl1.getEntityType() == EntityType.STATE_CONCURRENT) {
 			throw new IllegalArgumentException();
 		}
-		if (cl2.getType()==EntityType.STATE_CONCURRENT) {
+		if (cl2.getEntityType() == EntityType.STATE_CONCURRENT) {
+			throw new IllegalArgumentException();
+		}
+		if (cl1 instanceof EntityMutable == false) {
+			throw new IllegalArgumentException();
+		}
+		if (cl2 instanceof EntityMutable == false) {
 			throw new IllegalArgumentException();
 		}
 		this.cl1 = cl1;
@@ -176,18 +182,28 @@ public class Link implements Imaged {
 		this.invis = invis;
 	}
 
+	public boolean insideGroup(Group g) {
+		if (EntityUtils.equals(cl1.getContainer(), g) && ((IEntityMutable) cl1).isGroup() == false
+				&& EntityUtils.equals(cl2.getContainer(), g) && ((IEntityMutable) cl2).isGroup() == false) {
+			return true;
+		}
+		return false;
+	}
+
 	private static IEntity muteProxy(IEntity ent, Group g, IEntity proxy) {
-		if (ent.getParent() == g) {
-			if (ent.getType()==EntityType.GROUP) {
+		if (((IEntityMutable) ent).isGroup()) {
+			if (EntityUtils.equals((Group) ent, g)) {
 				return proxy;
 			}
 		}
 		return ent;
 	}
 
-	public Link mute(Group g, Entity proxy) {
-		if (cl1.getParent() == g && cl1.getType() != EntityType.GROUP && cl2.getParent() == g
-				&& cl2.getType() != EntityType.GROUP) {
+	public Link mute(Group g, IEntity proxy) {
+		final Group g1 = EntityUtils.getContainerOrEquivalent(cl1);
+		final Group g2 = EntityUtils.getContainerOrEquivalent(cl2);
+		if (EntityUtils.equals(g1, g) && ((IEntityMutable) cl1).isGroup() == false && EntityUtils.equals(g, g2)
+				&& ((IEntityMutable) cl2).isGroup() == false) {
 			return null;
 		}
 		final IEntity ent1 = muteProxy(cl1, g, proxy);
@@ -196,6 +212,15 @@ public class Link implements Imaged {
 			return this;
 		}
 		return new Link(ent1, ent2, getType(), label, length, qualifier1, qualifier2, labeldistance, labelangle);
+	}
+
+	public Link mute2(Group g) {
+		final Group g1 = cl1.getContainer();
+		final Group g2 = cl2.getContainer();
+		if (g1==g && g2==g) {
+			return null;
+		}
+		return this;
 	}
 
 	public boolean isBetween(IEntity cl1, IEntity cl2) {
@@ -289,46 +314,75 @@ public class Link implements Imaged {
 	}
 
 	public boolean isAutolink(Group g) {
-		if (getEntity1() == g.getEntityCluster() && getEntity2() == g.getEntityCluster()) {
+		if (((IEntityMutable) getEntity1()).isGroup() == false) {
+			return false;
+		}
+		if (((IEntityMutable) getEntity2()).isGroup() == false) {
+			return false;
+		}
+		if (EntityUtils.equals(g, (Group) getEntity1()) && EntityUtils.equals(g, (Group) getEntity1())) {
+			return true;
+		}
+		// if (getEntity1() == g.zgetEntityCluster() && getEntity2() == g.zgetEntityCluster()) {
+		// assert getEntity1().getType() == EntityType.GROUP;
+		// assert getEntity2().getType() == EntityType.GROUP;
+		// return true;
+		// }
+		return false;
+	}
+	
+	public boolean isAutoLinkOfAGroup() {
+		if (((IEntityMutable) getEntity1()).isGroup() == false) {
+			return false;
+		}
+		if (((IEntityMutable) getEntity2()).isGroup() == false) {
+			return false;
+		}
+		if (getEntity1()==getEntity2()) {
 			return true;
 		}
 		return false;
 	}
 
+
 	public boolean isToEdgeLink(Group g) {
-		if (getEntity1().getParent() != g || getEntity2().getParent() != g) {
+		final Group g1 = EntityUtils.getContainerOrEquivalent(getEntity1());
+		final Group g2 = EntityUtils.getContainerOrEquivalent(getEntity2());
+		if (EntityUtils.equals(g1, g) == false || EntityUtils.equals(g2, g) == false) {
 			return false;
 		}
-		assert getEntity1().getParent() == g && getEntity2().getParent() == g;
+		assert EntityUtils.equals(g1, g) && EntityUtils.equals(g2, g);
 		if (isAutolink(g)) {
 			return false;
 		}
 
-		if (getEntity2().getType() == EntityType.GROUP) {
-			assert getEntity1().getType() != EntityType.GROUP;
+		if (((IEntityMutable) getEntity2()).isGroup()) {
+			assert ((EntityMutable) getEntity1()).isGroup() == false;
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isFromEdgeLink(Group g) {
-		if (getEntity1().getParent() != g || getEntity2().getParent() != g) {
+		final Group g1 = EntityUtils.getContainerOrEquivalent(getEntity1());
+		final Group g2 = EntityUtils.getContainerOrEquivalent(getEntity2());
+		if (EntityUtils.equals(g1, g) == false || EntityUtils.equals(g2, g) == false) {
 			return false;
 		}
-		assert getEntity1().getParent() == g && getEntity2().getParent() == g;
+		assert EntityUtils.equals(g1, g) && EntityUtils.equals(g2, g);
 		if (isAutolink(g)) {
 			return false;
 		}
 
-		if (getEntity1().getType() == EntityType.GROUP) {
-			assert getEntity2().getType() != EntityType.GROUP;
+		if (((EntityMutable) getEntity1()).isGroup()) {
+			assert ((EntityMutable) getEntity2()).isGroup() == false;
 			return true;
 		}
 		return false;
 	}
 
 	public boolean containsType(EntityType type) {
-		if (getEntity1().getType() == type || getEntity2().getType() == type) {
+		if (getEntity1().getEntityType() == type || getEntity2().getEntityType() == type) {
 			return true;
 		}
 		return false;
@@ -363,7 +417,8 @@ public class Link implements Imaged {
 		return decor.getSize() + q;
 	}
 
-	private double getQualifierMargin(StringBounder stringBounder, UFont fontQualif, String qualif, SpriteContainer spriteContainer) {
+	private double getQualifierMargin(StringBounder stringBounder, UFont fontQualif, String qualif,
+			SpriteContainer spriteContainer) {
 		if (qualif != null) {
 			final TextBlock b = TextBlockUtils.create(Arrays.asList(qualif), new FontConfiguration(fontQualif,
 					HtmlColor.BLACK), HorizontalAlignement.LEFT, spriteContainer);
@@ -428,5 +483,6 @@ public class Link implements Imaged {
 	public final void setLinkArrow(LinkArrow linkArrow) {
 		this.linkArrow = linkArrow;
 	}
+
 
 }

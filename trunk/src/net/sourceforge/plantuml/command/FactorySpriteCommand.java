@@ -115,10 +115,10 @@ public final class FactorySpriteCommand implements SingleMultiFactoryCommand<Uml
 					return CommandExecutionResult.error("Only 4, 8 or 16 graylevel are allowed.");
 				}
 				final SpriteGrayLevel level = SpriteGrayLevel.get(nbColor);
-				if (line0.get("DIM").get(3) != null) {
-					sprite = level.buildSpriteZ(width, height, concat(strings));
-				} else {
+				if (line0.get("DIM").get(3) == null) {
 					sprite = level.buildSprite(width, height, strings);
+				} else {
+					sprite = level.buildSpriteZ(width, height, concat(strings));
 				}
 			}
 			system.addSprite(line0.get("NAME").get(0), sprite);

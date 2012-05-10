@@ -38,8 +38,8 @@ import java.util.List;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.objectdiagram.ObjectDiagram;
 
@@ -58,7 +58,7 @@ public class CommandCreateEntityObject extends SingleLineCommand<ObjectDiagram> 
 		if (getSystem().entityExist(code)) {
 			return CommandExecutionResult.error("Object already exists : "+code);
 		}
-		final Entity entity = getSystem().createEntity(code, display, EntityType.OBJECT);
+		final IEntity entity = getSystem().createEntity(code, display, EntityType.OBJECT);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

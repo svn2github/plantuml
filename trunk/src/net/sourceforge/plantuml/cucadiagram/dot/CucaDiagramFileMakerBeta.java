@@ -51,6 +51,7 @@ import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -157,23 +158,23 @@ public final class CucaDiagramFileMakerBeta {
 
 	private void addEntitiesOfGroup(final Collection<IEntity> result, Group parent) {
 //		System.err.println("addEntitiesOfGroup parent=" + parent);
-		for (IEntity ent : diagram.entities().values()) {
-			if (ent.getParent() == parent) {
+		for (IEntity ent : diagram.getEntities().values()) {
+			if (ent.getContainer() == parent) {
 				result.add(ent);
 				// System.err.println("addingA " + ent);
 			}
 		}
-		final Collection<Group> groups = parent == null ? diagram.getGroups(false) : parent.getChildren();
+		final Collection<? extends Group> groups = parent == null ? diagram.getGroups(false) : parent.zgetChildren();
 		for (Group g : groups) {
 			// System.err.println("g=" + g + " parent = " + g.getParent());
-			if (g.isAutonom() == false) {
+			if (g.zisAutonom() == false) {
 				addEntitiesOfGroup(result, g);
-				result.add(g.getEntityCluster());
+				result.add((IEntity)g);
 				// System.err.println("addingB " + g.getEntityCluster());
-			} else if (g.getParent() == parent) {
-				assert g.isAutonom();
-				assert result.contains(g.getEntityCluster()) == false;
-				result.add(g.getEntityCluster());
+			} else if (EntityUtils.equals(g.zgetParent(), parent)) {
+				assert g.zisAutonom();
+				assert result.contains(g) == false;
+				result.add((IEntity)g);
 				// System.err.println("addingC " + g.getEntityCluster());
 			}
 

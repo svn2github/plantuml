@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7803 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram.command;
@@ -38,7 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class CommandEndPartition extends SingleLineCommand<ActivityDiagram> {
 
@@ -48,7 +48,7 @@ public class CommandEndPartition extends SingleLineCommand<ActivityDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final Group currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
 		if (currentPackage == null) {
 			return CommandExecutionResult.error("No partition defined");
 		}

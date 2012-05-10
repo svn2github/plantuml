@@ -45,8 +45,8 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
 public final class FactoryNoteCommand implements SingleMultiFactoryCommand<AbstractEntityDiagram> {
@@ -104,7 +104,7 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 	private CommandExecutionResult executeInternal(AbstractEntityDiagram system, Map<String, RegexPartialMatch> arg,
 			final String display) {
 		final String code = arg.get("CODE").get(0);
-		final Entity entity = system.createEntity(code, display, EntityType.NOTE);
+		final IEntity entity = system.createEntity(code, display, EntityType.NOTE);
 		assert entity != null;
 		entity.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
 		return CommandExecutionResult.ok();

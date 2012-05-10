@@ -38,8 +38,6 @@ import java.awt.geom.Point2D;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,17 +59,14 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.posimo.Moveable;
 
 public class DotStringFactory implements Moveable {
-
-	private final List<Shape> allShapes = new ArrayList<Shape>();
-	private final List<Cluster> allCluster = new ArrayList<Cluster>();
+	
+	private final Bibliotekon bibliotekon = new Bibliotekon();
 
 	final private Set<String> rankMin = new HashSet<String>();
 
 	private final ColorSequence colorSequence;
 	private final Cluster root;
-	private final List<Line> lines0 = new ArrayList<Line>();
-	private final List<Line> lines1 = new ArrayList<Line>();
-	private final List<Line> allLines = new ArrayList<Line>();
+
 	private Cluster current;
 	private final DotData dotData;
 
@@ -86,7 +81,6 @@ public class DotStringFactory implements Moveable {
 	}
 
 	public void addShape(Shape shape) {
-		allShapes.add(shape);
 		current.addShape(shape);
 	}
 
@@ -105,7 +99,7 @@ public class DotStringFactory implements Moveable {
 
 	private double getHorizontalDzeta() {
 		double max = 0;
-		for (Line l : allLines) {
+		for (Line l : bibliotekon.allLines()) {
 			final double c = l.getHorizontalDzeta(stringBounder);
 			if (c > max) {
 				max = c;
@@ -116,7 +110,7 @@ public class DotStringFactory implements Moveable {
 
 	private double getVerticalDzeta() {
 		double max = 0;
-		for (Line l : allLines) {
+		for (Line l : bibliotekon.allLines()) {
 			final double c = l.getVerticalDzeta(stringBounder);
 			if (c > max) {
 				max = c;
@@ -166,15 +160,15 @@ public class DotStringFactory implements Moveable {
 		}
 
 
-		root.printCluster1(sb, allLines);
-		for (Line line : lines0) {
+		root.printCluster1(sb, bibliotekon.allLines());
+		for (Line line : bibliotekon.lines0()) {
 			line.appendLine(sb);
 		}
 		root.fillRankMin(rankMin);
-		root.printCluster2(sb, allLines);
+		root.printCluster2(sb, bibliotekon.allLines());
 		printMinRanking(sb);
 
-		for (Line line : lines1) {
+		for (Line line : bibliotekon.lines1()) {
 			line.appendLine(sb);
 		}
 		SvekUtils.println(sb);
@@ -242,7 +236,7 @@ public class DotStringFactory implements Moveable {
 		final int fullWidth = Integer.parseInt(mGraph.group(1));
 		final int fullHeight = Integer.parseInt(mGraph.group(2));
 
-		for (Shape sh : allShapes) {
+		for (Shape sh : bibliotekon.allShapes()) {
 			int idx = svg.indexOf("<title>" + sh.getUid() + "</title>");
 			if (sh.getType() == ShapeType.RECTANGLE || sh.getType() == ShapeType.DIAMOND) {
 				final List<Point2D.Double> points = SvekUtils.extractPointsList(svg, idx, fullHeight);
@@ -274,7 +268,7 @@ public class DotStringFactory implements Moveable {
 			}
 		}
 
-		for (Cluster cluster : allCluster) {
+		for (Cluster cluster : bibliotekon.allCluster()) {
 			// final String key = "=\"" + StringUtils.getAsHtml(cluster.getColor()).toLowerCase() + "\"";
 			int idx = getClusterIndex(svg, cluster.getColor());
 //			int idx = svg.indexOf(key);
@@ -299,12 +293,12 @@ public class DotStringFactory implements Moveable {
 
 		}
 
-		for (Line line : allLines) {
+		for (Line line : bibliotekon.allLines()) {
 			line.solveLine(svg, fullHeight);
 		}
 
-		for (Line line : allLines) {
-			line.manageCollision(allShapes);
+		for (Line line : bibliotekon.allLines()) {
+			line.manageCollision(bibliotekon.allShapes());
 		}
 
 		return new Dimension2DDouble(fullWidth, fullHeight);
@@ -324,35 +318,10 @@ public class DotStringFactory implements Moveable {
 		return idx;
 	}
 
-	public void addLine(Line line) {
-		allLines.add(line);
-		if (first(line)) {
-			lines0.add(line);
-		} else {
-			lines1.add(line);
-		}
-	}
-
-	private static boolean first(Line line) {
-		final int length = line.getLength();
-		if (length == 1) {
-			return true;
-		}
-		return false;
-	}
-
-	public final List<Shape> getShapes() {
-		return Collections.unmodifiableList(allShapes);
-	}
-
-	public List<Line> getLines() {
-		return Collections.unmodifiableList(allLines);
-	}
-
 	public void openCluster(Group g, int titleWidth, int titleHeight, TextBlock title, boolean isSpecialGroup) {
 		this.current = current.createChild(g, titleWidth, titleHeight, title, isSpecialGroup, colorSequence, dotData
 				.getSkinParam());
-		this.allCluster.add(this.current);
+		bibliotekon.addCluster(this.current);
 	}
 
 	public void closeCluster() {
@@ -362,21 +331,21 @@ public class DotStringFactory implements Moveable {
 		this.current = current.getParent();
 	}
 
-	public final List<Cluster> getAllSubCluster() {
-		return Collections.unmodifiableList(allCluster);
-	}
-
 	public void moveSvek(double deltaX, double deltaY) {
-		for (Shape sh : allShapes) {
+		for (Shape sh : bibliotekon.allShapes()) {
 			sh.moveSvek(deltaX, deltaY);
 		}
-		for (Line line : allLines) {
+		for (Line line : bibliotekon.allLines()) {
 			line.moveSvek(deltaX, deltaY);
 		}
-		for (Cluster cl : allCluster) {
+		for (Cluster cl : bibliotekon.allCluster()) {
 			cl.moveSvek(deltaX, deltaY);
 		}
 
+	}
+
+	public final Bibliotekon getBibliotekon() {
+		return bibliotekon;
 	}
 
 }

@@ -97,8 +97,8 @@ abstract class DotCommon {
 			}
 		}
 		String display = StringUtils.getMergedLines(entity.getDisplay2());
-		final boolean italic = entity.getType() == EntityType.ABSTRACT_CLASS
-				|| entity.getType() == EntityType.INTERFACE;
+		final boolean italic = entity.getEntityType() == EntityType.ABSTRACT_CLASS
+				|| entity.getEntityType() == EntityType.INTERFACE;
 		if (italic) {
 			display = "<i>" + display;
 		}
@@ -268,14 +268,14 @@ abstract class DotCommon {
 	}
 
 	private String getSpecificBackColor(IEntity entity) {
-		final Group parent = entity.getParent();
+		final Group parent = entity.getContainer();
 		if (parent == null) {
 			return null;
 		}
-		if (parent.getBackColor() == null) {
+		if (parent.zgetBackColor() == null) {
 			return null;
 		}
-		return "\"" + getAsHtml(parent.getBackColor()) + "\"";
+		return "\"" + getAsHtml(parent.zgetBackColor()) + "\"";
 	}
 
 	final protected void appendImageAsTD(StringBuilder sb, String circleAbsolutePath) throws IOException {

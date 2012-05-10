@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7718 $
+ * Revision $Revision: 7848 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.sequencediagram.graphic;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
 import net.sourceforge.plantuml.skin.Area;
@@ -50,8 +51,8 @@ class MessageSelfArrow extends Arrow {
 	private final LivingParticipantBox p1;
 	private final double deltaY;
 
-	public MessageSelfArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p1, double deltaY) {
-		super(startingY, skin, arrow);
+	public MessageSelfArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p1, double deltaY, Url url) {
+		super(startingY, skin, arrow, url);
 		this.p1 = p1;
 		this.deltaY = deltaY;
 	}
@@ -72,15 +73,15 @@ class MessageSelfArrow extends Arrow {
 		ug.translate(getStartingX(stringBounder), getStartingY() + deltaY);
 		final Area area = new Area(new Dimension2DDouble(getPreferredWidth(stringBounder),
 				getPreferredHeight(stringBounder)));
-		// System.err.println("AZERTY deltaY="+deltaY);
 		area.setDeltaX1(deltaY);
+		startUrl(ug);
 		getArrowComponent().drawU(ug, area, context);
+		endUrl(ug);
 	}
 
 	@Override
 	public double getStartingX(StringBounder stringBounder) {
 		final double pos2 = p1.getLiveThicknessAt(stringBounder, getArrowYStartLevel(stringBounder)).getSegment().getPos2();
-		// System.err.println("AZERTY pos2="+pos2);
 		return pos2;
 	}
 

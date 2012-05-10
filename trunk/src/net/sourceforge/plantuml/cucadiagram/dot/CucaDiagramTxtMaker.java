@@ -49,7 +49,7 @@ import java.util.Map;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.posimo.Block;
@@ -79,9 +79,9 @@ public final class CucaDiagramTxtMaker {
 		final Cluster root = new Cluster(null, 0, 0);
 		int uid = 0;
 
-		final Map<Entity, Block> blocks = new HashMap<Entity, Block>();
+		final Map<IEntity, Block> blocks = new HashMap<IEntity, Block>();
 
-		for (Entity ent : diagram.entities().values()) {
+		for (IEntity ent : diagram.getEntities().values()) {
 			// printClass(ent);
 			// ug.translate(0, getHeight(ent) + 1);
 			final double width = getWidth(ent) * getXPixelPerChar();
@@ -104,7 +104,7 @@ public final class CucaDiagramTxtMaker {
 				ug.setTranslate(0, 0);
 				p.getDotPath().draw(ug.getCharArea(), getXPixelPerChar(), getYPixelPerChar());
 			}
-			for (Entity ent : diagram.entities().values()) {
+			for (IEntity ent : diagram.getEntities().values()) {
 				final Block b = blocks.get(ent);
 				final Point2D p = b.getPosition();
 				ug.setTranslate(p.getX() / getXPixelPerChar(), p.getY() / getYPixelPerChar());
@@ -118,7 +118,7 @@ public final class CucaDiagramTxtMaker {
 
 	}
 
-	private void printClass(final Entity ent) {
+	private void printClass(final IEntity ent) {
 		final int w = getWidth(ent);
 		final int h = getHeight(ent);
 		ug.getCharArea().drawBoxSimple(0, 0, w, h);
@@ -149,7 +149,7 @@ public final class CucaDiagramTxtMaker {
 		return Collections.singletonList(suggestedFile);
 	}
 
-	private int getHeight(Entity entity) {
+	private int getHeight(IEntity entity) {
 		int result = StringUtils.getHeight(entity.getDisplay2());
 		for (Member att : entity.getMethodsToDisplay()) {
 			result += StringUtils.getHeight(StringUtils.getWithNewlines(att.getDisplay(true)));
@@ -160,7 +160,7 @@ public final class CucaDiagramTxtMaker {
 		return result + 4;
 	}
 
-	private int getWidth(Entity entity) {
+	private int getWidth(IEntity entity) {
 		int result = StringUtils.getWidth(entity.getDisplay2());
 		for (Member att : entity.getMethodsToDisplay()) {
 			final int w = StringUtils.getWidth(StringUtils.getWithNewlines(att.getDisplay(true)));

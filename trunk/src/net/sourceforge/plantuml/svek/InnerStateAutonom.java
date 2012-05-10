@@ -39,38 +39,47 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public final class InnerStateAutonom implements IEntityImage {
 
 	private final IEntityImage im;
 	private final TextBlock title;
+	private final TextBlockWidth attribute;
 	private final HtmlColor borderColor;
 	private final HtmlColor backColor;
 	private final boolean shadowing;
 
-	public InnerStateAutonom(final IEntityImage im, final TextBlock title, HtmlColor borderColor, HtmlColor backColor, boolean shadowing) {
+	public InnerStateAutonom(final IEntityImage im, final TextBlock title, TextBlockWidth attribute,
+			HtmlColor borderColor, HtmlColor backColor, boolean shadowing) {
 		this.im = im;
 		this.title = title;
 		this.borderColor = borderColor;
 		this.backColor = backColor;
 		this.shadowing = shadowing;
+		this.attribute = attribute;
 	}
 
-	
 	public final static double THICKNESS_BORDER = 1.5;
 
 	public void drawU(UGraphic ug, double x, double y) {
 		final Dimension2D text = title.calculateDimension(ug.getStringBounder());
+		final Dimension2D attr = attribute.calculateDimension(ug.getStringBounder());
 		final Dimension2D total = getDimension(ug.getStringBounder());
+		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
 
-		final double suppY = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
-		final RoundedContainer r = new RoundedContainer(total, suppY, borderColor, backColor, im.getBackcolor()); 
-		
+		final double titreHeight = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
+		final double suppY = titreHeight + marginForFields + attr.getHeight();
+		final RoundedContainer r = new RoundedContainer(total, titreHeight, attr.getHeight() + marginForFields,
+				borderColor, backColor, im.getBackcolor());
+
 		r.drawU(ug, x, y, shadowing);
 		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + EntityImageState.MARGIN);
+		attribute.drawU(ug, x + EntityImageState.MARGIN, y + EntityImageState.MARGIN + text.getHeight()
+				+ EntityImageState.MARGIN, total.getWidth());
 
-		im.drawU(ug, x + EntityImageState.MARGIN, y+suppY + EntityImageState.MARGIN_LINE);
+		im.drawU(ug, x + EntityImageState.MARGIN, y + suppY + EntityImageState.MARGIN_LINE);
 	}
 
 	public HtmlColor getBackcolor() {
@@ -80,11 +89,13 @@ public final class InnerStateAutonom implements IEntityImage {
 	public Dimension2D getDimension(StringBounder stringBounder) {
 		final Dimension2D img = im.getDimension(stringBounder);
 		final Dimension2D text = title.calculateDimension(stringBounder);
+		final Dimension2D attr = attribute.calculateDimension(stringBounder);
 
-		final Dimension2D dim = Dimension2DDouble.mergeTB(text, img);
+		final Dimension2D dim = Dimension2DDouble.mergeTB(text, attr, img);
+		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
 
 		final Dimension2D result = Dimension2DDouble.delta(dim, EntityImageState.MARGIN * 2 + 2
-				* EntityImageState.MARGIN_LINE);
+				* EntityImageState.MARGIN_LINE + marginForFields);
 
 		return result;
 	}
@@ -92,10 +103,9 @@ public final class InnerStateAutonom implements IEntityImage {
 	public ShapeType getShapeType() {
 		return ShapeType.ROUND_RECTANGLE;
 	}
-	
+
 	public int getShield() {
 		return 0;
 	}
-
 
 }

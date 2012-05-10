@@ -39,50 +39,48 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.EntityMutable;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.svek.GroupPngMakerActivity;
+import net.sourceforge.plantuml.svek.IEntityImage;
 
 public final class CucaDiagramSimplifierActivity {
 
 	private final CucaDiagram diagram;
 
-	public CucaDiagramSimplifierActivity(CucaDiagram diagram, List<String> dotStrings) throws IOException, InterruptedException {
+	public CucaDiagramSimplifierActivity(CucaDiagram diagram, List<String> dotStrings) throws IOException,
+			InterruptedException {
 		this.diagram = diagram;
 		boolean changed;
 		do {
 			changed = false;
-			final Collection<Group> groups = new ArrayList<Group>(diagram.getGroups(false));
-			for (Group g : groups) {
+			final Collection<IEntityMutable> groups = new ArrayList<IEntityMutable>(diagram.getGroups(false));
+			for (IEntityMutable g : groups) {
 				if (diagram.isAutarkic(g)) {
 					final EntityType type;
-					if (g.getType() == GroupType.INNER_ACTIVITY) {
+					if (g.zgetGroupType() == GroupType.INNER_ACTIVITY) {
 						type = EntityType.ACTIVITY;
-					} else if (g.getType() == GroupType.CONCURRENT_ACTIVITY) {
+					} else if (g.zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
 						type = EntityType.ACTIVITY_CONCURRENT;
 					} else {
 						throw new IllegalStateException();
 					}
-					final Entity proxy = new Entity("#" + g.getCode(), g.getDisplay(), type, g.getParent(), diagram
-							.getHides());
 					
-					proxy.overidesFieldsToDisplay(g.getEntityCluster());
-
-					computeImageGroup(g, proxy, dotStrings);
-					diagram.overideGroup(g, proxy);
-					if (proxy.getImageFile() != null) {
-						diagram.ensureDelete(proxy.getImageFile());
-					}
-
-					for (IEntity sub : g.entities().values()) {
-						final DrawFile subImage = sub.getImageFile();
-						if (subImage != null) {
-							proxy.addSubImage(subImage);
-						}
-					}
+					final IEntityImage img = computeImage(g);
+					g.overideImage42(img);
+					
+					// final EntityMutable proxy = (EntityMutable) diagram.getEntityFactory().createEntity(
+					// "#" + g.zgetGroupCode(), g.zgetDisplay(), type, (IEntityMutable) g.zgetParent(),
+					// diagram.getHides());
+					// if (g.zgetBackColor() != null) {
+					// proxy.setSpecificBackcolor(g.zgetBackColor());
+					// }
+					// proxy.overidesFieldsToDisplay((EntityMutable) g);
+					// computeImageGroup((EntityMutable) g, proxy, dotStrings);
+					// g.overideGroup(proxy);
+					// ((IEntityMutable) g).setSvekImage(proxy.getSvekImage());
 
 					changed = true;
 				}
@@ -90,9 +88,15 @@ public final class CucaDiagramSimplifierActivity {
 		} while (changed);
 	}
 
-	private void computeImageGroup(Group g, Entity proxy, List<String> dotStrings) throws IOException, InterruptedException {
+	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
+			InterruptedException {
 		final GroupPngMakerActivity maker = new GroupPngMakerActivity(diagram, g);
 		proxy.setSvekImage(maker.getImage());
+	}
+
+	private IEntityImage computeImage(IEntityMutable g) throws IOException, InterruptedException {
+		final GroupPngMakerActivity maker = new GroupPngMakerActivity(diagram, g);
+		return maker.getImage();
 	}
 
 }

@@ -27,15 +27,26 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
+ * Modified by : Arno Peterson
  *
  * Revision $Revision: 4236 $
  * 
  */
 package net.sourceforge.plantuml.svek;
 
+import java.util.EnumSet;
 
 public enum PackageStyle {
-	
-	FOLDER, RECT
 
+	FOLDER, RECT, NODE, FRAME, CLOUD, DATABASE;
+
+	public static PackageStyle fromString(String value) {
+		for (PackageStyle p : EnumSet.allOf(PackageStyle.class)) {
+			if (p.toString().equalsIgnoreCase(value)) {
+				return p;
+			}
+		}
+		return null;
+
+	}
 }

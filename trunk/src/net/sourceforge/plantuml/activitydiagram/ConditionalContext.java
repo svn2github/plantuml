@@ -44,7 +44,7 @@ public class ConditionalContext {
 	private final ConditionalContext parent;
 
 	public ConditionalContext(ConditionalContext parent, IEntity branch, Direction direction) {
-		if (branch.getType() != EntityType.BRANCH) {
+		if (branch.getEntityType() != EntityType.BRANCH) {
 			throw new IllegalArgumentException();
 		}
 		this.branch = branch;

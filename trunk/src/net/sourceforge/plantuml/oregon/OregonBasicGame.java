@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.oregon;
 
-import java.util.Date;
 import java.util.Random;
 
 public class OregonBasicGame implements BasicGame {

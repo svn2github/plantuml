@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7756 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -51,7 +51,7 @@ import java.util.Set;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.geom.Box;
 import net.sourceforge.plantuml.geom.CollectionUtils;
@@ -353,7 +353,7 @@ public class Elastane {
 		if (n == null) {
 			return null;
 		}
-		return new EntityImageFactory().createEntityImage((Entity) n.getUserData());
+		return new EntityImageFactory().createEntityImage((IEntity)n.getUserData());
 	}
 
 	public Dimension2D getDimension() {

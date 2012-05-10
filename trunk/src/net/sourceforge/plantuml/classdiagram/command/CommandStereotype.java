@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7753 $
  *
  */
 package net.sourceforge.plantuml.classdiagram.command;
@@ -39,7 +39,7 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 
 public class CommandStereotype extends SingleLineCommand<ClassDiagram> {
@@ -52,7 +52,7 @@ public class CommandStereotype extends SingleLineCommand<ClassDiagram> {
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
 		final String stereotype = arg.get(1);
-		final Entity entity = (Entity) getSystem().getOrCreateClass(code);
+		final IEntity entity = getSystem().getOrCreateClass(code);
 		entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 				getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		return CommandExecutionResult.ok();

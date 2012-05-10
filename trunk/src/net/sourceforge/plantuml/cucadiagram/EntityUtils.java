@@ -33,138 +33,46 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
-import net.sourceforge.plantuml.graphic.HtmlColor;
-import net.sourceforge.plantuml.svek.IEntityImage;
-
 public abstract class EntityUtils {
 
-	private static IEntity withNoParent(final IEntity ent) {
-		if (ent.getType() == EntityType.GROUP) {
-			throw new IllegalArgumentException();
+	public static boolean equals(Group g1, Group g2) {
+		if (g1 == null && g2 == null) {
+			return true;
 		}
-		return new IEntity() {
-			public List<Member> getFieldsToDisplay() {
-				return ent.getFieldsToDisplay();
+		if (g1 == null || g2 == null) {
+			assert g1 == null ^ g2 == null;
+			return false;
+		}
+		if (g1 instanceof IEntityMutable && g2 instanceof IEntityMutable) {
+			final IEntityMutable gg1 = (IEntityMutable) g1;
+			final IEntityMutable gg2 = (IEntityMutable) g2;
+			if (gg1.isGroup() == false && gg2.isGroup()) {
+				return false;
 			}
-
-			public List<? extends CharSequence> getDisplay2() {
-				return ent.getDisplay2();
+			if (gg2.isGroup() == false && gg1.isGroup()) {
+				return false;
 			}
+		}
+		return g1.zgetUid2() == g2.zgetUid2();
+	}
 
-			public Group getParent() {
-				return null;
+	public static boolean doesContains(IEntityMutable container, IEntityMutable element) {
+		while (true) {
+			if (element.getContainer() == container) {
+				return true;
 			}
-
-			public Stereotype getStereotype() {
-				return ent.getStereotype();
+			element = (IEntityMutable) element.getContainer();
+			if (element==null) {
+				return false;
 			}
+		}
+	}
 
-			public void setStereotype(Stereotype stereotype) {
-				ent.setStereotype(stereotype);
-			}
-
-			public EntityType getType() {
-				return ent.getType();
-			}
-
-			public String getUid() {
-				return ent.getUid();
-			}
-
-			public Url getUrl() {
-				return ent.getUrl();
-			}
-
-			public List<Member> getMethodsToDisplay() {
-				return ent.getMethodsToDisplay();
-			}
-
-			public DrawFile getImageFile() {
-				return ent.getImageFile();
-			}
-
-			public HtmlColor getSpecificBackColor() {
-				return ent.getSpecificBackColor();
-			}
-
-			public void setSpecificBackcolor(HtmlColor specificBackcolor) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			public int hashCode() {
-				return ent.hashCode();
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				return ent.equals(obj);
-			}
-
-			@Override
-			public String toString() {
-				return "NoParent " + ent.toString();
-			}
-
-			public String getCode() {
-				return ent.getCode();
-			}
-
-			public DrawFile getImageFile(File searched) throws IOException {
-				return ent.getImageFile(searched);
-			}
-
-			public boolean isTop() {
-				return ent.isTop();
-			}
-
-			public void setTop(boolean top) {
-				ent.setTop(top);
-			}
-
-			public boolean hasNearDecoration() {
-				return ent.hasNearDecoration();
-			}
-
-			public void setNearDecoration(boolean nearDecoration) {
-				ent.setNearDecoration(nearDecoration);
-			}
-
-			public int compareTo(IEntity other) {
-				return ent.compareTo(other);
-			}
-
-			public int getXposition() {
-				return ent.getXposition();
-			}
-
-			public void setXposition(int pos) {
-				ent.setXposition(pos);
-			}
-
-			public IEntityImage getSvekImage() {
-				return ent.getSvekImage();
-			}
-
-			public String getGeneric() {
-				return ent.getGeneric();
-			}
-
-			public BlockMember getBody(PortionShower portionShower) {
-				return ent.getBody(portionShower);
-			}
-
-			public BlockMember getMouseOver() {
-				return ent.getMouseOver();
-			}
-
-		};
+	public static Group getContainerOrEquivalent(IEntity entity) {
+		if (((IEntityMutable) entity).isGroup()) {
+			return (Group) entity;
+		}
+		return entity.getContainer();
 	}
 
 }

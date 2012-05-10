@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7812 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -39,9 +39,8 @@ import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
-import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.CircledCharacter;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -63,7 +62,7 @@ class EntityImageClass extends AbstractEntityImage {
 	private final int xMargin = 10;
 	private final int yMargin = 6;
 
-	public EntityImageClass(Entity entity) {
+	public EntityImageClass(IEntity entity) {
 		super(entity);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
 				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
@@ -74,23 +73,23 @@ class EntityImageClass extends AbstractEntityImage {
 
 	}
 
-	private CircledCharacter getCircledCharacter(Entity entity) {
+	private CircledCharacter getCircledCharacter(IEntity entity) {
 		// if (entity.getStereotype() != null) {
 		// return new CircledCharacter(entity.getStereotype().getCharacter(),
 		// font, entity.getStereotype().getColor(),
 		// red, Color.BLACK);
 		// }
 		final double radius = 10;
-		if (entity.getType() == EntityType.ABSTRACT_CLASS) {
+		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
 			return new CircledCharacter('A', radius, getFont17(), getBlue(), getRed(), HtmlColor.BLACK);
 		}
-		if (entity.getType() == EntityType.CLASS) {
+		if (entity.getEntityType() == EntityType.CLASS) {
 			return new CircledCharacter('C', radius, getFont17(), getGreen(), getRed(), HtmlColor.BLACK);
 		}
-		if (entity.getType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == EntityType.INTERFACE) {
 			return new CircledCharacter('I', radius, getFont17(), getViolet(), getRed(), HtmlColor.BLACK);
 		}
-		if (entity.getType() == EntityType.ENUM) {
+		if (entity.getEntityType() == EntityType.ENUM) {
 			return new CircledCharacter('E', radius, getFont17(), getRose(), getRed(), HtmlColor.BLACK);
 		}
 		assert false;

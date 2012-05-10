@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,16 +46,21 @@ import java.util.Set;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.Member;
+import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.TextBlockEmpty;
+import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -101,7 +105,7 @@ public class Cluster implements Moveable {
 	}
 
 	private int getUid2() {
-		return group.getUid2();
+		return group.zgetUid2();
 	}
 
 	private Cluster(Cluster parent, Group group, boolean special, ColorSequence colorSequence, ISkinParam skinParam) {
@@ -225,6 +229,14 @@ public class Cluster implements Moveable {
 	public final int getTitleHeight() {
 		return titleHeight;
 	}
+	
+	public double getWidth() {
+		return maxX - minX;
+	}
+
+	public double getMinX() {
+		return minX;
+	}
 
 	public void setTitlePosition(double x, double y) {
 		this.xTitle = x;
@@ -237,9 +249,13 @@ public class Cluster implements Moveable {
 			drawUState(ug, x, y, borderColor, dotData);
 			return;
 		}
-		final PackageStyle style = dotData.getSkinParam().getPackageStyle();
+		PackageStyle style = group.zgetPackageStyle();
+		if (style == null) {
+			style = dotData.getSkinParam().getPackageStyle();
+		}
 		if (title != null) {
-			final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype()==null?null:group.getStereotype().getLabel());
+			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
+					group.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
 			final ClusterDecoration decoration = new ClusterDecoration(style, title, stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
@@ -248,14 +264,14 @@ public class Cluster implements Moveable {
 		if (dotData.getSkinParam().shadowing()) {
 			rect.setDeltaShadow(3.0);
 		}
-		final HtmlColor stateBack = ClusterDecoration.getStateBackColor(getBackColor(), dotData.getSkinParam(), group.getStereotype()==null?null:group.getStereotype().getLabel());
+		final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
+				group.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
 		ug.getParam().setBackcolor(stateBack);
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setStroke(new UStroke(2));
 		ug.draw(x + minX, y + minY, rect);
 		ug.getParam().setStroke(new UStroke());
 	}
-
 
 	private HtmlColor getColor(DotData dotData, ColorParam colorParam, String stereo) {
 		return new Rose().getHtmlColor(dotData.getSkinParam(), colorParam, stereo);
@@ -273,14 +289,29 @@ public class Cluster implements Moveable {
 		}
 		HtmlColor stateBack = getBackColor();
 		if (stateBack == null) {
-			stateBack = getColor(dotData, ColorParam.stateBackground, group.getStereotype()==null?null:group.getStereotype().getLabel());
+			stateBack = getColor(dotData, ColorParam.stateBackground, group.zgetStereotype() == null ? null : group
+					.zgetStereotype().getLabel());
 		}
 		final HtmlColor background = getColor(dotData, ColorParam.background, null);
-		final RoundedContainer r = new RoundedContainer(total, suppY, borderColor, stateBack, background);
+		final List<Member> members = ((IEntity) group).getFieldsToDisplay();
+		final TextBlockWidth attribute;
+		if (members.size() == 0) {
+			attribute = new TextBlockEmpty();
+		} else {
+			attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, dotData.getSkinParam());
+		}
+		final double attributeHeight = attribute.calculateDimension(ug.getStringBounder()).getHeight();
+		final RoundedContainer r = new RoundedContainer(total, suppY, attributeHeight
+				+ (attributeHeight > 0 ? EntityImageState.MARGIN : 0), borderColor, stateBack, background);
 		r.drawU(ug, x + minX, y + minY, dotData.getSkinParam().shadowing());
 
 		if (title != null) {
 			title.drawU(ug, x + xTitle, y + yTitle);
+		}
+
+		if (attributeHeight > 0) {
+			attribute.drawU(ug, x + minX + EntityImageState.MARGIN, y + minY + suppY + EntityImageState.MARGIN / 2.0,
+					total.getWidth());
 		}
 
 	}
@@ -377,15 +408,19 @@ public class Cluster implements Moveable {
 		sb.append("style=solid;");
 		sb.append("color=\"" + StringUtils.getAsHtml(color) + "\";");
 
-		int titleWidth = getTitleWidth();
-		int titleHeight = getTitleHeight();
+		final int titleWidth = getTitleWidth();
+		final int titleHeight = getTitleHeight();
 		if (titleHeight > 0 && titleWidth > 0) {
-			if (skinParam.getPackageStyle() != PackageStyle.RECT) {
-				titleWidth += ClusterDecoration.marginTitleX1 + ClusterDecoration.marginTitleX2 + ClusterDecoration.marginTitleX3;
-				titleHeight += ClusterDecoration.marginTitleY0 + ClusterDecoration.marginTitleY1 + ClusterDecoration.marginTitleY2;
-			}
+			// if (skinParam.getPackageStyle() != PackageStyle.RECT) {
+			// titleWidth += ClusterDecoration.marginTitleX1 +
+			// ClusterDecoration.marginTitleX2
+			// + ClusterDecoration.marginTitleX3;
+			// titleHeight += ClusterDecoration.marginTitleY0 +
+			// ClusterDecoration.marginTitleY1
+			// + ClusterDecoration.marginTitleY2;
+			// }
 			sb.append("label=<");
-			Line.appendTable(sb, titleWidth, titleHeight, colorTitle);
+			Line.appendTable(sb, titleWidth, titleHeight - 5, colorTitle);
 			sb.append(">;");
 		}
 		SvekUtils.println(sb);
@@ -454,7 +489,7 @@ public class Cluster implements Moveable {
 		if (group == null) {
 			return null;
 		}
-		final HtmlColor result = group.getBackColor();
+		final HtmlColor result = group.zgetBackColor();
 		if (result != null) {
 			return result;
 		}
@@ -463,33 +498,45 @@ public class Cluster implements Moveable {
 		}
 		return parent.getBackColor();
 	}
-	
 
 	public boolean isClusterOf(IEntity ent) {
-		if (ent.getType() != EntityType.GROUP) {
+		if (((EntityMutable) ent).isGroup() == false) {
 			return false;
 		}
-		return group.getEntityCluster() == ent;
+		return group == ent;
 	}
 
-	public Point2D projection(double x, double y) {
-		final double v1 = Math.abs(minX - x);
-		final double v2 = Math.abs(maxX - x);
-		final double v3 = Math.abs(minY - y);
-		final double v4 = Math.abs(maxY - y);
-		if (v1 <= v2 && v1 <= v3 && v1 <= v4) {
-			return new Point2D.Double(minX, y);
+	static HtmlColor getStateBackColor(HtmlColor stateBack, ISkinParam skinParam, String stereotype) {
+		if (stateBack == null) {
+			stateBack = skinParam.getHtmlColor(ColorParam.packageBackground, stereotype);
 		}
-		if (v2 <= v1 && v2 <= v3 && v2 <= v4) {
-			return new Point2D.Double(maxX, y);
+		if (stateBack == null) {
+			stateBack = skinParam.getHtmlColor(ColorParam.background, stereotype);
 		}
-		if (v3 <= v1 && v3 <= v2 && v3 <= v4) {
-			return new Point2D.Double(x, minY);
+		if (stateBack == null) {
+			stateBack = HtmlColor.WHITE;
 		}
-		if (v4 <= v1 && v4 <= v1 && v4 <= v3) {
-			return new Point2D.Double(x, maxY);
-		}
-		throw new IllegalStateException();
+		return stateBack;
 	}
+
+	// public Point2D projection(double x, double y) {
+	// final double v1 = Math.abs(minX - x);
+	// final double v2 = Math.abs(maxX - x);
+	// final double v3 = Math.abs(minY - y);
+	// final double v4 = Math.abs(maxY - y);
+	// if (v1 <= v2 && v1 <= v3 && v1 <= v4) {
+	// return new Point2D.Double(minX, y);
+	// }
+	// if (v2 <= v1 && v2 <= v3 && v2 <= v4) {
+	// return new Point2D.Double(maxX, y);
+	// }
+	// if (v3 <= v1 && v3 <= v2 && v3 <= v4) {
+	// return new Point2D.Double(x, minY);
+	// }
+	// if (v4 <= v1 && v4 <= v1 && v4 <= v3) {
+	// return new Point2D.Double(x, maxY);
+	// }
+	// throw new IllegalStateException();
+	// }
 
 }

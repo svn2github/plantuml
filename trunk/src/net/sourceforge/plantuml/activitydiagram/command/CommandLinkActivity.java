@@ -45,9 +45,9 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -65,7 +65,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 				new RegexLeaf("^"), // 
 				new RegexOr("FIRST", true, // 
 						new RegexLeaf("STAR", "(\\(\\*(top)?\\))"), //
-						new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"), // 
+						new RegexLeaf("CODE", "([\\p{L}0-9][\\p{L}0-9_.]*)"), // 
 						new RegexLeaf("BAR", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), //
 						new RegexLeaf("QUOTED", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")), //
 				new RegexLeaf("\\s*"), //
@@ -73,16 +73,16 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), // 
 				new RegexLeaf("\\s*"), // 
-				new RegexLeaf("ARROW", "([=-]+(?:\\*|left|right|up|down|le?|ri?|up?|do?)?[=-]*\\>)"), //
+				new RegexLeaf("ARROW", "([-=.]+(?:\\*|left|right|up|down|le?|ri?|up?|do?)?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), // 
 				new RegexLeaf("\\s*"), //
 				new RegexOr("FIRST2", // 
 						new RegexLeaf("STAR2", "(\\(\\*(top)?\\))"), // 
 						new RegexLeaf("OPENBRACKET2", "(\\{)"), // 
-						new RegexLeaf("CODE2", "([\\p{L}0-9_.]+)"), // 
+						new RegexLeaf("CODE2", "([\\p{L}0-9][\\p{L}0-9_.]*)"), // 
 						new RegexLeaf("BAR2", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), // 
-						new RegexLeaf("QUOTED2", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")),
+						new RegexLeaf("QUOTED2", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9][\\p{L}0-9_.]*))?")),
 				new RegexLeaf("\\s*"), // 
 				new RegexLeaf("STEREOTYPE2", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
@@ -124,7 +124,12 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 			lenght = 2;
 		}
 
-		Link link = new Link(entity1, entity2, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), linkLabel, lenght);
+		LinkType type = new LinkType(LinkDecor.ARROW, LinkDecor.NONE);
+		if (arg2.get("ARROW").get(0).contains(".")) {
+			type = type.getDotted();
+		}
+		
+		Link link = new Link(entity1, entity2, type, linkLabel, lenght);
 		if (arg2.get("ARROW").get(0).contains("*")) {
 			link.setConstraint(false);
 		}
@@ -165,8 +170,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		final String code = arg.get("CODE" + suf).get(0);
 		if (code != null) {
 			if (partition != null) {
-				final Group p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-				p.setBold(true);
+				final IEntityMutable p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+				p.zsetBold(true);
 			}
 			final IEntity result = system.getOrCreate(code, code, getTypeIfExisting(system, code));
 			if (partition != null) {
@@ -182,8 +187,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (quoted.get(0) != null) {
 			final String quotedCode = quoted.get(1) == null ? quoted.get(0) : quoted.get(1);
 			if (partition != null) {
-				final Group p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-				p.setBold(true);
+				final IEntityMutable p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+				p.zsetBold(true);
 			}
 			final IEntity result = system.getOrCreate(quotedCode, quoted.get(0), getTypeIfExisting(system, quotedCode));
 			if (partition != null) {
@@ -200,8 +205,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 
 	static EntityType getTypeIfExisting(ActivityDiagram system, String code) {
 		if (system.entityExist(code)) {
-			final IEntity ent = system.entities().get(code);
-			if (ent.getType() == EntityType.BRANCH) {
+			final IEntity ent = system.getEntities().get(code);
+			if (ent.getEntityType() == EntityType.BRANCH) {
 				return EntityType.BRANCH;
 			}
 		}

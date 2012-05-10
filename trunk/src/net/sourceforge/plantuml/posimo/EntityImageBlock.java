@@ -43,7 +43,9 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.cucadiagram.EntityMutable;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.dot.PlayField;
@@ -129,12 +131,12 @@ public class EntityImageBlock implements IEntityImageBlock {
 	}
 
 	private void initPlayField(StringBounder stringBounder) {
-		if (playField != null || entity.getParent() == null || entity.getType() != EntityType.GROUP) {
+		if (playField != null || EntityUtils.getContainerOrEquivalent(entity) == null || ((EntityMutable)entity).isGroup()==false) {
 			return;
 		}
 		this.playField = new PlayField(param);
 		final Collection<IEntity> entities = new ArrayList<IEntity>();
-		for (IEntity ent : entity.getParent().entities().values()) {
+		for (IEntity ent : EntityUtils.getContainerOrEquivalent(entity).zentities()) {
 			// entities.add(EntityUtils.withNoParent(ent));
 			entities.add(ent);
 		}
@@ -155,7 +157,7 @@ public class EntityImageBlock implements IEntityImageBlock {
 		final URectangle rect = new URectangle(widthTotal, heightTotal);
 
 		// if (entity.getParent() == null) {
-		if (entity.getType() != EntityType.GROUP) {
+		if (((EntityMutable)entity).isGroup()==false) {
 			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.classBackground));
 			ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
 			ug.draw(xTheoricalPosition - marginWidth, yTheoricalPosition - marginHeight, rect);

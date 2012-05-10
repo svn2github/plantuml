@@ -36,19 +36,22 @@ package net.sourceforge.plantuml.cucadiagram;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.plantuml.SpecificBackcolorable;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
 import net.sourceforge.plantuml.svek.IEntityImage;
 
-public interface IEntity extends Imaged, SpecificBackcolorable, Comparable<IEntity> {
+public interface IEntity extends Imaged, SpecificBackcolorable /* , Comparable<IEntity> */{
 
-	public Group getParent();
+	public Group getContainer();
+
+	public void setContainer(IEntityMutable container);
 
 	public List<? extends CharSequence> getDisplay2();
 
-	public EntityType getType();
+	public EntityType getEntityType();
 
 	public String getUid();
 
@@ -59,7 +62,7 @@ public interface IEntity extends Imaged, SpecificBackcolorable, Comparable<IEnti
 	public void setStereotype(Stereotype stereotype);
 
 	public List<Member> getFieldsToDisplay();
-	
+
 	public List<Member> getMethodsToDisplay();
 
 	public BlockMember getBody(PortionShower portionShower);
@@ -81,10 +84,31 @@ public interface IEntity extends Imaged, SpecificBackcolorable, Comparable<IEnti
 	public void setXposition(int pos);
 
 	public IEntityImage getSvekImage();
-	
+
 	public String getGeneric();
-	
+
 	public BlockMember getMouseOver();
 
+	public void muteToType(EntityType newType);
+
+	public void setGeneric(String generic);
+
+	public void addFieldOrMethod(String s);
+
+	public void mouseOver(String s);
+
+	public void setUrl(Url url);
+
+	public void setImageFile(DrawFile imageFile);
+
+	public void setSvekImage(IEntityImage svekImage);
+
+	public void addSubImage(DrawFile subImage);
+
+	public void setDisplay2(String display);
+
+	public void cleanSubImage();
+
+	public Set<DrawFile> getSubImages();
 
 }

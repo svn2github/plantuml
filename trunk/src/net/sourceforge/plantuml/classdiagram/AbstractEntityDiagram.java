@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7803 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -39,8 +39,8 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public abstract class AbstractEntityDiagram extends CucaDiagram {
 
@@ -63,7 +63,7 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 	}
 
 	final public String getDescription() {
-		return "(" + entities().size() + " entities)";
+		return "(" + getEntities().size() + " entities)";
 	}
 	
 	
@@ -74,11 +74,11 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 		if (code.contains(".")) {
 			return code;
 		}
-		final Group g = this.getCurrentGroup();
+		final IEntityMutable g = this.getCurrentGroup();
 		if (g == null) {
 			return code;
 		}
-		final String namespace = g.getNamespace();
+		final String namespace = g.zgetNamespace();
 		if (namespace == null) {
 			return code;
 		}

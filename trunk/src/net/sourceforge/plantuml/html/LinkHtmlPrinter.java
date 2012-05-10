@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.html;
 import java.io.PrintWriter;
 
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -48,7 +47,7 @@ public final class LinkHtmlPrinter {
 	// private final Entity entity;
 	private final boolean chiral;
 
-	public LinkHtmlPrinter(Link link, Entity entity) {
+	public LinkHtmlPrinter(Link link, IEntity entity) {
 		this.link = link;
 		if (link.getEntity1() == entity) {
 			this.chiral = false;
@@ -175,7 +174,7 @@ public final class LinkHtmlPrinter {
 	}
 
 	static String urlOf(IEntity ent) {
-		if (ent.getType() == EntityType.NOTE) {
+		if (ent.getEntityType() == EntityType.NOTE) {
 			throw new IllegalArgumentException();
 		}
 		if (ent.getCode().matches("[-\\w_ .]+")) {

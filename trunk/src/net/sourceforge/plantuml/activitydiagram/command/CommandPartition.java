@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7800 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram.command;
@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
 public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
@@ -52,12 +53,12 @@ public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-		final Group currentPackage = getSystem().getCurrentGroup();
-		final Group p = getSystem().getOrCreateGroup(code, code, null, GroupType.PACKAGE, currentPackage);
-		p.setBold(true);
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, null, GroupType.PACKAGE, currentPackage);
+		p.zsetBold(true);
 		final String color = arg.get(1);
 		if (color != null) {
-			p.setBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColor.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

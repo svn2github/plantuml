@@ -96,22 +96,22 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 			return new CircledCharacter(stereotype.getCharacter(), getSkinParam().getCircledCharacterRadius(), font,
 					stereotype.getHtmlColor(), classBorder, getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getType() == EntityType.ABSTRACT_CLASS) {
+		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
 			return new CircledCharacter('A', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeABackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getType() == EntityType.CLASS) {
+		if (entity.getEntityType() == EntityType.CLASS) {
 			return new CircledCharacter('C', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeCBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == EntityType.INTERFACE) {
 			return new CircledCharacter('I', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeIBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getType() == EntityType.ENUM) {
+		if (entity.getEntityType() == EntityType.ENUM) {
 			return new CircledCharacter('E', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeEBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));

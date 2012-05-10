@@ -47,7 +47,6 @@ import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -71,7 +70,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 	}
 
 	public String getDescription() {
-		return "(" + entities().size() + " activities)";
+		return "(" + getEntities().size() + " activities)";
 	}
 
 	@Override
@@ -87,7 +86,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() == 0) {
 			throw new IllegalStateException();
 		}
-		final Entity act = createEntity(getAutoCode(), display, EntityType.ACTIVITY);
+		final IEntity act = createEntity(getAutoCode(), display, EntityType.ACTIVITY);
 		afterAdd(act, direction);
 
 	}
@@ -100,7 +99,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 			final IEntity existingBar = bars.get(bar);
 			for (Iterator<IEntity> it = waitings.iterator(); it.hasNext();) {
 				final IEntity w = it.next();
-				if (w.getType() == EntityType.SYNCHRO_BAR) {
+				if (w.getEntityType() == EntityType.SYNCHRO_BAR) {
 					it.remove();
 				}
 			}
@@ -112,7 +111,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 			// throw new IllegalStateException(bar);
 		}
 		label(bar);
-		final Entity act = createEntity(getAutoCode(), bar, EntityType.SYNCHRO_BAR);
+		final IEntity act = createEntity(getAutoCode(), bar, EntityType.SYNCHRO_BAR);
 		bars.put(bar, act);
 		afterAdd(act, direction);
 	}

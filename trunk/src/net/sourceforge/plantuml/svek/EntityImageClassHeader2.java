@@ -62,8 +62,8 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 	public EntityImageClassHeader2(IEntity entity, ISkinParam skinParam, PortionShower portionShower) {
 		super(entity, skinParam);
 
-		final boolean italic = entity.getType() == EntityType.ABSTRACT_CLASS
-				|| entity.getType() == EntityType.INTERFACE;
+		final boolean italic = entity.getEntityType() == EntityType.ABSTRACT_CLASS
+				|| entity.getEntityType() == EntityType.INTERFACE;
 
 		final HtmlColor color = getFontColor(FontParam.CLASS, getStereo());
 		final Stereotype stereotype = entity.getStereotype();
@@ -125,22 +125,22 @@ public class EntityImageClassHeader2 extends AbstractEntityImage {
 			return new CircledCharacter(stereotype.getCharacter(), getSkinParam().getCircledCharacterRadius(), font,
 					stereotype.getHtmlColor(), classBorder, getFontColor(FontParam.CIRCLED_CHARACTER, null));
 		}
-		if (entity.getType() == EntityType.ABSTRACT_CLASS) {
+		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
 			return new CircledCharacter('A', getSkinParam().getCircledCharacterRadius(), getFont(
 					FontParam.CIRCLED_CHARACTER, null), getColor(ColorParam.stereotypeABackground, stereotype),
 					getColor(ColorParam.classBorder, stereotype), getFontColor(FontParam.CIRCLED_CHARACTER, null));
 		}
-		if (entity.getType() == EntityType.CLASS) {
+		if (entity.getEntityType() == EntityType.CLASS) {
 			return new CircledCharacter('C', getSkinParam().getCircledCharacterRadius(), getFont(
 					FontParam.CIRCLED_CHARACTER, null), getColor(ColorParam.stereotypeCBackground, stereotype),
 					getColor(ColorParam.classBorder, stereotype), getFontColor(FontParam.CIRCLED_CHARACTER, null));
 		}
-		if (entity.getType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == EntityType.INTERFACE) {
 			return new CircledCharacter('I', getSkinParam().getCircledCharacterRadius(), getFont(
 					FontParam.CIRCLED_CHARACTER, null), getColor(ColorParam.stereotypeIBackground, stereotype),
 					getColor(ColorParam.classBorder, stereotype), getFontColor(FontParam.CIRCLED_CHARACTER, null));
 		}
-		if (entity.getType() == EntityType.ENUM) {
+		if (entity.getEntityType() == EntityType.ENUM) {
 			return new CircledCharacter('E', getSkinParam().getCircledCharacterRadius(), getFont(
 					FontParam.CIRCLED_CHARACTER, null), getColor(ColorParam.stereotypeEBackground, stereotype),
 					getColor(ColorParam.classBorder, stereotype), getFontColor(FontParam.CIRCLED_CHARACTER, null));

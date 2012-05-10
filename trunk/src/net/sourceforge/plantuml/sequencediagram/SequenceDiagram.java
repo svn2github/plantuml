@@ -31,7 +31,6 @@
  */
 package net.sourceforge.plantuml.sequencediagram;
 
-import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;

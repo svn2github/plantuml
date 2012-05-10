@@ -50,7 +50,6 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -145,7 +144,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 			cl1 = system.getOrCreateClass(code);
 		}
 
-		final Entity note = system.createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+		final IEntity note = system.createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
 		note.setSpecificBackcolor(HtmlColor.getColorIfValid(line0.get("COLOR").get(0)));
 		note.setUrl(url);
 

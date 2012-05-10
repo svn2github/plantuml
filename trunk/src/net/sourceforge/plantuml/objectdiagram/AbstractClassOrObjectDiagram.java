@@ -73,7 +73,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 	}
 
 	public int getNbOfHozizontalLollipop(IEntity entity) {
-		if (entity.getType() == EntityType.LOLLIPOP) {
+		if (entity.getEntityType() == EntityType.LOLLIPOP) {
 			throw new IllegalArgumentException();
 		}
 		int result = 0;
@@ -201,7 +201,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 			// null, 2);
 			addLink(entity1ToPoint);
 			addLink(pointToEntity2);
-			if (other.pointToAssocied.getEntity1().getType() == EntityType.POINT_FOR_ASSOCIATION) {
+			if (other.pointToAssocied.getEntity1().getEntityType() == EntityType.POINT_FOR_ASSOCIATION) {
 				removeLink(other.pointToAssocied);
 				other.pointToAssocied = other.pointToAssocied.getInv();
 				addLink(other.pointToAssocied);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7842 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -53,11 +53,11 @@ import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.png.PngIO;
 
@@ -69,7 +69,7 @@ public final class GroupPngMaker {
 
 	class InnerGroupHierarchy implements GroupHierarchy {
 
-		public Collection<Group> getChildrenGroups(Group parent) {
+		public Collection<? extends Group> getChildrenGroups(Group parent) {
 			if (parent == null) {
 				return diagram.getChildrenGroups(group);
 			}
@@ -89,7 +89,7 @@ public final class GroupPngMaker {
 	}
 
 	public void createPng(OutputStream os, List<String> dotStrings) throws IOException, InterruptedException {
-		final Map<Entity, File> imageFiles = new HashMap<Entity, File>();
+		final Map<IEntity, File> imageFiles = new HashMap<IEntity, File>();
 		// final Map<Link, File> imagesLink = new HashMap<Link, File>();
 		try {
 			// populateImages(imageFiles);
@@ -123,7 +123,7 @@ public final class GroupPngMaker {
 	}
 
 	public String createSvg(List<String> dotStrings) throws IOException, InterruptedException {
-		final Map<Entity, File> imageFiles = new HashMap<Entity, File>();
+		final Map<IEntity, File> imageFiles = new HashMap<IEntity, File>();
 		// final Map<Link, File> imagesLink = new HashMap<Link, File>();
 		try {
 			// populateImages(imageFiles);
@@ -194,7 +194,7 @@ public final class GroupPngMaker {
 		return svg;
 	}
 
-	private void cleanTemporaryFiles(final Map<Entity, File> imageFiles) {
+	private void cleanTemporaryFiles(final Map<IEntity, File> imageFiles) {
 		if (OptionFlags.getInstance().isKeepTmpFiles() == false) {
 			for (File f : imageFiles.values()) {
 				FileUtils.delete(f);
@@ -205,11 +205,11 @@ public final class GroupPngMaker {
 	GraphvizMaker createDotMaker(List<String> dotStrings) {
 		final List<Link> links = getPureInnerLinks();
 		ISkinParam skinParam = diagram.getSkinParam();
-		if (OptionFlags.PBBACK && group.getBackColor() != null) {
-			skinParam = new SkinParamBackcolored(skinParam, null, group.getBackColor());
+		if (OptionFlags.PBBACK && group.zgetBackColor() != null) {
+			skinParam = new SkinParamBackcolored(skinParam, null, group.zgetBackColor());
 		}
-		final DotData dotData = new DotData(group, links, group.entities(), diagram.getUmlDiagramType(), skinParam,
-				group.getRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper());
+		final DotData dotData = new DotData(group, links, group.zentities(), diagram.getUmlDiagramType(), skinParam,
+				group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(), diagram.getEntityFactory());
 		// dotData.putAllImages(images);
 		// dotData.putAllStaticImages(staticImages);
 		// dotData.putAllImagesLink(imagesLink);
@@ -221,14 +221,29 @@ public final class GroupPngMaker {
 	private List<Link> getPureInnerLinks() {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link link : diagram.getLinks()) {
-			final IEntity e1 = link.getEntity1();
-			final IEntity e2 = link.getEntity2();
-			if (e1.getParent() == group && e1.getType() != EntityType.GROUP && e2.getParent() == group
-					&& e2.getType() != EntityType.GROUP) {
+			final IEntityMutable e1 = (IEntityMutable) link.getEntity1();
+			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
+			if (EntityUtils.doesContains((IEntityMutable) group, e1)
+					&& EntityUtils.doesContains((IEntityMutable) group, e2)) {
 				result.add(link);
 			}
 		}
 		return result;
 	}
+
+//	private List<Link> getPureInnerLinksOld() {
+//		final List<Link> result = new ArrayList<Link>();
+//		for (Link link : diagram.getLinks()) {
+//			final IEntityMutable e1 = (IEntityMutable) link.getEntity1();
+//			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
+//			final Group g1 = EntityUtils.getContainerOrEquivalent(e1);
+//			final Group g2 = EntityUtils.getContainerOrEquivalent(e2);
+//			if (EntityUtils.equals(g1, group) && e1.isGroup() == false && EntityUtils.equals(g2, group)
+//					&& e2.isGroup() == false) {
+//				result.add(link);
+//			}
+//		}
+//		return result;
+//	}
 
 }

@@ -85,7 +85,7 @@ public class EntityImageCircleInterface extends AbstractEntityImage {
 		final Dimension2D dimName = name.calculateDimension(stringBounder);
 		final Dimension2D dimStereo = getStereoDimension(stringBounder);
 		final Dimension2D circle = new Dimension2DDouble(SIZE, SIZE);
-		return Dimension2DDouble.mergeTB(dimStereo, circle, dimName);
+		return Dimension2DDouble.mergeLayoutT12B3(dimStereo, circle, dimName);
 	}
 
 	private Dimension2D getStereoDimension(StringBounder stringBounder) {

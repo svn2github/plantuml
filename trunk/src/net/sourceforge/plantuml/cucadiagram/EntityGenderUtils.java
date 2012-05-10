@@ -38,7 +38,7 @@ public class EntityGenderUtils {
 	static public EntityGender byEntityType(final EntityType type) {
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
-				return test.getType() == type;
+				return test.getEntityType() == type;
 			}
 		};
 	}
@@ -46,7 +46,7 @@ public class EntityGenderUtils {
 	static public EntityGender byEntityAlone(final IEntity entity) {
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
-				return test == entity;
+				return test.getUid().equals(entity.getUid());
 			}
 		};
 	}
@@ -62,16 +62,16 @@ public class EntityGenderUtils {
 		};
 	}
 
-	static public EntityGender byPackage(final Group group) {
+	static public EntityGender byPackage(final IEntityMutable group) {
 		if (group == null) {
 			throw new IllegalArgumentException();
 		}
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
-				if (test.getParent() == null) {
+				if (test.getContainer() == null) {
 					return false;
 				}
-				if (group == test.getParent()) {
+				if (EntityUtils.equals(group, test.getContainer())) {
 					return true;
 				}
 				return false;

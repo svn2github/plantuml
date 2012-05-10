@@ -33,89 +33,11 @@
  */
 package net.sourceforge.plantuml.ugraphic;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Dimension2D;
-import java.awt.image.BufferedImage;
-
-import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.graphic.HtmlColor;
-import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 
-public class Sprite {
-
-	private final int width;
-	private final int height;
-	private final int grayLevel;
-	private final int pixels[][];
-
-	Sprite(int width, int height, int grayLevel) {
-		if (grayLevel != 2 && grayLevel != 4 && grayLevel != 8 && grayLevel != 16) {
-			throw new IllegalArgumentException();
-		}
-		this.width = width;
-		this.height = height;
-		this.grayLevel = grayLevel;
-		this.pixels = new int[height][width];
-	}
-
-	void setPixel(int x, int y, int level) {
-		if (x < 0 || x >= width) {
-			return;
-		}
-		if (y < 0 || y >= height) {
-			return;
-		}
-		if (level < 0 || level >= grayLevel) {
-			throw new IllegalArgumentException("level=" + level + " grayLevel=" + grayLevel);
-		}
-		pixels[y][x] = level;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	int getWidth() {
-		return width;
-	}
-
-	public UImage toUImage(ColorMapper colorMapper, HtmlColor backcolor, HtmlColor color) {
-		final BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-		if (backcolor == null) {
-			backcolor = HtmlColor.WHITE;
-		}
-		if (color == null) {
-			backcolor = HtmlColor.BLACK;
-		}
-		final UGradient gradient = new UGradient(backcolor, color);
-		for (int col = 0; col < width; col++) {
-			for (int line = 0; line < height; line++) {
-				final double coef = 1.0 * pixels[line][col] / (grayLevel - 1);
-				final Color c = gradient.getColor(colorMapper, coef);
-				im.setRGB(col, line, c.getRGB());
-			}
-		}
-		return new UImage(im);
-	}
-
-	public TextBlock asTextBlock(final HtmlColor color) {
-		return new TextBlock() {
-
-			public void drawU(UGraphic ug, double x, double y) {
-				ug.draw(x, y, toUImage(ug.getColorMapper(), ug.getParam().getBackcolor(), color));
-			}
-
-			public Dimension2D calculateDimension(StringBounder stringBounder) {
-				return new Dimension2DDouble(getWidth(), getHeight());
-			}
-
-			public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-				throw new UnsupportedOperationException();
-			}
-		};
-	}
+public interface Sprite {
+	
+	public TextBlock asTextBlock(final HtmlColor color);
 
 }

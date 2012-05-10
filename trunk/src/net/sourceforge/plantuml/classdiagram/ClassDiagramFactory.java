@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7872 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -59,11 +59,12 @@ import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
+import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -79,6 +80,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommonCommands(system);
 
+		addCommand(new CommandRankDirUsecase(system));
 		addCommand(new CommandPage(system));
 		addCommand(new CommandAddMethod(system));
 
@@ -122,9 +124,9 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 	@Override
 	public String checkFinalError() {
 		if (system.getSkinParam().isSvek()) {
-			for (Group g : system.getGroups(true)) {
+			for (IEntityMutable g : system.getGroups(true)) {
 				final List<IEntity> standalones = new ArrayList<IEntity>();
-				for (IEntity ent : g.entities().values()) {
+				for (IEntity ent : g.zentities()) {
 					if (system.isStandalone(ent)) {
 						standalones.add(ent);
 					}

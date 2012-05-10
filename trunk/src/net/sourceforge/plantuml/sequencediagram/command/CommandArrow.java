@@ -131,8 +131,7 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
-
-		String fullArrow = StringUtils.manageArrowForSequence(arg2.get("ARROW").get(0));
+		final String fullArrow = StringUtils.manageArrowForSequence(arg2.get("ARROW").get(0));
 		final String arrowWithX = fullArrow.replaceAll("[ o]", "");
 		final String arrow = fullArrow.replaceAll("[ ox]", "");
 		final boolean circleAtStart = decorationAtStart(arg2, "o");

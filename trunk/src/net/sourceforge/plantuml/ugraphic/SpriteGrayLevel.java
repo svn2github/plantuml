@@ -87,7 +87,7 @@ public enum SpriteGrayLevel {
 	private List<String> encode16(BufferedImage img) {
 		final int width = img.getWidth();
 		final int height = img.getHeight();
-		final int type = img.getType();
+		// final int type = img.getType();
 
 		final List<String> result = new ArrayList<String>();
 
@@ -129,7 +129,7 @@ public enum SpriteGrayLevel {
 	private List<String> encode4(BufferedImage img) {
 		final int width = img.getWidth();
 		final int height = img.getHeight();
-		final int type = img.getType();
+		// final int type = img.getType();
 
 		final List<String> result = new ArrayList<String>();
 		final AsciiEncoder encoder = new AsciiEncoder();
@@ -177,7 +177,7 @@ public enum SpriteGrayLevel {
 	}
 
 	private Sprite buildSprite16(List<String> strings) {
-		final Sprite result = new Sprite(strings.get(0).length(), strings.size(), 16);
+		final SpriteMonochrome result = new SpriteMonochrome(strings.get(0).length(), strings.size(), 16);
 		for (int col = 0; col < result.getWidth(); col++) {
 			for (int line = 0; line < result.getHeight(); line++) {
 				if (col >= strings.get(line).length()) {
@@ -195,7 +195,7 @@ public enum SpriteGrayLevel {
 
 	private Sprite buildSprite8(int width, int height, List<String> strings) {
 		final AsciiEncoder encoder = new AsciiEncoder();
-		final Sprite result = new Sprite(width, height, 8);
+		final SpriteMonochrome result = new SpriteMonochrome(width, height, 8);
 		for (int col = 0; col < result.getWidth(); col++) {
 			for (int line = 0; line < strings.size(); line++) {
 				if (col >= strings.get(line).length()) {
@@ -214,7 +214,7 @@ public enum SpriteGrayLevel {
 
 	private Sprite buildSprite4(int width, int height, List<String> strings) {
 		final AsciiEncoder encoder = new AsciiEncoder();
-		final Sprite result = new Sprite(width, height, 4);
+		final SpriteMonochrome result = new SpriteMonochrome(width, height, 4);
 		for (int col = 0; col < result.getWidth(); col++) {
 			for (int line = 0; line < strings.size(); line++) {
 				if (col >= strings.get(line).length()) {
@@ -265,7 +265,7 @@ public enum SpriteGrayLevel {
 	public Sprite buildSpriteZ(int width, int height, String compressed) throws IOException {
 		final byte comp[] = new AsciiEncoder().decode(compressed);
 		final byte img[] = new CompressionZlib().decompress(comp);
-		final Sprite result = new Sprite(width, height, nbColor);
+		final SpriteMonochrome result = new SpriteMonochrome(width, height, nbColor);
 		int cpt = 0;
 		for (int line = 0; line < result.getHeight(); line++) {
 			for (int col = 0; col < result.getWidth(); col++) {

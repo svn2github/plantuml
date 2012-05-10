@@ -28,79 +28,71 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7743 $
+ * Revision $Revision: 7853 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.Collection;
-import java.util.Map;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.svek.PackageStyle;
 
 public interface Group {
 
-	public void addEntity(IEntity entity);
+	public boolean zcontains(IEntity entity);
 
-	public boolean contains(IEntity entity);
+	public Collection<IEntity> zentities();
 
-	public CrossingType getCrossingType(Link link);
+	public int zsize();
 
-	public Map<String, IEntity> entities();
+	public String zgetGroupCode();
 
-	public String getCode();
+	public String zgetUid();
 
-	public String getUid();
+	public String zgetUid1();
 
-	public String getUid1();
+	public int zgetUid2();
 
-	public int getUid2();
+	public HtmlColor zgetBackColor();
 
-	public HtmlColor getBackColor();
+	public void zsetBackColor(HtmlColor backColor);
 
-	public void setBackColor(HtmlColor backColor);
+	public Group zgetParent();
 
-	public Group getParent();
+	public boolean zisDashed();
 
-	public boolean isDashed();
+	public void zsetDashed(boolean dashed);
 
-	public void setDashed(boolean dashed);
+	public boolean zisRounded();
 
-	public boolean isRounded();
+	public void zsetRounded(boolean rounded);
 
-	public void setRounded(boolean rounded);
+	public GroupType zgetGroupType();
 
-	public GroupType getType();
+	public String zgetDisplay();
 
-	public IEntity getEntityCluster();
+	public boolean zisBold();
 
-	public void setEntityCluster(IEntity entityCluster);
+	public void zsetBold(boolean bold);
 
-	public String getDisplay();
+	public void zmoveEntitiesTo(IEntityMutable dest);
 
-	public boolean isBold();
+	public String zgetNamespace();
 
-	public void setBold(boolean bold);
+	public Collection<? extends Group> zgetChildren();
 
-	public void moveEntitiesTo(Group dest);
+	public boolean zisAutonom();
 
-	public String getNamespace();
+	public void zsetAutonom(boolean autonom);
 
-	public Collection<Group> getChildren();
+	public Rankdir zgetRankdir();
 
-	public boolean isAutonom();
+	public void zsetRankdir(Rankdir rankdir);
 
-	public void setAutonom(boolean autonom);
+	public void zsetStereotype(Stereotype stereotype);
 
-	public Rankdir getRankdir();
-
-	public void setRankdir(Rankdir rankdir);
-
-	public void setStereotype(Stereotype stereotype);
-
-	public Stereotype getStereotype();
-
-	void removeInternal(Entity entity);
-
-	public void removeInternal(Group group);
+	public Stereotype zgetStereotype();
+	
+	public PackageStyle zgetPackageStyle();
 }

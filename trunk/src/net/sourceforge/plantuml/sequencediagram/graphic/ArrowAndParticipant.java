@@ -45,7 +45,7 @@ class ArrowAndParticipant extends Arrow implements InGroupable {
 	private final ParticipantBox participantBox;
 
 	public ArrowAndParticipant(StringBounder stringBounder, Arrow arrow, ParticipantBox participantBox) {
-		super(arrow.getStartingY(), arrow.getSkin(), arrow.getArrowComponent());
+		super(arrow.getStartingY(), arrow.getSkin(), arrow.getArrowComponent(), arrow.getUrl());
 		this.arrow = arrow;
 		this.participantBox = participantBox;
 		arrow.setPaddingArrowHead(participantBox.getPreferredWidth(stringBounder) / 2);

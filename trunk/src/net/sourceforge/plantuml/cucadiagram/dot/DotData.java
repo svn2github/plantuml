@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7833 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -49,6 +49,7 @@ import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityFactory;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.PortionShower;
 import net.sourceforge.plantuml.cucadiagram.Rankdir;
@@ -58,7 +59,7 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 final public class DotData implements PortionShower {
 
 	final private List<Link> links;
-	final private Map<String, ? extends IEntity> entities;
+	final private Collection<? extends IEntity> entities;
 	final private UmlDiagramType umlDiagramType;
 	final private ISkinParam skinParam;
 	final private Rankdir rankdir;
@@ -70,10 +71,11 @@ final public class DotData implements PortionShower {
 	private StaticFilesMap staticFilesMap;
 	private boolean visibilityModifierPresent;
 	private final ColorMapper colorMapper;
+	private final IEntityFactory entityFactory;
 
-	public DotData(Group topParent, List<Link> links, Map<String, ? extends IEntity> entities,
+	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
-			PortionShower portionShower, ColorMapper colorMapper) {
+			PortionShower portionShower, ColorMapper colorMapper, IEntityFactory entityFactory) {
 		this.topParent = topParent;
 		this.colorMapper = colorMapper;
 		this.links = links;
@@ -83,16 +85,17 @@ final public class DotData implements PortionShower {
 		this.rankdir = rankdir;
 		this.groupHierarchy = groupHierarchy;
 		this.portionShower = portionShower;
+		this.entityFactory = entityFactory;
 	}
 
-	public DotData(Group topParent, List<Link> links, Map<String, ? extends IEntity> entities,
+	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
-			ColorMapper colorMapper) {
+			ColorMapper colorMapper, IEntityFactory entityFactory) {
 		this(topParent, links, entities, umlDiagramType, skinParam, rankdir, groupHierarchy, new PortionShower() {
 			public boolean showPortion(EntityPortion portion, IEntity entity) {
 				return true;
 			}
-		}, colorMapper);
+		}, colorMapper, entityFactory);
 	}
 
 	public boolean hasUrl() {
@@ -151,7 +154,7 @@ final public class DotData implements PortionShower {
 		return links;
 	}
 
-	public Map<String, ? extends IEntity> getEntities() {
+	public Collection<? extends IEntity> getEntities() {
 		return entities;
 	}
 
@@ -161,7 +164,7 @@ final public class DotData implements PortionShower {
 		int size = 0;
 		do {
 			size = result.size();
-			for (IEntity ent : entities.values()) {
+			for (IEntity ent : entities) {
 				if (isDirectyLinked(ent, result)) {
 					result.add(ent);
 				}
@@ -173,7 +176,7 @@ final public class DotData implements PortionShower {
 
 	public final Set<IEntity> getAllLinkedDirectedTo(final IEntity ent1) {
 		final Set<IEntity> result = new HashSet<IEntity>();
-		for (IEntity ent : entities.values()) {
+		for (IEntity ent : entities) {
 			if (isDirectlyLinkedSlow(ent, ent1)) {
 				result.add(ent);
 			}
@@ -201,7 +204,7 @@ final public class DotData implements PortionShower {
 
 	public boolean isThereLink(Group g) {
 		for (Link l : links) {
-			if (l.getEntity1() == g.getEntityCluster() || l.getEntity2() == g.getEntityCluster()) {
+			if (l.getEntity1() == g || l.getEntity2() == g) {
 				return true;
 			}
 		}
@@ -277,6 +280,10 @@ final public class DotData implements PortionShower {
 
 	public final ColorMapper getColorMapper() {
 		return colorMapper;
+	}
+
+	public final IEntityFactory getEntityFactory() {
+		return entityFactory;
 	}
 
 }

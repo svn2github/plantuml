@@ -27,6 +27,7 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
+ * Modified by : Arno Peterson
  * 
  * Revision $Revision: 5183 $
  *

@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -120,8 +121,8 @@ public class CommandLinkUsecase2 extends SingleLineCommand2<UsecaseDiagram> {
 	private CommandExecutionResult executePackageLink(Map<String, RegexPartialMatch> arg) {
 		final String ent1 = arg.get("ENT1").get(0);
 		final String ent2 = arg.get("ENT2").get(0);
-		final Group cl1 = getSystem().getGroup(ent1);
-		final Group cl2 = getSystem().getGroup(ent2);
+		final IEntityMutable cl1 = getSystem().getGroup(ent1);
+		final IEntityMutable cl2 = getSystem().getGroup(ent2);
 
 		final LinkType linkType = getLinkType(arg);
 		Direction dir = getDirection(arg);
@@ -135,7 +136,7 @@ public class CommandLinkUsecase2 extends SingleLineCommand2<UsecaseDiagram> {
 			dir = dir.getInv();
 		}
 
-		Link link = new Link(cl1.getEntityCluster(), cl2.getEntityCluster(), linkType, arg.get("LABEL_LINK").get(0),
+		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL_LINK").get(0),
 				queue.length());
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();

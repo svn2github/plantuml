@@ -50,8 +50,10 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -113,7 +115,7 @@ public final class PlayField {
 		}
 
 		for (IEntity ent : entities) {
-			if (ent.getType() == EntityType.GROUP && ent.getParent().isAutonom() == false) {
+			if (((IEntityMutable) ent).isGroup() && ((Group) ent).zisAutonom() == false) {
 				// final IEntityImageBlock title = createClusterTitle();
 				// final Frame frame = new Frame(StringUtils.getWithNewlines(ent.getDisplay()), Color.BLACK, skinParam
 				// .getFont(FontParam.CLASS), rose.getHtmlColor(skinParam, ColorParam.classBorder).getColor());
@@ -128,14 +130,14 @@ public final class PlayField {
 
 		for (IEntity ent : entities) {
 			// System.err.println("ENT=" + ent);
-			if (ent.getType() == EntityType.GROUP && ent.getParent().isAutonom() == false) {
+			if (((IEntityMutable) ent).isGroup() && ((Group) ent).zisAutonom() == false) {
 				assert clusters.containsKey(ent);
 				continue;
 			}
 			assert clusters.containsKey(ent) == false;
 			Cluster parentCluster = root;
-			if (ent.getType() != EntityType.GROUP && ent.getParent() != null) {
-				parentCluster = clusters.get(ent.getParent().getEntityCluster());
+			if (((IEntityMutable) ent).isGroup()==false && ent.getContainer() != null) {
+				parentCluster = clusters.get(ent.getContainer());
 				if (parentCluster == null) {
 					parentCluster = root;
 				}
@@ -155,7 +157,7 @@ public final class PlayField {
 
 		for (Cluster cl : clusters.values()) {
 			if (cl.getContents().size() == 0) {
-				throw new IllegalStateException();
+				// throw new IllegalStateException();
 			}
 		}
 
@@ -204,12 +206,12 @@ public final class PlayField {
 		if (clusters.containsKey(ent) == false) {
 			throw new IllegalArgumentException();
 		}
-		return blocks.get(getOneOf(ent.getParent())).getBlock();
+		return blocks.get(getOneOf(EntityUtils.getContainerOrEquivalent(ent))).getBlock();
 	}
 
 	private IEntity getOneOf(Group gr) {
 		assert gr != null;
-		return gr.entities().values().iterator().next();
+		return gr.zentities().iterator().next();
 	}
 
 	public void drawInternal(UGraphic ug) {
@@ -310,11 +312,11 @@ public final class PlayField {
 	}
 
 	private IEntityImageBlock createEntityImageBlock(Collection<Link> links, IEntity ent) {
-		if (ent.getType() == EntityType.CLASS || ent.getType() == EntityType.ABSTRACT_CLASS
-				|| ent.getType() == EntityType.INTERFACE || ent.getType() == EntityType.ENUM) {
+		if (ent.getEntityType() == EntityType.CLASS || ent.getEntityType() == EntityType.ABSTRACT_CLASS
+				|| ent.getEntityType() == EntityType.INTERFACE || ent.getEntityType() == EntityType.ENUM) {
 			return new EntityImageClass2(ent, skinParam, links);
 		}
-		if (ent.getType() == EntityType.NOTE) {
+		if (ent.getEntityType() == EntityType.NOTE) {
 			return new EntityImageNote2(ent, skinParam, links);
 		}
 		return new EntityImageBlock(ent, rose, skinParam, links, FontParam.PACKAGE);

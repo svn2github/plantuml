@@ -35,7 +35,6 @@ package net.sourceforge.plantuml.sequencediagram;
 
 import java.util.List;
 
-import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.skin.ArrowConfiguration;
 
 public class MessageExo extends AbstractMessage {
@@ -71,10 +70,6 @@ public class MessageExo extends AbstractMessage {
 
 	public boolean dealWith(Participant someone) {
 		return participant == someone;
-	}
-
-	public Url getUrl() {
-		return null;
 	}
 
 	@Override

@@ -43,7 +43,6 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -92,9 +91,9 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		}
 		final String stereotype = arg.get("STEREO").get(0);
 		final String generic = arg.get("GENERIC").get(0);
-		final Entity entity;
+		final IEntity entity;
 		if (getSystem().entityExist(code)) {
-			entity = (Entity) getSystem().getOrCreateEntity(code, type);
+			entity = getSystem().getOrCreateEntity(code, type);
 			entity.muteToType(type);
 		} else {
 			entity = getSystem().createEntity(code, display, type);
@@ -112,7 +111,7 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		return CommandExecutionResult.ok();
 	}
 
-	public static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final Entity entity) {
+	public static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final IEntity entity) {
 		if (arg.get("EXTENDS").get(1) != null) {
 			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
 			final String other = arg.get("EXTENDS").get(2);
@@ -120,12 +119,12 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = EntityType.INTERFACE;
 			}
-			if (mode == Mode.EXTENDS && entity.getType() == EntityType.INTERFACE) {
+			if (mode == Mode.EXTENDS && entity.getEntityType() == EntityType.INTERFACE) {
 				type2 = EntityType.INTERFACE;
 			}
 			final IEntity cl2 = system.getOrCreateClass(other, type2);
 			LinkType typeLink = new LinkType(LinkDecor.NONE, LinkDecor.EXTENDS);
-			if (type2 == EntityType.INTERFACE && entity.getType() != EntityType.INTERFACE) {
+			if (type2 == EntityType.INTERFACE && entity.getEntityType() != EntityType.INTERFACE) {
 				typeLink = typeLink.getDashed();
 			}
 			final Link link = new Link(cl2, entity, typeLink, null, 2, null, null, system.getLabeldistance(),

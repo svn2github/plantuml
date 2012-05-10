@@ -59,6 +59,7 @@ public class DriverPathG2d extends DriverShadowedG2d implements UDriver<Graphics
 		DriverLineG2d.manageStroke(param, g2d);
 
 		final GeneralPath p = new GeneralPath();
+		boolean hasBezier = false;
 		for (USegment seg : shape) {
 			final USegmentType type = seg.getSegmentType();
 			final double coord[] = seg.getCoord();
@@ -70,6 +71,7 @@ public class DriverPathG2d extends DriverShadowedG2d implements UDriver<Graphics
 			} else if (type == USegmentType.SEG_CUBICTO) {
 				p.curveTo((float) (x + coord[0]), (float) (y + coord[1]), (float) (x + coord[2]),
 						(float) (y + coord[3]), (float) (x + coord[4]), (float) (y + coord[5]));
+				hasBezier = true;
 			} else {
 				throw new UnsupportedOperationException();
 			}
@@ -82,22 +84,26 @@ public class DriverPathG2d extends DriverShadowedG2d implements UDriver<Graphics
 
 		// Shadow
 		if (shape.getDeltaShadow() != 0) {
-			double lastX = 0;
-			double lastY = 0;
-			for (USegment seg : shape) {
-				final USegmentType type = seg.getSegmentType();
-				final double coord[] = seg.getCoord();
-				// Cast float for Java 1.5
-				if (type == USegmentType.SEG_MOVETO) {
-					lastX = x + coord[0];
-					lastY = y + coord[1];
-				} else if (type == USegmentType.SEG_LINETO) {
-					final Shape line = new Line2D.Double(lastX, lastY, x + coord[0], y + coord[1]);
-					drawShadow(g2d, line, shape.getDeltaShadow(), dpiFactor);
-					lastX = x + coord[0];
-					lastY = y + coord[1];
-				} else {
-					throw new UnsupportedOperationException();
+			if (hasBezier) {
+				drawShadow(g2d, p, shape.getDeltaShadow(), dpiFactor);
+			} else {
+				double lastX = 0;
+				double lastY = 0;
+				for (USegment seg : shape) {
+					final USegmentType type = seg.getSegmentType();
+					final double coord[] = seg.getCoord();
+					// Cast float for Java 1.5
+					if (type == USegmentType.SEG_MOVETO) {
+						lastX = x + coord[0];
+						lastY = y + coord[1];
+					} else if (type == USegmentType.SEG_LINETO) {
+						final Shape line = new Line2D.Double(lastX, lastY, x + coord[0], y + coord[1]);
+						drawShadow(g2d, line, shape.getDeltaShadow(), dpiFactor);
+						lastX = x + coord[0];
+						lastY = y + coord[1];
+					} else {
+						throw new UnsupportedOperationException();
+					}
 				}
 			}
 		}

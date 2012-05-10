@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7743 $
+ * Revision $Revision: 7843 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -56,11 +56,12 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Position;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.cucadiagram.Member;
@@ -196,8 +197,8 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private Collection<IEntity> getUnpackagedEntities() {
 		final List<IEntity> result = new ArrayList<IEntity>();
-		for (IEntity ent : getData().getEntities().values()) {
-			if (ent.getParent() == getData().getTopParent()) {
+		for (IEntity ent : getData().getEntities()) {
+			if (EntityUtils.equals(EntityUtils.getContainerOrEquivalent(ent), getData().getTopParent())) {
 				result.add(ent);
 			}
 		}
@@ -206,9 +207,9 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void printGroups(StringBuilder sb, Group parent) throws IOException {
 		for (Group g : getData().getGroupHierarchy().getChildrenGroups(parent)) {
-			if (getData().isEmpty(g) && g.getType() == GroupType.PACKAGE) {
-				final IEntity folder = new Entity(g.getUid1(), g.getUid2(), g.getCode(), g.getDisplay(),
-						EntityType.EMPTY_PACKAGE, null, null);
+			if (getData().isEmpty(g) && g.zgetGroupType() == GroupType.PACKAGE) {
+				final IEntity folder = getData().getEntityFactory().createEntity(g.zgetUid1(), g.zgetUid2(),
+						g.zgetGroupCode(), g.zgetDisplay(), EntityType.EMPTY_PACKAGE, null, null);
 				printEntity(sb, folder);
 			} else {
 				printGroup(sb, g);
@@ -217,7 +218,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private void printGroup(StringBuilder sb, Group g) throws IOException {
-		if (g.getType() == GroupType.CONCURRENT_STATE) {
+		if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			return;
 		}
 
@@ -230,9 +231,9 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void printGroupNormal(StringBuilder sb, Group g) throws IOException {
 
-		final String stereo = g.getStereotype()==null?null:g.getStereotype().getLabel();
+		final String stereo = g.zgetStereotype() == null ? null : g.zgetStereotype().getLabel();
 
-		sb.append("subgraph " + g.getUid() + " {");
+		sb.append("subgraph " + g.zgetUid() + " {");
 		// sb.append("margin=10;");
 
 		final UFont font = getData().getSkinParam().getFont(getFontParamForGroup(), stereo);
@@ -242,8 +243,8 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			sb.append("fontname=\"" + fontFamily + "\";");
 		}
 
-		if (g.getDisplay() != null) {
-			sb.append("label=<" + manageHtmlIB(g.getDisplay(), getFontParamForGroup(), stereo) + ">;");
+		if (g.zgetDisplay() != null) {
+			sb.append("label=<" + manageHtmlIB(g.zgetDisplay(), getFontParamForGroup(), stereo) + ">;");
 		}
 		final String fontColor = getAsHtml(getData().getSkinParam().getFontHtmlColor(getFontParamForGroup(), stereo));
 		sb.append("fontcolor=\"" + fontColor + "\";");
@@ -252,7 +253,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			sb.append("fillcolor=\"" + getAsHtml(getGroupBackColor(g)) + "\";");
 		}
 
-		if (g.getType() == GroupType.STATE) {
+		if (g.zgetGroupType() == GroupType.STATE) {
 			sb.append("color=" + getColorString(ColorParam.stateBorder, stereo) + ";");
 		} else {
 			sb.append("color=" + getColorString(ColorParam.packageBorder, stereo) + ";");
@@ -261,7 +262,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 		printGroups(sb, g);
 
-		this.printEntities(sb, g.entities().values());
+		this.printEntities(sb, g.zentities());
 		for (Link link : getData().getLinks()) {
 			eventuallySameRank(sb, g, link);
 		}
@@ -269,7 +270,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private HtmlColor getGroupBackColor(Group g) {
-		HtmlColor value = g.getBackColor();
+		HtmlColor value = g.zgetBackColor();
 		if (value == null) {
 			value = getData().getSkinParam().getHtmlColor(ColorParam.packageBackground, null);
 			// value = rose.getHtmlColor(this.getData().getSkinParam(),
@@ -280,7 +281,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void printGroupSpecial(StringBuilder sb, Group g) throws IOException {
 
-		sb.append("subgraph " + g.getUid() + "a {");
+		sb.append("subgraph " + g.zgetUid() + "a {");
 		if (OptionFlags.getInstance().isDebugDot()) {
 			sb.append("style=dotted;");
 			sb.append("label=\"a\";");
@@ -289,7 +290,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			sb.append("label=\"\";");
 		}
 
-		sb.append("subgraph " + g.getUid() + "v {");
+		sb.append("subgraph " + g.zgetUid() + "v {");
 		sb.append("style=solid;");
 		// sb.append("margin=10;");
 
@@ -340,13 +341,13 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 		if (autoLabel /* || toEdgeLinks.size() > 0 || fromEdgeLinks.size() > 0 */) {
 			if (OptionFlags.getInstance().isDebugDot()) {
-				sb.append(g.getUid() + "lmin;");
-				sb.append(g.getUid() + "lmax;");
-				sb.append(g.getUid() + "lmin->" + g.getUid() + "lmax [minlen=2]; ");
+				sb.append(g.zgetUid() + "lmin;");
+				sb.append(g.zgetUid() + "lmax;");
+				sb.append(g.zgetUid() + "lmin->" + g.zgetUid() + "lmax [minlen=2]; ");
 			} else {
-				sb.append(g.getUid() + "lmin [shape=point,width=.01,style=invis,label=\"\"];");
-				sb.append(g.getUid() + "lmax [shape=point,width=.01,style=invis,label=\"\"];");
-				sb.append(g.getUid() + "lmin->" + g.getUid()
+				sb.append(g.zgetUid() + "lmin [shape=point,width=.01,style=invis,label=\"\"];");
+				sb.append(g.zgetUid() + "lmax [shape=point,width=.01,style=invis,label=\"\"];");
+				sb.append(g.zgetUid() + "lmin->" + g.zgetUid()
 						+ "lmax [minlen=2,style=invis,arrowtail=none,arrowhead=none]; ");
 			}
 		}
@@ -359,13 +360,12 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			sb.append("fontname=\"" + fontFamily + "\";");
 		}
 
-		if (g.getDisplay() != null) {
-			final StringBuilder label = new StringBuilder(manageHtmlIB(g.getDisplay(), getFontParamForGroup(), null));
-			if (g.getEntityCluster().getFieldsToDisplay().size() > 0) {
+		if (g.zgetDisplay() != null) {
+			final StringBuilder label = new StringBuilder(manageHtmlIB(g.zgetDisplay(), getFontParamForGroup(), null));
+			if (((IEntity) g).getFieldsToDisplay().size() > 0) {
 				label.append("<BR ALIGN=\"LEFT\"/>");
-				for (Member att : g.getEntityCluster().getFieldsToDisplay()) {
-					label.append(manageHtmlIB("  " + att.getDisplay(true) + "  ",
-							FontParam.STATE_ATTRIBUTE, null));
+				for (Member att : ((IEntity) g).getFieldsToDisplay()) {
+					label.append(manageHtmlIB("  " + att.getDisplay(true) + "  ", FontParam.STATE_ATTRIBUTE, null));
 					label.append("<BR ALIGN=\"LEFT\"/>");
 				}
 			}
@@ -378,14 +378,14 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 		if (groupBackColor != null) {
 			sb.append("fillcolor=\"" + getAsHtml(groupBackColor) + "\";");
 		}
-		if (g.getType() == GroupType.STATE) {
+		if (g.zgetGroupType() == GroupType.STATE) {
 			sb.append("color=" + getColorString(ColorParam.stateBorder, null) + ";");
 		} else {
 			sb.append("color=" + getColorString(ColorParam.packageBorder, null) + ";");
 		}
 		sb.append("style=\"" + getStyle(g) + "\";");
 
-		sb.append("subgraph " + g.getUid() + "i {");
+		sb.append("subgraph " + g.zgetUid() + "i {");
 		sb.append("label=\"i\";");
 		if (OptionFlags.getInstance().isDebugDot()) {
 			sb.append("style=dotted;");
@@ -406,7 +406,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 		printGroups(sb, g);
 
-		this.printEntities(sb, g.entities().values());
+		this.printEntities(sb, g.zentities());
 		for (Link link : getData().getLinks()) {
 			eventuallySameRank(sb, g, link);
 		}
@@ -426,7 +426,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 		sb.append("}"); // end of v
 
 		if (autoLabel) {
-			sb.append("subgraph " + g.getUid() + "l {");
+			sb.append("subgraph " + g.zgetUid() + "l {");
 			if (OptionFlags.getInstance().isDebugDot()) {
 				sb.append("style=dotted;");
 				sb.append("label=\"l\";");
@@ -436,24 +436,24 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			}
 			final String decorationColor = ",color=" + getColorString(getArrowColorParam(), null);
 
-			sb.append(g.getUid() + "lab0 [shape=point,width=.01,label=\"\"" + decorationColor + "]");
+			sb.append(g.zgetUid() + "lab0 [shape=point,width=.01,label=\"\"" + decorationColor + "]");
 			String autolabel = autolinks.get(0).getLabel();
 			if (autolabel == null) {
 				autolabel = "";
 			}
-			sb.append(g.getUid() + "lab1 [label=<" + manageHtmlIB(autolabel, getArrowFontParam(), null)
+			sb.append(g.zgetUid() + "lab1 [label=<" + manageHtmlIB(autolabel, getArrowFontParam(), null)
 					+ ">,shape=plaintext,margin=0];");
-			sb.append(g.getUid() + "lab0 -> " + g.getUid() + "lab1 [minlen=0,style=invis];");
+			sb.append(g.zgetUid() + "lab0 -> " + g.zgetUid() + "lab1 [minlen=0,style=invis];");
 			sb.append("}"); // end of l
 
-			sb.append(g.getUid() + "lmin -> " + g.getUid() + "lab0 [ltail=" + g.getUid()
+			sb.append(g.zgetUid() + "lmin -> " + g.zgetUid() + "lab0 [ltail=" + g.zgetUid()
 					+ "v,arrowtail=none,arrowhead=none" + decorationColor + "];");
-			sb.append(g.getUid() + "lab0 -> " + g.getUid() + "lmax [lhead=" + g.getUid()
+			sb.append(g.zgetUid() + "lab0 -> " + g.zgetUid() + "lmax [lhead=" + g.zgetUid()
 					+ "v,arrowtail=none,arrowhead=open" + decorationColor + "];");
 		}
 
 		for (int i = 0; i < fromEdgeLinks.size(); i++) {
-			sb.append("subgraph " + g.getUid() + "ed" + i + " {");
+			sb.append("subgraph " + g.zgetUid() + "ed" + i + " {");
 			if (OptionFlags.getInstance().isDebugDot()) {
 				sb.append("style=dotted;");
 				sb.append("label=\"ed" + i + "\";");
@@ -467,11 +467,11 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 				label = "";
 			}
 
-			sb.append(g.getUid() + "fedge" + i + " [shape=point,width=.01,label=\"\"" + decorationColor + "]");
+			sb.append(g.zgetUid() + "fedge" + i + " [shape=point,width=.01,label=\"\"" + decorationColor + "]");
 			sb.append("}"); // end of ed
-			sb.append("eds" + i + " -> " + g.getUid() + "fedge" + i + " [ltail=" + g.getUid()
+			sb.append("eds" + i + " -> " + g.zgetUid() + "fedge" + i + " [ltail=" + g.zgetUid()
 					+ "v,arrowtail=none,arrowhead=none" + decorationColor + "];");
-			sb.append(g.getUid() + "fedge" + i + " -> " + fromEdgeLinks.get(i).getEntity2().getUid()
+			sb.append(g.zgetUid() + "fedge" + i + " -> " + fromEdgeLinks.get(i).getEntity2().getUid()
 					+ "[arrowtail=none,arrowhead=open" + decorationColor);
 			sb.append(",label=<" + manageHtmlIB(label, getArrowFontParam(), null) + ">];");
 
@@ -488,9 +488,9 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private String getStyle(Group g) {
 		final StringBuilder sb = new StringBuilder();
-		if (g.isBold()) {
+		if (g.zisBold()) {
 			sb.append("bold");
-		} else if (g.isDashed()) {
+		} else if (g.zisDashed()) {
 			sb.append("dashed");
 		} else {
 			sb.append("solid");
@@ -499,7 +499,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 		if (getGroupBackColor(g) != null) {
 			sb.append(",filled");
 		}
-		if (g.isRounded()) {
+		if (g.zisRounded()) {
 			sb.append(",rounded");
 		}
 		return sb.toString();
@@ -507,18 +507,20 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void printLinks(StringBuilder sb, List<Link> links) throws IOException {
 		for (Link link : appendPhantomLink(links)) {
-			final IEntity entity1 = link.getEntity1();
-			final IEntity entity2 = link.getEntity2();
-			if (entity1 == entity2 && entity1.getType() == EntityType.GROUP) {
+			final IEntityMutable entity1 = (IEntityMutable) link.getEntity1();
+			final IEntityMutable entity2 = (IEntityMutable) link.getEntity2();
+			if (entity1 == entity2 && entity1.isGroup()) {
 				continue;
 			}
-			if (entity1.getType() == EntityType.GROUP && entity2.getParent() == entity1.getParent()) {
+			final Group g1 = EntityUtils.getContainerOrEquivalent(entity1);
+			final Group g2 = EntityUtils.getContainerOrEquivalent(entity2);
+			if (entity1.isGroup() && EntityUtils.equals(g1, g2)) {
 				continue;
 			}
-			if (entity2.getType() == EntityType.GROUP && entity1.getParent() == entity2.getParent()) {
+			if (entity2.isGroup() && EntityUtils.equals(g1, g2)) {
 				continue;
 			}
-			if (entity1.getType() == EntityType.LOLLIPOP || entity2.getType() == EntityType.LOLLIPOP) {
+			if (entity1.getEntityType() == EntityType.LOLLIPOP || entity2.getEntityType() == EntityType.LOLLIPOP) {
 				continue;
 			}
 			// System.err.println("outing " + link);
@@ -548,8 +550,8 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 		if (link.getLabel() != null && noteLink != null) {
 			decoration.append("label=<"
-					+ getHtmlForLinkNote(noteLink.getPngOrEps(fileFormat), manageHtmlIB(link.getLabel(),
-							getArrowFontParam(), null), link.getNotePosition()) + ">,");
+					+ getHtmlForLinkNote(noteLink.getPngOrEps(fileFormat),
+							manageHtmlIB(link.getLabel(), getArrowFontParam(), null), link.getNotePosition()) + ">,");
 			hasLabel = true;
 		} else if (link.getLabel() != null) {
 			decoration.append("label=<" + manageHtmlIB(link.getLabel(), getArrowFontParam(), null) + ">,");
@@ -582,13 +584,13 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 		final String lenString = len >= 3 ? ",minlen=" + (len - 1) : "";
 
-		if (link.getEntity1().getType() == EntityType.GROUP) {
-			uid1 = getHiddenNodeUid(link.getEntity1().getParent(), link);
-			decoration.append(",ltail=" + link.getEntity1().getParent().getUid() + "v");
+		if (((IEntityMutable) link.getEntity1()).isGroup()) {
+			uid1 = getHiddenNodeUid((Group) link.getEntity1(), link);
+			decoration.append(",ltail=" + ((Group) link.getEntity1()).zgetUid() + "v");
 		}
-		if (link.getEntity2().getType() == EntityType.GROUP) {
-			uid2 = getHiddenNodeUid(link.getEntity2().getParent(), link);
-			decoration.append(",lhead=" + link.getEntity2().getParent().getUid() + "v");
+		if (((IEntityMutable) link.getEntity2()).isGroup()) {
+			uid2 = getHiddenNodeUid((Group) link.getEntity2(), link);
+			decoration.append(",lhead=" + ((Group) link.getEntity2()).zgetUid() + "v");
 		}
 
 		final boolean margin1 = MODE_MARGIN && link.getEntity1().hasNearDecoration();
@@ -611,10 +613,12 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	private List<Link> getNodesHiddenUidOut(Group g) {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link link : getData().getLinks()) {
-			if (link.getEntity1().getParent() == link.getEntity2().getParent()) {
+			final Group g1 = EntityUtils.getContainerOrEquivalent(link.getEntity1());
+			final Group g2 = EntityUtils.getContainerOrEquivalent(link.getEntity2());
+			if (EntityUtils.equals(g1, g2)) {
 				continue;
 			}
-			if (link.getEntity1().getType() == EntityType.GROUP && link.getEntity1().getParent() == g) {
+			if (((IEntityMutable) link.getEntity1()).isGroup() && EntityUtils.equals(g, g1)) {
 				result.add(link);
 			}
 		}
@@ -624,10 +628,12 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	private List<Link> getNodesHiddenUidIn(Group g) {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link link : getData().getLinks()) {
-			if (link.getEntity1().getParent() == link.getEntity2().getParent()) {
+			final Group g1 = EntityUtils.getContainerOrEquivalent(link.getEntity1());
+			final Group g2 = EntityUtils.getContainerOrEquivalent(link.getEntity2());
+			if (EntityUtils.equals(g1, g2)) {
 				continue;
 			}
-			if (link.getEntity2().getType() == EntityType.GROUP && link.getEntity2().getParent() == g) {
+			if (((IEntityMutable) link.getEntity2()).isGroup() && EntityUtils.equals(g, g2)) {
 				result.add(link);
 			}
 		}
@@ -635,10 +641,11 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private String getHiddenNodeUid(Group g, Link link) {
-		if (getData().isEmpty(g) && g.getType() == GroupType.PACKAGE) {
-			return g.getUid();
+		if (getData().isEmpty(g) && g.zgetGroupType() == GroupType.PACKAGE) {
+			return g.zgetUid();
 		}
-		return g.getUid() + "_" + link.getUid();
+		// return ((IEntity)g).getUid();
+		return g.zgetUid() + "_" + link.getUid();
 	}
 
 	private StringBuilder getLinkDecoration(Link link) {
@@ -755,13 +762,14 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private void eventuallySameRank(StringBuilder sb, Group entityPackage, Link link) {
 		final int len = link.getLength();
-		if (len == 1 && link.getEntity1().getParent() == entityPackage
-				&& link.getEntity2().getParent() == entityPackage) {
-			if (link.getEntity1().getType() == EntityType.GROUP) {
-				throw new IllegalArgumentException();
+		final Group g1 = link.getEntity1().getContainer();
+		final Group g2 = link.getEntity1().getContainer();
+		if (len == 1 && EntityUtils.equals(g1, entityPackage) && EntityUtils.equals(g2, entityPackage)) {
+			if (((IEntityMutable) link.getEntity1()).isGroup()) {
+				return;
 			}
-			if (link.getEntity2().getType() == EntityType.GROUP) {
-				throw new IllegalArgumentException();
+			if (((IEntityMutable) link.getEntity2()).isGroup()) {
+				return;
 			}
 			sb.append("{rank=same; " + link.getEntity1().getUid() + "; " + link.getEntity2().getUid() + "}");
 		}
@@ -769,49 +777,49 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 
 	private boolean MODE_LOLLIPOP_BETA = false;
 
-	class EntityComparator implements Comparator<IEntity> {
-		public int compare(IEntity e1, IEntity e2) {
-			final int xpos1 = e1.getXposition();
-			final int xpos2 = e2.getXposition();
-			if (xpos1 < xpos2) {
-				return -1;
-			}
-			if (xpos1 > xpos2) {
-				return 1;
-			}
-			return e1.compareTo(e2);
-		}
-	}
+	// class EntityComparator implements Comparator<IEntity> {
+	// public int compare(IEntity e1, IEntity e2) {
+	// final int xpos1 = e1.getXposition();
+	// final int xpos2 = e2.getXposition();
+	// if (xpos1 < xpos2) {
+	// return -1;
+	// }
+	// if (xpos1 > xpos2) {
+	// return 1;
+	// }
+	// return e1.compareTo(e2);
+	// }
+	// }
 
 	class EntityComparator2 implements Comparator<IEntity> {
-		private final Map<IEntity, Integer> map;
+		private final Map<String, Integer> map;
 
-		public EntityComparator2(Map<IEntity, Integer> map) {
+		public EntityComparator2(Map<String, Integer> map) {
 			this.map = map;
 		}
 
 		public int compare(IEntity e1, IEntity e2) {
-			final Integer b1 = map.get(e1);
-			final Integer b2 = map.get(e2);
+			final Integer b1 = map.get(e1.getUid());
+			final Integer b2 = map.get(e2.getUid());
 			final int cmp = b1.compareTo(b2);
 			if (cmp != 0) {
 				return -cmp;
 			}
-			return e1.compareTo(e2);
+			return e1.getUid().compareTo(e2.getUid());
 		}
 	}
 
-	private Map<IEntity, Integer> getMap(Collection<? extends IEntity> entities2) {
-		final Map<IEntity, Integer> map = new HashMap<IEntity, Integer>();
+	private Map<String, Integer> getMap(Collection<? extends IEntity> entities2) {
+		final Map<String, Integer> map = new HashMap<String, Integer>();
 		for (IEntity ent : entities2) {
-			map.put(ent, Integer.valueOf(0));
+			map.put(ent.getUid(), Integer.valueOf(0));
 		}
 		for (Link link : getData().getLinks()) {
 			if (link.isConstraint() == false) {
-				map.put(link.getEntity2(), Integer.valueOf(1));
+				map.put(link.getEntity2().getUid(), Integer.valueOf(1));
 			} else if (link.getLength() == 1 && link.isInverted()) {
 				// map.put(link.getEntity2(), true);
-				map.put(link.getEntity1(), Integer.valueOf(1));
+				map.put(link.getEntity1().getUid(), Integer.valueOf(1));
 			}
 
 		}
@@ -828,7 +836,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 		final Set<IEntity> lollipops = new HashSet<IEntity>();
 		final Set<IEntity> lollipopsFriends = new HashSet<IEntity>();
 		for (IEntity entity : entities) {
-			if (entity.getType() == EntityType.LOLLIPOP) {
+			if (entity.getEntityType() == EntityType.LOLLIPOP) {
 				lollipops.add(entity);
 				if (MODE_LOLLIPOP_BETA == false) {
 					lollipopsFriends.add(getConnectedToLollipop(entity));
@@ -871,7 +879,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	private Collection<IEntity> getAllLollipop(IEntity entity) {
 		final Collection<IEntity> result = new ArrayList<IEntity>();
 		for (IEntity lollipop : getData().getAllLinkedDirectedTo(entity)) {
-			if (lollipop.getType() == EntityType.LOLLIPOP) {
+			if (lollipop.getEntityType() == EntityType.LOLLIPOP) {
 				result.add(lollipop);
 			}
 		}
@@ -879,7 +887,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private IEntity getConnectedToLollipop(IEntity lollipop) {
-		assert lollipop.getType() == EntityType.LOLLIPOP;
+		assert lollipop.getEntityType() == EntityType.LOLLIPOP;
 		final Collection<IEntity> linked = getData().getAllLinkedDirectedTo(lollipop);
 		if (linked.size() != 1) {
 			throw new IllegalStateException("size=" + linked.size());
@@ -888,7 +896,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private Link getLinkLollipop(IEntity lollipop, IEntity ent) {
-		assert lollipop.getType() == EntityType.LOLLIPOP;
+		assert lollipop.getEntityType() == EntityType.LOLLIPOP;
 		for (Link link : getData().getLinks()) {
 			if (link.isBetween(lollipop, ent)) {
 				return link;
@@ -898,7 +906,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private void printEntity(StringBuilder sb, IEntity entity, String headOrTail) throws IOException {
-		final EntityType type = entity.getType();
+		final EntityType type = entity.getEntityType();
 		if (type == EntityType.LOLLIPOP) {
 			final String color1 = getColorString(ColorParam.classBackground, null);
 			final String color2 = getColorString(ColorParam.classBorder, null);
@@ -919,9 +927,9 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	static public final boolean MODE_BRANCHE_CLUSTER = false;
 
 	private void printEntity(StringBuilder sb, IEntity entity) throws IOException {
-		final EntityType type = entity.getType();
+		final EntityType type = entity.getEntityType();
 		final String label = NOLABEL ? "label=\"" + entity.getUid() + "\"" : getLabel(entity);
-		if (type == EntityType.GROUP) {
+		if (((IEntityMutable) entity).isGroup()) {
 			return;
 		}
 		boolean closeBracket = false;
@@ -1015,9 +1023,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			final String color = getColorString(getStartColorParam(), null);
 			sb.append(entity.getUid() + " [color=" + color + "," + "shape=circle,width=.01,height=.01," + label);
 		} else if (type == EntityType.POINT_FOR_ASSOCIATION) {
-			sb
-					.append(entity.getUid() + " [width=.05,shape=point,color="
-							+ getColorString(ColorParam.classBorder, null));
+			sb.append(entity.getUid() + " [width=.05,shape=point,color=" + getColorString(ColorParam.classBorder, null));
 		} else if (type == EntityType.STATE) {
 			sb.append(entity.getUid() + " [color=" + getColorString(ColorParam.stateBorder, stereo)
 					+ ",shape=record,style=\"rounded,filled\",color=" + getColorString(ColorParam.stateBorder, stereo));
@@ -1098,7 +1104,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private String getHeadOrTail(IEntity lollipop, Link link) {
-		assert lollipop.getType() == EntityType.LOLLIPOP;
+		assert lollipop.getEntityType() == EntityType.LOLLIPOP;
 		if (link.getLength() > 1 && link.getEntity1() == lollipop) {
 			return "taillabel";
 		}
@@ -1106,26 +1112,26 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private String getLabel(IEntity entity) throws IOException {
-		if (entity.getType() == EntityType.ABSTRACT_CLASS || entity.getType() == EntityType.CLASS
-				|| entity.getType() == EntityType.INTERFACE || entity.getType() == EntityType.ENUM) {
+		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS || entity.getEntityType() == EntityType.CLASS
+				|| entity.getEntityType() == EntityType.INTERFACE || entity.getEntityType() == EntityType.ENUM) {
 			return "label=" + getLabelForClassOrInterfaceOrEnum(entity);
-		} else if (entity.getType() == EntityType.LOLLIPOP) {
+		} else if (entity.getEntityType() == EntityType.LOLLIPOP) {
 			return "label=" + getLabelForLollipop(entity);
-		} else if (entity.getType() == EntityType.OBJECT) {
+		} else if (entity.getEntityType() == EntityType.OBJECT) {
 			return "label=" + getLabelForObject(entity);
-		} else if (entity.getType() == EntityType.ACTOR) {
+		} else if (entity.getEntityType() == EntityType.ACTOR) {
 			return "label=" + getLabelForActor(entity);
-		} else if (entity.getType() == EntityType.CIRCLE_INTERFACE) {
+		} else if (entity.getEntityType() == EntityType.CIRCLE_INTERFACE) {
 			return "label=" + getLabelForCircleInterface(entity);
-		} else if (entity.getType() == EntityType.NOTE) {
+		} else if (entity.getEntityType() == EntityType.NOTE) {
 			return "label=\"\"";
-		} else if (entity.getType() == EntityType.STATE_CONCURRENT) {
+		} else if (entity.getEntityType() == EntityType.STATE_CONCURRENT) {
 			return "label=\"\"";
-		} else if (entity.getType() == EntityType.ACTIVITY_CONCURRENT) {
+		} else if (entity.getEntityType() == EntityType.ACTIVITY_CONCURRENT) {
 			return "label=\"\"";
-		} else if (entity.getType() == EntityType.COMPONENT) {
+		} else if (entity.getEntityType() == EntityType.COMPONENT) {
 			return "label=" + getLabelForComponent(entity);
-		} else if (entity.getType() == EntityType.ACTIVITY) {
+		} else if (entity.getEntityType() == EntityType.ACTIVITY) {
 			final DrawFile drawFile = entity.getImageFile();
 			if (drawFile != null) {
 				final String path = StringUtils.getPlateformDependentAbsolutePath(drawFile.getPng());
@@ -1142,15 +1148,15 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			}
 			final String stereotype = entity.getStereotype() == null ? null : entity.getStereotype().getLabel();
 			return "label=" + getSimpleLabelAsHtml(entity, FontParam.ACTIVITY, stereotype);
-		} else if (entity.getType() == EntityType.EMPTY_PACKAGE) {
+		} else if (entity.getEntityType() == EntityType.EMPTY_PACKAGE) {
 			return "label=" + getSimpleLabelAsHtml(entity, getFontParamForGroup(), null);
-		} else if (entity.getType() == EntityType.USECASE) {
+		} else if (entity.getEntityType() == EntityType.USECASE) {
 			return "label=" + getLabelForUsecase(entity);
-		} else if (entity.getType() == EntityType.STATE) {
+		} else if (entity.getEntityType() == EntityType.STATE) {
 			return "label=" + getLabelForState(entity);
-		} else if (entity.getType() == EntityType.BRANCH) {
+		} else if (entity.getEntityType() == EntityType.BRANCH) {
 			return "label=\"\"";
-		} else if (entity.getType() == EntityType.PSEUDO_STATE) {
+		} else if (entity.getEntityType() == EntityType.PSEUDO_STATE) {
 			return "label=\"H\"";
 		}
 		return "label=\"" + StringUtils.getMergedLines(entity.getDisplay2()) + "\"";
@@ -1165,14 +1171,14 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 			return "\"" + getAsHtml(entity.getSpecificBackColor()) + "\"";
 		}
 		final String stereo = entity.getStereotype() == null ? null : entity.getStereotype().getLabel();
-		if (entity.getType() == EntityType.STATE || entity.getType() == EntityType.STATE_CONCURRENT) {
+		if (entity.getEntityType() == EntityType.STATE || entity.getEntityType() == EntityType.STATE_CONCURRENT) {
 			return getColorString(ColorParam.stateBackground, stereo);
 		}
-		if (entity.getType() == EntityType.ACTIVITY || entity.getType() == EntityType.ACTIVITY_CONCURRENT
-				|| entity.getType() == EntityType.BRANCH) {
+		if (entity.getEntityType() == EntityType.ACTIVITY || entity.getEntityType() == EntityType.ACTIVITY_CONCURRENT
+				|| entity.getEntityType() == EntityType.BRANCH) {
 			return getColorString(ColorParam.activityBackground, stereo);
 		}
-		throw new IllegalArgumentException(entity.getType().toString());
+		throw new IllegalArgumentException(entity.getEntityType().toString());
 	}
 
 	private String getLabelForState(IEntity entity) throws IOException {
@@ -1364,7 +1370,7 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	private String getLabelForClassOrInterfaceOrEnumOld(IEntity entity) throws IOException {
 		LabelBuilder builder = new LabelBuilderClassOld(getFileFormat(), getData(), entity);
 		if (MODE_LOLLIPOP_BETA) {
-			final DrawFile cFile = getData().getStaticImages(entity.getType(), null);
+			final DrawFile cFile = getData().getStaticImages(entity.getEntityType(), null);
 			final String northPath = StringUtils.getPlateformDependentAbsolutePath(cFile.getPngOrEps(getFileFormat()));
 			final String southPath = northPath;
 			final String eastPath = northPath;
@@ -1461,10 +1467,10 @@ final public class DotMaker extends DotCommon implements GraphvizMaker {
 	}
 
 	private boolean isSpecialGroup(Group g) {
-		if (g.getType() == GroupType.STATE) {
+		if (g.zgetGroupType() == GroupType.STATE) {
 			return true;
 		}
-		if (g.getType() == GroupType.CONCURRENT_STATE) {
+		if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			throw new IllegalStateException();
 		}
 		if (getData().isThereLink(g)) {

@@ -38,8 +38,8 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
 public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram> {
@@ -65,12 +65,12 @@ public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
 			code = arg.get(1);
 		}
-		final Group currentPackage = getSystem().getCurrentGroup();
-		final Group p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
-		p.setBold(true);
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
+		p.zsetBold(true);
 		final String color = arg.get(2);
 		if (color != null) {
-			p.setBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColor.getColorIfValid(color));
 		}
 		getSystem().endGroup();
 		return CommandExecutionResult.ok();

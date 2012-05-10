@@ -40,10 +40,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ctreber.acearth.plugins.markers.Marker;
-
 import net.sourceforge.plantuml.DiagramType;
 import net.sourceforge.plantuml.PSystemBasicFactory;
+
+import com.ctreber.acearth.plugins.markers.Marker;
 
 public class PSystemXearthFactory implements PSystemBasicFactory {
 

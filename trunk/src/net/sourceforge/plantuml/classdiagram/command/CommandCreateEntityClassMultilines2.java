@@ -45,7 +45,6 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -84,7 +83,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, false);
 		final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
-		final Entity entity = executeArg0(line0);
+		final IEntity entity = executeArg0(line0);
 		if (entity == null) {
 			return CommandExecutionResult.error("No such entity");
 		}
@@ -100,7 +99,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		return CommandExecutionResult.ok();
 	}
 	
-	private static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final Entity entity) {
+	private static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final IEntity entity) {
 		if (arg.get("EXTENDS").get(1) != null) {
 			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
 			final String other = arg.get("EXTENDS").get(2);
@@ -108,12 +107,12 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = EntityType.INTERFACE;
 			}
-			if (mode == Mode.EXTENDS && entity.getType() == EntityType.INTERFACE) {
+			if (mode == Mode.EXTENDS && entity.getEntityType() == EntityType.INTERFACE) {
 				type2 = EntityType.INTERFACE;
 			}
 			final IEntity cl2 = system.getOrCreateClass(other, type2);
 			LinkType typeLink = new LinkType(LinkDecor.NONE, LinkDecor.EXTENDS);
-			if (type2 == EntityType.INTERFACE && entity.getType() != EntityType.INTERFACE) {
+			if (type2 == EntityType.INTERFACE && entity.getEntityType() != EntityType.INTERFACE) {
 				typeLink = typeLink.getDashed();
 			}
 			final Link link = new Link(cl2, entity, typeLink, null, 2, null, null, system.getLabeldistance(),
@@ -124,7 +123,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 
 
 
-	private Entity executeArg0(Map<String, RegexPartialMatch> arg) {
+	private IEntity executeArg0(Map<String, RegexPartialMatch> arg) {
 
 		final EntityType type = EntityType.getEntityType(arg.get("TYPE").get(0).toUpperCase());
 		final String code;
@@ -143,11 +142,11 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		final String generic = arg.get("GENERIC").get(0);
 
 		if (getSystem().entityExist(code)) {
-			final Entity result = (Entity) getSystem().getOrCreateClass(code);
+			final IEntity result = getSystem().getOrCreateClass(code);
 			result.muteToType(type);
 			return result;
 		}
-		final Entity entity = getSystem().createEntity(code, display, type);
+		final IEntity entity = getSystem().createEntity(code, display, type);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

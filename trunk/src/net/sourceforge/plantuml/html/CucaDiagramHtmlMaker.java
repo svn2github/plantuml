@@ -46,7 +46,6 @@ import java.util.TreeMap;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -82,8 +81,8 @@ public final class CucaDiagramHtmlMaker {
 	private void printAllType(final PrintWriter pw, EntityType type) throws IOException {
 		if (hasSome(type)) {
 			pw.println("<h2>" + type.toHtml() + "</h2>");
-			for (Map.Entry<String, Entity> ent : new TreeMap<String, Entity>(diagram.entities()).entrySet()) {
-				if (ent.getValue().getType() != type) {
+			for (Map.Entry<String, IEntity> ent : new TreeMap<String, IEntity>(diagram.getEntities()).entrySet()) {
+				if (ent.getValue().getEntityType() != type) {
 					continue;
 				}
 				export(ent.getValue());
@@ -95,20 +94,20 @@ public final class CucaDiagramHtmlMaker {
 	}
 
 	private boolean hasSome(final EntityType type) {
-		for (Entity ent : diagram.entities().values()) {
-			if (ent.getType() == type) {
+		for (IEntity ent : diagram.getEntities().values()) {
+			if (ent.getEntityType() == type) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private void export(Entity entity) throws IOException {
+	private void export(IEntity entity) throws IOException {
 		final File f = new File(dir, LinkHtmlPrinter.urlOf(entity));
 		final PrintWriter pw = new PrintWriter(f);
 		pw.println("<html>");
 		pw.println("<title>" + StringUtils.unicodeForHtml(entity.getCode()) + "</title>");
-		pw.println("<h2>" + entity.getType().toHtml() + "</h2>");
+		pw.println("<h2>" + entity.getEntityType().toHtml() + "</h2>");
 		for (CharSequence s : entity.getDisplay2()) {
 			pw.println(StringUtils.unicodeForHtml(s.toString()));
 			pw.println("<br>");
@@ -199,7 +198,7 @@ public final class CucaDiagramHtmlMaker {
 			if (link.contains(ent) == false) {
 				continue;
 			}
-			if (link.getEntity1().getType() == EntityType.NOTE || link.getEntity2().getType() == EntityType.NOTE) {
+			if (link.getEntity1().getEntityType() == EntityType.NOTE || link.getEntity2().getEntityType() == EntityType.NOTE) {
 				result.add(link.getOther(ent));
 			}
 		}
@@ -212,7 +211,7 @@ public final class CucaDiagramHtmlMaker {
 			if (link.contains(ent) == false) {
 				continue;
 			}
-			if (link.getEntity1().getType() == EntityType.NOTE || link.getEntity2().getType() == EntityType.NOTE) {
+			if (link.getEntity1().getEntityType() == EntityType.NOTE || link.getEntity2().getEntityType() == EntityType.NOTE) {
 				continue;
 			}
 			result.add(link);

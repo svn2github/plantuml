@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7847 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.sequencediagram.graphic;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
 import net.sourceforge.plantuml.skin.Area;
@@ -50,8 +51,8 @@ class MessageArrow extends Arrow {
 	private final LivingParticipantBox p1;
 	private final LivingParticipantBox p2;
 
-	public MessageArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p1, LivingParticipantBox p2) {
-		super(startingY, skin, arrow);
+	public MessageArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p1, LivingParticipantBox p2, Url url) {
+		super(startingY, skin, arrow, url);
 
 		if (p1 == p2) {
 			throw new IllegalArgumentException();
@@ -126,11 +127,9 @@ class MessageArrow extends Arrow {
 	protected void drawInternalU(UGraphic ug, double maxX, Context2D context) {
 		final StringBounder stringBounder = ug.getStringBounder();
 		ug.translate(getStartingX(stringBounder), getStartingY());
-//		ug.getParam().setColor(Color.GREEN);
-//		ug.getParam().setBackcolor(Color.LIGHT_GRAY);
-//		ug.draw(0, 0, new URectangle(getActualDimension(stringBounder).getWidth(), getActualDimension(stringBounder)
-//				.getHeight()));
+		startUrl(ug);
 		getArrowComponent().drawU(ug, new Area(getActualDimension(stringBounder)), context);
+		endUrl(ug);
 	}
 
 	private Dimension2D getActualDimension(StringBounder stringBounder) {

@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.sequencediagram.graphic;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.MessageExoType;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
@@ -51,9 +52,8 @@ public class MessageExoArrow extends Arrow {
 	private final LivingParticipantBox p;
 	private final MessageExoType type;
 
-	public MessageExoArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p, MessageExoType type) {
-		super(startingY, skin, arrow);
-
+	public MessageExoArrow(double startingY, Skin skin, Component arrow, LivingParticipantBox p, MessageExoType type, Url url) {
+		super(startingY, skin, arrow, url);
 		this.p = p;
 		this.type = type;
 	}
@@ -105,7 +105,9 @@ public class MessageExoArrow extends Arrow {
 	protected void drawInternalU(UGraphic ug, double maxX, Context2D context) {
 		final StringBounder stringBounder = ug.getStringBounder();
 		ug.translate(getStartingX(stringBounder), getStartingY());
+		startUrl(ug);
 		getArrowComponent().drawU(ug, new Area(getActualDimension(stringBounder, maxX)), context);
+		endUrl(ug);
 	}
 
 	private Dimension2D getActualDimension(StringBounder stringBounder, double maxX) {

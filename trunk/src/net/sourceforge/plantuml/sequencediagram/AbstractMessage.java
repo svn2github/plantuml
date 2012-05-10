@@ -38,6 +38,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -55,12 +57,44 @@ public abstract class AbstractMessage implements Event {
 	private NotePosition notePosition;
 	private HtmlColor noteBackColor;
 	private Url urlNote;
+	private final Url url;
 	private final String messageNumber;
 
 	public AbstractMessage(List<String> label, ArrowConfiguration arrowConfiguration, String messageNumber) {
-		this.label = label;
+		this.url = initUrl(label);
+		this.label = removeUrl(label);
 		this.arrowConfiguration = arrowConfiguration;
 		this.messageNumber = messageNumber;
+	}
+
+	final public Url getUrl() {
+		if (url == null) {
+			return urlNote;
+		}
+		return url;
+	}
+
+	private List<String> removeUrl(List<String> label) {
+		if (url == null) {
+			return label;
+		}
+		final List<String> result = new ArrayList<String>();
+		final int x = label.get(0).indexOf("]]");
+		result.add(label.get(0).substring(x + 2).trim());
+		result.addAll(label.subList(1, label.size()));
+		return result;
+
+	}
+
+	private static Url initUrl(List<String> label) {
+		if (label.size() == 0) {
+			return null;
+		}
+		final Matcher m = Pattern.compile("\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\]").matcher(label.get(0));
+		if (m.find() == false) {
+			return null;
+		}
+		return new Url(m.group(1), m.group(2));
 	}
 
 	public final boolean addLifeEvent(LifeEvent lifeEvent) {
@@ -163,7 +197,7 @@ public abstract class AbstractMessage implements Event {
 		}
 		return false;
 	}
-	
+
 	public abstract boolean compatibleForCreate(Participant p);
 
 }

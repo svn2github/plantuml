@@ -44,8 +44,8 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -139,8 +139,8 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 		final String g1 = arg.get("G1").get(0);
 		final String g2 = arg.get("G2").get(0);
 
-		final Group cl1 = getSystem().getGroup(g1);
-		final Group cl2 = getSystem().getGroup(g2);
+		final IEntityMutable cl1 = getSystem().getGroup(g1);
+		final IEntityMutable cl2 = getSystem().getGroup(g2);
 
 		final LinkType linkType;
 		final String queue;
@@ -153,7 +153,7 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 
 		}
 
-		final Link link = new Link(cl1.getEntityCluster(), cl2.getEntityCluster(), linkType, arg.get("END").get(0),
+		final Link link = new Link(cl1, cl2, linkType, arg.get("END").get(0),
 				queue.length());
 		getSystem().addLink(link);
 		return CommandExecutionResult.ok();

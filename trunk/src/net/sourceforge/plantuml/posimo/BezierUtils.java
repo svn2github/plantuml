@@ -33,9 +33,6 @@
  */
 package net.sourceforge.plantuml.posimo;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Dimension2D;

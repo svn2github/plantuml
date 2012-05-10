@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7754 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -42,8 +42,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.plantuml.ugraphic.ColorChangerMonochrome;
-import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
-import net.sourceforge.plantuml.ugraphic.UGradient;
 
 public class HtmlColor {
 

@@ -55,9 +55,4 @@ public class Url {
 		return tooltip;
 	}
 	
-	@Override
-	public String toString() {
-		throw new UnsupportedOperationException();
-	}
-
 }

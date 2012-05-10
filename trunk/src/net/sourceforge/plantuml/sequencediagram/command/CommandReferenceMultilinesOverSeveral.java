@@ -64,7 +64,6 @@ public class CommandReferenceMultilinesOverSeveral extends CommandMultilines<Seq
 		final List<String> line0 = StringUtils.getSplit(getStartingPattern(), lines.get(0).trim());
 		final HtmlColor backColorElement = HtmlColor.getColorIfValid(line0.get(0));
 		// final HtmlColor backColorGeneral = HtmlColor.getColorIfValid(line0.get(1));
-		final HtmlColor backColorGeneral = null;
 
 		final List<String> participants = StringUtils.splitComma(line0.get(1));
 		final List<Participant> p = new ArrayList<Participant>();
@@ -82,6 +81,7 @@ public class CommandReferenceMultilinesOverSeveral extends CommandMultilines<Seq
 			strings = strings.subList(1, strings.size());
 		}
 
+		final HtmlColor backColorGeneral = null;
 		final Reference ref = new Reference(p, u, strings, backColorGeneral, backColorElement);
 		getSystem().addReference(ref);
 		return CommandExecutionResult.ok();

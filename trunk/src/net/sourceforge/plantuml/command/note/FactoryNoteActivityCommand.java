@@ -47,7 +47,6 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -86,7 +85,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				final String s = StringUtils.getMergedLines(strings);
 
-				final Entity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+				final IEntity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
 				return executeInternal(getSystem(), arg, note);
 			}
 		};
@@ -97,14 +96,14 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 			@Override
 			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final Entity note = getSystem().createNote("GN" + UniqueSequence.getValue(), arg.get("NOTE").get(0));
+				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(), arg.get("NOTE").get(0));
 				return executeInternal(getSystem(), arg, note);
 			}
 		};
 	}
 
 	private CommandExecutionResult executeInternal(ActivityDiagram system, Map<String, RegexPartialMatch> arg,
-			Entity note) {
+			IEntity note) {
 
 		note.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
 

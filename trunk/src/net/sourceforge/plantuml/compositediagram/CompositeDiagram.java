@@ -43,7 +43,7 @@ public class CompositeDiagram extends AbstractEntityDiagram {
 	@Override
 	public IEntity getOrCreateClass(String code) {
 		if (isGroup(code)) {
-			return getGroup(code).getEntityCluster();
+			return getGroup(code);
 		}
 		return getOrCreateEntity(code, EntityType.BLOCK);
 	}

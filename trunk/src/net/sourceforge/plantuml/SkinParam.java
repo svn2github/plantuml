@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7732 $
+ * Revision $Revision: 7872 $
  *
  */
 package net.sourceforge.plantuml;
@@ -342,33 +342,31 @@ public class SkinParam implements ISkinParam {
 	}
 
 	public boolean isSvek() {
-		boolean defaultValue = false;
-		// if (OptionFlags.SVEK && type == UmlDiagramType.CLASS) {
-		// defaultValue = true;
-		// }
-		if (type == UmlDiagramType.CLASS) {
-			defaultValue = true;
-		}
-		if (type == UmlDiagramType.OBJECT) {
-			defaultValue = true;
-		}
-		if (type == UmlDiagramType.USECASE) {
-			defaultValue = true;
-		}
-		if (type == UmlDiagramType.COMPONENT) {
-			defaultValue = true;
-		}
-		if (type == UmlDiagramType.ACTIVITY) {
-			defaultValue = true;
-		}
-		if (OptionFlags.SVEK && type == UmlDiagramType.STATE) {
-			defaultValue = true;
-		}
-		final String value = getValue("svek");
-		if (value == null) {
-			return defaultValue;
-		}
-		return "true".equalsIgnoreCase(value);
+		return true;
+//		boolean defaultValue = false;
+//		if (type == UmlDiagramType.CLASS) {
+//			defaultValue = true;
+//		}
+//		if (type == UmlDiagramType.OBJECT) {
+//			defaultValue = true;
+//		}
+//		if (type == UmlDiagramType.USECASE) {
+//			defaultValue = true;
+//		}
+//		if (type == UmlDiagramType.COMPONENT) {
+//			defaultValue = true;
+//		}
+//		if (type == UmlDiagramType.ACTIVITY) {
+//			defaultValue = true;
+//		}
+//		if (OptionFlags.SVEK && type == UmlDiagramType.STATE) {
+//			defaultValue = true;
+//		}
+//		final String value = getValue("svek");
+//		if (value == null) {
+//			return defaultValue;
+//		}
+//		return "true".equalsIgnoreCase(value);
 	}
 
 	public boolean shadowing() {
@@ -381,10 +379,11 @@ public class SkinParam implements ISkinParam {
 
 	public PackageStyle getPackageStyle() {
 		final String value = getValue("packageStyle");
-		if ("rect".equalsIgnoreCase(value)) {
-			return PackageStyle.RECT;
+		final PackageStyle p = PackageStyle.fromString(value);
+		if (p == null) {
+			return PackageStyle.FOLDER;
 		}
-		return PackageStyle.FOLDER;
+		return p;
 	}
 
 	private final Map<String, Sprite> sprites = new HashMap<String, Sprite>();

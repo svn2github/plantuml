@@ -28,13 +28,12 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7754 $
  *
  */
 package net.sourceforge.plantuml.skin;
 
 import java.awt.Font;
-import java.awt.geom.Dimension2D;
 import java.util.ArrayList;
 import java.util.List;
 

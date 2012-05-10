@@ -46,11 +46,10 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -65,7 +64,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 	
 	@Override
 	public String getPatternEnd() {
-		return "(?i)^\\s*([^\"]*)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?\\s*(\\<\\<.*\\>\\>)?\\s*(?:in\\s+(\"[^\"]+\"|\\S+))?\\s*(#\\w+)?$";
+		return "(?i)^\\s*([^\"]*)\"(?:\\s+as\\s+([\\p{L}0-9][\\p{L}0-9_.]*))?\\s*(\\<\\<.*\\>\\>)?\\s*(?:in\\s+(\"[^\"]+\"|\\S+))?\\s*(#\\w+)?$";
 	}
 
 
@@ -73,7 +72,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexOr("FIRST", true, //
 						new RegexLeaf("STAR", "(\\(\\*(top)?\\))"), //
-						new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"), //
+						new RegexLeaf("CODE", "([\\p{L}0-9][\\p{L}0-9_.]*)"), //
 						new RegexLeaf("BAR", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), //
 						new RegexLeaf("QUOTED", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")), //
 				new RegexLeaf("\\s*"), //
@@ -81,7 +80,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("ARROW", "([=-]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=]))?[=-]*\\>)"), //
+				new RegexLeaf("ARROW", "([-=.]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
 				new RegexLeaf("\\s*"), //
@@ -132,10 +131,10 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
 		if (partition != null) {
-			final Group p = getSystem().getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-			p.setBold(true);
+			final IEntityMutable p = getSystem().getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+			p.zsetBold(true);
 		}
-		final Entity entity2 = getSystem().createEntity(code, display, EntityType.ACTIVITY);
+		final IEntity entity2 = getSystem().createEntity(code, display, EntityType.ACTIVITY);
 		if (partition != null) {
 			getSystem().endGroup();
 		}
@@ -156,7 +155,11 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 
 		final String linkLabel = line0.get("BRACKET").get(0);
 
-		Link link = new Link(entity1, entity2, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), linkLabel, lenght);
+		LinkType type = new LinkType(LinkDecor.ARROW, LinkDecor.NONE);
+		if (line0.get("ARROW").get(0).contains(".")) {
+			type = type.getDotted();
+		}
+		Link link = new Link(entity1, entity2, type, linkLabel, lenght);
 		final Direction direction = StringUtils.getArrowDirection(line0.get("ARROW").get(0));
 		if (direction == Direction.LEFT || direction == Direction.UP) {
 			link = link.getInv();

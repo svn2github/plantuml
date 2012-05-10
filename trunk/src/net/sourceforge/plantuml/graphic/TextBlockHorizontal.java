@@ -61,9 +61,12 @@ public class TextBlockHorizontal implements TextBlock {
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
-		b1.drawU(ug, x, y);
+		final Dimension2D dim = calculateDimension(ug.getStringBounder());
+		final Dimension2D dimb1 = b1.calculateDimension(ug.getStringBounder());
+		final Dimension2D dimb2 = b2.calculateDimension(ug.getStringBounder());
+		b1.drawU(ug, x, y + (dim.getHeight() - dimb1.getHeight()) / 2);
 		final Dimension2D dim1 = b1.calculateDimension(ug.getStringBounder());
-		b2.drawU(ug, x + dim1.getWidth(), y);
+		b2.drawU(ug, x + dim1.getWidth(), y + (dim.getHeight() - dimb2.getHeight()) / 2);
 	}
 
 }

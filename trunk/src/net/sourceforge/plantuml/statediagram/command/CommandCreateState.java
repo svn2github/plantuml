@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7753 $
  *
  */
 package net.sourceforge.plantuml.statediagram.command;
@@ -37,7 +37,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
@@ -55,7 +55,7 @@ public class CommandCreateState extends SingleLineCommand<StateDiagram> {
 		if (display == null) {
 			display = code;
 		}
-		final Entity ent = (Entity) getSystem().getOrCreateClass(code);
+		final IEntity ent = getSystem().getOrCreateClass(code);
 		ent.setDisplay2(display);
 
 		final String stereotype = arg.get(2);

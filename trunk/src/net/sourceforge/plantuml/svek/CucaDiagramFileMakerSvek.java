@@ -114,8 +114,8 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 		double deltaX = 0;
 		double deltaY = 0;
 
-		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.entities(), diagram.getUmlDiagramType(),
-				diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram, diagram.getColorMapper());
+		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.getEntities().values(), diagram.getUmlDiagramType(),
+				diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram, diagram.getColorMapper(), diagram.getEntityFactory());
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
 
 		IEntityImage result = svek2.createFile(((CucaDiagram) diagram).getDotStringSkek());
@@ -151,7 +151,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 
 		final String widthwarning = diagram.getSkinParam().getValue("widthwarning");
 		if (widthwarning != null && widthwarning.matches("\\d+")) {
-			this.warningOrError = svek2.getWarningOrError(Integer.parseInt(widthwarning));
+			this.warningOrError = svek2.getBibliotekon().getWarningOrError(Integer.parseInt(widthwarning));
 		} else {
 			this.warningOrError = null;
 		}
@@ -168,7 +168,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 	private String cmapString(CucaDiagramFileMakerSvek2 svek2, double deltaX, double deltaY) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("<map id=\"unix\" name=\"unix\">\n");
-		for (IEntity ent : diagram.entities().values()) {
+		for (IEntity ent : diagram.getEntities().values()) {
 			final Url url = ent.getUrl();
 			if (url == null) {
 				continue;
@@ -181,7 +181,7 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 			sb.append(url.getTooltip());
 			sb.append("\" alt=\"\" coords=\"");
 
-			final Shape sh = svek2.getShape(ent);
+			final Shape sh = svek2.getBibliotekon().getShape(ent);
 			sb.append(sh.getCoords(deltaX, deltaY));
 
 			sb.append("\"/>");

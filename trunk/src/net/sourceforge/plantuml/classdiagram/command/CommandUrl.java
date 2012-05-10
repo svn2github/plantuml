@@ -39,7 +39,7 @@ import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandUrl extends SingleLineCommand<AbstractEntityDiagram> {
 
@@ -53,7 +53,7 @@ public class CommandUrl extends SingleLineCommand<AbstractEntityDiagram> {
 		final String code = arg.get(0);
 		String url = arg.get(1);
 		final String title = arg.get(2);
-		final Entity entity = (Entity) getSystem().getOrCreateClass(code);
+		final IEntity entity = getSystem().getOrCreateClass(code);
 		if (url.startsWith("http:") == false && url.startsWith("https:") == false) {
 			final String top = getSystem().getSkinParam().getValue("topurl");
 			if (top != null) {

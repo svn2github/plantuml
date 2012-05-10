@@ -28,19 +28,21 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7857 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class Stereotype implements CharSequence {
@@ -48,7 +50,7 @@ public class Stereotype implements CharSequence {
 	private final static Pattern circleChar = Pattern
 			.compile("\\<\\<\\s*\\(?(\\S)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
 	private final static Pattern circleSprite = Pattern
-			.compile("\\<\\<\\s*\\(?\\$([\\p{L}0-9_]+)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
+			.compile("\\<\\<\\s*\\(?\\$([\\p{L}0-9_]+)\\s*(?:,\\s*(#[0-9a-fA-F]{6}|\\w+))?\\s*(?:[),](.*?))?\\>\\>");
 
 	private final String label;
 	private final HtmlColor htmlColor;
@@ -75,7 +77,8 @@ public class Stereotype implements CharSequence {
 				this.label = null;
 			}
 			final String colName = mCircleSprite.group(2);
-			this.htmlColor = HtmlColor.getColorIfValid(colName);
+			final HtmlColor col = HtmlColor.getColorIfValid(colName);
+			this.htmlColor = col == null ? HtmlColor.BLACK : col;
 			this.sprite = mCircleSprite.group(1);
 			this.character = '\0';
 		} else if (mCircleChar.find()) {
@@ -112,7 +115,7 @@ public class Stereotype implements CharSequence {
 	public char getCharacter() {
 		return character;
 	}
-	
+
 	public final String getSprite() {
 		return sprite;
 	}
@@ -168,6 +171,15 @@ public class Stereotype implements CharSequence {
 			result.add(m.group());
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	public PackageStyle getPackageStyle() {
+		for (PackageStyle p : EnumSet.allOf(PackageStyle.class)) {
+			if (("<<" + p + ">>").equalsIgnoreCase(label)) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 }

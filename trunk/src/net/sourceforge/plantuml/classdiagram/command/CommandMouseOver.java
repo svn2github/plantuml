@@ -44,7 +44,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
 
@@ -76,7 +76,7 @@ public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
 		if (getSystem().entityExist(code) == false) {
 			return CommandExecutionResult.error("No such entity");
 		}
-		final Entity entity = getSystem().entities().get(code);
+		final IEntity entity = getSystem().getEntities().get(code);
 		for (String s : lines.subList(1, lines.size() - 1)) {
 			entity.mouseOver(s);
 		}

@@ -43,8 +43,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
@@ -88,7 +88,7 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("AS").get(0));
 		}
 		final String stereotype = arg.get("STEREOTYPE").get(0);
-		final Entity entity = (Entity) getSystem().getOrCreateEntity(code, type);
+		final IEntity entity = getSystem().getOrCreateEntity(code, type);
 		entity.setDisplay2(display);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),

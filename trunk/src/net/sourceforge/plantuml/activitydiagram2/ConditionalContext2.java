@@ -51,7 +51,7 @@ public class ConditionalContext2 {
 	private final String when;
 
 	public ConditionalContext2(ConditionalContext2 parent, IEntity branch, Direction direction, String when) {
-		if (branch.getType() != EntityType.BRANCH) {
+		if (branch.getEntityType() != EntityType.BRANCH) {
 			throw new IllegalArgumentException();
 		}
 		this.branch = branch;
@@ -96,7 +96,7 @@ public class ConditionalContext2 {
 		}
 		final Iterator<IEntity> it = pendings.iterator();
 		final IEntity toRemove = it.next();
-		if (toRemove.getType() != EntityType.BRANCH) {
+		if (toRemove.getEntityType() != EntityType.BRANCH) {
 			throw new IllegalStateException();
 		}
 		it.remove();

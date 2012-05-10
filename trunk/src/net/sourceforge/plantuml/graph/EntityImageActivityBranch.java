@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7752 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -38,7 +38,7 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 
@@ -46,7 +46,7 @@ class EntityImageActivityBranch extends AbstractEntityImage {
 
 	private final int size = 10;
 
-	public EntityImageActivityBranch(Entity entity) {
+	public EntityImageActivityBranch(IEntity entity) {
 		super(entity);
 	}
 

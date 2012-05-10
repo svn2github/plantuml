@@ -53,7 +53,7 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 
 	final private TextBlock desc;
 	final private static int MARGIN = 10;
-	final HtmlColor specificBackColor;
+	final private HtmlColor specificBackColor;
 	final private ISkinParam skinParam;
 	final private Stereotype stereotype;
 
@@ -81,7 +81,7 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 		final double widthTotal = dimTotal.getWidth();
 		final double heightTotal = dimTotal.getHeight();
 
-		final HtmlColor stateBack = ClusterDecoration.getStateBackColor(specificBackColor, skinParam,
+		final HtmlColor stateBack = Cluster.getStateBackColor(specificBackColor, skinParam,
 				stereotype == null ? null : stereotype.getLabel());
 
 		final ClusterDecoration decoration = new ClusterDecoration(getSkinParam().getPackageStyle(), desc, stateBack,

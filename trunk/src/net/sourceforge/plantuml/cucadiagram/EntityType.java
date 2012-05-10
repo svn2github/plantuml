@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7838 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -47,9 +47,7 @@ public enum EntityType {
 
 	STATE, STATE_CONCURRENT, PSEUDO_STATE,
 
-	BLOCK,
-
-	GROUP;
+	BLOCK;
 
 	public static EntityType getEntityType(String arg0) {
 		arg0 = arg0.toUpperCase();

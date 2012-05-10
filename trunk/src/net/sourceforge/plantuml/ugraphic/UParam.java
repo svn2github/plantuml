@@ -28,13 +28,10 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7754 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
 

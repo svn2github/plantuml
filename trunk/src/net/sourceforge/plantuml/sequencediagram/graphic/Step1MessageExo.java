@@ -61,7 +61,7 @@ class Step1MessageExo extends Step1Abstract {
 
 		this.messageArrow = new MessageExoArrow(freeY.getFreeY(range), drawingSet.getSkin(), drawingSet.getSkin()
 				.createComponent(ComponentType.ARROW, getConfig(), drawingSet.getSkinParam(),
-						getLabelOfMessage(message)), getLivingParticipantBox(), message.getType());
+						getLabelOfMessage(message)), getLivingParticipantBox(), message.getType(), message.getUrl());
 
 		if (message.getNote() != null) {
 			final ISkinParam skinParam = new SkinParamBackcolored(drawingSet.getSkinParam(),

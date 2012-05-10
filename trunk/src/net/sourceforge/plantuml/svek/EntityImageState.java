@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -76,7 +77,7 @@ public class EntityImageState extends AbstractEntityImage {
 
 		final List<String> list = new ArrayList<String>();
 		for (Member att : entity.getFieldsToDisplay()) {
-			list.add(att.getDisplay(true));
+			list.addAll(StringUtils.getWithNewlines(att.getDisplay(true)));
 		}
 
 		this.fields = TextBlockUtils.create(list, new FontConfiguration(getFont(FontParam.STATE_ATTRIBUTE, stereotype),

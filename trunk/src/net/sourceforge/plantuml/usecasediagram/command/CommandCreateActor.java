@@ -36,7 +36,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagram;
 
@@ -68,7 +68,7 @@ public class CommandCreateActor extends SingleLineCommand<UsecaseDiagram> {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
 		}
-		final Entity entity = (Entity) getSystem().getOrCreateClass(code);
+		final IEntity entity = getSystem().getOrCreateClass(code);
 		entity.setDisplay2(display);
 
 		final String stereotype = arg.get(2);

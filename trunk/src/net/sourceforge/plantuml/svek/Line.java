@@ -36,14 +36,13 @@ package net.sourceforge.plantuml.svek;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.Position;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -60,7 +59,6 @@ import net.sourceforge.plantuml.posimo.DotPath;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableUtils;
-import net.sourceforge.plantuml.skin.ArrowBody;
 import net.sourceforge.plantuml.svek.SvekUtils.PointListIterator;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -96,6 +94,7 @@ public class Line implements Moveable {
 	private UDrawable3 startTail;
 
 	private final StringBounder stringBounder;
+	private final Bibliotekon bibliotekon;
 
 	class DirectionalTextBlock implements TextBlock {
 
@@ -139,10 +138,11 @@ public class Line implements Moveable {
 	}
 
 	public Line(String startUid, String endUid, Link link, ColorSequence colorSequence, String ltail, String lhead,
-			ISkinParam skinParam, StringBounder stringBounder, FontConfiguration labelFont) {
+			ISkinParam skinParam, StringBounder stringBounder, FontConfiguration labelFont, Bibliotekon bibliotekon) {
 		if (startUid == null || endUid == null || link == null) {
 			throw new IllegalArgumentException();
 		}
+		this.bibliotekon = bibliotekon;
 		this.stringBounder = stringBounder;
 		this.link = link;
 		this.startUid = startUid;
@@ -510,49 +510,17 @@ public class Line implements Moveable {
 	//
 	// }
 
-	public void drawU(UGraphic ug, double x, double y, HtmlColor color, Map<Group, Cluster> groups) {
+	public void drawU(UGraphic ug, double x, double y, HtmlColor color/* , Map<Group, Cluster> groups */) {
 		if (opale) {
 			return;
 		}
-		// final IEntity ent1 = link.getEntity1();
-		// final IEntity ent2 = link.getEntity2();
-		// final EntityType type1 = ent1.getType();
-		// final EntityType type2 = ent2.getType();
-		// System.err.println("drawU x=" + x + " y=" + y);
-		final DotPath pathToDraw = dotPath;
-		// if (type1 == EntityType.GROUP) {
-		// System.err.println("link=" + link);
-		// System.err.println("ent1=" + ent1);
-		// System.err.println("other=" + ent2);
-		// }
-		// if (type2 == EntityType.GROUP) {
-		// System.err.println("link=" + link);
-		// System.err.println("ent2=" + ent2);
-		// System.err.println("other=" + ent1);
-		// }
-		// if (type1 == EntityType.GROUP) {
-		// final Group parent = ent1.getParent();
-		// final Cluster cl = groups.get(parent);
-		// System.err.println("sep=" + cl.isSpecial());
-		// if (cl.isSpecial()) {
-		// pathToDraw = new DotPath(pathToDraw);
-		// final Point2D proj = cl.projection(pathToDraw.getStartPoint().getX()
-		// + dx, pathToDraw.getStartPoint()
-		// .getY() + dy);
-		// pathToDraw.forceStartPoint(proj.getX() - dx, proj.getY() - dy);
-		// }
-		// }
-		// if (type2 == EntityType.GROUP) {
-		// final Group parent = ent2.getParent();
-		// final Cluster cl = groups.get(parent);
-		// if (cl.isSpecial()) {
-		// pathToDraw = new DotPath(pathToDraw);
-		// final Point2D proj = cl.projection(pathToDraw.getEndPoint().getX() +
-		// dx, pathToDraw.getEndPoint()
-		// .getY() + dy);
-		// pathToDraw.forceEndPoint(proj.getX() - dx, proj.getY() - dy);
-		// }
-		// }
+
+		if (link.isAutoLinkOfAGroup()) {
+			final Cluster cl = bibliotekon.getCluster(link.getEntity1());
+			x += cl.getWidth();
+			x -= (dotPath.getStartPoint().getX() - cl.getMinX());
+		}
+
 		x += dx;
 		y += dy;
 
@@ -566,7 +534,7 @@ public class Line implements Moveable {
 		ug.getParam().setColor(color);
 		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(link.getType().getStroke());
-		ug.draw(x, y, pathToDraw);
+		ug.draw(x, y, dotPath);
 		ug.getParam().setStroke(new UStroke());
 
 		if (this.startTail != null) {
@@ -657,7 +625,7 @@ public class Line implements Moveable {
 		return strategy.getResult() + getDecorDzeta();
 	}
 
-	public void manageCollision(List<Shape> allShapes) {
+	public void manageCollision(Collection<Shape> allShapes) {
 
 		for (Shape sh : allShapes) {
 			final Positionable cl = PositionableUtils.addMargin(sh, 8, 8);

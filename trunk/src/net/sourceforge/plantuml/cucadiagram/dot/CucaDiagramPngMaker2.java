@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7772 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -52,7 +52,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.graph.ANode;
 import net.sourceforge.plantuml.graph.ANodeImpl;
@@ -82,7 +82,7 @@ public final class CucaDiagramPngMaker2 {
 			System.err.println("CucaDiagramPngMaker2:: " + s + " " + diffHeight);
 			zoda2.addLink(s, diffHeight, link);
 		}
-		for (Entity ent : diagram.entities().values()) {
+		for (IEntity ent : diagram.getEntities().values()) {
 			ANode n = zoda2.getNode(ent.getCode());
 			if (n == null) {
 				n = zoda2.createAloneNode(ent.getCode());
@@ -156,7 +156,7 @@ public final class CucaDiagramPngMaker2 {
 			// System.err.println("CucaDiagramPngMaker2:: " + s);
 			zoda1.addLink(s);
 		}
-		for (Entity ent : diagram.entities().values()) {
+		for (IEntity ent : diagram.getEntities().values()) {
 			final ANodeImpl n = zoda1.getExistingNode(ent.getCode());
 			n.setUserData(ent);
 		}

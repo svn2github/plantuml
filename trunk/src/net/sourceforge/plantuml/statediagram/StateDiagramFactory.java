@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7852 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -41,8 +41,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.statediagram.command.CommandAddField;
 import net.sourceforge.plantuml.statediagram.command.CommandConcurrentState;
-import net.sourceforge.plantuml.statediagram.command.CommandCreatePackageState;
-import net.sourceforge.plantuml.statediagram.command.CommandCreatePackageState2;
+import net.sourceforge.plantuml.statediagram.command.CommandCreatePackageState3;
 import net.sourceforge.plantuml.statediagram.command.CommandCreateState;
 import net.sourceforge.plantuml.statediagram.command.CommandCreateState2;
 import net.sourceforge.plantuml.statediagram.command.CommandEndState;
@@ -67,8 +66,7 @@ public class StateDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(new CommandCreateState2(system));
 		// addCommand(new CommandLinkState(system));
 		addCommand(new CommandLinkState2(system));
-		addCommand(new CommandCreatePackageState(system));
-		addCommand(new CommandCreatePackageState2(system));
+		addCommand(new CommandCreatePackageState3(system));
 		addCommand(new CommandEndState(system));
 		addCommand(new CommandAddField(system));
 		addCommand(new CommandConcurrentState(system));

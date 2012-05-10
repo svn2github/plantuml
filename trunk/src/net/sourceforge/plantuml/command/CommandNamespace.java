@@ -36,8 +36,8 @@ package net.sourceforge.plantuml.command;
 import java.util.List;
 
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
 public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
@@ -49,12 +49,12 @@ public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
-		final Group currentPackage = getSystem().getCurrentGroup();
-		final Group p = getSystem().getOrCreateGroup(code, code, code, GroupType.PACKAGE, currentPackage);
-		p.setBold(true);
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, code, GroupType.PACKAGE, currentPackage);
+		p.zsetBold(true);
 		final String color = arg.get(1);
 		if (color != null) {
-			p.setBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColor.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

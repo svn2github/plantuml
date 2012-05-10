@@ -42,7 +42,6 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.note.CommandNote;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -76,7 +75,7 @@ public class CommandMultilinesNoteActivity2 extends CommandMultilines<ActivityDi
 		final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 		final String s = StringUtils.getMergedLines(strings);
 
-		final Entity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+		final IEntity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
 		note.setSpecificBackcolor(HtmlColor.getColorIfValid(line0.get(1)));
 
 		final Link link;

@@ -46,8 +46,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -94,18 +94,18 @@ final public class CommandLinkLollipop2 extends SingleLineCommand2<AbstractClass
 		final String ent1 = arg.get("ENT1").get(1);
 		final String ent2 = arg.get("ENT2").get(1);
 
-		final Entity cl1;
-		final Entity cl2;
-		final Entity normalEntity;
+		final IEntity cl1;
+		final IEntity cl2;
+		final IEntity normalEntity;
 
 		final String suffix = "lol" + UniqueSequence.getValue();
 		if (arg.get("LOL_THEN_ENT").get(0) != null) {
-			cl2 = (Entity) getSystem().getOrCreateClass(ent2);
+			cl2 = getSystem().getOrCreateClass(ent2);
 			cl1 = getSystem().createEntity(cl2.getCode() + suffix, ent1, EntityType.LOLLIPOP);
 			normalEntity = cl2;
 		} else {
 			assert arg.get("ENT_THEN_LOL").get(0) != null;
-			cl1 = (Entity) getSystem().getOrCreateClass(ent1);
+			cl1 = getSystem().getOrCreateClass(ent1);
 			cl2 = getSystem().createEntity(cl1.getCode() + suffix, ent2, EntityType.LOLLIPOP);
 			normalEntity = cl1;
 		}

@@ -36,7 +36,7 @@ package net.sourceforge.plantuml.command;
 import java.util.List;
 
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class CommandEndNamespace extends SingleLineCommand<AbstractEntityDiagram> {
 
@@ -46,7 +46,7 @@ public class CommandEndNamespace extends SingleLineCommand<AbstractEntityDiagram
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final Group currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
 		if (currentPackage == null) {
 			return CommandExecutionResult.error("No namesspace defined");
 		}

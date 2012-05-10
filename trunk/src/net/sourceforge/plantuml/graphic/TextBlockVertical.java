@@ -61,9 +61,12 @@ public class TextBlockVertical implements TextBlock {
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
-		b1.drawU(ug, x, y);
+		final Dimension2D dim = calculateDimension(ug.getStringBounder());
+		final Dimension2D dimb1 = b1.calculateDimension(ug.getStringBounder());
+		final Dimension2D dimb2 = b2.calculateDimension(ug.getStringBounder());
+		b1.drawU(ug, x + (dim.getWidth() - dimb1.getWidth()) / 2, y);
 		final Dimension2D dim1 = b1.calculateDimension(ug.getStringBounder());
-		b2.drawU(ug, x, y + dim1.getHeight());
+		b2.drawU(ug, x + (dim.getWidth() - dimb2.getWidth()) / 2, y + dim1.getHeight());
 	}
 
 }

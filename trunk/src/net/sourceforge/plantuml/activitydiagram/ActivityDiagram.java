@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7833 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram;
@@ -40,12 +40,10 @@ import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class ActivityDiagram extends CucaDiagram {
 
@@ -61,7 +59,7 @@ public class ActivityDiagram extends CucaDiagram {
 		final IEntity result;
 		if (entityExist(code)) {
 			result = super.getOrCreateEntity(code, type);
-			if (result.getType() != type) {
+			if (result.getEntityType() != type) {
 				// throw new IllegalArgumentException("Already known: " + code + " " + result.getType() + " " + type);
 				return null;
 			}
@@ -90,23 +88,23 @@ public class ActivityDiagram extends CucaDiagram {
 	}
 
 	private void updateLasts(final IEntity result) {
-		if (result.getType() == EntityType.NOTE) {
+		if (result.getEntityType() == EntityType.NOTE) {
 			return;
 		}
 		this.lastEntityConsulted = result;
-		if (result.getType() == EntityType.BRANCH) {
+		if (result.getEntityType() == EntityType.BRANCH) {
 			lastEntityBrancheConsulted = result;
 		}
 	}
 
 	@Override
-	public Entity createEntity(String code, String display, EntityType type) {
-		final Entity result = super.createEntity(code, display, type);
+	public IEntity createEntity(String code, String display, EntityType type) {
+		final IEntity result = super.createEntity(code, display, type);
 		updateLasts(result);
 		return result;
 	}
 
-	public Entity createNote(String code, String display) {
+	public IEntity createNote(String code, String display) {
 		return super.createEntity(code, display, EntityType.NOTE);
 	}
 
@@ -116,7 +114,7 @@ public class ActivityDiagram extends CucaDiagram {
 	}
 
 	public String getDescription() {
-		return "(" + entities().size() + " activities)";
+		return "(" + getEntities().size() + " activities)";
 	}
 
 	public IEntity getLastEntityConsulted() {
@@ -144,27 +142,27 @@ public class ActivityDiagram extends CucaDiagram {
 	public IEntity createInnerActivity() {
 		// System.err.println("createInnerActivity A");
 		final String code = "##" + UniqueSequence.getValue();
-		final Group g = getOrCreateGroup(code, code, null, GroupType.INNER_ACTIVITY, getCurrentGroup());
+		final IEntityMutable g = getOrCreateGroup(code, code, null, GroupType.INNER_ACTIVITY, getCurrentGroup());
 		// g.setRankdir(Rankdir.LEFT_TO_RIGHT);
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
 		// System.err.println("createInnerActivity B "+getCurrentGroup());
-		return g.getEntityCluster();
+		return g;
 	}
 
 	public void concurrentActivity(String name) {
 		// System.err.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
-		if (getCurrentGroup().getType() == GroupType.CONCURRENT_ACTIVITY) {
+		if (getCurrentGroup().zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
 			// getCurrentGroup().setRankdir(Rankdir.LEFT_TO_RIGHT);
 			endGroup();
 			System.err.println("endgroup");
 		}
 		// System.err.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
 		final String code = "##" + UniqueSequence.getValue();
-		if (getCurrentGroup().getType() != GroupType.INNER_ACTIVITY) {
-			throw new IllegalStateException("type=" + getCurrentGroup().getType());
+		if (getCurrentGroup().zgetGroupType() != GroupType.INNER_ACTIVITY) {
+			throw new IllegalStateException("type=" + getCurrentGroup().zgetGroupType());
 		}
-		final Group g = getOrCreateGroup(code, "code", null, GroupType.CONCURRENT_ACTIVITY, getCurrentGroup());
+		final IEntityMutable g = getOrCreateGroup(code, "code", null, GroupType.CONCURRENT_ACTIVITY, getCurrentGroup());
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
 	}

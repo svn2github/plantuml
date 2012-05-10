@@ -34,13 +34,10 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -65,24 +62,24 @@ public final class SvekResult implements IEntityImage, Moveable {
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
-		final Map<Group, Cluster> groups = new HashMap<Group, Cluster>();
+		// final Map<Group, Cluster> groups = new HashMap<Group, Cluster>();
 
-		for (Cluster cluster : dotStringFactory.getAllSubCluster()) {
+		for (Cluster cluster : dotStringFactory.getBibliotekon().allCluster()) {
 			cluster.drawU(ug, x, y, clusterBorder, dotData);
-			groups.put(cluster.getGroup(), cluster);
+			// groups.put(cluster.getGroup(), cluster);
 		}
-		assert groups.size() == dotStringFactory.getAllSubCluster().size();
+		// assert groups.size() == dotStringFactory.getAllSubCluster().size();
 
-		for (Shape shape : dotStringFactory.getShapes()) {
+		for (Shape shape : dotStringFactory.getBibliotekon().allShapes()) {
 			final double minX = shape.getMinX();
 			final double minY = shape.getMinY();
 			shape.getImage().drawU(ug, x + minX, y + minY);
 		}
 
-		for (Line line : dotStringFactory.getLines()) {
+		for (Line line : dotStringFactory.getBibliotekon().allLines()) {
 			// line.patchLineForCluster(dotStringFactory.getAllSubCluster());
 			final HtmlColor color = rose.getHtmlColor(dotData.getSkinParam(), getArrowColorParam(), null);
-			line.drawU(ug, x, y, color, groups);
+			line.drawU(ug, x, y, color);
 		}
 
 	}

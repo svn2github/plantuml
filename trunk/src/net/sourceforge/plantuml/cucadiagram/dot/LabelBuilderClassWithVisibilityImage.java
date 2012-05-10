@@ -51,7 +51,7 @@ class LabelBuilderClassWithVisibilityImage extends LabelBuilderObjectOrClass imp
 		DrawFile cFile = getEntity().getImageFile();
 		if (cFile == null) {
 			final String stereo = getEntity().getStereotype() == null ? null : getEntity().getStereotype().getLabel();
-			cFile = getData().getStaticImages(getEntity().getType(), stereo);
+			cFile = getData().getStaticImages(getEntity().getEntityType(), stereo);
 		}
 		if (cFile == null) {
 			throw new IllegalStateException();

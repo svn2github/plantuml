@@ -45,19 +45,24 @@ import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.Member;
+import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
+import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
@@ -68,7 +73,7 @@ public final class GroupPngMakerState {
 
 	class InnerGroupHierarchy implements GroupHierarchy {
 
-		public Collection<Group> getChildrenGroups(Group parent) {
+		public Collection<? extends Group> getChildrenGroups(Group parent) {
 			if (parent == null) {
 				return diagram.getChildrenGroups(group);
 			}
@@ -89,10 +94,9 @@ public final class GroupPngMakerState {
 	private List<Link> getPureInnerLinks() {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link link : diagram.getLinks()) {
-			final IEntity e1 = link.getEntity1();
-			final IEntity e2 = link.getEntity2();
-			if (isParent(e1, group) && e1.getType() != EntityType.GROUP && isParent(e2, group)
-					&& e2.getType() != EntityType.GROUP) {
+			final IEntityMutable e1 = (IEntityMutable) link.getEntity1();
+			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
+			if (isParent(e1, group) && e1.isGroup() == false && isParent(e2, group) && e2.isGroup() == false) {
 				result.add(link);
 			}
 		}
@@ -100,46 +104,55 @@ public final class GroupPngMakerState {
 	}
 
 	private boolean isParent(IEntity toTest, Group parent) {
-		Group g = toTest.getParent();
+		Group g = toTest.getContainer();
 		while (g != null) {
-			if (g == parent) {
+			if (EntityUtils.equals(g, parent)) {
 				return true;
 			}
-			g = g.getParent();
-//			if (g!=null && g.isAutonom()==false) {
-//				return false;
-//			}
+			g = g.zgetParent();
+			// if (g!=null && g.isAutonom()==false) {
+			// return false;
+			// }
 		}
 		return false;
 	}
 
 	public IEntityImage getImage() throws IOException, InterruptedException {
-		final String display = group.getDisplay();
+		final String display = group.zgetDisplay();
 		final TextBlock title = TextBlockUtils.create(StringUtils.getWithNewlines(display), new FontConfiguration(
 				getFont(FontParam.STATE), HtmlColor.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
-		if (group.entities().size() == 0) {
-			return new EntityImageState(group.getEntityCluster(), diagram.getSkinParam());
+		if (group.zsize() == 0) {
+			return new EntityImageState((IEntity) group, diagram.getSkinParam());
 		}
 		final List<Link> links = getPureInnerLinks();
 		ISkinParam skinParam = diagram.getSkinParam();
-		if (OptionFlags.PBBACK && group.getBackColor() != null) {
-			skinParam = new SkinParamBackcolored(skinParam, null, group.getBackColor());
+		if (OptionFlags.PBBACK && group.zgetBackColor() != null) {
+			skinParam = new SkinParamBackcolored(skinParam, null, group.zgetBackColor());
 		}
-		final DotData dotData = new DotData(group, links, group.entities(), diagram.getUmlDiagramType(), skinParam,
-				group.getRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper());
+		final DotData dotData = new DotData(group, links, group.zentities(), diagram.getUmlDiagramType(), skinParam,
+				group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(), diagram.getEntityFactory());
 
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
 
-		if (group.getType() == GroupType.CONCURRENT_STATE) {
+		if (group.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			return new InnerStateConcurrent(svek2.createFile());
-		} else if (group.getType() == GroupType.STATE) {
+		} else if (group.zgetGroupType() == GroupType.STATE) {
 			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
-			final HtmlColor backColor = getColor(ColorParam.stateBackground, null);
-			return new InnerStateAutonom(svek2.createFile(), title, borderColor, backColor, skinParam.shadowing());
+			final HtmlColor backColor = group.zgetBackColor() == null ? getColor(ColorParam.stateBackground, null)
+					: group.zgetBackColor();
+			final List<Member> members = ((IEntity) group).getFieldsToDisplay();
+			final TextBlockWidth attribute;
+			if (members.size() == 0) {
+				attribute = new TextBlockEmpty();
+			} else {
+				attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, diagram.getSkinParam());
+			}
+			return new InnerStateAutonom(svek2.createFile(), title, attribute, borderColor, backColor,
+					skinParam.shadowing());
 		}
 
-		throw new UnsupportedOperationException(group.getType().toString());
+		throw new UnsupportedOperationException(group.zgetGroupType().toString());
 
 	}
 

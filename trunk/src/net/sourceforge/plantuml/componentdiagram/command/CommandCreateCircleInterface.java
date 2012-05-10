@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7753 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram.command;
@@ -40,8 +40,8 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 
 public class CommandCreateCircleInterface extends SingleLineCommand<ComponentDiagram> {
@@ -74,7 +74,7 @@ public class CommandCreateCircleInterface extends SingleLineCommand<ComponentDia
 		}
 		final String stereotype = arg.get(2);
 		// final Entity entity = getSystem().createEntity(code, display, type);
-		final Entity entity = (Entity) getSystem().getOrCreateEntity(code, type);
+		final IEntity entity = getSystem().getOrCreateEntity(code, type);
 		entity.setDisplay2(display);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),

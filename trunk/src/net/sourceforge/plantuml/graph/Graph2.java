@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7755 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.EmptyImageBuilder;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 
 public class Graph2 {
@@ -84,7 +84,7 @@ public class Graph2 {
 	}
 
 	private AbstractEntityImage images(ANode n) {
-		return new EntityImageFactory().createEntityImage(((Entity) n.getUserData()));
+		return new EntityImageFactory().createEntityImage((IEntity)n.getUserData());
 	}
 
 	public Dimension2D getDimension() {

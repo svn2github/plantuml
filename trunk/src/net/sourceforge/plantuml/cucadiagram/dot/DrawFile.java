@@ -72,7 +72,7 @@ public class DrawFile {
 		addHook();
 	}
 
-	public static boolean isCacheClean() {
+	private static boolean isCacheClean() {
 		synchronized (toDelete) {
 			for (DrawFile f : toDelete) {
 				if (f.useCounter.get() != 0) {

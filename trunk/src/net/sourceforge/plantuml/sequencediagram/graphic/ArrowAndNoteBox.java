@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7846 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -45,7 +45,7 @@ class ArrowAndNoteBox extends Arrow implements InGroupable {
 	private final NoteBox noteBox;
 
 	public ArrowAndNoteBox(StringBounder stringBounder, Arrow arrow, NoteBox noteBox) {
-		super(arrow.getStartingY(), arrow.getSkin(), arrow.getArrowComponent());
+		super(arrow.getStartingY(), arrow.getSkin(), arrow.getArrowComponent(), arrow.getUrl());
 		this.arrow = arrow;
 		this.noteBox = noteBox;
 
@@ -79,14 +79,8 @@ class ArrowAndNoteBox extends Arrow implements InGroupable {
 		final double atX = ug.getTranslateX();
 		final double atY = ug.getTranslateY();
 		arrow.drawU(ug, maxX, context);
-//		if (arrow instanceof ArrowAndParticipant) {
-//			final double diff = ((ArrowAndParticipant) arrow).getDiff(ug);
-//			ug.setTranslate(atX, atY + diff);
-//			// noteBox.drawU(ug, maxX, context);
-//		} else {
-			ug.setTranslate(atX, atY);
-			noteBox.drawU(ug, maxX, context);
-		// }
+		ug.setTranslate(atX, atY);
+		noteBox.drawU(ug, maxX, context);
 		ug.setTranslate(atX, atY);
 	}
 

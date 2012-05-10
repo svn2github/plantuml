@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7870 $
  *
  */
 package net.sourceforge.plantuml;
@@ -79,13 +79,19 @@ public class Dimension2DDouble extends Dimension2D {
 		return new Dimension2DDouble(width, height);
 	}
 
+	public static Dimension2D mergeTB(Dimension2D a, Dimension2D b, Dimension2D c) {
+		final double width = MathUtils.max(a.getWidth(), b.getWidth(), c.getWidth());
+		final double height = a.getHeight() + b.getHeight() + c.getHeight();
+		return new Dimension2DDouble(width, height);
+	}
+
 	public static Dimension2D mergeLR(Dimension2D left, Dimension2D right) {
 		final double height = Math.max(left.getHeight(), right.getHeight());
 		final double width = left.getWidth() + right.getWidth();
 		return new Dimension2DDouble(width, height);
 	}
 
-	public static Dimension2D mergeTB(Dimension2D top1, Dimension2D top2, Dimension2D bottom) {
+	public static Dimension2D mergeLayoutT12B3(Dimension2D top1, Dimension2D top2, Dimension2D bottom) {
 		final double width = MathUtils.max(top1.getWidth(), top2.getWidth(), bottom.getWidth());
 		final double height = top1.getHeight() + top2.getHeight() + bottom.getHeight();
 		return new Dimension2DDouble(width, height);

@@ -69,7 +69,6 @@ public class CommandReferenceOverSeveral extends SingleLineCommand2<SequenceDiag
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 		final HtmlColor backColorElement = HtmlColor.getColorIfValid(arg.get("REF").get(0));
 		// final HtmlColor backColorGeneral = HtmlColor.getColorIfValid(arg.get("REF").get(1));
-		final HtmlColor backColorGeneral = null;
 		
 		final List<String> participants = StringUtils.splitComma(arg.get("PARTS").get(0));
 		final String url = arg.get("URL").get(0);
@@ -88,6 +87,7 @@ public class CommandReferenceOverSeveral extends SingleLineCommand2<SequenceDiag
 			u = new Url(url, title);
 		}
 
+		final HtmlColor backColorGeneral = null;
 		final Reference ref = new Reference(p, u, strings, backColorGeneral, backColorElement);
 		getSystem().addReference(ref);
 		return CommandExecutionResult.ok();

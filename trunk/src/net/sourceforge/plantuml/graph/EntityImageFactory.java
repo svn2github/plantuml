@@ -28,52 +28,52 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7812 $
  *
  */
 package net.sourceforge.plantuml.graph;
 
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class EntityImageFactory {
 
-	public AbstractEntityImage createEntityImage(Entity entity) {
-		if (entity.getType() == EntityType.CLASS || entity.getType() == EntityType.ABSTRACT_CLASS
-				|| entity.getType() == EntityType.INTERFACE || entity.getType() == EntityType.ENUM) {
+	public AbstractEntityImage createEntityImage(IEntity entity) {
+		if (entity.getEntityType() == EntityType.CLASS || entity.getEntityType() == EntityType.ABSTRACT_CLASS
+				|| entity.getEntityType() == EntityType.INTERFACE || entity.getEntityType() == EntityType.ENUM) {
 			return new EntityImageClass(entity);
 		}
-		if (entity.getType() == EntityType.ACTIVITY) {
+		if (entity.getEntityType() == EntityType.ACTIVITY) {
 			return new EntityImageActivity(entity);
 		}
-		if (entity.getType() == EntityType.NOTE) {
+		if (entity.getEntityType() == EntityType.NOTE) {
 			return new EntityImageNote(entity);
 		}
-		if (entity.getType() == EntityType.POINT_FOR_ASSOCIATION) {
+		if (entity.getEntityType() == EntityType.POINT_FOR_ASSOCIATION) {
 			return new EntityImageActivityCircle(entity, 4, 4);
 		}
-		if (entity.getType() == EntityType.CIRCLE_START) {
+		if (entity.getEntityType() == EntityType.CIRCLE_START) {
 			return new EntityImageActivityCircle(entity, 18, 18);
 		}
-		if (entity.getType() == EntityType.CIRCLE_END) {
+		if (entity.getEntityType() == EntityType.CIRCLE_END) {
 			return new EntityImageActivityCircle(entity, 18, 11);
 		}
-		if (entity.getType() == EntityType.BRANCH) {
+		if (entity.getEntityType() == EntityType.BRANCH) {
 			return new EntityImageActivityBranch(entity);
 		}
-		if (entity.getType() == EntityType.SYNCHRO_BAR) {
+		if (entity.getEntityType() == EntityType.SYNCHRO_BAR) {
 			return new EntityImageActivityBar(entity);
 		}
-		if (entity.getType() == EntityType.USECASE) {
+		if (entity.getEntityType() == EntityType.USECASE) {
 			return new EntityImageUsecase(entity);
 		}
-		if (entity.getType() == EntityType.ACTOR) {
+		if (entity.getEntityType() == EntityType.ACTOR) {
 			return new EntityImageActor(entity);
 		}
-		if (entity.getType() == EntityType.CIRCLE_INTERFACE) {
+		if (entity.getEntityType() == EntityType.CIRCLE_INTERFACE) {
 			return new EntityImageCircleInterface(entity);
 		}
-		if (entity.getType() == EntityType.COMPONENT) {
+		if (entity.getEntityType() == EntityType.COMPONENT) {
 			return new EntityImageComponent(entity);
 		}
 		return new EntityImageDefault(entity);

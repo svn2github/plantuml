@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7800 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
@@ -36,11 +36,10 @@ package net.sourceforge.plantuml.componentdiagram;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class ComponentDiagram extends AbstractEntityDiagram {
 
@@ -72,7 +71,7 @@ public class ComponentDiagram extends AbstractEntityDiagram {
 	}
 	
 	@Override
-	public Entity createEntity(String code, String display, EntityType type) {
+	public IEntity createEntity(String code, String display, EntityType type) {
 		if (type != EntityType.COMPONENT) {
 			return super.createEntity(code, display, type);
 		}
@@ -83,12 +82,12 @@ public class ComponentDiagram extends AbstractEntityDiagram {
 		return createEntityWithNamespace(code, display, type);
 	}
 
-	private Entity createEntityWithNamespace(String fullyCode, String display, EntityType type) {
-		Group group = getCurrentGroup();
+	private IEntity createEntityWithNamespace(String fullyCode, String display, EntityType type) {
+		IEntityMutable group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (group == null || group.getCode().equals(namespace) == false)) {
+		if (namespace != null && (group == null || group.zgetGroupCode().equals(namespace) == false)) {
 			group = getOrCreateGroupInternal(namespace, namespace, namespace, GroupType.PACKAGE, null);
-			group.setBold(true);
+			group.zsetBold(true);
 		}
 		return createEntityInternal(fullyCode, display == null ? getShortName(fullyCode) : display, type, group);
 	}

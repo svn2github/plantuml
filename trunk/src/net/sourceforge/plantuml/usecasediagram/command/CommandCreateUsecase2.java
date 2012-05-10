@@ -37,8 +37,8 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagram;
 
@@ -64,7 +64,7 @@ public class CommandCreateUsecase2 extends SingleLineCommand<UsecaseDiagram> {
 		final String display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
 
 		final String stereotype = arg.get(2);
-		final Entity entity = (Entity) getSystem().getOrCreateEntity(code, type);
+		final IEntity entity = getSystem().getOrCreateEntity(code, type);
 		entity.setDisplay2(display);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),

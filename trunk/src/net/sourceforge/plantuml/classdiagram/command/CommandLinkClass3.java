@@ -47,10 +47,9 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -118,8 +117,8 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 			return CommandExecutionResult.error("Package can be only linked to other package");
 		}
 
-		final Entity cl1 = (Entity) getSystem().getOrCreateClass(ent1);
-		final Entity cl2 = (Entity) getSystem().getOrCreateClass(ent2);
+		final IEntity cl1 = getSystem().getOrCreateClass(ent1);
+		final IEntity cl2 = getSystem().getOrCreateClass(ent2);
 
 		if (arg.get("ENT1").get(0) != null) {
 			final EntityType type = EntityType.getEntityType(arg.get("ENT1").get(0));
@@ -249,8 +248,8 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 	private CommandExecutionResult executePackageLink(Map<String, RegexPartialMatch> arg) {
 		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1").get(1));
 		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2").get(1));
-		final Group cl1 = getSystem().getGroup(ent1);
-		final Group cl2 = getSystem().getGroup(ent2);
+		final IEntityMutable cl1 = getSystem().getGroup(ent1);
+		final IEntityMutable cl2 = getSystem().getGroup(ent2);
 
 		final LinkType linkType = getLinkType(arg);
 		final Direction dir = getDirection(arg);
@@ -264,7 +263,7 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		final String labelLink = arg.get("LABEL_LINK").get(0);
 		final String firstLabel = arg.get("FIRST_LABEL").get(0);
 		final String secondLabel = arg.get("SECOND_LABEL").get(0);
-		final Link link = new Link(cl1.getEntityCluster(), cl2.getEntityCluster(), linkType, labelLink, queue,
+		final Link link = new Link(cl1, cl2, linkType, labelLink, queue,
 				firstLabel, secondLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
 		// if (dir == Direction.LEFT || dir == Direction.UP) {
 		// link = link.getInv();

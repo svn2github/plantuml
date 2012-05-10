@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7743 $
+ * Revision $Revision: 7833 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -48,13 +48,12 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileUtils;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.EntityMutable;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.Member;
-import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.skin.rose.Rose;
 
@@ -70,60 +69,50 @@ public final class CucaDiagramSimplifier {
 		boolean changed;
 		do {
 			changed = false;
-			final Collection<Group> groups = new ArrayList<Group>(diagram.getGroups(false));
-			for (Group g : groups) {
+			final Collection<IEntityMutable> groups = new ArrayList<IEntityMutable>(diagram.getGroups(false));
+			for (IEntityMutable g : groups) {
 				if (diagram.isAutarkic(g)) {
 					final EntityType type;
-					if (g.getType() == GroupType.CONCURRENT_STATE) {
+					if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 						type = EntityType.STATE_CONCURRENT;
-					} else if (g.getType() == GroupType.STATE) {
+					} else if (g.zgetGroupType() == GroupType.STATE) {
 						type = EntityType.STATE;
-					} else if (g.getType() == GroupType.INNER_ACTIVITY) {
+					} else if (g.zgetGroupType() == GroupType.INNER_ACTIVITY) {
 						type = EntityType.ACTIVITY;
-					} else if (g.getType() == GroupType.CONCURRENT_ACTIVITY) {
+					} else if (g.zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
 						type = EntityType.ACTIVITY_CONCURRENT;
 					} else {
 						throw new IllegalStateException();
 					}
-					final Entity proxy = new Entity("#" + g.getCode(), g.getDisplay(), type, g.getParent(),
+					final EntityMutable proxy = (EntityMutable) diagram.getEntityFactory().createEntity(
+							"#" + g.zgetGroupCode(), g.zgetDisplay(), type, (IEntityMutable) g.zgetParent(),
 							diagram.getHides());
-					if (type == EntityType.STATE) {
-						manageBackColorForState(diagram, g, proxy);
+					if (g.zgetBackColor() != null) {
+						proxy.setSpecificBackcolor(g.zgetBackColor());
 					}
-					proxy.overidesFieldsToDisplay(g.getEntityCluster());
-//					for (Member field : g.getEntityCluster().getFieldsToDisplay().getAll()) {
-//						proxy.addFieldOrMethod(field);
-//					}
-					computeImageGroup(g, proxy, dotStrings);
-					diagram.overideGroup(g, proxy);
+					proxy.overidesFieldsToDisplay((EntityMutable) g);
+					computeImageGroup((EntityMutable)g, proxy, dotStrings);
+					g.overideGroup(proxy);
 					if (proxy.getImageFile() != null) {
 						diagram.ensureDelete(proxy.getImageFile());
 					}
 
-//					final IEntity entityCluster = g.getEntityCluster();
-//					if (entityCluster != null && entityCluster.getImageFile() != null) {
-//						proxy.addSubImage(entityCluster.getImageFile());
-//					}
-//					if (entityCluster != null) {
-//						proxy.addSubImage((Entity) entityCluster);
-//					}
-
-					for (IEntity sub : g.entities().values()) {
+					for (IEntity sub : g.zentities()) {
 						final DrawFile subImage = sub.getImageFile();
 						if (subImage != null) {
-							proxy.addSubImage(subImage);
+							g.addSubImage(subImage);
 						}
 					}
-
+					
 					changed = true;
 				}
 			}
 		} while (changed);
 	}
 
-	private void computeImageGroup(final Group group, final Entity entity, List<String> dotStrings) throws IOException,
-			FileNotFoundException, InterruptedException {
-		if (group.entities().size()==0) {
+	private void computeImageGroup(final EntityMutable group, final EntityMutable proxy, List<String> dotStrings)
+			throws IOException, FileNotFoundException, InterruptedException {
+		if (group.zsize() == 0) {
 			return;
 		}
 		final GroupPngMaker maker = new GroupPngMaker(diagram, group, fileFormat);
@@ -133,40 +122,12 @@ public final class CucaDiagramSimplifier {
 			fos = new BufferedOutputStream(new FileOutputStream(f));
 			maker.createPng(fos, dotStrings);
 			final String svg = maker.createSvg(dotStrings);
-			// final Pattern pImage = Pattern.compile("(?i)<image\\W[^>]*>");
-			// final Matcher mImage = pImage.matcher(svg);
-			// if (mImage.find()) {
-			// throw new IllegalStateException();
-			// }
-			entity.setImageFile(DrawFile.createFromFile(f, svg, null));
+			group.setImageFile(DrawFile.createFromFile(f, svg, null));
 		} finally {
 			if (fos != null) {
 				fos.close();
 			}
 		}
-	}
-
-	private void manageBackColorForState(CucaDiagram diagram, Group g, final Entity proxy) {
-		if (OptionFlags.PBBACK == false) {
-			return;
-		}
-		if (g.getBackColor() != null) {
-			proxy.setSpecificBackcolor(g.getBackColor());
-			return;
-		}
-		assert g.getBackColor() == null;
-		if (g.getStereotype() != null) {
-			proxy.setStereotype(g.getStereotype());
-		}
-		// PBBACK
-		final Rose rose = new Rose();
-		final HtmlColor back = rose.getHtmlColor(diagram.getSkinParam(), ColorParam.stateBackground, g.getStereotype()==null?null:g.getStereotype().getLabel());
-		// final HtmlColor back = diagram.getSkinParam().getHtmlColor(ColorParam.stateBackground, g.getStereotype());
-		// if (back != null) {
-		// proxy.setSpecificBackcolor(back.getAsHtml());
-		// }
-		assert g.getBackColor() == null;
-		g.setBackColor(back);
 	}
 
 }

@@ -48,7 +48,6 @@ import net.sourceforge.plantuml.salt.factory.ElementFactoryDroplist;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryImage;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryLine;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryMenu;
-import net.sourceforge.plantuml.salt.factory.ElementFactoryPyramid;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryPyramid2;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryRadioOff;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryRadioOn;

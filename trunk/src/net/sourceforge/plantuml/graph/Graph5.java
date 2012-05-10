@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7755 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -47,7 +47,7 @@ import java.util.Map;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graph2.IInflationTransform;
 import net.sourceforge.plantuml.graph2.InflationTransform2;
 import net.sourceforge.plantuml.graph2.Plan;
@@ -79,7 +79,7 @@ public class Graph5 {
 	}
 
 	private AbstractEntityImage getImage(ANode n) {
-		return new EntityImageFactory().createEntityImage((Entity) n.getUserData());
+		return new EntityImageFactory().createEntityImage((IEntity) n.getUserData());
 	}
 
 	public Graph5(Board board) {

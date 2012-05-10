@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -59,22 +60,23 @@ public class CommandLinkState2 extends SingleLineCommand2<StateDiagram> {
 
 	static RegexConcat getRegex() {
 		return new RegexConcat(
-				new RegexLeaf("^"), // 
+				new RegexLeaf("^"), //
 				getStatePattern("ENT1"), //
-				new RegexLeaf("\\s*"), // 
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf(
 						"ARROW",
 						"((-+)(left|right|up|down|le?|ri?|up?|do?)?(?:\\[((?:#\\w+|dotted|dashed|bold)(?:,#\\w+|,dotted|,dashed|,bold)*)\\])?(-*)\\>)"),
-				new RegexLeaf("\\s*"), // 
+				new RegexLeaf("\\s*"), //
 				getStatePattern("ENT2"), //
-				new RegexLeaf("\\s*"), // 
-				new RegexLeaf("LABEL", "(?::\\s*([^\"]+))?"), // 
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("LABEL", "(?::\\s*([^\"]+))?"), //
 				new RegexLeaf("$"));
 	}
 
 	private static RegexLeaf getStatePattern(String name) {
-		return new RegexLeaf(name,
-				"([\\p{L}0-9_.]+|[\\p{L}0-9_.]+\\[H\\]|\\[\\*\\]|\\[H\\])\\s*(\\<\\<.*\\>\\>)?\\s*(#\\w+)?");
+		return new RegexLeaf(
+				name,
+				"([\\p{L}0-9_.]+|[\\p{L}0-9_.]+\\[H\\]|\\[\\*\\]|\\[H\\]|(?:==+)(?:[\\p{L}0-9_.]+)(?:==+))\\s*(\\<\\<.*\\>\\>)?\\s*(#\\w+)?");
 	}
 
 	@Override
@@ -148,7 +150,21 @@ public class CommandLinkState2 extends SingleLineCommand2<StateDiagram> {
 		if (code.endsWith("[H]")) {
 			return getSystem().getHistorical(code.substring(0, code.length() - 3));
 		}
+		if (code.startsWith("=") && code.startsWith("=")) {
+			code = removeEquals(code);
+			return getSystem().getOrCreateEntity(code, EntityType.SYNCHRO_BAR);
+		}
 		return getSystem().getOrCreateClass(code);
+	}
+
+	private String removeEquals(String code) {
+		while (code.startsWith("=")) {
+			code = code.substring(1);
+		}
+		while (code.endsWith("=")) {
+			code = code.substring(0, code.length()-1);
+		}
+		return code;
 	}
 
 	private IEntity getEntityEnd(String code) {
@@ -157,6 +173,10 @@ public class CommandLinkState2 extends SingleLineCommand2<StateDiagram> {
 		}
 		if (code.endsWith("[H]")) {
 			return getSystem().getHistorical(code.substring(0, code.length() - 3));
+		}
+		if (code.startsWith("=") && code.startsWith("=")) {
+			code = removeEquals(code);
+			return getSystem().getOrCreateEntity(code, EntityType.SYNCHRO_BAR);
 		}
 		return getSystem().getOrCreateClass(code);
 	}

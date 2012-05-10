@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.posimo.Positionable;
 
@@ -296,67 +297,67 @@ public class Shape implements Positionable {
 	}
 	
 	private static IEntityImage createEntityImageBlock(DotData dotData, IEntity ent) {
-		if (ent.getType() == EntityType.CLASS || ent.getType() == EntityType.ABSTRACT_CLASS
-				|| ent.getType() == EntityType.INTERFACE || ent.getType() == EntityType.ENUM) {
+		if (ent.getEntityType() == EntityType.CLASS || ent.getEntityType() == EntityType.ABSTRACT_CLASS
+				|| ent.getEntityType() == EntityType.INTERFACE || ent.getEntityType() == EntityType.ENUM) {
 			return new EntityImageClass(ent, dotData.getSkinParam(), dotData);
 		}
-		if (ent.getType() == EntityType.NOTE) {
+		if (ent.getEntityType() == EntityType.NOTE) {
 			return new EntityImageNote(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.ACTIVITY) {
+		if (ent.getEntityType() == EntityType.ACTIVITY) {
 			return new EntityImageActivity(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.STATE) {
+		if (ent.getEntityType() == EntityType.STATE) {
 			return new EntityImageState(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.CIRCLE_START) {
+		if (ent.getEntityType() == EntityType.CIRCLE_START) {
 			return new EntityImageCircleStart(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.CIRCLE_END) {
+		if (ent.getEntityType() == EntityType.CIRCLE_END) {
 			return new EntityImageCircleEnd(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.USECASE) {
+		if (ent.getEntityType() == EntityType.USECASE) {
 			return new EntityImageUseCase(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.BRANCH) {
+		if (ent.getEntityType() == EntityType.BRANCH) {
 			return new EntityImageBranch(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.LOLLIPOP) {
+		if (ent.getEntityType() == EntityType.LOLLIPOP) {
 			return new EntityImageLollipopInterface(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.ACTOR) {
+		if (ent.getEntityType() == EntityType.ACTOR) {
 			return new EntityImageActor(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.COMPONENT) {
+		if (ent.getEntityType() == EntityType.COMPONENT) {
 			return new EntityImageComponent(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.OBJECT) {
+		if (ent.getEntityType() == EntityType.OBJECT) {
 			return new EntityImageObject(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.SYNCHRO_BAR) {
+		if (ent.getEntityType() == EntityType.SYNCHRO_BAR) {
 			return new EntityImageSynchroBar(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.CIRCLE_INTERFACE) {
+		if (ent.getEntityType() == EntityType.CIRCLE_INTERFACE) {
 			return new EntityImageCircleInterface(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.ARC_CIRCLE) {
+		if (ent.getEntityType() == EntityType.ARC_CIRCLE) {
 			return new EntityImageArcCircle(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.POINT_FOR_ASSOCIATION) {
+		if (ent.getEntityType() == EntityType.POINT_FOR_ASSOCIATION) {
 			return new EntityImageAssociationPoint(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.GROUP) {
+		if (((IEntityMutable) ent).isGroup()) {
 			return new EntityImageGroup(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.EMPTY_PACKAGE) {
+		if (ent.getEntityType() == EntityType.EMPTY_PACKAGE) {
 			return new EntityImageEmptyPackage2(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.ASSOCIATION) {
+		if (ent.getEntityType() == EntityType.ASSOCIATION) {
 			return new EntityImageAssociation(ent, dotData.getSkinParam());
 		}
-		if (ent.getType() == EntityType.PSEUDO_STATE) {
+		if (ent.getEntityType() == EntityType.PSEUDO_STATE) {
 			return new EntityImagePseudoState(ent, dotData.getSkinParam());
 		}
-		throw new UnsupportedOperationException(ent.getType().toString());
+		throw new UnsupportedOperationException(ent.getEntityType().toString());
 	}
 }

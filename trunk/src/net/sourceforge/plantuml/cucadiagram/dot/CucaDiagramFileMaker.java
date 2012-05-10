@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7812 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -69,7 +69,6 @@ import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -346,7 +345,7 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		}
 		final File searched = new File(href).getCanonicalFile();
 
-		final DrawFile result = searchImageFile(searched, diagram.entities().values());
+		final DrawFile result = searchImageFile(searched, diagram.getEntities().values());
 		if (result != null) {
 			return result;
 		}
@@ -683,19 +682,19 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		return pngTitler.getOffsetY(stringBounder);
 	}
 
-	DrawFile createImage(Entity entity, FileFormatOption option) throws IOException {
+	DrawFile createImage(IEntity entity, FileFormatOption option) throws IOException {
 		final double dpiFactor = diagram.getDpiFactor(option);
-		if (entity.getType() == EntityType.NOTE) {
-			return createImageForNote(entity.getDisplay2(), entity.getSpecificBackColor(), option, entity.getParent());
+		if (entity.getEntityType() == EntityType.NOTE) {
+			return createImageForNote(entity.getDisplay2(), entity.getSpecificBackColor(), option, entity.getContainer());
 		}
-		if (entity.getType() == EntityType.ACTOR) {
+		if (entity.getEntityType() == EntityType.ACTOR) {
 			return createImageForActor(entity, dpiFactor);
 		}
-		if (entity.getType() == EntityType.CIRCLE_INTERFACE) {
+		if (entity.getEntityType() == EntityType.CIRCLE_INTERFACE) {
 			return createImageForCircleInterface(entity, dpiFactor);
 		}
-		if (entity.getType() == EntityType.ABSTRACT_CLASS || entity.getType() == EntityType.CLASS
-				|| entity.getType() == EntityType.ENUM || entity.getType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS || entity.getEntityType() == EntityType.CLASS
+				|| entity.getEntityType() == EntityType.ENUM || entity.getEntityType() == EntityType.INTERFACE) {
 			return createImageForCircleCharacter(entity, dpiFactor);
 		}
 		return null;
@@ -714,8 +713,8 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		final int height = (int) (comp.getPreferredHeight(stringBounder) * dpiFactor);
 		final int dpi = diagram.getDpi(option);
 		HtmlColor backgroundColor = diagram.getSkinParam().getBackgroundColor();
-		if (parent != null && parent.getBackColor() != null) {
-			backgroundColor = parent.getBackColor();
+		if (parent != null && parent.zgetBackColor() != null) {
+			backgroundColor = parent.zgetBackColor();
 		}
 		final Color background = diagram.getColorMapper().getMappedColor(backgroundColor);
 
@@ -769,11 +768,11 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		return m.group(0);
 	}
 
-	private DrawFile createImageForActivity(Entity entity) throws IOException {
-		return null;
-	}
+//	private DrawFile createImageForActivity(IEntity entity) throws IOException {
+//		return null;
+//	}
 
-	private DrawFile createImageForCircleInterface(Entity entity, final double dpiFactor) throws IOException {
+	private DrawFile createImageForCircleInterface(IEntity entity, final double dpiFactor) throws IOException {
 		final String stereo = entity.getStereotype() == null ? null : entity.getStereotype().getLabel();
 		final HtmlColor interfaceBackground = rose.getHtmlColor(getSkinParam(),
 				ColorParam.componentInterfaceBackground, stereo);
@@ -821,7 +820,7 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		return DrawFile.create(lpng, lsvg, leps, signature);
 	}
 
-	private DrawFile createImageForActor(Entity entity, final double dpiFactor) throws IOException {
+	private DrawFile createImageForActor(IEntity entity, final double dpiFactor) throws IOException {
 		final String stereo = entity.getStereotype() == null ? null : entity.getStereotype().getLabel();
 		final HtmlColor actorBackground = rose.getHtmlColor(getSkinParam(), ColorParam.usecaseActorBackground, stereo);
 		final HtmlColor actorBorder = rose.getHtmlColor(getSkinParam(), ColorParam.usecaseActorBorder, stereo);
@@ -864,7 +863,7 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 		return DrawFile.create(lpng, lsvg, leps, signature);
 	}
 
-	private DrawFile createImageForCircleCharacter(Entity entity, double dpiFactor) throws IOException {
+	private DrawFile createImageForCircleCharacter(IEntity entity, double dpiFactor) throws IOException {
 		final Stereotype stereotype = entity.getStereotype();
 
 		if (stereotype == null || stereotype.getHtmlColor() == null) {
@@ -1002,8 +1001,8 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 				|| diagram.getUmlDiagramType() == UmlDiagramType.ACTIVITY) {
 			new CucaDiagramSimplifier(diagram, dotStrings, fileFormat);
 		}
-		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.entities(), diagram.getUmlDiagramType(),
-				diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram, diagram.getColorMapper());
+		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.getEntities().values(), diagram.getUmlDiagramType(),
+				diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram, diagram.getColorMapper(), diagram.getEntityFactory());
 
 		dotData.setDpi(diagram.getDpi(fileFormatOption));
 
@@ -1023,7 +1022,7 @@ public final class CucaDiagramFileMaker implements ICucaDiagramFileMaker {
 	}
 
 	private void populateImages(FileFormatOption option) throws IOException {
-		for (Entity entity : diagram.entities().values()) {
+		for (IEntity entity : diagram.getEntities().values()) {
 			final DrawFile f = createImage(entity, option);
 			if (f != null) {
 				entity.setImageFile(f);

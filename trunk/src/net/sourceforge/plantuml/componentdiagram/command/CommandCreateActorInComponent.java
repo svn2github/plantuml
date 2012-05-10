@@ -38,8 +38,8 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.Entity;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 
 public class CommandCreateActorInComponent extends SingleLineCommand<ComponentDiagram> {
@@ -71,7 +71,7 @@ public class CommandCreateActorInComponent extends SingleLineCommand<ComponentDi
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
 		}
 		final String stereotype = arg.get(2);
-		final Entity entity = (Entity) getSystem().getOrCreateEntity(code, type);
+		final IEntity entity = getSystem().getOrCreateEntity(code, type);
 		entity.setDisplay2(display);
 
 		if (stereotype != null) {

@@ -37,7 +37,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Entity;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
@@ -52,7 +52,7 @@ public class CommandCreateState2 extends SingleLineCommand<StateDiagram> {
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
 		final String display = arg.get(1);
-		final Entity ent = (Entity) getSystem().getOrCreateClass(code);
+		final IEntity ent = getSystem().getOrCreateClass(code);
 		ent.setDisplay2(display);
 
 		final String stereotype = arg.get(2);

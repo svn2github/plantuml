@@ -28,50 +28,68 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7800 $
  *
  */
 package net.sourceforge.plantuml.command;
 
-import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
-public class CommandPackage extends SingleLineCommand<AbstractEntityDiagram> {
+public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 
 	public CommandPackage(AbstractEntityDiagram diagram) {
-		super(diagram,
-				"(?i)^package\\s+(\"[^\"]+\"|[^#\\s{}]*)(?:\\s+as\\s+([\\p{L}0-9_.]+))?\\s*(#[0-9a-fA-F]{6}|#?\\w+)?\\s*\\{?$");
-		// "(?i)^package\\s+(\"[^\"]+\"|\\S+)(?:\\s+as\\s+([\\p{L}0-9_.]+))?\\s*(#[0-9a-fA-F]{6}|#?\\w+)?\\s*\\{?$");
+		super(diagram, getRegexConcat());
+	}
+	
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^package\\s+"), //
+				new RegexLeaf("NAME", "(\"[^\"]+\"|[^#\\s{}]*)"), //
+				new RegexLeaf("AS", "(?:\\s+as\\s+([\\p{L}0-9_.]+))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#[0-9a-fA-F]{6}|#?\\w+)?"), //
+				new RegexLeaf("\\s*\\{?$"));
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
+	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 		final String code;
 		final String display;
-		if (arg.get(1) == null) {
-			if (StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0)).length() == 0) {
+		final String name = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME").get(0));
+		if (arg.get("AS").get(0) == null) {
+			if (name.length() == 0) {
 				code = "##" + UniqueSequence.getValue();
 				display = null;
 			} else {
-				code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
+				code = name;
 				display = code;
 			}
 		} else {
-			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			code = arg.get(1);
+			display = name;
+			code = arg.get("AS").get(0);
 		}
-		final Group currentPackage = getSystem().getCurrentGroup();
-		final Group p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
-		p.setBold(true);
-		final String color = arg.get(2);
+		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
+		p.zsetBold(true);
+		final String stereotype = arg.get("STEREOTYPE").get(0);
+		if (stereotype != null) {
+			p.zsetStereotype(new Stereotype(stereotype));
+		}
+		final String color = arg.get("COLOR").get(0);
 		if (color != null) {
-			p.setBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColor.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}
