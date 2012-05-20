@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7853 $
+ * Revision $Revision: 7908 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -60,21 +60,9 @@ public interface Group {
 
 	public Group zgetParent();
 
-	public boolean zisDashed();
-
-	public void zsetDashed(boolean dashed);
-
-	public boolean zisRounded();
-
-	public void zsetRounded(boolean rounded);
-
 	public GroupType zgetGroupType();
 
 	public String zgetDisplay();
-
-	public boolean zisBold();
-
-	public void zsetBold(boolean bold);
 
 	public void zmoveEntitiesTo(IEntityMutable dest);
 

@@ -67,7 +67,7 @@ public class EntityImageNoteLink implements IEntityImage {
 		final double dx = ug.getTranslateX();
 		final double dy = ug.getTranslateY();
 		ug.translate(xTheoricalPosition, yTheoricalPosition);
-		comp.drawU(ug, new Area(getDimension(ug.getStringBounder())), new SimpleContext2D(false, true));
+		comp.drawU(ug, new Area(getDimension(ug.getStringBounder())), new SimpleContext2D(false));
 		ug.setTranslate(dx, dy);
 
 	}

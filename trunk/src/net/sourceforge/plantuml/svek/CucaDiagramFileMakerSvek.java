@@ -57,7 +57,6 @@ import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierActivity;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierState;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
-import net.sourceforge.plantuml.cucadiagram.dot.ICucaDiagramFileMaker;
 import net.sourceforge.plantuml.eps.EpsStrategy;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -73,7 +72,7 @@ import net.sourceforge.plantuml.ugraphic.eps.UGraphicEps;
 import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
 import net.sourceforge.plantuml.ugraphic.svg.UGraphicSvg;
 
-public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
+public final class CucaDiagramFileMakerSvek {
 
 	private final CucaDiagram diagram;
 	private final List<BufferedImage> flashcodes;
@@ -114,8 +113,9 @@ public final class CucaDiagramFileMakerSvek implements ICucaDiagramFileMaker {
 		double deltaX = 0;
 		double deltaY = 0;
 
-		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.getEntities().values(), diagram.getUmlDiagramType(),
-				diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram, diagram.getColorMapper(), diagram.getEntityFactory());
+		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.getEntities().values(),
+				diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram,
+				diagram.getColorMapper(), diagram.getEntityFactory());
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
 
 		IEntityImage result = svek2.createFile(((CucaDiagram) diagram).getDotStringSkek());

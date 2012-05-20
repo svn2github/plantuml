@@ -60,10 +60,6 @@ public class SpriteImage implements Sprite {
 			public Dimension2D calculateDimension(StringBounder stringBounder) {
 				return new Dimension2DDouble(img.getWidth(), img.getHeight());
 			}
-
-			public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-				throw new UnsupportedOperationException();
-			}
 		};
 	}
 

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -45,37 +45,43 @@ import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
+import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class ComponentRoseParticipant extends AbstractTextualComponent {
 
 	private final HtmlColor back;
 	private final HtmlColor foregroundColor;
+	private final double deltaShadow;
 
 	public ComponentRoseParticipant(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer, double deltaShadow) {
 		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7, spriteContainer);
 		this.back = back;
+		this.deltaShadow = deltaShadow;
 		this.foregroundColor = foregroundColor;
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final StringBounder stringBounder = ug.getStringBounder();
 		ug.getParam().setColor(foregroundColor);
 		ug.getParam().setBackcolor(back);
-		ug.draw(0, 0, new URectangle(getTextWidth(stringBounder), getTextHeight(stringBounder)));
+		ug.getParam().setStroke(new UStroke(1.5));
+		final URectangle rect = new URectangle(getTextWidth(stringBounder), getTextHeight(stringBounder));
+		rect.setDeltaShadow(deltaShadow);
+		ug.draw(0, 0, rect);
+		ug.getParam().setStroke(new UStroke());
 		final TextBlock textBlock = getTextBlock();
 		textBlock.drawU(ug, getMarginX1(), getMarginY());
 	}
 
 	@Override
 	public double getPreferredHeight(StringBounder stringBounder) {
-		return getTextHeight(stringBounder);
+		return getTextHeight(stringBounder) + deltaShadow + 1;
 	}
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
-		return getTextWidth(stringBounder);
+		return getTextWidth(stringBounder) + deltaShadow;
 	}
-
 }

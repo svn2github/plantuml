@@ -82,7 +82,6 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 		}
 		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
-		p.zsetBold(true);
 		final String stereotype = arg.get("STEREOTYPE").get(0);
 		if (stereotype != null) {
 			p.zsetStereotype(new Stereotype(stereotype));

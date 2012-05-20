@@ -54,13 +54,8 @@ public class GroupImpl implements Group {
 	private HtmlColor backColor;
 	private Group parent;
 
-	private boolean dashed;
-	private boolean rounded;
-	private boolean bold;
-
 	private final GroupType type;
 
-	// private IEntity entityCluster;
 	private boolean autonom = true;
 	private Rankdir rankdir = Rankdir.TOP_TO_BOTTOM;
 
@@ -152,44 +147,12 @@ public class GroupImpl implements Group {
 		return parent;
 	}
 
-	public final boolean zisDashed() {
-		return dashed;
-	}
-
-	public final void zsetDashed(boolean dashed) {
-		this.dashed = dashed;
-	}
-
-	public final boolean zisRounded() {
-		return rounded;
-	}
-
-	public final void zsetRounded(boolean rounded) {
-		this.rounded = rounded;
-	}
-
 	public GroupType zgetGroupType() {
 		return type;
 	}
 
-	public final EntityMutable zgetEntityCluster() {
-		throw new UnsupportedOperationException();
-	}
-
-	public final void zsetEntityCluster(EntityMutable entityCluster) {
-		throw new UnsupportedOperationException();
-	}
-
 	public String zgetDisplay() {
 		return display;
-	}
-
-	public boolean zisBold() {
-		return bold;
-	}
-
-	public void zsetBold(boolean bold) {
-		this.bold = bold;
 	}
 
 	public void zmoveEntitiesTo(IEntityMutable dest) {
@@ -241,16 +204,6 @@ public class GroupImpl implements Group {
 
 	public final Stereotype zgetStereotype() {
 		return stereotype;
-	}
-
-	@Override
-	public int hashCode() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		throw new UnsupportedOperationException();
 	}
 
 	public PackageStyle zgetPackageStyle() {

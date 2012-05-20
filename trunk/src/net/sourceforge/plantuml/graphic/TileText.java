@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -69,29 +69,6 @@ class TileText implements TextBlock {
 
 	public double getFontSize2D() {
 		return fontConfiguration.getFont().getSize2D();
-	}
-
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		// TO be removed
-		g2d.setFont(fontConfiguration.getFont().getFont());
-		g2d.setPaint(colorMapper.getMappedColor(fontConfiguration.getColor()));
-		g2d.drawString(text, (float) x, (float) y);
-
-		if (fontConfiguration.containsStyle(FontStyle.UNDERLINE)) {
-			final Dimension2D dim = calculateDimension(StringBounderUtils.asStringBounder(g2d));
-			final int ypos = (int) (y + 2.5);
-			g2d.setStroke(new BasicStroke((float) 1.3));
-			g2d.drawLine((int) x, ypos, (int) (x + dim.getWidth()), ypos);
-			g2d.setStroke(new BasicStroke());
-		}
-		if (fontConfiguration.containsStyle(FontStyle.STRIKE)) {
-			final Dimension2D dim = calculateDimension(StringBounderUtils.asStringBounder(g2d));
-			final FontMetrics fm = g2d.getFontMetrics(fontConfiguration.getFont().getFont());
-			final int ypos = (int) (y - fm.getDescent() - 0.5);
-			g2d.setStroke(new BasicStroke((float) 1.5));
-			g2d.drawLine((int) x, ypos, (int) (x + dim.getWidth()), ypos);
-			g2d.setStroke(new BasicStroke());
-		}
 	}
 
 	double getTabSize(StringBounder stringBounder) {

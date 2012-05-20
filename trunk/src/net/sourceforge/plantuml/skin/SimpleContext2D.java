@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -36,23 +36,13 @@ package net.sourceforge.plantuml.skin;
 public class SimpleContext2D implements Context2D {
 
 	private final boolean isBackground;
-	private final boolean withShadow;
 
 	public SimpleContext2D(boolean isBackground) {
-		this(isBackground, false);
-	}
-
-	public SimpleContext2D(boolean isBackground, boolean withShadow) {
 		this.isBackground = isBackground;
-		this.withShadow = withShadow;
 	}
 
 	public boolean isBackground() {
 		return isBackground;
-	}
-
-	public boolean withShadow() {
-		return withShadow;
 	}
 
 }

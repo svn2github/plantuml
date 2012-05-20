@@ -61,10 +61,6 @@ public class TextBlockMarged implements TextBlock {
 		return Dimension2DDouble.delta(dim, x1 + x2, y1 + y2);
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y) {
 		textBlock.drawU(ug, x + x1, y + y1);
 	}

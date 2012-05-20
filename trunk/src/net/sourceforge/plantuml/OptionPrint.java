@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7720 $
+ * Revision $Revision: 7906 $
  *
  */
 package net.sourceforge.plantuml;
@@ -85,8 +85,8 @@ public class OptionPrint {
 		System.err.println("    -checkversion\tTo check if a newer version is available for download");
 		System.err.println("    -v[erbose]\t\tTo have log information");
 		System.err.println("    -quiet\t\tTo NOT print error message into the console");
-		System.err.println("    -forcegd\t\tTo force dot to use GD PNG library");
-		System.err.println("    -forcecairo\t\tTo force dot to use Cairo PNG library");
+//		System.err.println("    -forcegd\t\tTo force dot to use GD PNG library");
+//		System.err.println("    -forcecairo\t\tTo force dot to use Cairo PNG library");
 		System.err.println("    -keepfiles\t\tTo NOT delete temporary files after process");
 		System.err.println("    -h[elp]\t\tTo display this help message");
 		System.err.println("    -testdot\t\tTo test the installation of graphviz");

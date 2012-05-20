@@ -56,10 +56,6 @@ public class TextBlockVertical implements TextBlock {
 		return Dimension2DDouble.mergeTB(dim1, dim2);
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y) {
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
 		final Dimension2D dimb1 = b1.calculateDimension(ug.getStringBounder());

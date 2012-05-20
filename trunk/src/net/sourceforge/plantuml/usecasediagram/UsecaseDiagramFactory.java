@@ -36,6 +36,7 @@ import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
 import net.sourceforge.plantuml.command.CommandEndPackage;
 import net.sourceforge.plantuml.command.CommandPackage;
 import net.sourceforge.plantuml.command.CommandPage;
+import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
@@ -45,7 +46,6 @@ import net.sourceforge.plantuml.usecasediagram.command.CommandCreateActor2;
 import net.sourceforge.plantuml.usecasediagram.command.CommandCreateUsecase;
 import net.sourceforge.plantuml.usecasediagram.command.CommandCreateUsecase2;
 import net.sourceforge.plantuml.usecasediagram.command.CommandLinkUsecase2;
-import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class UsecaseDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -59,7 +59,7 @@ public class UsecaseDiagramFactory extends AbstractUmlSystemCommandFactory {
 	protected void initCommands() {
 		system = new UsecaseDiagram();
 
-		addCommand(new CommandRankDirUsecase(system));
+		addCommand(new CommandRankDir(system));
 		addCommonCommands(system);
 
 		addCommand(new CommandPage(system));

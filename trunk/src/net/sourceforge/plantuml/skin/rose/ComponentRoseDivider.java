@@ -54,16 +54,18 @@ public class ComponentRoseDivider extends AbstractTextualComponent {
 	// private final int outMargin = 5;
 	private final HtmlColor background;
 	private final boolean empty;
+	private final boolean withShadow;
 
 	public ComponentRoseDivider(HtmlColor fontColor, UFont font, HtmlColor background,
-			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer, boolean withShadow) {
 		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 4, 4, 4, spriteContainer);
 		this.background = background;
 		this.empty = stringsToDisplay.get(0).length() == 0;
+		this.withShadow = withShadow;
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		final TextBlock textBlock = getTextBlock();
 		final StringBounder stringBounder = ug.getStringBounder();
@@ -75,9 +77,13 @@ public class ComponentRoseDivider extends AbstractTextualComponent {
 		final double ypos = (dimensionToUse.getHeight() - textHeight) / 2;
 
 		// if (empty) {
-			ug.getParam().setColor(background);
-			ug.getParam().setBackcolor(background);
-			ug.draw(0, dimensionToUse.getHeight() / 2 - 1, new URectangle(dimensionToUse.getWidth(), 3));
+		ug.getParam().setColor(background);
+		ug.getParam().setBackcolor(background);
+		final URectangle rectLong = new URectangle(dimensionToUse.getWidth(), 3);
+		if (withShadow) {
+			rectLong.setDeltaShadow(2);
+		}
+		ug.draw(0, dimensionToUse.getHeight() / 2 - 1, rectLong);
 		// }
 		ug.getParam().setColor(HtmlColor.BLACK);
 		ug.draw(0, dimensionToUse.getHeight() / 2 - 1, new ULine(dimensionToUse.getWidth(), 0));
@@ -88,7 +94,11 @@ public class ComponentRoseDivider extends AbstractTextualComponent {
 			ug.getParam().setBackcolor(background);
 
 			ug.getParam().setStroke(new UStroke(2));
-			ug.draw(xpos, ypos, new URectangle(textWidth + deltaX, textHeight));
+			final URectangle rect = new URectangle(textWidth + deltaX, textHeight);
+			if (withShadow) {
+				rect.setDeltaShadow(4);
+			}
+			ug.draw(xpos, ypos, rect);
 			ug.getParam().setStroke(new UStroke());
 
 			textBlock.drawU(ug, xpos + deltaX, ypos + getMarginY());

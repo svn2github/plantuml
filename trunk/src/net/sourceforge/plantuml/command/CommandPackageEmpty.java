@@ -67,7 +67,6 @@ public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram
 		}
 		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
-		p.zsetBold(true);
 		final String color = arg.get(2);
 		if (color != null) {
 			p.zsetBackColor(HtmlColor.getColorIfValid(color));

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -242,10 +242,11 @@ class DrawableSet {
 		final int height = (int) page.getHeight();
 
 		clipAndTranslate(delta, width, page, ug);
-		this.drawPlaygroundU(ug, height, new SimpleContext2D(true));
+		final SimpleContext2D context = new SimpleContext2D(true);
+		this.drawPlaygroundU(ug, height, context);
 		ug.setClip(null);
 		ug.setTranslate(atX, atY);
-		this.drawEnglobers(ug, height - MARGIN_FOR_ENGLOBERS1, new SimpleContext2D(true));
+		this.drawEnglobers(ug, height - MARGIN_FOR_ENGLOBERS1, context);
 		// ug.setClip(null);
 		// ug.setTranslate(atX, atY);
 

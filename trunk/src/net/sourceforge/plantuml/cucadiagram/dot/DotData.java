@@ -28,32 +28,28 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7833 $
+ * Revision $Revision: 7910 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.UmlDiagramType;
+import net.sourceforge.plantuml.cucadiagram.EntityFactory;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityFactory;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.PortionShower;
 import net.sourceforge.plantuml.cucadiagram.Rankdir;
-import net.sourceforge.plantuml.skin.VisibilityModifier;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 
 final public class DotData implements PortionShower {
@@ -68,14 +64,13 @@ final public class DotData implements PortionShower {
 	final private PortionShower portionShower;
 	private int dpi = 96;
 
-	private StaticFilesMap staticFilesMap;
 	private boolean visibilityModifierPresent;
 	private final ColorMapper colorMapper;
-	private final IEntityFactory entityFactory;
+	private final EntityFactory entityFactory;
 
 	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
-			PortionShower portionShower, ColorMapper colorMapper, IEntityFactory entityFactory) {
+			PortionShower portionShower, ColorMapper colorMapper, EntityFactory entityFactory) {
 		this.topParent = topParent;
 		this.colorMapper = colorMapper;
 		this.links = links;
@@ -90,7 +85,7 @@ final public class DotData implements PortionShower {
 
 	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
-			ColorMapper colorMapper, IEntityFactory entityFactory) {
+			ColorMapper colorMapper, EntityFactory entityFactory) {
 		this(topParent, links, entities, umlDiagramType, skinParam, rankdir, groupHierarchy, new PortionShower() {
 			public boolean showPortion(EntityPortion portion, IEntity entity) {
 				return true;
@@ -102,18 +97,6 @@ final public class DotData implements PortionShower {
 		return true;
 	}
 
-	public DrawFile getStaticImages(EntityType type, String stereo) throws IOException {
-		checkObjectOrClassDiagram();
-		assert type == EntityType.ABSTRACT_CLASS || type == EntityType.CLASS || type == EntityType.ENUM
-				|| type == EntityType.INTERFACE || type == EntityType.LOLLIPOP;
-		return staticFilesMap.getStaticFiles(stereo).getStaticImages(type);
-	}
-
-	public DrawFile getVisibilityImages(VisibilityModifier visibilityModifier, String stereo) throws IOException {
-		checkObjectOrClassDiagram();
-		return staticFilesMap.getStaticFiles(stereo).getVisibilityImages(visibilityModifier);
-	}
-
 	public boolean isThereVisibilityImages() {
 		return visibilityModifierPresent;
 	}
@@ -121,11 +104,6 @@ final public class DotData implements PortionShower {
 	public void setVisibilityModifierPresent(boolean b) {
 		checkObjectOrClassDiagram();
 		this.visibilityModifierPresent = b;
-	}
-
-	public void setStaticImagesMap(StaticFilesMap staticFilesMap) {
-		checkObjectOrClassDiagram();
-		this.staticFilesMap = staticFilesMap;
 	}
 
 	private void checkObjectOrClassDiagram() {
@@ -282,7 +260,7 @@ final public class DotData implements PortionShower {
 		return colorMapper;
 	}
 
-	public final IEntityFactory getEntityFactory() {
+	public final EntityFactory getEntityFactory() {
 		return entityFactory;
 	}
 

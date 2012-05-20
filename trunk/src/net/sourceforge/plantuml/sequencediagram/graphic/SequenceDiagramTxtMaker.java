@@ -113,10 +113,11 @@ public class SequenceDiagramTxtMaker implements FileMaker {
 	// }
 
 	public UmlDiagramInfo createOne2(OutputStream os, int index) throws IOException {
-		final PrintStream ps = new PrintStream(os);
 		if (fileFormat == FileFormat.UTXT) {
+			final PrintStream ps = new PrintStream(os, true, "UTF-8");
 			ug.getCharArea().print(ps);
 		} else {
+			final PrintStream ps = new PrintStream(os);
 			ug.getCharArea().print(ps);
 		}
 		return null;

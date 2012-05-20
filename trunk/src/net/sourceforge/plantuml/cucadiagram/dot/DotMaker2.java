@@ -28,51 +28,21 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 5775 $
+ * Revision $Revision: 7899 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+final public class DotMaker2 {
 
-import net.sourceforge.plantuml.ISkinParam;
+	private static boolean isJunit = false;
 
-public class StaticFilesMap {
-
-	private final Map<String, StaticFiles> map = new HashMap<String, StaticFiles>();
-	private final ISkinParam param;
-	private final double dpiFactor;
-
-	public StaticFilesMap(ISkinParam param, double dpiFactor) {
-		this.param = param;
-		this.dpiFactor = dpiFactor;
+	public static void goJunit() {
+		isJunit = true;
 	}
 
-	public StaticFiles getStaticFiles(String stereotype) throws IOException {
-		StaticFiles result = map.get(stereotype);
-		if (result == null) {
-			result = new StaticFiles(param, stereotype, dpiFactor);
-			map.put(stereotype, result);
-		}
-		return result;
-	}
-
-	public DrawFile getDrawFile(String href) throws IOException {
-		for (StaticFiles staticFiles : map.values()) {
-			final DrawFile drawFile = staticFiles.getDrawFile(href);
-			if (drawFile != null) {
-				return drawFile;
-			}
-		}
-		return null;
-	}
-
-	public void clean() {
-		for (StaticFiles staticFiles : map.values()) {
-			staticFiles.clean();
-		}
+	public static final boolean isJunit() {
+		return isJunit;
 	}
 
 }

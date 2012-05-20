@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -58,14 +58,16 @@ public class ParticipantBox implements Pushable {
 	private final Component line;
 	private final Component tail;
 	private final Component delayLine;
+	private final boolean shadowing;
 	private int cpt = CPT++;
 
-	public ParticipantBox(Component head, Component line, Component tail, Component delayLine, double startingX) {
+	public ParticipantBox(Component head, Component line, Component tail, Component delayLine, double startingX, boolean shadowing) {
 		this.startingX = startingX;
 		this.head = head;
 		this.line = line;
 		this.tail = tail;
 		this.delayLine = delayLine;
+		this.shadowing = shadowing;
 	}
 
 	@Override

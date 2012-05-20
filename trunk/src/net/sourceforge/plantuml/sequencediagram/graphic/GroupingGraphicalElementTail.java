@@ -28,47 +28,35 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7895 $
  *
  */
-package net.sourceforge.plantuml.skin.bluemodern;
+package net.sourceforge.plantuml.sequencediagram.graphic;
 
-import java.awt.geom.Dimension2D;
-
-import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.skin.AbstractComponent;
-import net.sourceforge.plantuml.skin.Area;
+import net.sourceforge.plantuml.sequencediagram.InGroupableList;
+import net.sourceforge.plantuml.skin.Context2D;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.ULine;
-import net.sourceforge.plantuml.ugraphic.UStroke;
 
-public class ComponentBlueModernGroupingTail extends AbstractComponent {
+class GroupingGraphicalElementTail extends GroupingGraphicalElement {
 
-	private final HtmlColor foregroundColor;
+	public GroupingGraphicalElementTail(double currentY, InGroupableList inGroupableList, boolean parallel) {
+		super(currentY, inGroupableList);
+	}
 
-	public ComponentBlueModernGroupingTail(HtmlColor foregroundColor) {
-		this.foregroundColor = foregroundColor;
+	//
+	@Override
+	protected void drawInternalU(UGraphic ug, double maxX, Context2D context) {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
-		final Dimension2D dimensionToUse = area.getDimensionToUse();
-		ug.getParam().setStroke(new UStroke(2));
-		ug.getParam().setColor(foregroundColor);
-
-		ug.draw(0, dimensionToUse.getHeight(), new ULine(dimensionToUse.getWidth(), 0));
-		ug.getParam().setStroke(new UStroke());
+	public double getPreferredHeight(StringBounder stringBounder) {
+		return 0;
 	}
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
 		return 0;
-	}
-
-	@Override
-	public double getPreferredHeight(StringBounder stringBounder) {
-		return 5;
 	}
 
 }

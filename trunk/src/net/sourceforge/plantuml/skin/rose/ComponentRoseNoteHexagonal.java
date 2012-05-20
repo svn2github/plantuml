@@ -50,12 +50,14 @@ final public class ComponentRoseNoteHexagonal extends AbstractTextualComponent {
 	private final int cornersize = 10;
 	private final HtmlColor back;
 	private final HtmlColor foregroundColor;
+	private final double deltaShadow;
 
 	public ComponentRoseNoteHexagonal(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> strings, SpriteContainer spriteContainer, double deltaShadow) {
 		super(strings, fontColor, font, HorizontalAlignement.LEFT, 12, 12, 4, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
+		this.deltaShadow = deltaShadow;
 	}
 
 	@Override
@@ -80,7 +82,7 @@ final public class ComponentRoseNoteHexagonal extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textHeight = (int) getTextHeight(stringBounder);
 
@@ -97,6 +99,7 @@ final public class ComponentRoseNoteHexagonal extends AbstractTextualComponent {
 
 		ug.getParam().setColor(foregroundColor);
 		ug.getParam().setBackcolor(back);
+		polygon.setDeltaShadow(deltaShadow);
 		ug.draw(0, 0, polygon);
 
 		getTextBlock().drawU(ug, getMarginX1(), getMarginY());

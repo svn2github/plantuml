@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7880 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -73,10 +73,12 @@ class LifeLine {
 	private final List<Variation> events = new ArrayList<Variation>();
 	private final Stairs stairs = new Stairs();
 	private int maxLevel = 0;
+	private final boolean shadowing;
 
-	public LifeLine(Pushable participant, double nominalPreferredWidth) {
+	public LifeLine(Pushable participant, double nominalPreferredWidth, boolean shadowing) {
 		this.participant = participant;
 		this.nominalPreferredWidth = nominalPreferredWidth;
+		this.shadowing = shadowing;
 	}
 
 	public void addSegmentVariation(LifeSegmentVariation type, double y, HtmlColor backcolor) {
@@ -190,10 +192,10 @@ class LifeLine {
 				level--;
 			}
 			if (level == 0) {
-				return new SegmentColored(events.get(i).y, events.get(j).y, events.get(i).backcolor);
+				return new SegmentColored(events.get(i).y, events.get(j).y, events.get(i).backcolor, shadowing);
 			}
 		}
-		return new SegmentColored(events.get(i).y, events.get(events.size() - 1).y, events.get(i).backcolor);
+		return new SegmentColored(events.get(i).y, events.get(events.size() - 1).y, events.get(i).backcolor, shadowing);
 	}
 
 	private Collection<SegmentColored> getSegmentsCutted(StringBounder stringBounder, int i) {
@@ -249,5 +251,9 @@ class LifeLine {
 
 	public final void setDestroy(double destroy) {
 		this.destroy = destroy;
+	}
+
+	public final boolean shadowing() {
+		return shadowing;
 	}
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7721 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
@@ -59,7 +59,7 @@ public class ComponentBlueModernActor extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		ug.getParam().setColor(getFontColor());
 		final TextBlock textBlock = getTextBlock();
 		final StringBounder stringBounder = ug.getStringBounder();

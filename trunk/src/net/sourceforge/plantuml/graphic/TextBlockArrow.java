@@ -91,8 +91,4 @@ public class TextBlockArrow implements TextBlock {
 		return new Dimension2DDouble(size, size);
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 }

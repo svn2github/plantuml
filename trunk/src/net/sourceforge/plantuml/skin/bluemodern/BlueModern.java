@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7896 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.skin.ComponentType;
 import net.sourceforge.plantuml.skin.Skin;
 import net.sourceforge.plantuml.skin.rose.ComponentRoseDestroy;
 import net.sourceforge.plantuml.skin.rose.ComponentRoseGroupingElse;
+import net.sourceforge.plantuml.skin.rose.ComponentRoseGroupingSpace;
 import net.sourceforge.plantuml.skin.rose.ComponentRoseReference;
 import net.sourceforge.plantuml.skin.rose.ComponentRoseTitle;
 import net.sourceforge.plantuml.ugraphic.UFont;
@@ -125,21 +126,18 @@ public class BlueModern implements Skin {
 			return new ComponentBlueModernGroupingHeader(blue1, blue3, borderGroupColor, HtmlColor.WHITE,
 					HtmlColor.BLACK, normalFont, smallFont, stringsToDisplay, param);
 		}
-		if (type == ComponentType.GROUPING_BODY) {
-			return new ComponentBlueModernGroupingBody(blue3, borderGroupColor);
-		}
-		if (type == ComponentType.GROUPING_TAIL) {
-			return new ComponentBlueModernGroupingTail(borderGroupColor);
-		}
 		if (type == ComponentType.GROUPING_ELSE) {
-			return new ComponentRoseGroupingElse(HtmlColor.BLACK, HtmlColor.BLACK, smallFont, stringsToDisplay.get(0), param);
+			return new ComponentRoseGroupingElse(HtmlColor.BLACK, HtmlColor.BLACK, smallFont, stringsToDisplay.get(0), param, blue3);
+		}
+		if (type == ComponentType.GROUPING_SPACE) {
+			return new ComponentRoseGroupingSpace(7);
 		}
 		if (type == ComponentType.TITLE) {
 			return new ComponentRoseTitle(HtmlColor.BLACK, bigFont, stringsToDisplay, param);
 		}
 		if (type == ComponentType.REFERENCE) {
 			return new ComponentRoseReference(HtmlColor.BLACK, HtmlColor.WHITE, normalFont, borderGroupColor, blue1,
-					blue3, normalFont, stringsToDisplay, HorizontalAlignement.CENTER, param);
+					blue3, normalFont, stringsToDisplay, HorizontalAlignement.CENTER, param, 0);
 		}
 		if (type == ComponentType.NEWPAGE) {
 			return new ComponentBlueModernNewpage(blue1);

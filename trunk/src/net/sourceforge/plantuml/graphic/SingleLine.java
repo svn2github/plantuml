@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -111,18 +111,6 @@ class SingleLine implements Line {
 			result = Math.max(result, deltaY);
 		}
 		return result;
-	}
-
-	public void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		final double deltaY = maxDeltaY(g2d);
-		for (TextBlock b : blocs) {
-			if (b instanceof TileImage) {
-				b.drawTOBEREMOVED(colorMapper, g2d, x, y);
-			} else {
-				b.drawTOBEREMOVED(colorMapper, g2d, x, y + deltaY);
-			}
-			x += b.calculateDimension(StringBounderUtils.asStringBounder(g2d)).getWidth();
-		}
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {

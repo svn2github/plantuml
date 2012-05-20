@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7812 $
+ * Revision $Revision: 7912 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -145,13 +145,13 @@ class EntityImageClass extends AbstractEntityImage {
 
 		final double circledWidth = getCircledWidth(StringBounderUtils.asStringBounder(g2d));
 		g2d.setColor(Color.BLACK);
-		name.drawTOBEREMOVED(colorMapper, g2d, xMargin + circledWidth, yMargin);
-		fields.drawTOBEREMOVED(colorMapper, g2d, xMargin, line1 + yMargin);
-		methods.drawTOBEREMOVED(colorMapper, g2d, xMargin, line2 + yMargin);
-
-		if (circledCharacter != null) {
-			circledCharacter.draw(new ColorMapperIdentity(), g2d, xMargin, yMargin, 1.0);
-		}
+//		name.drawTOBEREMOVED(colorMapper, g2d, xMargin + circledWidth, yMargin);
+//		fields.drawTOBEREMOVED(colorMapper, g2d, xMargin, line1 + yMargin);
+//		methods.drawTOBEREMOVED(colorMapper, g2d, xMargin, line2 + yMargin);
+//
+//		if (circledCharacter != null) {
+//			circledCharacter.draw(new ColorMapperIdentity(), g2d, xMargin, yMargin, 1.0);
+//		}
 
 	}
 }

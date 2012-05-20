@@ -58,10 +58,6 @@ public class TextBlockGeneric implements TextBlock {
 		return dim;
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y) {
 		
 		ug.getParam().setBackcolor(background);

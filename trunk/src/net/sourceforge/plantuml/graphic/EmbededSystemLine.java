@@ -74,10 +74,6 @@ class EmbededSystemLine implements Line {
 		return new Dimension2DDouble(42, 42);
 	}
 
-	public void draw(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y) {
 		try {
 			final BufferedImage im = getImage();

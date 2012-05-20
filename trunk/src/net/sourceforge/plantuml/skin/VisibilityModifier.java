@@ -79,10 +79,6 @@ public enum VisibilityModifier {
 				return new Dimension2DDouble(size + 1, size + 1);
 			}
 
-			public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-				throw new UnsupportedOperationException();
-			}
-
 			public void drawU(UGraphic ug, double x, double y) {
 				final double tx = ug.getTranslateX();
 				final double ty = ug.getTranslateY();

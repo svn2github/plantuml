@@ -38,6 +38,7 @@ import java.awt.geom.Point2D;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.posimo.Moveable;
 
 public class DotStringFactory implements Moveable {
-	
+
 	private final Bibliotekon bibliotekon = new Bibliotekon();
 
 	final private Set<String> rankMin = new HashSet<String>();
@@ -153,12 +154,13 @@ public class DotStringFactory implements Moveable {
 		SvekUtils.println(sb);
 		sb.append("compound=true;");
 		SvekUtils.println(sb);
-		
+
 		if (dotData.getRankdir() == Rankdir.LEFT_TO_RIGHT) {
 			sb.append("rankdir=LR;");
 			SvekUtils.println(sb);
 		}
 
+		manageMinMaxCluster(sb);
 
 		root.printCluster1(sb, bibliotekon.allLines());
 		for (Line line : bibliotekon.lines0()) {
@@ -175,6 +177,41 @@ public class DotStringFactory implements Moveable {
 		sb.append("}");
 
 		return sb.toString();
+	}
+
+	private void manageMinMaxCluster(final StringBuilder sb) {
+		final List<String> minPointCluster = new ArrayList<String>();
+		final List<String> maxPointCluster = new ArrayList<String>();
+		for (Cluster cluster : bibliotekon.allCluster()) {
+			final String minPoint = cluster.getMinPoint();
+			if (minPoint != null) {
+				minPointCluster.add(minPoint);
+			}
+			final String maxPoint = cluster.getMaxPoint();
+			if (maxPoint != null) {
+				maxPointCluster.add(maxPoint);
+			}
+		}
+		if (minPointCluster.size() > 0) {
+			sb.append("{rank=min;");
+			for (String s : minPointCluster) {
+				sb.append(s);
+				sb.append(" [shape=point,width=.01,label=\"\"]");
+				sb.append(";");
+			}
+			sb.append("}");
+			SvekUtils.println(sb);
+		}
+		if (maxPointCluster.size() > 0) {
+			sb.append("{rank=max;");
+			for (String s : maxPointCluster) {
+				sb.append(s);
+				sb.append(" [shape=point,width=.01,label=\"\"]");
+				sb.append(";");
+			}
+			sb.append("}");
+			SvekUtils.println(sb);
+		}
 	}
 
 	private int getMinRankSep() {
@@ -206,7 +243,7 @@ public class DotStringFactory implements Moveable {
 		final byte[] result = baos.toByteArray();
 		final String s = new String(result, "UTF-8");
 
-		if (OptionFlags.SVEK || OptionFlags.getInstance().isKeepTmpFiles()) {
+		if (OptionFlags.getInstance().isKeepTmpFiles() || OptionFlags.TRACE_DOT) {
 			Log.info("Creating temporary file svek.svg");
 			SvekUtils.traceSvgString(s);
 		}
@@ -269,12 +306,13 @@ public class DotStringFactory implements Moveable {
 		}
 
 		for (Cluster cluster : bibliotekon.allCluster()) {
-			// final String key = "=\"" + StringUtils.getAsHtml(cluster.getColor()).toLowerCase() + "\"";
+			// final String key = "=\"" +
+			// StringUtils.getAsHtml(cluster.getColor()).toLowerCase() + "\"";
 			int idx = getClusterIndex(svg, cluster.getColor());
-//			int idx = svg.indexOf(key);
-//			if (idx == -1) {
-//				throw new IllegalStateException(key);
-//			}
+			// int idx = svg.indexOf(key);
+			// if (idx == -1) {
+			// throw new IllegalStateException(key);
+			// }
 			final List<Point2D.Double> points = SvekUtils.extractPointsList(svg, idx, fullHeight);
 			final double minX = SvekUtils.getMinX(points);
 			final double minY = SvekUtils.getMinY(points);

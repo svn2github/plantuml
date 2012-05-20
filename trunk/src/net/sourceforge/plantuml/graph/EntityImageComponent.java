@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7752 $
+ * Revision $Revision: 7912 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -90,7 +90,7 @@ class EntityImageComponent extends AbstractEntityImage {
 		drawRect(colorMapper, g2d, 0, dimTotal.getHeight() - 7 - 6, 12, 6);
 
 		g2d.setColor(Color.BLACK);
-		name.drawTOBEREMOVED(colorMapper, g2d, 6 + (dimTotal.getWidth() - nameDim.getWidth()) / 2,
-				(dimTotal.getHeight() - nameDim.getHeight()) / 2);
+//		name.drawTOBEREMOVED(colorMapper, g2d, 6 + (dimTotal.getWidth() - nameDim.getWidth()) / 2,
+//				(dimTotal.getHeight() - nameDim.getHeight()) / 2);
 	}
 }

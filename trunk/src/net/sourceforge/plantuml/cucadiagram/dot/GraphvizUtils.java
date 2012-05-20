@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7900 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -64,7 +64,7 @@ public class GraphvizUtils {
 		} else {
 			result = new GraphvizLinux(dotString, type);
 		}
-		if (OptionFlags.GRAPHVIZCACHE && DotMaker.isJunit()) {
+		if (OptionFlags.GRAPHVIZCACHE && DotMaker2.isJunit()) {
 			return new GraphvizCached(result);
 		}
 		return result;

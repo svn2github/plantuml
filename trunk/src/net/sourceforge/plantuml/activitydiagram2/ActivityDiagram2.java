@@ -52,7 +52,6 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
-import net.sourceforge.plantuml.cucadiagram.dot.DotMaker;
 
 public class ActivityDiagram2 extends CucaDiagram {
 
@@ -166,9 +165,9 @@ public class ActivityDiagram2 extends CucaDiagram {
 
 	public void startIf(String test, String when) {
 		final IEntity br = createEntity(getAutoCode(), test, EntityType.BRANCH);
-		if (DotMaker.MODE_BRANCHE_CLUSTER) {
-			test = null;
-		}
+//		if (DotMaker.MODE_BRANCHE_CLUSTER) {
+//			test = null;
+//		}
 		currentContext = new ConditionalContext2(currentContext, br, Direction.DOWN, when);
 		for (IEntity last : this.waitings) {
 			// if (test == null) {

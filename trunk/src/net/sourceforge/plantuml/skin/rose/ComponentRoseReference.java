@@ -61,15 +61,19 @@ public class ComponentRoseReference extends AbstractTextualComponent {
 	private final double heightFooter = 5;
 	private final double xMargin = 2;
 	private final HorizontalAlignement position;
+	private final double deltaShadow;
 
 	public ComponentRoseReference(HtmlColor fontColor, HtmlColor fontHeaderColor, UFont font, HtmlColor borderColor,
 			HtmlColor backgroundHeader, HtmlColor background, UFont header,
-			List<? extends CharSequence> stringsToDisplay, HorizontalAlignement position, SpriteContainer spriteContainer) {
-		super(stringsToDisplay.subList(1, stringsToDisplay.size()), fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4, spriteContainer);
+			List<? extends CharSequence> stringsToDisplay, HorizontalAlignement position,
+			SpriteContainer spriteContainer, double deltaShadow) {
+		super(stringsToDisplay.subList(1, stringsToDisplay.size()), fontColor, font, HorizontalAlignement.LEFT, 4, 4,
+				4, spriteContainer);
 		this.position = position;
 		this.backgroundHeader = backgroundHeader;
 		this.background = background;
 		this.borderColor = borderColor;
+		this.deltaShadow = deltaShadow;
 
 		textHeader = TextBlockUtils.create(stringsToDisplay.subList(0, 1), new FontConfiguration(header,
 				fontHeaderColor), HorizontalAlignement.LEFT, spriteContainer);
@@ -77,15 +81,16 @@ public class ComponentRoseReference extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textHeaderWidth = (int) (getHeaderWidth(stringBounder));
 		final int textHeaderHeight = (int) (getHeaderHeight(stringBounder));
 
 		ug.getParam().setStroke(new UStroke(2));
-		final URectangle rect = new URectangle(dimensionToUse.getWidth() - xMargin * 2, dimensionToUse.getHeight()
-				- heightFooter);
+		final URectangle rect = new URectangle(dimensionToUse.getWidth() - xMargin * 2 - deltaShadow,
+				dimensionToUse.getHeight() - heightFooter);
+		rect.setDeltaShadow(deltaShadow);
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(background);
 		ug.draw(xMargin, 0, rect);
@@ -137,7 +142,7 @@ public class ComponentRoseReference extends AbstractTextualComponent {
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
-		return Math.max(getTextWidth(stringBounder), getHeaderWidth(stringBounder)) + xMargin * 2;
+		return Math.max(getTextWidth(stringBounder), getHeaderWidth(stringBounder)) + xMargin * 2 + deltaShadow;
 	}
 
 }

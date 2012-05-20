@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7895 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -43,11 +43,12 @@ import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.Context2D;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-class GroupingHeader extends GroupingGraphicalElement {
+class GroupingGraphicalElementHeader extends GroupingGraphicalElement {
 
 	private final Component comp;
+	private double endY;
 
-	public GroupingHeader(double currentY, Component comp, InGroupableList inGroupableList) {
+	public GroupingGraphicalElementHeader(double currentY, Component comp, InGroupableList inGroupableList) {
 		super(currentY, inGroupableList);
 		this.comp = comp;
 	}
@@ -73,8 +74,18 @@ class GroupingHeader extends GroupingGraphicalElement {
 		final double x1 = getInGroupableList().getMinX(stringBounder);
 		final double x2 = getInGroupableList().getMaxX(stringBounder);
 		ug.translate(x1, getStartingY());
-		final Dimension2D dim = new Dimension2DDouble(x2 - x1, comp.getPreferredHeight(stringBounder));
+		double height = comp.getPreferredHeight(stringBounder);
+		if (endY > 0) {
+			height = endY - getStartingY();
+		} else {
+			throw new IllegalStateException();
+		}
+		final Dimension2D dim = new Dimension2DDouble(x2 - x1, height);
 		comp.drawU(ug, new Area(dim), context);
+	}
+
+	public void setEndY(double y) {
+		this.endY = y;
 	}
 
 }

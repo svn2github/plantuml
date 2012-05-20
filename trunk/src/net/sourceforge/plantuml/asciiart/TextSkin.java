@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7914 $
  *
  */
 package net.sourceforge.plantuml.asciiart;
@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.skin.ArrowConfiguration;
 import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.ComponentType;
 import net.sourceforge.plantuml.skin.Skin;
+import net.sourceforge.plantuml.skin.rose.ComponentRoseGroupingSpace;
 
 public class TextSkin implements Skin {
 
@@ -94,11 +95,8 @@ public class TextSkin implements Skin {
 		if (type == ComponentType.GROUPING_HEADER) {
 			return new ComponentTextGroupingHeader(type, stringsToDisplay, fileFormat);
 		}
-		if (type == ComponentType.GROUPING_BODY) {
-			return new ComponentTextGroupingBody(type, stringsToDisplay, fileFormat);
-		}
-		if (type == ComponentType.GROUPING_TAIL) {
-			return new ComponentTextGroupingTail(type, stringsToDisplay, fileFormat);
+		if (type == ComponentType.GROUPING_SPACE) {
+			return new ComponentRoseGroupingSpace(1);
 		}
 		if (type == ComponentType.GROUPING_ELSE) {
 			return new ComponentTextGroupingElse(type, stringsToDisplay, fileFormat);

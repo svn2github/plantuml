@@ -71,8 +71,6 @@ public interface ISkinParam extends SpriteContainer {
 
 	public GraphvizLayoutStrategy getStrategy();
 
-	public boolean isSvek();
-
 	public boolean shadowing();
 
 	public PackageStyle getPackageStyle();
@@ -80,5 +78,7 @@ public interface ISkinParam extends SpriteContainer {
 	public boolean useUml2ForComponent();
 	
 	public boolean stereotypePositionTop();
+	
+	public boolean useSwimlanes();
 
 }

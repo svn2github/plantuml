@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7754 $
+ * Revision $Revision: 7879 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -114,7 +114,7 @@ public class StickMan implements UDrawable {
 		final UPath path = new UPath();
 		path.moveTo(0, 0);
 		path.lineTo(0, bodyLenght);
-		path.moveTo(- armsLenght, armsY);
+		path.moveTo(-armsLenght, armsY);
 		path.lineTo(armsLenght, armsY);
 		path.moveTo(0, bodyLenght);
 		path.lineTo(-legsX, bodyLenght + legsY);
@@ -138,7 +138,7 @@ public class StickMan implements UDrawable {
 	}
 
 	public double getPreferredHeight(StringBounder stringBounder) {
-		return headDiam + bodyLenght + legsY + 2 * thickness;
+		return headDiam + bodyLenght + legsY + 2 * thickness + deltaShadow + 1;
 	}
 
 	private double deltaShadow;

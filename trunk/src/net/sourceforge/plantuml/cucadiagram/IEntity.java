@@ -33,17 +33,13 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import net.sourceforge.plantuml.SpecificBackcolorable;
 import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
 import net.sourceforge.plantuml.svek.IEntityImage;
 
-public interface IEntity extends Imaged, SpecificBackcolorable /* , Comparable<IEntity> */{
+public interface IEntity extends SpecificBackcolorable /* , Comparable<IEntity> */{
 
 	public Group getContainer();
 
@@ -68,8 +64,6 @@ public interface IEntity extends Imaged, SpecificBackcolorable /* , Comparable<I
 	public BlockMember getBody(PortionShower portionShower);
 
 	public String getCode();
-
-	public DrawFile getImageFile(File searched) throws IOException;
 
 	public boolean isTop();
 
@@ -99,16 +93,7 @@ public interface IEntity extends Imaged, SpecificBackcolorable /* , Comparable<I
 
 	public void setUrl(Url url);
 
-	public void setImageFile(DrawFile imageFile);
-
 	public void setSvekImage(IEntityImage svekImage);
 
-	public void addSubImage(DrawFile subImage);
-
 	public void setDisplay2(String display);
-
-	public void cleanSubImage();
-
-	public Set<DrawFile> getSubImages();
-
 }

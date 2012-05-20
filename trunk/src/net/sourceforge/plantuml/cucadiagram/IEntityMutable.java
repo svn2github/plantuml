@@ -39,9 +39,6 @@ public interface IEntityMutable extends IEntity, Group {
 
 	public void muteToGroup99(Group newGroup);
 
-	// No used for SVEK
-	public void overideGroup(EntityMutable proxy);
-	
 	public boolean isGroup();
 
 	public void overideImage42(IEntityImage img);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7744 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -53,25 +53,28 @@ final public class ComponentRoseNote extends AbstractTextualComponent {
 	private final HtmlColor foregroundColor;
 	private final double paddingX;
 	private final double paddingY;
+	private final double deltaShadow;
 
 	public ComponentRoseNote(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> strings, double paddingX, double paddingY, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> strings, double paddingX, double paddingY, SpriteContainer spriteContainer,
+			double deltaShadow) {
 		super(strings, fontColor, font, HorizontalAlignement.LEFT, 6, 15, 5, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
 		this.paddingX = paddingX;
 		this.paddingY = paddingY;
+		this.deltaShadow = deltaShadow;
 	}
 
 	@Override
 	final public double getPreferredWidth(StringBounder stringBounder) {
-		final double result = getTextWidth(stringBounder) + 2 * getPaddingX();
+		final double result = getTextWidth(stringBounder) + 2 * getPaddingX() + deltaShadow;
 		return result;
 	}
 
 	@Override
 	final public double getPreferredHeight(StringBounder stringBounder) {
-		return getTextHeight(stringBounder) + 2 * getPaddingY();
+		return getTextHeight(stringBounder) + 2 * getPaddingY() + deltaShadow;
 	}
 
 	@Override
@@ -85,7 +88,7 @@ final public class ComponentRoseNote extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textHeight = (int) getTextHeight(stringBounder);
@@ -106,9 +109,7 @@ final public class ComponentRoseNote extends AbstractTextualComponent {
 		polygon.addPoint(x2, cornersize);
 		polygon.addPoint(x2 - cornersize, 0);
 		polygon.addPoint(0, 0);
-		if (withShadow) {
-			polygon.setDeltaShadow(4);
-		}
+		polygon.setDeltaShadow(deltaShadow);
 
 		ug.getParam().setColor(foregroundColor);
 		ug.getParam().setBackcolor(back);

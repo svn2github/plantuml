@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -88,22 +88,6 @@ class TextBlockSimple implements TextBlock {
 			width = Math.max(width, size2D.getWidth());
 		}
 		return new Dimension2DDouble(width, height);
-	}
-
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		final Dimension2D dimText = getTextDimension(StringBounderUtils.asStringBounder(g2d));
-
-		for (Line line : lines) {
-			final HorizontalAlignement lineHorizontalAlignement = line.getHorizontalAlignement();
-			double deltaX = 0;
-			if (lineHorizontalAlignement == HorizontalAlignement.CENTER) {
-				final double diff = dimText.getWidth()
-						- line.calculateDimension(StringBounderUtils.asStringBounder(g2d)).getWidth();
-				deltaX = diff / 2.0;
-			}
-			line.draw(colorMapper, g2d, x + deltaX, y);
-			y += line.calculateDimension(StringBounderUtils.asStringBounder(g2d)).getHeight();
-		}
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {

@@ -42,19 +42,8 @@ import net.sourceforge.plantuml.OptionFlags;
 public enum GraphvizLayoutStrategy {
 	DOT, NEATO, FDP, TWOPI, CIRCO;
 
-	public GraphvizMaker getGraphvizMaker(DotData data,
-			List<String> dotStrings, FileFormat fileFormat) {
-//		if (this == DOT) {
-			return new DotMaker(data, dotStrings, fileFormat);
-//		}
-//		throw new UnsupportedOperationException(this.toString());
-	}
-
 	public File getSystemForcedExecutable() {
-//		if (this == DOT) {
-			return getSystemForcedDot();
-//		}
-//		throw new UnsupportedOperationException(this.toString());
+		return getSystemForcedDot();
 	}
 
 	private File getSystemForcedDot() {

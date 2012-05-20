@@ -114,10 +114,6 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 		return bloc;
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y, double widthToUse) {
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
 		final ULayoutGroup group;
@@ -146,10 +142,6 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 			return new TextBlock() {
 
 				public void drawU(UGraphic ug, double x, double y) {
-				}
-
-				public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-					throw new UnsupportedOperationException();
 				}
 
 				public Dimension2D calculateDimension(StringBounder stringBounder) {

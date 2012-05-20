@@ -131,8 +131,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
 		if (partition != null) {
-			final IEntityMutable p = getSystem().getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-			p.zsetBold(true);
+			getSystem().getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
 		}
 		final IEntity entity2 = getSystem().createEntity(code, display, EntityType.ACTIVITY);
 		if (partition != null) {

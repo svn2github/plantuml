@@ -298,15 +298,6 @@ public final class PlayField {
 	private void drawLabel(UGraphic ug, Path p) {
 		final Label label = p.getLabel();
 		final Point2D pos = label.getPosition();
-		if (OptionFlags.getInstance().isDebugDot()) {
-			ug.getParam().setColor(HtmlColor.GREEN);
-			ug.getParam().setBackcolor(null);
-			final Dimension2D dim = label.getSize();
-			ug.draw(pos.getX(), pos.getY(), new URectangle(dim.getWidth(), dim.getHeight()));
-			final LabelImage labelImage = new LabelImage(paths.get(p), rose, skinParam);
-			final Dimension2D dimImage = labelImage.getDimension(ug.getStringBounder());
-			ug.draw(pos.getX(), pos.getY(), new URectangle(dimImage.getWidth(), dimImage.getHeight()));
-		}
 		final LabelImage labelImage = new LabelImage(paths.get(p), rose, skinParam);
 		labelImage.drawU(ug, pos.getX(), pos.getY());
 	}

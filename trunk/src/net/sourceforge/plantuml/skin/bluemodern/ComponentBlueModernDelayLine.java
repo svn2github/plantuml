@@ -52,7 +52,7 @@ public class ComponentBlueModernDelayLine extends AbstractComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		ug.getParam().setColor(color);
 		ug.getParam().setBackcolor(color);

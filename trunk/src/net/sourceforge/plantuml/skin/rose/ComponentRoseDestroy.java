@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -52,7 +52,7 @@ public class ComponentRoseDestroy extends AbstractComponent {
 	private final int crossSize = 9;
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		ug.getParam().setStroke(new UStroke(2));
 
 		ug.getParam().setColor(foregroundColor);

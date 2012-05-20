@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7752 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -97,7 +97,7 @@ class EntityImageActivity extends AbstractEntityImage {
 		g2d.draw(p);
 		// g2d.drawRect(0, 0, width - 1, height - 1);
 		g2d.setColor(Color.BLACK);
-		text.drawTOBEREMOVED(colorMapper, g2d, xMargin, yMargin);
+//		text.drawTOBEREMOVED(colorMapper, g2d, xMargin, yMargin);
 
 	}
 }

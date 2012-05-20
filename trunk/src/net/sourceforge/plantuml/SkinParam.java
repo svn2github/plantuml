@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7872 $
+ * Revision $Revision: 7929 $
  *
  */
 package net.sourceforge.plantuml;
@@ -70,6 +70,9 @@ public class SkinParam implements ISkinParam {
 
 	public SkinParam(UmlDiagramType type) {
 		this.type = type;
+		if (type == null) {
+			setParam("shadowing", "false");
+		}
 	}
 
 	static String cleanForKey(String key) {
@@ -341,34 +344,6 @@ public class SkinParam implements ISkinParam {
 		return new ColorMapperIdentity();
 	}
 
-	public boolean isSvek() {
-		return true;
-//		boolean defaultValue = false;
-//		if (type == UmlDiagramType.CLASS) {
-//			defaultValue = true;
-//		}
-//		if (type == UmlDiagramType.OBJECT) {
-//			defaultValue = true;
-//		}
-//		if (type == UmlDiagramType.USECASE) {
-//			defaultValue = true;
-//		}
-//		if (type == UmlDiagramType.COMPONENT) {
-//			defaultValue = true;
-//		}
-//		if (type == UmlDiagramType.ACTIVITY) {
-//			defaultValue = true;
-//		}
-//		if (OptionFlags.SVEK && type == UmlDiagramType.STATE) {
-//			defaultValue = true;
-//		}
-//		final String value = getValue("svek");
-//		if (value == null) {
-//			return defaultValue;
-//		}
-//		return "true".equalsIgnoreCase(value);
-	}
-
 	public boolean shadowing() {
 		final String value = getValue("shadowing");
 		if ("false".equalsIgnoreCase(value)) {
@@ -407,6 +382,19 @@ public class SkinParam implements ISkinParam {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean useSwimlanes() {
+		if (type != UmlDiagramType.ACTIVITY) {
+			return false;
+		}
+		if ("true".equalsIgnoreCase(getValue("swimlane"))) {
+			return true;
+		}
+		if ("true".equalsIgnoreCase(getValue("swimlanes"))) {
+			return true;
+		}
+		return false;
 	}
 
 }

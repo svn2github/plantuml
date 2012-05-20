@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -114,10 +114,6 @@ public class TextBlockUtils {
 		return new TextBlock() {
 			public Dimension2D calculateDimension(StringBounder stringBounder) {
 				return image.getDimension(stringBounder);
-			}
-
-			public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-				throw new UnsupportedOperationException();
 			}
 
 			public void drawU(UGraphic ug, double x, double y) {

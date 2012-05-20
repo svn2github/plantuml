@@ -122,10 +122,6 @@ public class Line implements Moveable {
 			return direct.calculateDimension(stringBounder);
 		}
 
-		public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-			throw new UnsupportedOperationException();
-		}
-
 		private boolean isDirect() {
 			final Point2D start = dotPath.getStartPoint();
 			final Point2D end = dotPath.getEndPoint();

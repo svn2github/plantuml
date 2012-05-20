@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
-public class EntityFactory implements IEntityFactory {
+public class EntityFactory {
 
 	private final LinkedHashMap<String, IEntity> entities = new LinkedHashMap<String, IEntity>();
 	private final List<Link> links = new ArrayList<Link>();
@@ -80,59 +80,6 @@ public class EntityFactory implements IEntityFactory {
 		return groups;
 	}
 
-	// No used for SVEK
-	public void overideGroup(EntityMutable entityMutable, EntityMutable proxy) {
-		if (entities.containsKey(proxy.getCode())) {
-			throw new IllegalArgumentException();
-		}
-		if (entities.containsValue(proxy)) {
-			throw new IllegalArgumentException();
-		}
-		// for (final ListIterator<Link> it = links.listIterator(); it.hasNext();) {
-		// final Link link = it.next();
-		// if (link.insideGroup(entityMutable.asGroup())) {
-		// it.remove();
-		// }
-		// }
-		for (final ListIterator<Link> it = links.listIterator(); it.hasNext();) {
-			final Link link = it.next();
-			final Link newLink = link.mute(entityMutable, proxy);
-			if (newLink == null) {
-				it.remove();
-			} else if (newLink != link) {
-				it.set(newLink);
-			}
-		}
-		groups.remove(entityMutable.zgetGroupCode());
-
-		for (final Iterator<IEntity> it = entities.values().iterator(); it.hasNext();) {
-			final IEntity ent = it.next();
-			if (EntityUtils.equals(EntityUtils.getContainerOrEquivalent(ent), entityMutable)) {
-				it.remove();
-			}
-		}
-		entities.put(proxy.getCode(), proxy);
-	}
-
-	// public void overideGroup2(EntityMutable entityMutable) {
-	// for (final ListIterator<Link> it = links.listIterator(); it.hasNext();) {
-	// final Link link = it.next();
-	// final Link newLink = link.mute2(entityMutable);
-	// if (newLink == null) {
-	// it.remove();
-	// }
-	// }
-	// groups.remove(entityMutable.zgetGroupCode());
-	//
-	// for (final Iterator<IEntity> it = entities.values().iterator(); it.hasNext();) {
-	// final IEntity ent = it.next();
-	// if (ent!=entityMutable && EntityUtils.equals(EntityUtils.getContainerOrEquivalent(ent), entityMutable)) {
-	// it.remove();
-	// }
-	// }
-	// entities.put(entityMutable.getCode(), entityMutable);
-	// }
-
 	public void overideImage42(EntityMutable entityMutable) {
 		for (final ListIterator<Link> it = links.listIterator(); it.hasNext();) {
 			final Link link = it.next();
@@ -154,38 +101,12 @@ public class EntityFactory implements IEntityFactory {
 	}
 
 	public final IEntityMutable getOrCreateGroupInternal(String code, String display, String namespace, GroupType type,
-			IEntityMutable parent, final Set<VisibilityModifier> hides, boolean isSvek) {
+			IEntityMutable parent, final Set<VisibilityModifier> hides) {
 		EntityMutable gg = (EntityMutable) getGroups().get(code);
 		if (gg == null) {
-			gg = isSvek ? createGroupSvek(code, display, namespace, type, parent, hides) : createGroup(code, display,
-					namespace, type, parent, hides);
+			gg = createGroupSvek(code, display, namespace, type, parent, hides);
 			getGroups().put(code, gg);
 		}
-		return gg;
-	}
-
-	private EntityMutable createGroup(String code, String display, String namespace, GroupType type,
-			IEntityMutable parent, final Set<VisibilityModifier> hides) {
-
-		final GroupImpl g = new GroupImpl(code, display, namespace, type, parent, getEntities().values(), getGroups()
-				.values());
-		if (getEntities().containsKey(code)) {
-			final EntityMutable entityGroup = (EntityMutable) getEntities().get(code);
-			final EntityMutable gg = new EntityMutable(g, this);
-			entityGroup.muteToGroup99(g);
-			gg.zsetEntityCluster(entityGroup.getUid());
-			entities.put(code, gg);
-			gg.overidesFieldsToDisplay(entityGroup);
-			entityGroup.invalidateNow();
-			return gg;
-		}
-		final EntityMutable gg = new EntityMutable(g, this);
-		// final EntityMutable entityGroup = (EntityMutable) createEntity("$$" + code, code, EntityType.GROUP, gg,
-		// hides);
-		final EntityMutable entityGroup = (EntityMutable) createEntity(code, code, null, gg, hides);
-		entityGroup.muteToGroup99(g);
-		gg.zsetEntityCluster(entityGroup.getUid());
-		gg.overidesFieldsToDisplay(entityGroup);
 		return gg;
 	}
 
@@ -196,23 +117,14 @@ public class EntityFactory implements IEntityFactory {
 				.values());
 		if (getEntities().containsKey(code)) {
 			final EntityMutable entityGroup = (EntityMutable) getEntities().get(code);
-			//final EntityMutable gg = new EntityMutable(g, this);
 			entityGroup.muteToGroup99(g);
-			// gg.zsetEntityCluster(entityGroup.getUid());
 			entities.remove(code);
-			// entities.put(code, gg);
-			// gg.overidesFieldsToDisplay(entityGroup);
 			entityGroup.setDisplay2(display);
 			entityGroup.invalidateNow();
 			return entityGroup;
 		}
-		// final EntityMutable gg = new EntityMutable(g, this);
-		// final EntityMutable entityGroup = (EntityMutable) createEntity("$$" + code, code, EntityType.GROUP, gg,
-		// hides);
 		final EntityMutable entityGroup = (EntityMutable) createEntity(code, code, null, parent, hides);
 		entityGroup.muteToGroup99(g);
-		//gg.zsetEntityCluster(entityGroup.getUid());
-		//gg.overidesFieldsToDisplay(entityGroup);
 		return entityGroup;
 	}
 

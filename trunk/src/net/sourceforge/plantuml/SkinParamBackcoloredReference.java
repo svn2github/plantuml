@@ -117,10 +117,6 @@ public class SkinParamBackcoloredReference implements ISkinParam {
 		return skinParam.getColorMapper();
 	}
 
-	public boolean isSvek() {
-		return skinParam.isSvek();
-	}
-
 	public boolean shadowing() {
 		return skinParam.shadowing();
 	}
@@ -140,6 +136,11 @@ public class SkinParamBackcoloredReference implements ISkinParam {
 	public boolean stereotypePositionTop() {
 		return skinParam.stereotypePositionTop();
 	}
+	
+	public boolean useSwimlanes() {
+		return skinParam.useSwimlanes();
+	}
+
 
 
 }

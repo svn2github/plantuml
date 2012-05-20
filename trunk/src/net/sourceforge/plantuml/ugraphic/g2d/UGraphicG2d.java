@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7903 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -39,14 +39,11 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMaker;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.UnusedSpace;
 import net.sourceforge.plantuml.posimo.DotPath;
-import net.sourceforge.plantuml.skin.UDrawable;
 import net.sourceforge.plantuml.ugraphic.AbstractUGraphic;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UClip;
@@ -59,7 +56,6 @@ import net.sourceforge.plantuml.ugraphic.UPixel;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UText;
-import net.sourceforge.plantuml.ugraphic.svg.UGraphicSvg;
 
 public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 
@@ -125,11 +121,11 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 		// getTranslateX()), Math.round(ypos + getTranslateY()));
 	}
 
-	static public String getSvgString(ColorMapper colorMapper, UDrawable udrawable) throws IOException {
-		final UGraphicSvg ug = new UGraphicSvg(colorMapper, false);
-		udrawable.drawU(ug);
-		return CucaDiagramFileMaker.getSvg(ug);
-	}
+//	static public String getSvgString(ColorMapper colorMapper, UDrawable udrawable) throws IOException {
+//		final UGraphicSvg ug = new UGraphicSvg(colorMapper, false);
+//		udrawable.drawU(ug);
+//		return CucaDiagramFileMaker.getSvg(ug);
+//	}
 
 	protected final double getDpiFactor() {
 		return dpiFactor;

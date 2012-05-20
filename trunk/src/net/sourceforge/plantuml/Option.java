@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7720 $
+ * Revision $Revision: 7927 $
  *
  */
 package net.sourceforge.plantuml;
@@ -101,9 +101,6 @@ public class Option {
 				setFileFormat(FileFormat.EPS);
 			} else if (s.equalsIgnoreCase("-teps:text") || s.equalsIgnoreCase("-eps:text")) {
 				setFileFormat(FileFormat.EPS_TEXT);
-			} else if (s.equalsIgnoreCase("-tdot") || s.equalsIgnoreCase("-dot")) {
-				setFileFormat(FileFormat.DOT);
-				OptionFlags.getInstance().setKeepTmpFiles(true);
 			} else if (s.equalsIgnoreCase("-ttxt") || s.equalsIgnoreCase("-txt")) {
 				setFileFormat(FileFormat.ATXT);
 			} else if (s.equalsIgnoreCase("-tutxt") || s.equalsIgnoreCase("-utxt")) {
@@ -171,8 +168,6 @@ public class Option {
 			} else if (s.startsWith("-x")) {
 				s = s.substring(2);
 				excludes.add(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(s));
-			} else if (s.equalsIgnoreCase("-debugdot")) {
-				OptionFlags.getInstance().setDebugDot(true);
 			} else if (s.equalsIgnoreCase("-verbose") || s.equalsIgnoreCase("-v")) {
 				OptionFlags.getInstance().setVerbose(true);
 			} else if (s.equalsIgnoreCase("-pipe") || s.equalsIgnoreCase("-p")) {
@@ -198,10 +193,6 @@ public class Option {
 			} else if (s.equalsIgnoreCase("-word")) {
 				OptionFlags.getInstance().setWord(true);
 				OptionFlags.getInstance().setQuiet(true);
-			} else if (s.equalsIgnoreCase("-forcegd")) {
-				OptionFlags.getInstance().setForceGd(true);
-			} else if (s.equalsIgnoreCase("-forcecairo")) {
-				OptionFlags.getInstance().setForceCairo(true);
 			} else if (s.equalsIgnoreCase("-quiet")) {
 				OptionFlags.getInstance().setQuiet(true);
 			} else if (s.equalsIgnoreCase("-decodeurl")) {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7875 $
+ * Revision $Revision: 7903 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -42,7 +42,6 @@ import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.command.Position;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -51,7 +50,7 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public class Link implements Imaged {
+public class Link {
 
 	final private IEntity cl1;
 	final private IEntity cl2;
@@ -62,8 +61,6 @@ public class Link implements Imaged {
 	final private String qualifier1;
 	final private String qualifier2;
 	final private String uid = "LNK" + UniqueSequence.getValue();
-
-	private DrawFile imageFile;
 
 	private List<? extends CharSequence> note;
 	private Position notePosition;
@@ -217,7 +214,7 @@ public class Link implements Imaged {
 	public Link mute2(Group g) {
 		final Group g1 = cl1.getContainer();
 		final Group g2 = cl2.getContainer();
-		if (g1==g && g2==g) {
+		if (g1 == g && g2 == g) {
 			return null;
 		}
 		return this;
@@ -305,14 +302,6 @@ public class Link implements Imaged {
 		this.noteColor = noteColor;
 	}
 
-	public DrawFile getImageFile() {
-		return imageFile;
-	}
-
-	public void setImageFile(DrawFile imageFile) {
-		this.imageFile = imageFile;
-	}
-
 	public boolean isAutolink(Group g) {
 		if (((IEntityMutable) getEntity1()).isGroup() == false) {
 			return false;
@@ -330,7 +319,7 @@ public class Link implements Imaged {
 		// }
 		return false;
 	}
-	
+
 	public boolean isAutoLinkOfAGroup() {
 		if (((IEntityMutable) getEntity1()).isGroup() == false) {
 			return false;
@@ -338,12 +327,11 @@ public class Link implements Imaged {
 		if (((IEntityMutable) getEntity2()).isGroup() == false) {
 			return false;
 		}
-		if (getEntity1()==getEntity2()) {
+		if (getEntity1() == getEntity2()) {
 			return true;
 		}
 		return false;
 	}
-
 
 	public boolean isToEdgeLink(Group g) {
 		final Group g1 = EntityUtils.getContainerOrEquivalent(getEntity1());
@@ -483,6 +471,5 @@ public class Link implements Imaged {
 	public final void setLinkArrow(LinkArrow linkArrow) {
 		this.linkArrow = linkArrow;
 	}
-
 
 }

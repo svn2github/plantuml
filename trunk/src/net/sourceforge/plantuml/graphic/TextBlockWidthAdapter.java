@@ -61,8 +61,4 @@ public class TextBlockWidthAdapter implements TextBlock {
 		return textBlockWidth.calculateDimension(stringBounder);
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 }

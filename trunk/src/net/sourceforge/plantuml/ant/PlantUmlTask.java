@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7906 $
  *
  */
 package net.sourceforge.plantuml.ant;
@@ -312,18 +312,6 @@ public class PlantUmlTask extends Task {
 
 	public void setGraphvizDot(String s) {
 		OptionFlags.getInstance().setDotExecutable(s);
-	}
-
-	public void setForcegd(String s) {
-		if ("true".equalsIgnoreCase(s)) {
-			OptionFlags.getInstance().setForceGd(true);
-		}
-	}
-
-	public void setForcecairo(String s) {
-		if ("true".equalsIgnoreCase(s)) {
-			OptionFlags.getInstance().setForceCairo(true);
-		}
 	}
 
 	public void setNbThread(String s) {

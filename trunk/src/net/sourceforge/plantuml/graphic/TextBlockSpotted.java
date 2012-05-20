@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -64,28 +64,6 @@ class TextBlockSpotted extends TextBlockSimple {
 
 	private double getCircledCharacterWithAndMargin(StringBounder stringBounder) {
 		return circledCharacter.getPreferredWidth(stringBounder) + 6.0;
-	}
-
-	@Override
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		// final AffineTransform at = g2d.getTransform();
-		// final StringBounder stringBounder = StringBounderUtils.asStringBounder(g2d);
-		//
-		// final double deltaY = calculateDimension(StringBounderUtils.asStringBounder(g2d)).getHeight()
-		// - circledCharacter.getPreferredHeight(stringBounder);
-		//
-		// // g2d.translate(x, y + deltaY / 2.0);
-		// circledCharacter.draw(g2d, (int) x, (int) (y + deltaY / 2.0));
-		// // circledCharacter.draw(g2d);
-		//
-		// g2d.setTransform(at);
-		// final double widthCircledCharacter = getCircledCharacterWithAndMargin(stringBounder);
-		// g2d.translate(widthCircledCharacter, 0);
-		//
-		// super.drawTOBEREMOVED(g2d, x, y);
-		//
-		// g2d.setTransform(at);
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

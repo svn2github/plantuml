@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
 import net.sourceforge.plantuml.command.CommandEndPackage;
 import net.sourceforge.plantuml.command.CommandPackage;
 import net.sourceforge.plantuml.command.CommandPage;
+import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
@@ -46,7 +47,6 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.objectdiagram.command.CommandAddData;
 import net.sourceforge.plantuml.objectdiagram.command.CommandCreateEntityObject;
 import net.sourceforge.plantuml.objectdiagram.command.CommandCreateEntityObjectMultilines;
-import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class ObjectDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -61,7 +61,7 @@ public class ObjectDiagramFactory extends AbstractUmlSystemCommandFactory {
 		system = new ObjectDiagram();
 
 		addCommonCommands(system);
-		addCommand(new CommandRankDirUsecase(system));
+		addCommand(new CommandRankDir(system));
 		addCommand(new CommandPage(system));
 		addCommand(new CommandAddData(system));
 		addCommand(new CommandLinkClass3(system));

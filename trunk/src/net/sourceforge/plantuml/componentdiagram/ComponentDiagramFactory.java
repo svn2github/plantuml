@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7725 $
+ * Revision $Revision: 7920 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.command.CommandEndPackage;
 import net.sourceforge.plantuml.command.CommandNamespace;
 import net.sourceforge.plantuml.command.CommandPackage;
 import net.sourceforge.plantuml.command.CommandPage;
+import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
@@ -50,7 +51,6 @@ import net.sourceforge.plantuml.componentdiagram.command.CommandCreateCircleInte
 import net.sourceforge.plantuml.componentdiagram.command.CommandCreateComponent2;
 import net.sourceforge.plantuml.componentdiagram.command.CommandLinkComponent;
 import net.sourceforge.plantuml.componentdiagram.command.CommandLinkComponent2;
-import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class ComponentDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -64,7 +64,7 @@ public class ComponentDiagramFactory extends AbstractUmlSystemCommandFactory {
 	protected void initCommands() {
 		system = new ComponentDiagram();
 
-		addCommand(new CommandRankDirUsecase(system));
+		addCommand(new CommandRankDir(system));
 		addCommonCommands(system);
 
 		addCommand(new CommandPage(system));

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7894 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -48,7 +48,6 @@ import net.sourceforge.plantuml.skin.AbstractTextualComponent;
 import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
@@ -63,25 +62,32 @@ public class ComponentRoseGroupingHeader extends AbstractTextualComponent {
 	private final HtmlColor groupBackground;
 	private final HtmlColor groupBorder;
 	private final HtmlColor background;
+	private final double deltaShadow;
 
-	public ComponentRoseGroupingHeader(HtmlColor fontColor, HtmlColor background, HtmlColor groupBackground, HtmlColor groupBorder, UFont bigFont,
-			UFont smallFont, List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+	public ComponentRoseGroupingHeader(HtmlColor fontColor, HtmlColor background, HtmlColor groupBackground,
+			HtmlColor groupBorder, UFont bigFont, UFont smallFont, List<? extends CharSequence> strings,
+			SpriteContainer spriteContainer, double deltaShadow) {
 		super(strings.get(0), fontColor, bigFont, HorizontalAlignement.LEFT, 15, 30, 1, spriteContainer);
 		this.groupBackground = groupBackground;
 		this.groupBorder = groupBorder;
 		this.background = background;
+		this.deltaShadow = deltaShadow;
 		if (strings.size() == 1 || strings.get(1) == null) {
 			this.commentTextBlock = null;
 		} else {
 			this.commentTextBlock = TextBlockUtils.create(Arrays.asList("[" + strings.get(1) + "]"),
 					new FontConfiguration(smallFont, fontColor), HorizontalAlignement.LEFT, spriteContainer);
 		}
+		if (this.background == null) {
+			throw new IllegalArgumentException();
+		}
+
 	}
 
-	@Override
-	public double getPaddingY() {
-		return 6;
-	}
+//	@Override
+//	public double getPaddingY() {
+//		return 6;
+//	}
 
 	@Override
 	final public double getPreferredWidth(StringBounder stringBounder) {
@@ -104,17 +110,25 @@ public class ComponentRoseGroupingHeader extends AbstractTextualComponent {
 	@Override
 	protected void drawBackgroundInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
-		if (this.background == null) {
-			return;
-		}
-		ug.getParam().setColor(null);
+		ug.getParam().setColor(groupBorder);
 		ug.getParam().setBackcolor(background);
-		ug.draw(0, 0, new URectangle(dimensionToUse.getWidth(), dimensionToUse.getHeight()));
+		ug.getParam().setStroke(new UStroke(2));
+		final URectangle rect = new URectangle(dimensionToUse.getWidth(), dimensionToUse.getHeight());
+		rect.setDeltaShadow(deltaShadow);
+		ug.draw(0, 0, rect);
+		ug.getParam().setStroke(new UStroke());
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
+		ug.getParam().setColor(groupBorder);
+		ug.getParam().setBackcolor(null);
+		ug.getParam().setStroke(new UStroke(2));
+		final URectangle rect = new URectangle(dimensionToUse.getWidth(), dimensionToUse.getHeight());
+		ug.draw(0, 0, rect);
+		ug.getParam().setStroke(new UStroke());
+
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textWidth = (int) getTextWidth(stringBounder);
 		final int textHeight = (int) getTextHeight(stringBounder);
@@ -134,24 +148,13 @@ public class ComponentRoseGroupingHeader extends AbstractTextualComponent {
 		ug.getParam().setBackcolor(groupBackground);
 		ug.draw(0, 0, polygon);
 
-		final double heightWithoutPadding = dimensionToUse.getHeight() - getPaddingY();
-
-		ug.draw(0, 0, new ULine(dimensionToUse.getWidth(), 0));
-		ug.draw(dimensionToUse.getWidth(), 0, new ULine(0, heightWithoutPadding));
-		ug.draw(0, textHeight, new ULine(0, heightWithoutPadding - textHeight));
 		ug.getParam().setStroke(new UStroke());
 
 		getTextBlock().drawU(ug, getMarginX1(), getMarginY());
 
 		if (commentTextBlock != null) {
-			// final Dimension2D size =
-			// commentTextBlock.calculateDimension(stringBounder);
-			// ug.getParam().setColor(null/*this.background*/);
-			// ug.getParam().setBackcolor(null);
 			final int x1 = getMarginX1() + textWidth;
 			final int y2 = getMarginY() + 1;
-			// ug.draw(x1, y2, new URectangle(size.getWidth() + 2 *
-			// commentMargin, size.getHeight()));
 
 			commentTextBlock.drawU(ug, x1 + commentMargin, y2);
 		}

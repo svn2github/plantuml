@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -49,20 +49,26 @@ public class ComponentRoseActiveLine extends AbstractComponent {
 	private final HtmlColor lifeLineBackground;
 	private final boolean closeUp;
 	private final boolean closeDown;
+	private final boolean withShadow;
 
-	public ComponentRoseActiveLine(HtmlColor foregroundColor, HtmlColor lifeLineBackground, boolean closeUp, boolean closeDown) {
+	public ComponentRoseActiveLine(HtmlColor foregroundColor, HtmlColor lifeLineBackground, boolean closeUp,
+			boolean closeDown, boolean withShadow) {
 		this.foregroundColor = foregroundColor;
 		this.lifeLineBackground = lifeLineBackground;
 		this.closeUp = closeUp;
 		this.closeDown = closeDown;
+		this.withShadow = withShadow;
 	}
 
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int x = (int) (dimensionToUse.getWidth() - getPreferredWidth(stringBounder)) / 2;
 
 		final URectangle rect = new URectangle(getPreferredWidth(stringBounder), dimensionToUse.getHeight());
+		if (withShadow) {
+			rect.setDeltaShadow(1);
+		}
 		if (closeUp && closeDown) {
 			ug.getParam().setBackcolor(lifeLineBackground);
 			ug.getParam().setColor(foregroundColor);
@@ -77,7 +83,7 @@ public class ComponentRoseActiveLine extends AbstractComponent {
 		final ULine vline = new ULine(0, dimensionToUse.getHeight());
 		ug.draw(x, 0, vline);
 		ug.draw(x + getPreferredWidth(stringBounder), 0, vline);
-		
+
 		final ULine hline = new ULine(getPreferredWidth(stringBounder), 0);
 		if (closeUp) {
 			ug.draw(x, 0, hline);

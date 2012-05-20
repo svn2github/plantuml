@@ -33,23 +33,7 @@
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
 
-import java.io.File;
 
-public class LazyFile extends LazyCached<File> {
-
-	public LazyFile(Lazy<File> f) {
-		super(f);
-	}
-
-	@Override
-	public boolean isLoaded() {
-		if (super.isLoaded() == false) {
-			return false;
-		}
-		if (getRowData().exists() == false) {
-			return false;
-		}
-		return true;
-	}
-
+public interface Lazy2<O> {
+	public O getNow();
 }

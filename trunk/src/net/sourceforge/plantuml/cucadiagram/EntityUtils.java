@@ -53,6 +53,10 @@ public abstract class EntityUtils {
 				return false;
 			}
 		}
+//		if ((g1 == g2) != (g1.zgetUid2() == g2.zgetUid2())) {
+//			throw new IllegalStateException();
+//
+//		}
 		return g1.zgetUid2() == g2.zgetUid2();
 	}
 
@@ -62,7 +66,7 @@ public abstract class EntityUtils {
 				return true;
 			}
 			element = (IEntityMutable) element.getContainer();
-			if (element==null) {
+			if (element == null) {
 				return false;
 			}
 		}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7872 $
+ * Revision $Revision: 7920 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -55,6 +55,7 @@ import net.sourceforge.plantuml.command.CommandNamespace;
 import net.sourceforge.plantuml.command.CommandPackage;
 import net.sourceforge.plantuml.command.CommandPackageEmpty;
 import net.sourceforge.plantuml.command.CommandPage;
+import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
@@ -64,7 +65,6 @@ import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
-import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -80,7 +80,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommonCommands(system);
 
-		addCommand(new CommandRankDirUsecase(system));
+		addCommand(new CommandRankDir(system));
 		addCommand(new CommandPage(system));
 		addCommand(new CommandAddMethod(system));
 
@@ -123,19 +123,17 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 	@Override
 	public String checkFinalError() {
-		if (system.getSkinParam().isSvek()) {
-			for (IEntityMutable g : system.getGroups(true)) {
-				final List<IEntity> standalones = new ArrayList<IEntity>();
-				for (IEntity ent : g.zentities()) {
-					if (system.isStandalone(ent)) {
-						standalones.add(ent);
-					}
+		for (IEntityMutable g : system.getGroups(true)) {
+			final List<IEntity> standalones = new ArrayList<IEntity>();
+			for (IEntity ent : g.zentities()) {
+				if (system.isStandalone(ent)) {
+					standalones.add(ent);
 				}
-				if (standalones.size() < 3) {
-					continue;
-				}
-				putInSquare(standalones);
 			}
+			if (standalones.size() < 3) {
+				continue;
+			}
+			putInSquare(standalones);
 		}
 		return super.checkFinalError();
 	}

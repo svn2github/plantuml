@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7927 $
  *
  */
 package net.sourceforge.plantuml;
@@ -45,7 +45,6 @@ public class OptionFlags {
 
 	static public final boolean PBBACK = false;
 	static public final boolean GRAPHVIZCACHE = false;
-	static public final boolean SVEK = false;
 	static public final boolean TRACE_DOT = false;
 	static public final boolean NEW_DIAMOND = true;
 	static public final boolean HORIZONTAL_LINE_BETWEEN_DIFFERENT_PACKAGE_ALLOWED = false;
@@ -62,9 +61,6 @@ public class OptionFlags {
 		metadata = false;
 		word = false;
 		systemExit = exit;
-		debugDot = false;
-		forceGd = false;
-		forceCairo = false;
 		dotExecutable = null;
 		gui = false;
 		quiet = false;
@@ -86,9 +82,6 @@ public class OptionFlags {
 	private boolean metadata;
 	private boolean word;
 	private boolean systemExit;
-	private boolean debugDot;
-	private boolean forceGd;
-	private boolean forceCairo;
 	private String dotExecutable;
 	private boolean gui;
 	private boolean quiet;
@@ -147,14 +140,6 @@ public class OptionFlags {
 		this.systemExit = systemExit;
 	}
 
-	public final boolean isDebugDot() {
-		return debugDot;
-	}
-
-	public final void setDebugDot(boolean debugDot) {
-		this.debugDot = debugDot;
-	}
-
 	public final String getDotExecutable() {
 		return dotExecutable;
 	}
@@ -169,22 +154,6 @@ public class OptionFlags {
 
 	public final void setGui(boolean gui) {
 		this.gui = gui;
-	}
-
-	public final boolean isForceGd() {
-		return forceGd;
-	}
-
-	public final void setForceGd(boolean forceGd) {
-		this.forceGd = forceGd;
-	}
-
-	public final boolean isForceCairo() {
-		return forceCairo;
-	}
-
-	public final void setForceCairo(boolean forceCairo) {
-		this.forceCairo = forceCairo;
 	}
 
 	public final boolean isQuiet() {

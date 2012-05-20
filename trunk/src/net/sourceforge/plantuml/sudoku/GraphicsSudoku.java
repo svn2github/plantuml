@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.sudoku;
@@ -53,6 +53,9 @@ import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.png.PngIO;
 import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
 import net.sourceforge.plantuml.ugraphic.UFont;
+import net.sourceforge.plantuml.ugraphic.UGraphic;
+import net.sourceforge.plantuml.ugraphic.URectangle;
+import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
 
 public class GraphicsSudoku {
 
@@ -87,9 +90,11 @@ public class GraphicsSudoku {
 
 		final EmptyImageBuilder builder = new EmptyImageBuilder(sudoWidth, sudoHeight + textTotalHeight, Color.WHITE);
 		final BufferedImage im = builder.getBufferedImage();
-		final Graphics2D g2d = builder.getGraphics2D();
+		final Graphics2D g3d = builder.getGraphics2D();
 
-		g2d.translate(xOffset, yOffset);
+		final UGraphic ug = new UGraphicG2d(new ColorMapperIdentity(), g3d, null, 1.0);
+
+		ug.translate(xOffset, yOffset);
 
 		for (int x = 0; x < 9; x++) {
 			for (int y = 0; y < 9; y++) {
@@ -97,33 +102,33 @@ public class GraphicsSudoku {
 				if (num > 0) {
 					final TextBlock text = TextBlockUtils.create(Arrays.asList("" + num), new FontConfiguration(
 							numberFont, HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
-					text.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, numberxOffset + x * cellWidth, numberyOffset
-							+ y * cellHeight);
+					text.drawU(ug, numberxOffset + x * cellWidth, numberyOffset + y * cellHeight);
 				}
 			}
 		}
 
+		ug.getParam().setBackcolor(HtmlColor.BLACK);
+		ug.getParam().setColor(null);
 		for (int i = 0; i < 10; i++) {
 			final boolean bold = i % boldWidth == 0;
 			final int w = bold ? boldWidth : 1;
-			g2d.fillRect(0, i * cellHeight, 9 * cellWidth + boldWidth, w);
+			ug.draw(0, i * cellHeight, new URectangle(9 * cellWidth + boldWidth, w));
 		}
 		for (int i = 0; i < 10; i++) {
 			final boolean bold = i % boldWidth == 0;
 			final int w = bold ? boldWidth : 1;
-			g2d.fillRect(i * cellWidth, 0, w, 9 * cellHeight + boldWidth);
+			ug.draw(i * cellWidth, 0, new URectangle(w, 9 * cellHeight + boldWidth));
 		}
 
-		g2d.translate(0, sudoHeight);
+		ug.translate(0, sudoHeight);
 		final List<String> texts = new ArrayList<String>();
 		texts.add("http://plantuml.sourceforge.net");
 		texts.add("Seed " + Long.toString(sudoku.getSeed(), 36));
 		texts.add("Difficulty " + sudoku.getRatting());
 		final TextBlock textBlock = TextBlockUtils.create(texts, new FontConfiguration(font, HtmlColor.BLACK),
 				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
-		textBlock.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, 0, 0);
-
-		g2d.dispose();
+		textBlock.drawU(ug, 0, 0);
+		g3d.dispose();
 		return im;
 	}
 

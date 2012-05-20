@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7906 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -49,7 +49,6 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.directdot.DotText;
 import net.sourceforge.plantuml.eps.EpsStrategy;
 import net.sourceforge.plantuml.png.PngIO;
 import net.sourceforge.plantuml.svek.IEntityImage;
@@ -130,11 +129,6 @@ public class GraphicStrings implements IEntityImage {
 			final UGraphicEps ug = new UGraphicEps(colorMapper, EpsStrategy.getDefault2());
 			drawU(ug);
 			os.write(ug.getEPSCode().getBytes());
-		} else if (fileFormat == FileFormat.DOT) {
-			final DotText dotText = new DotText(strings, HtmlColor.getColorIfValid("#33FF02"), HtmlColor.BLACK);
-			final StringBuilder sb = new StringBuilder();
-			dotText.generateDot(sb);
-			os.write(sb.toString().getBytes());
 		} else {
 			throw new UnsupportedOperationException();
 		}

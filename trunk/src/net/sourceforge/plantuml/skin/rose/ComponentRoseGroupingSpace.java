@@ -28,18 +28,34 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6711 $
+ * Revision $Revision: 7891 $
  *
  */
-package net.sourceforge.plantuml.cucadiagram.dot;
+package net.sourceforge.plantuml.skin.rose;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+import net.sourceforge.plantuml.graphic.StringBounder;
+import net.sourceforge.plantuml.skin.Area;
+import net.sourceforge.plantuml.skin.Component;
+import net.sourceforge.plantuml.skin.Context2D;
+import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-import net.sourceforge.plantuml.FileFormatOption;
+public class ComponentRoseGroupingSpace implements Component {
 
-public interface ICucaDiagramFileMaker {
-	public CucaDiagramFileMakerResult createFile(OutputStream os, List<String> dotStrings,
-			FileFormatOption fileFormatOption) throws IOException, InterruptedException;
+	private final double space;
+
+	public ComponentRoseGroupingSpace(double space) {
+		this.space = space;
+	}
+
+	public double getPreferredWidth(StringBounder stringBounder) {
+		return 0;
+	}
+
+	public double getPreferredHeight(StringBounder stringBounder) {
+		return space;
+	}
+
+	public void drawU(UGraphic ug, Area area, Context2D context) {
+	}
+
 }

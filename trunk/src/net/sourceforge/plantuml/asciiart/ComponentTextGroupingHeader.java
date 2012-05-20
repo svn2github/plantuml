@@ -72,19 +72,23 @@ public class ComponentTextGroupingHeader implements Component {
 			charArea.drawHLine('\u2550', 0, 1, width - 1, '\u2502', '\u256a');
 			charArea.drawStringLR(text.toUpperCase() + "  /", 2, 1);
 			charArea.drawHLine('\u2500', 2, 1, text.length() + 4);
-			charArea.drawVLine('\u2551', 0, 1, height + 3);
-			charArea.drawVLine('\u2551', width - 1, 1, height + 3);
+			charArea.drawVLine('\u2551', 0, 1, height - 1);
+			charArea.drawVLine('\u2551', width - 1, 1, height - 1);
 			charArea.drawChar('\u255f', 0, 2);
 			charArea.drawStringTB("\u2564\u2502\u2518", text.length() + 4, 0);
 			charArea.drawChar('\u2554', 0, 0);
 			charArea.drawChar('\u2557', width - 1, 0);
+			charArea.drawHLine('\u2550', height - 1, 1, width - 1, '\u2502', '\u256a');
+			charArea.drawChar('\u255a', 0, height - 1);
+			charArea.drawChar('\u255d', width - 1, height - 1);
 		} else {
 			charArea.drawHLine('_', 0, 0, width - 1);
 			charArea.drawStringLR(text.toUpperCase() + "  /", 2, 1);
 			charArea.drawHLine('_', 2, 1, text.length() + 3);
 			charArea.drawChar('/', text.length() + 3, 2);
-			charArea.drawVLine('!', 0, 1, height + 3);
-			charArea.drawVLine('!', width - 1, 1, height + 3);
+			charArea.drawVLine('!', 0, 1, height);
+			charArea.drawVLine('!', width - 1, 1, height);
+			charArea.drawHLine('~', height - 1, 1, width - 1);
 		}
 
 		if (stringsToDisplay.size() > 1) {
@@ -95,7 +99,7 @@ public class ComponentTextGroupingHeader implements Component {
 	}
 
 	public double getPreferredHeight(StringBounder stringBounder) {
-		return StringUtils.getHeight(stringsToDisplay) + 2;
+		return StringUtils.getHeight(stringsToDisplay) + 1;
 	}
 
 	public double getPreferredWidth(StringBounder stringBounder) {

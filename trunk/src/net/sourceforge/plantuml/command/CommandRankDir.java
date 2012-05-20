@@ -27,63 +27,26 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
- * 
- * Revision $Revision: 7755 $
  *
  */
-package net.sourceforge.plantuml.cucadiagram;
+package net.sourceforge.plantuml.command;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
+import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
+import net.sourceforge.plantuml.cucadiagram.Rankdir;
 
-public class ImageFile {
+public class CommandRankDir extends SingleLineCommand<CucaDiagram> {
 
-	private DrawFile imageFile;
-	private final Set<DrawFile> subImages = new HashSet<DrawFile>();
-
-	public final DrawFile getImageFile() {
-		return imageFile;
+	public CommandRankDir(CucaDiagram diagram) {
+		super(diagram, "(?i)^(left to right|top to bottom)\\s+direction$");
 	}
 
-	public final void setImageFile(DrawFile imageFile) {
-		this.imageFile = imageFile;
-	}
-
-	public final Set<DrawFile> getSubImages() {
-		return subImages;
-	}
-
-	public void addSubImage(DrawFile subImage) {
-		if (subImage == null) {
-			throw new IllegalArgumentException();
-		}
-		subImages.add(subImage);
-	}
-
-	public void addSubImage(IEntity other) {
-		subImages.addAll(other.getSubImages());
-	}
-
-	public DrawFile getImageFile(File searched) throws IOException {
-		if (imageFile != null && imageFile.getPng().getCanonicalFile().equals(searched)) {
-			return imageFile;
-		}
-		for (DrawFile f : subImages) {
-			if (f.getPng().getCanonicalFile().equals(searched)) {
-				return f;
-			}
-		}
-		return null;
-	}
-
-	public void cleanSubImage() {
-		for (DrawFile f : subImages) {
-			f.deleteDrawFile();
-		}
+	@Override
+	protected CommandExecutionResult executeArg(List<String> arg) {
+		final String s = arg.get(0).toUpperCase().replace(' ', '_');
+		getSystem().setRankdir(Rankdir.valueOf(s));
+		return CommandExecutionResult.ok();
 	}
 
 }

@@ -48,7 +48,6 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
-import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.EntityMutable;
@@ -64,6 +63,7 @@ import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
+import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
@@ -229,7 +229,7 @@ public class Cluster implements Moveable {
 	public final int getTitleHeight() {
 		return titleHeight;
 	}
-	
+
 	public double getWidth() {
 		return maxX - minX;
 	}
@@ -244,6 +244,10 @@ public class Cluster implements Moveable {
 	}
 
 	public void drawU(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
+		if (skinParam.useSwimlanes()) {
+			drawSwinLinesState(ug, x, y, borderColor, dotData);
+			return;
+		}
 		final boolean isState = dotData.getUmlDiagramType() == UmlDiagramType.STATE;
 		if (isState) {
 			drawUState(ug, x, y, borderColor, dotData);
@@ -254,8 +258,8 @@ public class Cluster implements Moveable {
 			style = dotData.getSkinParam().getPackageStyle();
 		}
 		if (title != null) {
-			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
-					group.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
+			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(), group
+					.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
 			final ClusterDecoration decoration = new ClusterDecoration(style, title, stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
@@ -271,6 +275,17 @@ public class Cluster implements Moveable {
 		ug.getParam().setStroke(new UStroke(2));
 		ug.draw(x + minX, y + minY, rect);
 		ug.getParam().setStroke(new UStroke());
+	}
+
+	private void drawSwinLinesState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
+		if (title != null) {
+			title.drawU(ug, x + xTitle, y);
+		}
+		final ULine line = new ULine(0, maxY - minY);
+		ug.getParam().setColor(borderColor);
+		ug.draw(x + minX, y, line);
+		ug.draw(x + maxX, y, line);
+
 	}
 
 	private HtmlColor getColor(DotData dotData, ColorParam colorParam, String stereo) {
@@ -394,14 +409,53 @@ public class Cluster implements Moveable {
 
 	public final static String CENTER_ID = "za";
 
-	private final boolean protection0 = true;
-	private final boolean protection1 = true;
+	private boolean protection0() {
+		if (skinParam.useSwimlanes()) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean protection1() {
+		if (skinParam.useSwimlanes()) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getMinPoint() {
+		if (skinParam.useSwimlanes()) {
+			return "minPoint" + color;
+		}
+		return null;
+	}
+
+	public String getMaxPoint() {
+		if (skinParam.useSwimlanes()) {
+			return "maxPoint" + color;
+		}
+		return null;
+	}
+
+	private String getSourceInPoint() {
+		if (skinParam.useSwimlanes()) {
+			return "sourceIn" + color;
+		}
+		return null;
+	}
+
+	private String getSinkInPoint() {
+		if (skinParam.useSwimlanes()) {
+			return "sinkIn" + color;
+		}
+		return null;
+	}
 
 	private void printInternal(StringBuilder sb, Collection<Line> lines) {
 		if (isSpecial()) {
 			subgraphCluster(sb, "a");
 		}
-		if (protection0) {
+		if (protection0()) {
 			subgraphCluster(sb, "p0");
 		}
 		sb.append("subgraph " + getClusterId() + " {");
@@ -426,21 +480,30 @@ public class Cluster implements Moveable {
 		SvekUtils.println(sb);
 
 		if (isSpecial()) {
-			// subgraphCluster(sb, CENTER_ID);
-			if (OptionFlags.getInstance().isDebugDot()) {
-				sb.append(getSpecialPointId() + ";");
-			} else {
-				sb.append(getSpecialPointId() + " [shape=point,width=.01,label=\"\"];");
-			}
-			// sb.append("}");
+			sb.append(getSpecialPointId() + " [shape=point,width=.01,label=\"\"];");
 			subgraphCluster(sb, "i");
 		}
-		if (protection1) {
+		if (protection1()) {
 			subgraphCluster(sb, "p1");
 		}
+		if (skinParam.useSwimlanes()) {
+			sb.append("{rank = source; ");
+			sb.append(getSourceInPoint());
+			sb.append(" [shape=point,width=.01,label=\"\"];");
+			sb.append(getMinPoint() + "->" + getSourceInPoint() + ";");
+			sb.append("}");
+			SvekUtils.println(sb);
+			sb.append("{rank = sink; ");
+			sb.append(getSinkInPoint());
+			sb.append(" [shape=point,width=.01,label=\"\"];");
+			sb.append("}");
+			sb.append(getSinkInPoint() + "->" + getMaxPoint() + ";");
+			SvekUtils.println(sb);
+		}
+		SvekUtils.println(sb);
 		printCluster1(sb, lines);
 		printCluster2(sb, lines);
-		if (protection1) {
+		if (protection1()) {
 			sb.append("}");
 		}
 		if (isSpecial()) {
@@ -455,7 +518,7 @@ public class Cluster implements Moveable {
 			// sb.append("}");
 		}
 		sb.append("}");
-		if (protection0) {
+		if (protection0()) {
 			sb.append("}");
 		}
 		if (this.isSpecial()) {
@@ -468,13 +531,8 @@ public class Cluster implements Moveable {
 	private void subgraphCluster(StringBuilder sb, String id) {
 		final String uid = getClusterId() + id;
 		sb.append("subgraph " + uid + " {");
-		if (OptionFlags.getInstance().isDebugDot()) {
-			sb.append("style=dotted;");
-			sb.append("label=\"" + id + "\";");
-		} else {
-			sb.append("style=invis;");
-			sb.append("label=\"\";");
-		}
+		sb.append("style=invis;");
+		sb.append("label=\"\";");
 	}
 
 	public int getColor() {

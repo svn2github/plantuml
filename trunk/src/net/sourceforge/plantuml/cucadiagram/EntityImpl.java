@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.cucadiagram;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +43,6 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.graphic.TextBlockWidthVertical;
@@ -69,8 +67,6 @@ public class EntityImpl implements IEntity {
 
 	private boolean top;
 	
-	private final ImageFile image = new ImageFile();
-
 	public final boolean isTop() {
 		return top;
 	}
@@ -284,37 +280,4 @@ public class EntityImpl implements IEntity {
 	public void addFieldOrMethod(String s) {
 		bodier.addFieldOrMethod(s);
 	}
-	
-	
-	public final DrawFile getImageFile() {
-		return this.image.getImageFile();
-	}
-
-	public final void setImageFile(DrawFile imageFile) {
-		this.image.setImageFile(imageFile);
-	}
-
-	public final Set<DrawFile> getSubImages() {
-		return this.image.getSubImages();
-	}
-
-	public void addSubImage(DrawFile subImage) {
-		if (subImage == null) {
-			throw new IllegalArgumentException();
-		}
-		this.image.addSubImage(subImage);
-	}
-
-	public void addSubImage(IEntity other) {
-		this.image.addSubImage(other);
-	}
-
-	public DrawFile getImageFile(File searched) throws IOException {
-		return this.image.getImageFile(searched);
-	}
-
-	public void cleanSubImage() {
-		this.image.cleanSubImage();
-	}
-
 }

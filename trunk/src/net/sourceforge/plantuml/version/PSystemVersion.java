@@ -174,7 +174,7 @@ public class PSystemVersion extends AbstractPSystem {
 
 	private static int extractVersion(BufferedReader in) throws IOException {
 		String s;
-		final Pattern p = Pattern.compile(".*\\.(\\d{4})\\..*");
+		final Pattern p = Pattern.compile(".*\\.(\\d{4,5})\\..*");
 		while ((s = in.readLine()) != null) {
 			final Matcher m = p.matcher(s);
 			if (m.matches()) {

@@ -51,7 +51,6 @@ public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
 		final String code = arg.get(0);
 		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, code, GroupType.PACKAGE, currentPackage);
-		p.zsetBold(true);
 		final String color = arg.get(1);
 		if (color != null) {
 			p.zsetBackColor(HtmlColor.getColorIfValid(color));

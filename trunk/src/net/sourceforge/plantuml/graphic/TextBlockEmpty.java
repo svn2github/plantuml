@@ -58,10 +58,6 @@ public class TextBlockEmpty implements TextBlock, TextBlockWidth {
 		return new Dimension2DDouble(width, height);
 	}
 
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void drawU(UGraphic ug, double x, double y) {
 	}
 

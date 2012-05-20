@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.asciiart;
 
+import java.awt.geom.Dimension2D;
 import java.util.List;
 
 import net.sourceforge.plantuml.FileFormat;
@@ -58,12 +59,19 @@ public class ComponentTextGroupingElse implements Component {
 	}
 
 	public void drawU(UGraphic ug, Area area, Context2D context) {
+		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		final UmlCharArea charArea = ((UGraphicTxt) ug).getCharArea();
-		// final int width = (int) dimensionToUse.getWidth();
-		// final int height = (int) dimensionToUse.getHeight();
+		final int width = (int) dimensionToUse.getWidth();
 
 		if (stringsToDisplay.get(0) != null) {
 			charArea.drawStringLR("[" + stringsToDisplay.get(0) + "]", 2, 0);
+		}
+		if (fileFormat == FileFormat.UTXT) {
+			charArea.drawChar('\u2560', 0, -1);
+			charArea.drawChar('\u2563', width - 1, -1);
+			charArea.drawHLine('\u2550', -1, 1, width - 1, '\u2502', '\u256a');
+		} else {
+			charArea.drawHLine('~', -1, 1, width - 1);
 		}
 
 		// charArea.fillRect('E', 0, 0, width, height);

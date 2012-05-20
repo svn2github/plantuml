@@ -37,10 +37,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -55,7 +53,6 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagram;
 import net.sourceforge.plantuml.UmlDiagramInfo;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.directdot.DotText;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.sequencediagram.graphic.FileMaker;
 import net.sourceforge.plantuml.sequencediagram.graphic.SequenceDiagramFileMaker;
@@ -183,11 +180,6 @@ public class SequenceDiagram extends UmlDiagram {
 	}
 
 	public List<File> exportDiagrams(File suggestedFile, FileFormatOption fileFormat) throws IOException {
-
-		if (fileFormat.getFileFormat() == FileFormat.DOT) {
-			return exportDot(suggestedFile);
-		}
-
 		final List<File> result = new ArrayList<File>();
 		final int nbImages = getNbImages();
 		for (int i = 0; i < nbImages; i++) {
@@ -208,18 +200,6 @@ public class SequenceDiagram extends UmlDiagram {
 			result.add(f);
 		}
 		return result;
-	}
-
-	private List<File> exportDot(File suggestedFile) throws IOException {
-		final PrintWriter pw = new PrintWriter(suggestedFile);
-		final List<String> printed = Arrays
-				.asList("Error: Sequence diagrams do not use Dot/Graphviz : they cannot be generated as DOT files.");
-		final DotText dotText = new DotText(printed, HtmlColor.getColorIfValid("#33FF02"), HtmlColor.BLACK);
-		final StringBuilder sb = new StringBuilder();
-		dotText.generateDot(sb);
-		pw.println(sb);
-		pw.close();
-		return Arrays.asList(suggestedFile);
 	}
 
 	@Override

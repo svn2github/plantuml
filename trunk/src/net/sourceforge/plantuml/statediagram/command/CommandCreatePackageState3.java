@@ -89,7 +89,6 @@ public class CommandCreatePackageState3 extends SingleLineCommand2<StateDiagram>
 			display = code;
 		}
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.STATE, currentPackage);
-		p.zsetRounded(true);
 		final String stereotype = arg.get("STEREOTYPE").get(0);
 		if (stereotype != null) {
 			p.zsetStereotype(new Stereotype(stereotype));

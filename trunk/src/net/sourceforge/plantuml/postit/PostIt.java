@@ -109,7 +109,7 @@ public class PostIt {
 		final SkinParam param = new SkinParam(null);
 		final UFont fontNote = param.getFont(FontParam.NOTE, null);
 		final ComponentRoseNote note = new ComponentRoseNote(noteBackgroundColor, borderColor, HtmlColor.BLACK,
-				fontNote, text, 0, 0, new SpriteContainerEmpty());
+				fontNote, text, 0, 0, new SpriteContainerEmpty(), 0);
 		return note;
 	}
 }

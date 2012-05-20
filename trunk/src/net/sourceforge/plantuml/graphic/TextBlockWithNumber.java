@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -65,17 +65,6 @@ class TextBlockWithNumber extends TextBlockSimple {
 	private double getNumberWithAndMargin(StringBounder stringBounder) {
 		final double widthNum = numText.calculateDimension(stringBounder).getWidth();
 		return widthNum + 4.0;
-	}
-
-	@Override
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		final StringBounder stringBounder = StringBounderUtils.asStringBounder(g2d);
-		final double heightNum = numText.calculateDimension(stringBounder).getHeight();
-
-		final double deltaY = calculateDimension(stringBounder).getHeight() - heightNum;
-
-		numText.drawTOBEREMOVED(colorMapper, g2d, x, y + deltaY / 2.0);
-		super.drawTOBEREMOVED(colorMapper, g2d, x + getNumberWithAndMargin(stringBounder), y);
 	}
 
 	@Override

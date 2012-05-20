@@ -111,10 +111,6 @@ public class SpriteMonochrome implements Sprite {
 			public Dimension2D calculateDimension(StringBounder stringBounder) {
 				return new Dimension2DDouble(getWidth(), getHeight());
 			}
-
-			public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-				throw new UnsupportedOperationException();
-			}
 		};
 	}
 

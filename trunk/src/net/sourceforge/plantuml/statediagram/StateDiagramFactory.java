@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7852 $
+ * Revision $Revision: 7920 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
 
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
 import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
+import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
@@ -47,7 +48,6 @@ import net.sourceforge.plantuml.statediagram.command.CommandCreateState2;
 import net.sourceforge.plantuml.statediagram.command.CommandEndState;
 import net.sourceforge.plantuml.statediagram.command.CommandHideEmptyDescription;
 import net.sourceforge.plantuml.statediagram.command.CommandLinkState2;
-import net.sourceforge.plantuml.usecasediagram.command.CommandRankDirUsecase;
 
 public class StateDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -61,7 +61,7 @@ public class StateDiagramFactory extends AbstractUmlSystemCommandFactory {
 	protected void initCommands() {
 		system = new StateDiagram();
 
-		addCommand(new CommandRankDirUsecase(system));
+		addCommand(new CommandRankDir(system));
 		addCommand(new CommandCreateState(system));
 		addCommand(new CommandCreateState2(system));
 		// addCommand(new CommandLinkState(system));

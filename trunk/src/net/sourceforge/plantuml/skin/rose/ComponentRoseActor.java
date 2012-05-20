@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7721 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -52,14 +52,18 @@ public class ComponentRoseActor extends AbstractTextualComponent {
 	private final boolean head;
 
 	public ComponentRoseActor(HtmlColor yellow, HtmlColor red, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> stringsToDisplay, boolean head, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> stringsToDisplay, boolean head, SpriteContainer spriteContainer,
+			double deltaShadow) {
 		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 3, 3, 0, spriteContainer);
 		this.head = head;
-		stickman = new StickMan(yellow, red);
+		this.stickman = new StickMan(yellow, red);
+		if (deltaShadow > 0) {
+			this.stickman.setDeltaShadow(deltaShadow);
+		}
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		ug.getParam().setColor(getFontColor());
 		final TextBlock textBlock = getTextBlock();
 		final StringBounder stringBounder = ug.getStringBounder();

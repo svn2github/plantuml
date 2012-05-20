@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7868 $
+ * Revision $Revision: 7911 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -58,13 +58,10 @@ import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.UmlDiagram;
 import net.sourceforge.plantuml.UmlDiagramInfo;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMaker;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerBeta;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramPngMaker3;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramTxtMaker;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
-import net.sourceforge.plantuml.cucadiagram.dot.ICucaDiagramFileMaker;
 import net.sourceforge.plantuml.html.CucaDiagramHtmlMaker;
 import net.sourceforge.plantuml.png.PngSplitter;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
@@ -161,7 +158,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	protected final IEntityMutable getOrCreateGroupInternal(String code, String display, String namespace,
 			GroupType type, IEntityMutable parent) {
-		return entityFactory.getOrCreateGroupInternal(code, display, namespace, type, parent, getHides(), getSkinParam().isSvek());
+		return entityFactory.getOrCreateGroupInternal(code, display, namespace, type, parent, getHides());
 	}
 
 	public final IEntityMutable getCurrentGroup() {
@@ -204,10 +201,8 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 	}
 
 	final public Map<String, IEntity> getEntities() {
-		if (getSkinParam().isSvek()) {
 			return Collections.unmodifiableMap(entities3());
-		}
-		return Collections.unmodifiableMap(new TreeMap<String, IEntity>(entities3()));
+		//		return Collections.unmodifiableMap(new TreeMap<String, IEntity>(entities3()));
 	}
 
 	final public void addLink(Link link) {
@@ -355,25 +350,15 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 			}
 			return new UmlDiagramInfo();
 		}
-		final ICucaDiagramFileMaker maker;
-		if (getSkinParam().isSvek()) {
-			maker = new CucaDiagramFileMakerSvek(this, flashcodes);
-		} else {
-			maker = new CucaDiagramFileMaker(this, flashcodes);
+		final CucaDiagramFileMakerSvek maker = new CucaDiagramFileMakerSvek(this, flashcodes);
+		final CucaDiagramFileMakerResult result = maker.createFile(os, getDotStrings(), fileFormatOption);
+		if (result != null && cmap != null && result.getCmapResult() != null) {
+			cmap.append(result.getCmapResult());
 		}
-		try {
-			final CucaDiagramFileMakerResult result = maker.createFile(os, getDotStrings(), fileFormatOption);
-			if (result != null && cmap != null && result.getCmapResult() != null) {
-				cmap.append(result.getCmapResult());
-			}
-			if (result != null) {
-				this.warningOrError = result.getWarningOrError();
-			}
-			return result == null ? new UmlDiagramInfo() : new UmlDiagramInfo(result.getWidth());
-		} catch (InterruptedException e) {
-			Log.error(e.toString());
-			throw new IOException(e.toString());
+		if (result != null) {
+			this.warningOrError = result.getWarningOrError();
 		}
+		return result == null ? new UmlDiagramInfo() : new UmlDiagramInfo(result.getWidth());
 	}
 
 	private String warningOrError;
@@ -424,23 +409,21 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
 			final Group g1 = e1.getContainer();
 			final Group g2 = e2.getContainer();
-			if (EntityUtils.equals(g1, g) == false && EntityUtils.equals(g2, g)
-					&& e2.isGroup()==false) {
+			if (EntityUtils.equals(g1, g) == false && EntityUtils.equals(g2, g) && e2.isGroup() == false) {
 				return false;
 			}
-			if (EntityUtils.equals(g2, g) == false && EntityUtils.equals(g1, g)
-					&& e1.isGroup()==false) {
+			if (EntityUtils.equals(g2, g) == false && EntityUtils.equals(g1, g) && e1.isGroup() == false) {
 				return false;
 			}
-//			if (link.isAutolink(g)) {
-//				continue;
-//			}
-//			if (e1.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
-//				return false;
-//			}
-//			if (e2.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
-//				return false;
-//			}
+			// if (link.isAutolink(g)) {
+			// continue;
+			// }
+			// if (e1.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
+			// return false;
+			// }
+			// if (e2.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
+			// return false;
+			// }
 
 		}
 		return true;
@@ -574,42 +557,6 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return Collections.unmodifiableSet(hides);
 	}
 
-	public void clean() throws IOException {
-		for (Imaged entity : getEntities().values()) {
-			cleanTemporaryFiles(entity);
-		}
-		for (Imaged entity : getLinks()) {
-			cleanTemporaryFiles(entity);
-		}
-		for (IEntityMutable gg : groups3().values()) {
-			final IEntity entity = gg;
-			if (entity != null) {
-				cleanTemporaryFiles(entity);
-			}
-		}
-		for (DrawFile f : ensureDeletes) {
-			f.deleteDrawFile();
-		}
-	}
-
-	private void cleanTemporaryFiles(Imaged entity) {
-		if (entity.getImageFile() != null) {
-			entity.getImageFile().deleteDrawFile();
-		}
-		if (entity instanceof IEntity) {
-			((IEntity) entity).cleanSubImage();
-		}
-	}
-
-	private final Set<DrawFile> ensureDeletes = new HashSet<DrawFile>();
-
-	public void ensureDelete(DrawFile imageFile) {
-		if (imageFile == null) {
-			throw new IllegalArgumentException();
-		}
-		ensureDeletes.add(imageFile);
-	}
-
 	public ColorMapper getColorMapper() {
 		return getSkinParam().getColorMapper();
 	}
@@ -645,7 +592,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return null;
 	}
 
-	final public IEntityFactory getEntityFactory() {
+	final public EntityFactory getEntityFactory() {
 		return entityFactory;
 	}
 

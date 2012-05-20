@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7913 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -54,10 +54,6 @@ class TileImage implements TextBlock {
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		return new Dimension2DDouble(image.getWidth(), image.getHeight() + 2 * vspace);
-	}
-
-	public void drawTOBEREMOVED(ColorMapper colorMapper, Graphics2D g2d, double x, double y) {
-		g2d.drawImage(image, (int) x, (int) y + vspace, null);
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {

@@ -49,12 +49,14 @@ final public class ComponentRoseNoteBox extends AbstractTextualComponent {
 
 	private final HtmlColor back;
 	private final HtmlColor foregroundColor;
+	private final double deltaShadow;
 
 	public ComponentRoseNoteBox(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> strings, SpriteContainer spriteContainer) {
+			List<? extends CharSequence> strings, SpriteContainer spriteContainer, double deltaShadow) {
 		super(strings, fontColor, font, HorizontalAlignement.LEFT, 4, 4, 4, spriteContainer);
 		this.back = back;
 		this.foregroundColor = foregroundColor;
+		this.deltaShadow = deltaShadow;
 	}
 
 	@Override
@@ -79,16 +81,17 @@ final public class ComponentRoseNoteBox extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final StringBounder stringBounder = ug.getStringBounder();
 		final int textHeight = (int) getTextHeight(stringBounder);
 
 		final int x2 = (int) getTextWidth(stringBounder);
 
-
 		ug.getParam().setColor(foregroundColor);
 		ug.getParam().setBackcolor(back);
-		ug.draw(0, 0, new URectangle(x2, textHeight));
+		final URectangle rect = new URectangle(x2, textHeight);
+		rect.setDeltaShadow(deltaShadow);
+		ug.draw(0, 0, rect);
 
 		getTextBlock().drawU(ug, getMarginX1(), getMarginY());
 

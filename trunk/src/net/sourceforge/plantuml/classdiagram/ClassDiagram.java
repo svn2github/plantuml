@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7800 $
+ * Revision $Revision: 7908 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -73,7 +73,6 @@ public class ClassDiagram extends AbstractClassOrObjectDiagram {
 		final String namespace = getNamespace(fullyCode);
 		if (namespace != null && (group == null || group.zgetGroupCode().equals(namespace) == false)) {
 			group = getOrCreateGroupInternal(namespace, namespace, namespace, GroupType.PACKAGE, null);
-			group.zsetBold(true);
 		}
 		return createEntityInternal(fullyCode, display == null ? getShortName(fullyCode) : display, type, group);
 	}

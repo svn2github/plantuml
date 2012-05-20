@@ -170,8 +170,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		final String code = arg.get("CODE" + suf).get(0);
 		if (code != null) {
 			if (partition != null) {
-				final IEntityMutable p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-				p.zsetBold(true);
+				system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
 			}
 			final IEntity result = system.getOrCreate(code, code, getTypeIfExisting(system, code));
 			if (partition != null) {
@@ -187,8 +186,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (quoted.get(0) != null) {
 			final String quotedCode = quoted.get(1) == null ? quoted.get(0) : quoted.get(1);
 			if (partition != null) {
-				final IEntityMutable p = system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
-				p.zsetBold(true);
+				system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
 			}
 			final IEntity result = system.getOrCreate(quotedCode, quoted.get(0), getTypeIfExisting(system, quotedCode));
 			if (partition != null) {

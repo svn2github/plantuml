@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7891 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -44,19 +44,34 @@ import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
+import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class ComponentRoseGroupingElse extends AbstractTextualComponent {
 
 	private final HtmlColor groupBorder;
+	private final HtmlColor backgroundColor;
 
-	public ComponentRoseGroupingElse(HtmlColor fontColor, HtmlColor groupBorder, UFont smallFont, CharSequence comment, SpriteContainer spriteContainer) {
-		super(comment == null ? null : "[" + comment + "]", fontColor, smallFont, HorizontalAlignement.LEFT, 5, 5, 1, spriteContainer);
+	public ComponentRoseGroupingElse(HtmlColor fontColor, HtmlColor groupBorder, UFont smallFont, CharSequence comment,
+			SpriteContainer spriteContainer, HtmlColor backgroundColor) {
+		super(comment == null ? null : "[" + comment + "]", fontColor, smallFont, HorizontalAlignement.LEFT, 5, 5, 1,
+				spriteContainer);
 		this.groupBorder = groupBorder;
+		this.backgroundColor = backgroundColor;
+	}
+	
+	@Override
+	protected void drawBackgroundInternalU(UGraphic ug, Area area) {
+		final Dimension2D dimensionToUse = area.getDimensionToUse();
+		ug.getParam().setColor(null);
+		ug.getParam().setBackcolor(backgroundColor);
+		final URectangle rect = new URectangle(dimensionToUse.getWidth(), dimensionToUse.getHeight());
+		ug.draw(0, 0, rect);
 	}
 
+	
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		final Dimension2D dimensionToUse = area.getDimensionToUse();
 		stroke(ug, 2, 2);
 		ug.getParam().setColor(groupBorder);

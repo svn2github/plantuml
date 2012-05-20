@@ -72,7 +72,7 @@ public class ComponentBlueModernEnglober extends AbstractTextualComponent {
 	}
 
 	@Override
-	protected void drawInternalU(UGraphic ug, Area area, boolean withShadow) {
+	protected void drawInternalU(UGraphic ug, Area area) {
 		// ug.getParam().setColor(Color.RED);
 		// ug.getParam().setBackcolor(Color.YELLOW);
 		// ug.draw(0, 0, new URectangle(dimensionToUse.getWidth(),

@@ -33,16 +33,12 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.cucadiagram.dot.DrawFile;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
@@ -53,7 +49,6 @@ public class EntityMutable implements IEntityMutable {
 	private Bodier bodier;
 	private Group group;
 	private final EntityFactory entityFactory;
-	private ImageFile image;
 
 	private boolean isValid = true;
 
@@ -121,16 +116,6 @@ public class EntityMutable implements IEntityMutable {
 		this.entity = null;
 		this.group = newGroup;
 		this.entityFactory = entityFactory;
-	}
-
-	// No used for SVEK
-	public void overideGroup(EntityMutable proxy) {
-		checkValid();
-		entityFactory.overideGroup(this, proxy);
-		// entityFactory.overideGroup2(this);
-		this.entity = (EntityImpl) ((EntityMutable) proxy).entity;
-		this.group = null;
-		proxy.image = this.image;
 	}
 
 	public void overideImage42(IEntityImage img) {
@@ -217,17 +202,6 @@ public class EntityMutable implements IEntityMutable {
 	}
 
 	// --------
-
-	public DrawFile getImageFile() {
-		checkValid();
-		if (image != null) {
-			return image.getImageFile();
-		}
-		if (entity == null) {
-			return null;
-		}
-		return entity.getImageFile();
-	}
 
 	public HtmlColor getSpecificBackColor() {
 		checkValid();
@@ -325,17 +299,6 @@ public class EntityMutable implements IEntityMutable {
 		return entity.getCode();
 	}
 
-	public DrawFile getImageFile(File searched) throws IOException {
-		checkValid();
-		if (image != null) {
-			return image.getImageFile(searched);
-		}
-		if (entity == null) {
-			return null;
-		}
-		return entity.getImageFile(searched);
-	}
-
 	public boolean isTop() {
 		checkValid();
 		return entity.isTop();
@@ -408,28 +371,9 @@ public class EntityMutable implements IEntityMutable {
 		entity.setUrl(url);
 	}
 
-	public void setImageFile(DrawFile imageFile) {
-		checkValid();
-		if (entity == null) {
-			image = new ImageFile();
-			image.setImageFile(imageFile);
-			return;
-		}
-		entity.setImageFile(imageFile);
-	}
-
 	public void setSvekImage(IEntityImage svekImage) {
 		checkValid();
 		entity.setSvekImage(svekImage);
-	}
-
-	public void addSubImage(DrawFile subImage) {
-		checkValid();
-		if (image != null) {
-			image.addSubImage(subImage);
-			return;
-		}
-		entity.addSubImage(subImage);
 	}
 
 	public void setDisplay2(String display) {
@@ -437,27 +381,9 @@ public class EntityMutable implements IEntityMutable {
 		entity.setDisplay2(display);
 	}
 
-	public void cleanSubImage() {
-		checkValid();
-		if (image != null) {
-			image.cleanSubImage();
-		}
-		if (entity != null) {
-			entity.cleanSubImage();
-		}
-	}
-
 	public void setContainer(IEntityMutable entityPackage) {
 		checkValid();
 		entity.setContainer(entityPackage);
-	}
-
-	public Set<DrawFile> getSubImages() {
-		checkValid();
-		if (image != null) {
-			return image.getSubImages();
-		}
-		return entity.getSubImages();
 	}
 
 	// --------
@@ -530,26 +456,6 @@ public class EntityMutable implements IEntityMutable {
 		return group.zgetParent();
 	}
 
-	public boolean zisDashed() {
-		checkValid();
-		return group.zisDashed();
-	}
-
-	public void zsetDashed(boolean dashed) {
-		checkValid();
-		group.zsetDashed(dashed);
-	}
-
-	public boolean zisRounded() {
-		checkValid();
-		return group.zisRounded();
-	}
-
-	public void zsetRounded(boolean rounded) {
-		checkValid();
-		group.zsetRounded(rounded);
-	}
-
 	public GroupType zgetGroupType() {
 		checkValid();
 		return group.zgetGroupType();
@@ -558,16 +464,6 @@ public class EntityMutable implements IEntityMutable {
 	public String zgetDisplay() {
 		checkValid();
 		return group.zgetDisplay();
-	}
-
-	public boolean zisBold() {
-		checkValid();
-		return group.zisBold();
-	}
-
-	public void zsetBold(boolean bold) {
-		checkValid();
-		group.zsetBold(bold);
 	}
 
 	public void zmoveEntitiesTo(IEntityMutable dest) {
@@ -587,7 +483,7 @@ public class EntityMutable implements IEntityMutable {
 
 	public boolean zisAutonom() {
 		checkValid();
-		return group.zisBold();
+		return group.zisAutonom();
 	}
 
 	public void zsetAutonom(boolean autonom) {
@@ -640,10 +536,6 @@ public class EntityMutable implements IEntityMutable {
 }
 
 class UnsupportedEntity implements IEntity {
-
-	public DrawFile getImageFile() {
-		throw new UnsupportedOperationException();
-	}
 
 	public HtmlColor getSpecificBackColor() {
 		throw new UnsupportedOperationException();
@@ -701,10 +593,6 @@ class UnsupportedEntity implements IEntity {
 	}
 
 	public String getCode() {
-		throw new UnsupportedOperationException();
-	}
-
-	public DrawFile getImageFile(File searched) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -771,17 +659,7 @@ class UnsupportedEntity implements IEntity {
 
 	}
 
-	public void setImageFile(DrawFile imageFile) {
-		throw new UnsupportedOperationException();
-
-	}
-
 	public void setSvekImage(IEntityImage svekImage) {
-		throw new UnsupportedOperationException();
-
-	}
-
-	public void addSubImage(DrawFile subImage) {
 		throw new UnsupportedOperationException();
 
 	}
@@ -794,10 +672,6 @@ class UnsupportedEntity implements IEntity {
 	public void cleanSubImage() {
 		throw new UnsupportedOperationException();
 
-	}
-
-	public Set<DrawFile> getSubImages() {
-		throw new UnsupportedOperationException();
 	}
 
 }

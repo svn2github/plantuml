@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7886 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -50,14 +50,16 @@ class SegmentColored {
 
 	final private Segment segment;
 	final private HtmlColor backcolor;
+	final private boolean shadowing;
 
-	SegmentColored(double pos1, double pos2, HtmlColor backcolor) {
-		this(new Segment(pos1, pos2), backcolor);
+	SegmentColored(double pos1, double pos2, HtmlColor backcolor, boolean shadowing) {
+		this(new Segment(pos1, pos2), backcolor, shadowing);
 	}
 
-	private SegmentColored(Segment segment, HtmlColor backcolor) {
+	private SegmentColored(Segment segment, HtmlColor backcolor, boolean shadowing) {
 		this.segment = segment;
 		this.backcolor = backcolor;
+		this.shadowing = shadowing;
 	}
 
 	public HtmlColor getSpecificBackColor() {
@@ -97,7 +99,7 @@ class SegmentColored {
 	}
 
 	public SegmentColored merge(SegmentColored this2) {
-		return new SegmentColored(this.segment.merge(this2.segment), backcolor);
+		return new SegmentColored(this.segment.merge(this2.segment), backcolor, shadowing);
 	}
 
 	public final Segment getSegment() {
@@ -118,7 +120,7 @@ class SegmentColored {
 		}
 
 		public SegmentColored next() {
-			return new SegmentColored(it.next(), backcolor);
+			return new SegmentColored(it.next(), backcolor, shadowing);
 		}
 
 		public void remove() {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7895 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.sequencediagram.graphic;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.cucadiagram.dot.Lazy2;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.InGroupableList;
 import net.sourceforge.plantuml.skin.Area;
@@ -43,25 +44,18 @@ import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.Context2D;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-class GroupingTail extends GroupingGraphicalElement {
+class GroupingGraphicalElementElse extends GroupingGraphicalElement {
 
-	private final double initY;
-	private final Component body;
-	private final Component tail;
+	private final Component compElse;
+	private final Lazy2<Double> afterY;
+	private final boolean parallel;
 
-	public GroupingTail(double currentY, double initY, Component body, Component tail, InGroupableList inGroupableList,
-			boolean parallel) {
-		super(currentY, inGroupableList);
-		if (currentY < initY) {
-			throw new IllegalArgumentException("currentY=" + currentY + " initY=" + initY);
-			// System.err.println("currentY=" + currentY + " initY=" + initY);
-		}
-		if (inGroupableList == null) {
-			throw new IllegalArgumentException();
-		}
-		this.body = body;
-		this.tail = tail;
-		this.initY = initY;
+	public GroupingGraphicalElementElse(double startingY, Component compElse, InGroupableList inGroupableList, boolean parallel,
+			Lazy2<Double> afterY) {
+		super(startingY, inGroupableList);
+		this.parallel = parallel;
+		this.compElse = compElse;
+		this.afterY = afterY;
 	}
 
 	@Override
@@ -69,20 +63,27 @@ class GroupingTail extends GroupingGraphicalElement {
 		final StringBounder stringBounder = ug.getStringBounder();
 		final double x1 = getInGroupableList().getMinX(stringBounder);
 		final double x2 = getInGroupableList().getMaxX(stringBounder);
-		ug.translate(x1, initY);
-		final Dimension2D dimBody = new Dimension2DDouble(x2 - x1, getPreferredHeight(stringBounder));
-		body.drawU(ug, new Area(dimBody), context);
-		tail.drawU(ug, new Area(dimBody), context);
+		ug.translate(x1, getStartingY());
+
+		final double height = afterY.getNow() - getStartingY();
+		final Dimension2D dim = new Dimension2DDouble(x2 - x1, height);
+
+		if (parallel == false) {
+			compElse.drawU(ug, new Area(dim), context);
+		}
 	}
 
 	@Override
 	public double getPreferredHeight(StringBounder stringBounder) {
-		return getStartingY() - initY;
+		if (parallel) {
+			return 0;
+		}
+		return compElse.getPreferredHeight(stringBounder);
 	}
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
-		return 0;
+		return compElse.getPreferredWidth(stringBounder);
 	}
 
 }
