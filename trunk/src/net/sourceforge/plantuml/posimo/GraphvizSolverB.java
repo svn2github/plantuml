@@ -96,7 +96,7 @@ public class GraphvizSolverB {
 
 		final MinMax minMax = new MinMax();
 
-		// System.err.println("dotString=" + dotString);
+		// Log.println("dotString=" + dotString);
 
 		// exportPng(dotString, new File("png", "test1.png"));
 
@@ -106,7 +106,7 @@ public class GraphvizSolverB {
 		baos.close();
 		final byte[] result = baos.toByteArray();
 		final String s = new String(result, "UTF-8");
-		// System.err.println("result=" + s);
+		// Log.println("result=" + s);
 
 		if (OptionFlags.getInstance().isKeepTmpFiles()) {
 			traceSvgString(s);
@@ -163,7 +163,7 @@ public class GraphvizSolverB {
 			p.setDotPath(dotPath);
 			minMax.manage(dotPath.getMinMax());
 
-			// System.err.println("pointsList=" + pointsList);
+			// Log.println("pointsList=" + pointsList);
 			if (p.getLabel() != null) {
 				final List<Point2D.Double> pointsList = extractPointsList(s, p1);
 				final double x = getMinX(pointsList);

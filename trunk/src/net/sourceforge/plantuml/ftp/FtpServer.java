@@ -48,6 +48,7 @@ public class FtpServer {
 
 	private final Map<String, FtpConnexion> datas = new TreeMap<String, FtpConnexion>();
 	private final ExecutorService exeImage = Executors.newFixedThreadPool(2);
+	private final String charset = "UTF-8";
 	
 	private final int listenPort;
 
@@ -60,7 +61,7 @@ public class FtpServer {
 
 	public synchronized int getFreePort() {
 		portFree++;
-		System.err.println("port=" + portFree);
+// Log.println("port=" + portFree);
 		return portFree;
 	}
 
@@ -100,7 +101,7 @@ public class FtpServer {
 		System.out.println("Server Started...");
 		System.out.println("Waiting for connections...");
 		System.out.println(" ");
-		new FtpServer(100).go();
+		new FtpServer(24242).go();
 	}
 
 	public void processImage(final FtpConnexion connexion, final String name) {
@@ -113,6 +114,10 @@ public class FtpServer {
 				}
 			}
 		});
+	}
+
+	public final String getCharset() {
+		return charset;
 	}
 
 }

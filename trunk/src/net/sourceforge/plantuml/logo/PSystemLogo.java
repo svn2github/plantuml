@@ -76,7 +76,7 @@ public class PSystemLogo extends AbstractPSystem {
 
 	// private GraphicStrings getGraphicStrings() throws IOException {
 	// final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-	// final GraphicStrings result = new GraphicStrings(strings, font, HtmlColor.BLACK, HtmlColor.WHITE, image,
+	// final GraphicStrings result = new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, image,
 	// GraphicPosition.BOTTOM, false);
 	// result.setMinWidth(200);
 	// return result;

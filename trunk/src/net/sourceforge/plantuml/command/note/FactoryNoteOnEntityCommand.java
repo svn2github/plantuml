@@ -55,7 +55,7 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Note;
 
 public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryCommand<AbstractEntityDiagram> {
@@ -116,7 +116,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				Url url = null;
 				if (strings.size() > 0) {
-					url = Note.extractUrl(strings.get(0));
+					url = StringUtils.extractUrl(strings.get(0));
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());
@@ -145,8 +145,10 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 		}
 
 		final IEntity note = system.createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
-		note.setSpecificBackcolor(HtmlColor.getColorIfValid(line0.get("COLOR").get(0)));
-		note.setUrl(url);
+		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR").get(0)));
+		if (url != null) {
+			note.addUrl(url);
+		}
 
 		final Position position = Position.valueOf(pos.toUpperCase()).withRankdir(system.getRankdir());
 		final Link link;

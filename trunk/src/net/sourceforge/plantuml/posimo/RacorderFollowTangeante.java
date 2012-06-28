@@ -42,9 +42,9 @@ public class RacorderFollowTangeante extends RacorderAbstract implements Racorde
 
 	public DotPath getRacordIn(Rectangle2D rect, Line2D tangeante) {
 
-//		System.err.println("rect x=" + rect.getX() + " y=" + rect.getY() + " w=" + rect.getWidth() + " h="
+// Log.println("rect x=" + rect.getX() + " y=" + rect.getY() + " w=" + rect.getWidth() + " h="
 //				+ rect.getHeight());
-//		System.err.println("tangeante (" + tangeante.getX1() + "," + tangeante.getY1() + ") (" + tangeante.getX2()
+// Log.println("tangeante (" + tangeante.getX1() + "," + tangeante.getY1() + ") (" + tangeante.getX2()
 //				+ "," + tangeante.getY2() + ")");
 
 		final DotPath result = new DotPath();
@@ -52,7 +52,7 @@ public class RacorderFollowTangeante extends RacorderAbstract implements Racorde
 		// final Point2D inter = BezierUtils.intersect((Line2D.Double)
 		// tangeante, rect);
 		Point2D inter = new LineRectIntersection(tangeante, rect).getIntersection();
-//		System.err.println("inter=" + inter);
+// Log.println("inter=" + inter);
 
 		if (inter == null) {
 			final Point2D p1 = new Point2D.Double(rect.getMinX(), rect.getMinY());

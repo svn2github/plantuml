@@ -93,10 +93,6 @@ abstract class AbstractEntityImage implements IEntityImage {
 		return rose.getHtmlColor(skinParam, colorParam, s);
 	}
 
-//	protected final HtmlColor getColorOld(ColorParam colorParam) {
-//		return rose.getHtmlColor(skinParam, colorParam);
-//	}
-
 	protected final ISkinParam getSkinParam() {
 		return skinParam;
 	}
@@ -108,5 +104,5 @@ abstract class AbstractEntityImage implements IEntityImage {
 	protected final Stereotype getStereo() {
 		return entity.getStereotype();
 	}
-
+	
 }

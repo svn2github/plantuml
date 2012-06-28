@@ -28,11 +28,12 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 
 public interface UGraphic {
@@ -59,7 +60,7 @@ public interface UGraphic {
 
 	public ColorMapper getColorMapper();
 
-	public void startUrl(String url, String tooltip);
+	public void startUrl(Url url);
 
 	public void closeAction();
 

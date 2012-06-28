@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8046 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -36,11 +36,12 @@ package net.sourceforge.plantuml.graphic;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
@@ -60,7 +61,12 @@ class SingleLine implements Line {
 		for (HtmlCommand cmd : lineSplitter.getHtmlCommands(false)) {
 			if (cmd instanceof Text) {
 				final String s = ((Text) cmd).getText();
-				blocs.add(new TileText(s, fontConfiguration));
+				blocs.add(new TileText(s, fontConfiguration, null));
+			} else if (cmd instanceof TextLink) {
+				final String s = ((TextLink) cmd).getText();
+				final Url url = ((TextLink) cmd).getUrl();
+//				blocs.add(new TileText(s, fontConfiguration.add(FontStyle.UNDERLINE), url));
+				blocs.add(new TileText(s, fontConfiguration, url));
 			} else if (cmd instanceof Img) {
 				blocs.add(((Img) cmd).createMonoImage());
 			} else if (cmd instanceof SpriteCommand) {
@@ -131,4 +137,13 @@ class SingleLine implements Line {
 	public HorizontalAlignement getHorizontalAlignement() {
 		return horizontalAlignement;
 	}
+
+	public List<Url> getUrls() {
+		final List<Url> result = new ArrayList<Url>();
+		for (TextBlock b : blocs) {
+			result.addAll(b.getUrls());
+		}
+		return Collections.unmodifiableList(result);
+	}
+
 }

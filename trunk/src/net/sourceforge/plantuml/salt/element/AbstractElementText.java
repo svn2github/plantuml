@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -54,7 +54,7 @@ abstract class AbstractElementText implements Element {
 	private final int charLength;
 
 	public AbstractElementText(String text, UFont font, boolean manageLength, SpriteContainer spriteContainer) {
-		config = new FontConfiguration(font, HtmlColor.BLACK);
+		config = new FontConfiguration(font, HtmlColorUtils.BLACK);
 		if (manageLength) {
 			this.charLength = text.length();
 			text = text.trim();
@@ -92,7 +92,7 @@ abstract class AbstractElementText implements Element {
 //			final double w = TextBlockUtils.create(Arrays.asList("" + c), config, HorizontalAlignement.LEFT)
 //					.calculateDimension(stringBounder).getWidth();
 //			if (w > max) {
-//				System.err.println("c="+c+" "+max);
+// Log.println("c="+c+" "+max);
 //				max = w;
 //			}
 //		}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7929 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml;
@@ -48,6 +48,7 @@ import net.sourceforge.plantuml.cucadiagram.dot.DotSplines;
 import net.sourceforge.plantuml.cucadiagram.dot.GraphvizLayoutStrategy;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
@@ -90,7 +91,7 @@ public class SkinParam implements ISkinParam {
 	public HtmlColor getBackgroundColor() {
 		final HtmlColor result = getHtmlColor(ColorParam.background, null);
 		if (result == null) {
-			return HtmlColor.WHITE;
+			return HtmlColorUtils.WHITE;
 		}
 		return result;
 	}
@@ -118,15 +119,15 @@ public class SkinParam implements ISkinParam {
 		if (stereotype != null) {
 			checkStereotype(stereotype);
 			final String value2 = getValue(param.name() + "color" + stereotype);
-			if (value2 != null && HtmlColor.isValid(value2)) {
-				return HtmlColor.getColorIfValid(value2);
+			if (value2 != null && HtmlColorUtils.getColorIfValid(value2) != null) {
+				return HtmlColorUtils.getColorIfValid(value2);
 			}
 		}
 		final String value = getValue(param.name() + "color");
-		if (value == null || HtmlColor.isValid(value) == false) {
+		if (value == null || HtmlColorUtils.getColorIfValid(value) == null) {
 			return null;
 		}
-		return HtmlColor.getColorIfValid(value);
+		return HtmlColorUtils.getColorIfValid(value);
 	}
 
 	private void checkStereotype(String stereotype) {
@@ -181,16 +182,16 @@ public class SkinParam implements ISkinParam {
 			checkStereotype(stereotype);
 			value = getValue(param.name() + "fontcolor" + stereotype);
 		}
-		if (value == null || HtmlColor.isValid(value) == false) {
+		if (value == null || HtmlColorUtils.getColorIfValid(value) == null) {
 			value = getValue(param.name() + "fontcolor");
 		}
-		if (value == null || HtmlColor.isValid(value) == false) {
+		if (value == null || HtmlColorUtils.getColorIfValid(value) == null) {
 			value = getValue("defaultfontcolor");
 		}
-		if (value == null || HtmlColor.isValid(value) == false) {
+		if (value == null || HtmlColorUtils.getColorIfValid(value) == null) {
 			value = param.getDefaultColor();
 		}
-		return HtmlColor.getColorIfValid(value);
+		return HtmlColorUtils.getColorIfValid(value);
 	}
 
 	private int getFontStyle(FontParam param, String stereotype) {
@@ -232,8 +233,8 @@ public class SkinParam implements ISkinParam {
 			return Integer.parseInt(value);
 		}
 		// return 11;
-		// System.err.println("SIZE1="+getFontSize(FontParam.CIRCLED_CHARACTER));
-		// System.err.println("SIZE1="+getFontSize(FontParam.CIRCLED_CHARACTER)/3);
+		// Log.println("SIZE1="+getFontSize(FontParam.CIRCLED_CHARACTER));
+		// Log.println("SIZE1="+getFontSize(FontParam.CIRCLED_CHARACTER)/3);
 		return getFontSize(FontParam.CIRCLED_CHARACTER, null) / 3 + 6;
 	}
 

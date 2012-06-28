@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.skin.ArrowConfiguration;
 
 public abstract class AbstractMessage implements Event {
@@ -74,13 +75,21 @@ public abstract class AbstractMessage implements Event {
 		return url;
 	}
 
+	static final Pattern PATTERN_URL1 = Pattern.compile("(?: )*\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\](?: )*");
+
 	private List<String> removeUrl(List<String> label) {
 		if (url == null) {
 			return label;
 		}
+		final String label0 = label.get(0);
+		final Matcher m = PATTERN_URL1.matcher(label0);
+		if (m.find() == false) {
+			throw new IllegalStateException();
+		}
+		final String url = m.group(0);
+		final int x = label0.indexOf(url);
 		final List<String> result = new ArrayList<String>();
-		final int x = label.get(0).indexOf("]]");
-		result.add(label.get(0).substring(x + 2).trim());
+		result.add(label0.substring(0, x) + label0.substring(x + url.length()));
 		result.addAll(label.subList(1, label.size()));
 		return result;
 
@@ -90,7 +99,7 @@ public abstract class AbstractMessage implements Event {
 		if (label.size() == 0) {
 			return null;
 		}
-		final Matcher m = Pattern.compile("\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\]").matcher(label.get(0));
+		final Matcher m = PATTERN_URL1.matcher(label.get(0));
 		if (m.find() == false) {
 			return null;
 		}
@@ -161,7 +170,7 @@ public abstract class AbstractMessage implements Event {
 		this.notes = strings;
 		this.urlNote = url;
 		this.notePosition = overideNotePosition(notePosition);
-		this.noteBackColor = HtmlColor.getColorIfValid(backcolor);
+		this.noteBackColor = HtmlColorUtils.getColorIfValid(backcolor);
 	}
 
 	protected NotePosition overideNotePosition(NotePosition notePosition) {

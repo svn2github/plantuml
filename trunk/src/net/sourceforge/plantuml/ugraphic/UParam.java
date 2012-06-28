@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7754 $
+ * Revision $Revision: 7948 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
@@ -40,22 +40,22 @@ public class UParam {
 	private HtmlColor color = null;
 	private HtmlColor backcolor = null;
 	private UStroke stroke = new UStroke(1);
-	private UGradient gradient = null;
+//	private UGradient gradient = null;
 
 	public void reset() {
 		color = null;
 		backcolor = null;
-		gradient = null;
+//		gradient = null;
 		stroke = new UStroke(1);
 	}
 
-	public final UGradient getGradient() {
-		return gradient;
-	}
-
-	public final void setGradient(UGradient gradient) {
-		this.gradient = gradient;
-	}
+//	public final UGradient getGradient() {
+//		return gradient;
+//	}
+//
+//	public final void setGradient(UGradient gradient) {
+//		this.gradient = gradient;
+//	}
 
 	public void setColor(HtmlColor color) {
 		this.color = color;

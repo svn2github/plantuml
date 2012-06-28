@@ -45,7 +45,6 @@ import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
@@ -58,6 +57,7 @@ import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.skin.rose.Rose;
@@ -104,7 +104,7 @@ public final class GroupPngMakerActivity {
 	public IEntityImage getImage() throws IOException, InterruptedException {
 		final String display = group.zgetDisplay();
 		final TextBlock title = TextBlockUtils.create(StringUtils.getWithNewlines(display), new FontConfiguration(
-				getFont(FontParam.STATE), HtmlColor.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
+				getFont(FontParam.STATE), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.zsize() == 0) {
 			return new EntityImageState((IEntity)group, diagram.getSkinParam());

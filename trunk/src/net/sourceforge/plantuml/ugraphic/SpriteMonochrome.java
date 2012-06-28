@@ -34,12 +34,16 @@
 package net.sourceforge.plantuml.ugraphic;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 
@@ -85,12 +89,12 @@ public class SpriteMonochrome implements Sprite {
 		final BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 		if (backcolor == null) {
-			backcolor = HtmlColor.WHITE;
+			backcolor = HtmlColorUtils.WHITE;
 		}
 		if (color == null) {
-			backcolor = HtmlColor.BLACK;
+			backcolor = HtmlColorUtils.BLACK;
 		}
-		final UGradient gradient = new UGradient(backcolor, color);
+		final HtmlColorGradient gradient = new HtmlColorGradient(backcolor, color, '\0');
 		for (int col = 0; col < width; col++) {
 			for (int line = 0; line < height; line++) {
 				final double coef = 1.0 * pixels[line][col] / (grayLevel - 1);
@@ -110,6 +114,10 @@ public class SpriteMonochrome implements Sprite {
 
 			public Dimension2D calculateDimension(StringBounder stringBounder) {
 				return new Dimension2DDouble(getWidth(), getHeight());
+			}
+
+			public List<Url> getUrls() {
+				return Collections.emptyList();
 			}
 		};
 	}

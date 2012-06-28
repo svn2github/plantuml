@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7912 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -44,13 +44,12 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.CircledCharacter;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
-import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
 
 class EntityImageClass extends AbstractEntityImage {
 
@@ -65,7 +64,7 @@ class EntityImageClass extends AbstractEntityImage {
 	public EntityImageClass(IEntity entity) {
 		super(entity);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
+				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.methods = new MethodsOrFieldsArea(entity.getMethodsToDisplay(), getFont14());
 		this.fields = new MethodsOrFieldsArea(entity.getFieldsToDisplay(), getFont14());
 
@@ -81,16 +80,16 @@ class EntityImageClass extends AbstractEntityImage {
 		// }
 		final double radius = 10;
 		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
-			return new CircledCharacter('A', radius, getFont17(), getBlue(), getRed(), HtmlColor.BLACK);
+			return new CircledCharacter('A', radius, getFont17(), getBlue(), getRed(), HtmlColorUtils.BLACK);
 		}
 		if (entity.getEntityType() == EntityType.CLASS) {
-			return new CircledCharacter('C', radius, getFont17(), getGreen(), getRed(), HtmlColor.BLACK);
+			return new CircledCharacter('C', radius, getFont17(), getGreen(), getRed(), HtmlColorUtils.BLACK);
 		}
 		if (entity.getEntityType() == EntityType.INTERFACE) {
-			return new CircledCharacter('I', radius, getFont17(), getViolet(), getRed(), HtmlColor.BLACK);
+			return new CircledCharacter('I', radius, getFont17(), getViolet(), getRed(), HtmlColorUtils.BLACK);
 		}
 		if (entity.getEntityType() == EntityType.ENUM) {
-			return new CircledCharacter('E', radius, getFont17(), getRose(), getRed(), HtmlColor.BLACK);
+			return new CircledCharacter('E', radius, getFont17(), getRose(), getRed(), HtmlColorUtils.BLACK);
 		}
 		assert false;
 		return null;

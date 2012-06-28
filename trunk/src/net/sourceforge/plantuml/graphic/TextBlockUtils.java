@@ -28,23 +28,23 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.SpriteContainer;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableImpl;
 import net.sourceforge.plantuml.sequencediagram.MessageNumber;
 import net.sourceforge.plantuml.svek.IEntityImage;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public class TextBlockUtils {
@@ -118,6 +118,10 @@ public class TextBlockUtils {
 
 			public void drawU(UGraphic ug, double x, double y) {
 				image.drawU(ug, x, y);
+			}
+
+			public List<Url> getUrls() {
+				return Collections.emptyList();
 			}
 		};
 	}

@@ -39,6 +39,7 @@ import java.util.List;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.skin.AbstractTextualComponent;
@@ -85,12 +86,12 @@ public class ComponentRoseDivider extends AbstractTextualComponent {
 		}
 		ug.draw(0, dimensionToUse.getHeight() / 2 - 1, rectLong);
 		// }
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		ug.draw(0, dimensionToUse.getHeight() / 2 - 1, new ULine(dimensionToUse.getWidth(), 0));
 		ug.draw(0, dimensionToUse.getHeight() / 2 + 2, new ULine(dimensionToUse.getWidth(), 0));
 
 		if (empty == false) {
-			ug.getParam().setColor(HtmlColor.BLACK);
+			ug.getParam().setColor(HtmlColorUtils.BLACK);
 			ug.getParam().setBackcolor(background);
 
 			ug.getParam().setStroke(new UStroke(2));

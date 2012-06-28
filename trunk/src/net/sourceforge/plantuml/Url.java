@@ -33,17 +33,30 @@
  */
 package net.sourceforge.plantuml;
 
-public class Url {
+
+public class Url implements EnsureVisible {
 
 	private final String url;
 	private final String tooltip;
+	private final String label;
+	private boolean member;
 
 	public Url(String url, String tooltip) {
+		this(url, tooltip, null);
+	}
+
+
+	public Url(String url, String tooltip, String label) {
 		this.url = url;
 		if (tooltip == null) {
 			this.tooltip = url;
 		} else {
 			this.tooltip = tooltip;
+		}
+		if (label == null) {
+			this.label = url;
+		} else {
+			this.label = label;
 		}
 	}
 
@@ -54,5 +67,37 @@ public class Url {
 	public final String getTooltip() {
 		return tooltip;
 	}
+	
+	public String getLabel() {
+		return label;
+	}
+
+	
+	@Override
+	public String toString() {
+		return url;
+	}
+
+
+	public String getCoords() {
+		return visible.getCoords();
+	}
+
+	public void setMember(boolean member) {
+		this.member = member;
+	}
+
+	public final boolean isMember() {
+		return member;
+	}
+	
+	private final BasicEnsureVisible visible = new BasicEnsureVisible();
+
+	public void ensureVisible(double x, double y) {
+		visible.ensureVisible(x, y);
+	}
+
+
+
 	
 }

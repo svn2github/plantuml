@@ -34,9 +34,7 @@
 package net.sourceforge.plantuml.cucadiagram.dot;
 
 import java.io.File;
-import java.util.List;
 
-import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.OptionFlags;
 
 public enum GraphvizLayoutStrategy {

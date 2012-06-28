@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.salt.element.Element;
 import net.sourceforge.plantuml.salt.factory.AbstractElementFactoryComplex;
 import net.sourceforge.plantuml.salt.factory.ElementFactory;
@@ -84,7 +85,7 @@ public class SaltUtils {
 			}
 		}
 
-		System.err.println("data="+data);
+		Log.println("data="+data);
 		throw new IllegalArgumentException();
 
 	}

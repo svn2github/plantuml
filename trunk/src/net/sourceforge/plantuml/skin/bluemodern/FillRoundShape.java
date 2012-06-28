@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7949 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
@@ -38,8 +38,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
-import net.sourceforge.plantuml.ugraphic.UGradient;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 
@@ -69,11 +69,10 @@ public class FillRoundShape {
 	}
 
 	public void drawU(UGraphic ug) {
-		final UGradient gradient = new UGradient(c1, c2);
+		final HtmlColorGradient gradient = new HtmlColorGradient(c1, c2, '\\');
 		final URectangle r = new URectangle(width, height, corner * 2, corner * 2);
-		ug.getParam().setGradient(gradient);
+		ug.getParam().setBackcolor(gradient);
 		ug.draw(0, 0, r);
-		ug.getParam().setGradient(null);
 	}
 
 }

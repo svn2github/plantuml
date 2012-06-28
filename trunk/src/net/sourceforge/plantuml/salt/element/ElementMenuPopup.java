@@ -39,7 +39,7 @@ import java.util.Collection;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -76,7 +76,7 @@ public class ElementMenuPopup implements Element {
 		if (zIndex != 1) {
 			return;
 		}
-		ug.getParam().setBackcolor(HtmlColor.getColorIfValid("#DDDDDD"));
+		ug.getParam().setBackcolor(HtmlColorUtils.getColorIfValid("#DDDDDD"));
 		ug.draw(x, y, new URectangle(dimToUse.getWidth(), dimToUse.getHeight()));
 		ug.getParam().setBackcolor(null);
 

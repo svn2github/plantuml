@@ -34,11 +34,13 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -57,6 +59,7 @@ public class EntityImageActivity extends AbstractEntityImage {
 	public static final int CORNER = 25;
 	final private TextBlock desc;
 	final private static int MARGIN = 10;
+	final private List<Url> url;
 
 	public EntityImageActivity(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
@@ -64,6 +67,7 @@ public class EntityImageActivity extends AbstractEntityImage {
 
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.ACTIVITY,
 				stereotype), getFontColor(FontParam.ACTIVITY, stereotype)), HorizontalAlignement.CENTER, skinParam);
+		this.url = entity.getUrls();
 	}
 
 	@Override
@@ -73,6 +77,9 @@ public class EntityImageActivity extends AbstractEntityImage {
 	}
 
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
+		}
 		final StringBounder stringBounder = ug.getStringBounder();
 		final Dimension2D dimTotal = getDimension(stringBounder);
 
@@ -97,7 +104,9 @@ public class EntityImageActivity extends AbstractEntityImage {
 		final double x = xTheoricalPosition + MARGIN;
 		final double y = yTheoricalPosition + MARGIN;
 		desc.drawU(ug, x, y);
-
+		if (url.size()>0) {
+			ug.closeAction();
+		}
 	}
 
 	public ShapeType getShapeType() {

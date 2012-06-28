@@ -44,7 +44,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.ParticipantType;
@@ -91,7 +91,7 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 			participant.setStereotype(new Stereotype(stereotype, skinParam.getCircledCharacterRadius(), font),
 					stereotypePositionTop);
 		}
-		participant.setSpecificBackcolor(HtmlColor.getColorIfValid(arg2.get("COLOR").get(0)));
+		participant.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("COLOR").get(0)));
 
 		if (create) {
 			final String error = getSystem().activate(participant, LifeEventType.CREATE, null);

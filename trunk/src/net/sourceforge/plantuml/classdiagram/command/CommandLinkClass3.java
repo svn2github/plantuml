@@ -327,7 +327,7 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 	}
 
 	private LinkDecor getDecors1(String s) {
-		// System.err.println("s1=" + s);
+		// Log.println("s1=" + s);
 		if (s == null) {
 			return LinkDecor.NONE;
 		}
@@ -354,7 +354,7 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 	}
 
 	private LinkDecor getDecors2(String s) {
-		// System.err.println("s2=" + s);
+		// Log.println("s2=" + s);
 		if (s == null) {
 			return LinkDecor.NONE;
 		}
@@ -382,11 +382,11 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 
 	private LinkType getLinkType(Map<String, RegexPartialMatch> arg) {
 		final RegexPartialMatch match = arg.get("ARROW");
-		// System.err.println("type=" + match);
+		// Log.println("type=" + match);
 		final LinkDecor decors1 = getDecors1(match.get(1));
 		final LinkDecor decors2 = getDecors2(match.get(5));
-		// System.err.println("Adecors1=" + decors1);
-		// System.err.println("Adecors2=" + decors2);
+		// Log.println("Adecors1=" + decors1);
+		// Log.println("Adecors2=" + decors2);
 
 		LinkType result = new LinkType(decors2, decors1);
 		if (match.get(0).contains(".")) {
@@ -397,9 +397,9 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 
 	private int getQueueLength(Map<String, RegexPartialMatch> arg) {
 		String s = arg.get("ARROW").get(0);
-		// System.err.println("queue1=" + s);
+		// Log.println("queue1=" + s);
 		s = s.replaceAll("[^-.=]", "");
-		// System.err.println("queue2=" + s);
+		// Log.println("queue2=" + s);
 		return s.length();
 	}
 
@@ -407,11 +407,11 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		final RegexPartialMatch match = arg.get("ARROW");
 		final LinkDecor decors1 = getDecors1(match.get(1));
 		final LinkDecor decors2 = getDecors2(match.get(5));
-		// System.err.println("Bdecors1=" + decors1);
-		// System.err.println("Bdecors2=" + decors2);
+		// Log.println("Bdecors1=" + decors1);
+		// Log.println("Bdecors2=" + decors2);
 
 		String s = arg.get("ARROW").get(0);
-		// System.err.println("direction1=" + s);
+		// Log.println("direction1=" + s);
 		s = s.replaceAll("[^-.=\\w]", "");
 		if (s.startsWith("o")) {
 			s = s.substring(1);
@@ -419,7 +419,7 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 		if (s.endsWith("o")) {
 			s = s.substring(0, s.length() - 1);
 		}
-		// System.err.println("direction2=" + s);
+		// Log.println("direction2=" + s);
 
 		// if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.NONE) {
 		// return StringUtils.getQueueDirection(s);
@@ -436,7 +436,7 @@ final public class CommandLinkClass3 extends SingleLineCommand2<AbstractClassOrO
 			result = result.getInv();
 		}
 
-		// System.err.println("result="+result);
+		// Log.println("result="+result);
 		return result;
 	}
 

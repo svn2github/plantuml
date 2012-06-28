@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.geom;
@@ -88,9 +88,9 @@ public class InflationTransform {
 
 	Collection<Point2DInt> cutPoints(LineSegmentInt original) {
 
-		// System.err.println("original=" + original);
-		// System.err.println("inflateX=" + inflateX);
-		// System.err.println("inflateY=" + inflateY);
+		// Log.println("original=" + original);
+		// Log.println("inflateX=" + inflateX);
+		// Log.println("inflateY=" + inflateY);
 
 		final SortedSet<Point2DInt> result = new TreeSet<Point2DInt>(new Point2DIntComparatorDistance(original.getP1()));
 

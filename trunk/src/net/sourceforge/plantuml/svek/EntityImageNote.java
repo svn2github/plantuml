@@ -44,8 +44,10 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.MathUtils;
 import net.sourceforge.plantuml.SkinParamBackcolored;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -75,7 +77,7 @@ public class EntityImageNote extends AbstractEntityImage {
 	private final int marginX2 = 15;
 	private final int marginY = 5;
 	private final boolean withShadow;
-	final private Url url;
+	final private List<Url> url;
 
 	private final TextBlock textBlock;
 
@@ -102,7 +104,10 @@ public class EntityImageNote extends AbstractEntityImage {
 			textBlock = TextBlockUtils.create(strings, new FontConfiguration(fontNote, fontColor),
 					HorizontalAlignement.LEFT, skinParam);
 		}
-		this.url = entity.getUrl();
+		for (Url u : textBlock.getUrls()) {
+			entity.addUrl(u);
+		}
+		this.url = entity.getUrls();
 
 	}
 
@@ -175,8 +180,8 @@ public class EntityImageNote extends AbstractEntityImage {
 		final double dx = ug.getTranslateX();
 		final double dy = ug.getTranslateY();
 		ug.translate(xTheoricalPosition, yTheoricalPosition);
-		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+		if (url.size() > 0 && url.get(0).isMember() == false) {
+			ug.startUrl(url.get(0));
 		}
 		if (opaleLine == null || opaleLine.isOpale() == false) {
 			drawNormal(ug, xTheoricalPosition, yTheoricalPosition);
@@ -197,7 +202,7 @@ public class EntityImageNote extends AbstractEntityImage {
 			final Direction strategy = getOpaleStrategy(textWidth, textHeight, p1);
 			drawOpale(ug, xTheoricalPosition, yTheoricalPosition, path, strategy);
 		}
-		if (url != null) {
+		if (url.size() > 0 && url.get(0).isMember() == false) {
 			ug.closeAction();
 		}
 		ug.setTranslate(dx, dy);

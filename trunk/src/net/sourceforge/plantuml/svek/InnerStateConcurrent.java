@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
@@ -58,7 +59,7 @@ public final class InnerStateConcurrent implements IEntityImage {
 		final Dimension2D dim = getDimension(ug.getStringBounder());
 		final UShape rect = new URectangle(dim.getWidth(), dim.getHeight());
 		ug.getParam().setBackcolor(null);
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		ug.getParam().setStroke(new UStroke(DASH, 10, THICKNESS_BORDER));
 		ug.draw(x, y, rect);
 		ug.getParam().setStroke(new UStroke());
@@ -83,6 +84,5 @@ public final class InnerStateConcurrent implements IEntityImage {
 	public int getShield() {
 		return 0;
 	}
-
 
 }

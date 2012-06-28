@@ -46,7 +46,7 @@ import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram> {
 
@@ -94,7 +94,7 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
-		entity.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
 		return CommandExecutionResult.ok();
 	}
 

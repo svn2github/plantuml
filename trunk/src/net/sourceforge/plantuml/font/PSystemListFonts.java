@@ -43,7 +43,7 @@ import java.util.List;
 import net.sourceforge.plantuml.AbstractPSystem;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class PSystemListFonts extends AbstractPSystem {
@@ -72,7 +72,7 @@ public class PSystemListFonts extends AbstractPSystem {
 
 	private GraphicStrings getGraphicStrings() throws IOException {
 		final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-		final GraphicStrings result = new GraphicStrings(strings, font, HtmlColor.BLACK, HtmlColor.WHITE, false);
+		final GraphicStrings result = new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, false);
 		return result;
 	}
 

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7896 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.skin.ArrowConfiguration;
 import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.ComponentType;
@@ -59,30 +60,30 @@ public class BlueModern implements Skin {
 	private final UFont normalFont = new UFont("SansSerif", Font.PLAIN, 13);
 	private final UFont smallFont = new UFont("SansSerif", Font.BOLD, 11);
 
-	private final HtmlColor blue1 = HtmlColor.getColorIfValid("#527BC6");
-	private final HtmlColor blue2 = HtmlColor.getColorIfValid("#D1DBEF");
-	private final HtmlColor blue3 = HtmlColor.getColorIfValid("#D7E0F2");
+	private final HtmlColor blue1 = HtmlColorUtils.getColorIfValid("#527BC6");
+	private final HtmlColor blue2 = HtmlColorUtils.getColorIfValid("#D1DBEF");
+	private final HtmlColor blue3 = HtmlColorUtils.getColorIfValid("#D7E0F2");
 
-	private final HtmlColor red = HtmlColor.getColorIfValid("#A80036");
+	private final HtmlColor red = HtmlColorUtils.getColorIfValid("#A80036");
 
-	private final HtmlColor lineColor = HtmlColor.getColorIfValid("#989898");
-	private final HtmlColor borderGroupColor = HtmlColor.getColorIfValid("#BBBBBB");
+	private final HtmlColor lineColor = HtmlColorUtils.getColorIfValid("#989898");
+	private final HtmlColor borderGroupColor = HtmlColorUtils.getColorIfValid("#BBBBBB");
 
 	public Component createComponent(ComponentType type, ArrowConfiguration config, ISkinParam param,
 			List<? extends CharSequence> stringsToDisplay) {
 
 		if (type.isArrow()) {
 			if (config.isSelfArrow()) {
-				return new ComponentBlueModernSelfArrow(HtmlColor.BLACK, HtmlColor.BLACK, normalFont, stringsToDisplay,
+				return new ComponentBlueModernSelfArrow(HtmlColorUtils.BLACK, HtmlColorUtils.BLACK, normalFont, stringsToDisplay,
 						config, param);
 			}
-			return new ComponentBlueModernArrow(HtmlColor.BLACK, HtmlColor.BLACK, normalFont, stringsToDisplay, config, param);
+			return new ComponentBlueModernArrow(HtmlColorUtils.BLACK, HtmlColorUtils.BLACK, normalFont, stringsToDisplay, config, param);
 		}
 		if (type == ComponentType.PARTICIPANT_HEAD) {
-			return new ComponentBlueModernParticipant(blue1, blue2, HtmlColor.WHITE, participantFont, stringsToDisplay, param);
+			return new ComponentBlueModernParticipant(blue1, blue2, HtmlColorUtils.WHITE, participantFont, stringsToDisplay, param);
 		}
 		if (type == ComponentType.PARTICIPANT_TAIL) {
-			return new ComponentBlueModernParticipant(blue1, blue2, HtmlColor.WHITE, participantFont, stringsToDisplay, param);
+			return new ComponentBlueModernParticipant(blue1, blue2, HtmlColorUtils.WHITE, participantFont, stringsToDisplay, param);
 		}
 		if (type == ComponentType.PARTICIPANT_LINE) {
 			return new ComponentBlueModernLine(lineColor);
@@ -97,7 +98,7 @@ public class BlueModern implements Skin {
 			return new ComponentBlueModernActor(blue2, blue1, blue1, participantFont, stringsToDisplay, false, param);
 		}
 		if (type == ComponentType.NOTE) {
-			return new ComponentBlueModernNote(HtmlColor.WHITE, HtmlColor.BLACK, HtmlColor.BLACK, normalFont,
+			return new ComponentBlueModernNote(HtmlColorUtils.WHITE, HtmlColorUtils.BLACK, HtmlColorUtils.BLACK, normalFont,
 					stringsToDisplay, param);
 		}
 		if (type == ComponentType.ALIVE_BOX_CLOSE_CLOSE) {
@@ -116,42 +117,42 @@ public class BlueModern implements Skin {
 			return new ComponentBlueModernDelayLine(lineColor);
 		}
 		if (type == ComponentType.DELAY_TEXT) {
-			return new ComponentBlueModernDelayText(HtmlColor.BLACK, param.getFont(FontParam.SEQUENCE_DELAY, null),
+			return new ComponentBlueModernDelayText(HtmlColorUtils.BLACK, param.getFont(FontParam.SEQUENCE_DELAY, null),
 					stringsToDisplay, param);
 		}
 		if (type == ComponentType.DESTROY) {
 			return new ComponentRoseDestroy(red);
 		}
 		if (type == ComponentType.GROUPING_HEADER) {
-			return new ComponentBlueModernGroupingHeader(blue1, blue3, borderGroupColor, HtmlColor.WHITE,
-					HtmlColor.BLACK, normalFont, smallFont, stringsToDisplay, param);
+			return new ComponentBlueModernGroupingHeader(blue1, blue3, borderGroupColor, HtmlColorUtils.WHITE,
+					HtmlColorUtils.BLACK, normalFont, smallFont, stringsToDisplay, param);
 		}
 		if (type == ComponentType.GROUPING_ELSE) {
-			return new ComponentRoseGroupingElse(HtmlColor.BLACK, HtmlColor.BLACK, smallFont, stringsToDisplay.get(0), param, blue3);
+			return new ComponentRoseGroupingElse(HtmlColorUtils.BLACK, HtmlColorUtils.BLACK, smallFont, stringsToDisplay.get(0), param, blue3);
 		}
 		if (type == ComponentType.GROUPING_SPACE) {
 			return new ComponentRoseGroupingSpace(7);
 		}
 		if (type == ComponentType.TITLE) {
-			return new ComponentRoseTitle(HtmlColor.BLACK, bigFont, stringsToDisplay, param);
+			return new ComponentRoseTitle(HtmlColorUtils.BLACK, bigFont, stringsToDisplay, param);
 		}
 		if (type == ComponentType.REFERENCE) {
-			return new ComponentRoseReference(HtmlColor.BLACK, HtmlColor.WHITE, normalFont, borderGroupColor, blue1,
+			return new ComponentRoseReference(HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, normalFont, borderGroupColor, blue1,
 					blue3, normalFont, stringsToDisplay, HorizontalAlignement.CENTER, param, 0);
 		}
 		if (type == ComponentType.NEWPAGE) {
 			return new ComponentBlueModernNewpage(blue1);
 		}
 		if (type == ComponentType.DIVIDER) {
-			return new ComponentBlueModernDivider(HtmlColor.BLACK, normalFont, blue2, blue1, HtmlColor.BLACK,
+			return new ComponentBlueModernDivider(HtmlColorUtils.BLACK, normalFont, blue2, blue1, HtmlColorUtils.BLACK,
 					stringsToDisplay, param);
 		}
 		if (type == ComponentType.SIGNATURE) {
-			return new ComponentRoseTitle(HtmlColor.BLACK, smallFont, Arrays.asList("This skin was created ",
+			return new ComponentRoseTitle(HtmlColorUtils.BLACK, smallFont, Arrays.asList("This skin was created ",
 					"in April 2009."), param);
 		}
 		if (type == ComponentType.ENGLOBER) {
-			return new ComponentBlueModernEnglober(blue1, blue3, stringsToDisplay, HtmlColor.BLACK, param.getFont(
+			return new ComponentBlueModernEnglober(blue1, blue3, stringsToDisplay, HtmlColorUtils.BLACK, param.getFont(
 					FontParam.SEQUENCE_BOX, null), param);
 		}
 

@@ -39,7 +39,7 @@ import net.sourceforge.plantuml.SpecificBackcolorable;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.svek.IEntityImage;
 
-public interface IEntity extends SpecificBackcolorable /* , Comparable<IEntity> */{
+public interface IEntity extends SpecificBackcolorable {
 
 	public Group getContainer();
 
@@ -51,7 +51,7 @@ public interface IEntity extends SpecificBackcolorable /* , Comparable<IEntity> 
 
 	public String getUid();
 
-	public Url getUrl();
+	public List<Url> getUrls();
 
 	public Stereotype getStereotype();
 
@@ -91,7 +91,7 @@ public interface IEntity extends SpecificBackcolorable /* , Comparable<IEntity> 
 
 	public void mouseOver(String s);
 
-	public void setUrl(Url url);
+	public void addUrl(Url url);
 
 	public void setSvekImage(IEntityImage svekImage);
 

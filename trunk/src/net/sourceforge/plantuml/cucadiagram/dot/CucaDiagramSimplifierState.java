@@ -38,10 +38,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityMutable;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.GroupType;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.svek.GroupPngMakerState;
 import net.sourceforge.plantuml.svek.IEntityImage;
@@ -59,28 +58,12 @@ public final class CucaDiagramSimplifierState {
 			final Collection<IEntityMutable> groups = new ArrayList<IEntityMutable>(diagram.getGroups(false));
 			for (IEntityMutable g : groups) {
 				if (diagram.isAutarkic(g)) {
-					final EntityType type;
-					if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
-						type = EntityType.STATE_CONCURRENT;
-					} else if (g.zgetGroupType() == GroupType.STATE) {
-						type = EntityType.STATE;
-					} else {
-						throw new IllegalStateException();
-					}
-					
 					final IEntityImage img = computeImage(g);
-					g.overideImage42(img);
-
-//					final String code = "#" + g.zgetGroupCode();
-//					final EntityMutable proxy = (EntityMutable) diagram.getEntityFactory().createEntity(code,
-//							g.zgetDisplay(), type, (IEntityMutable) g.zgetParent(), diagram.getHides());
-//					if (g.zgetBackColor() != null) {
-//						proxy.setSpecificBackcolor(g.zgetBackColor());
-//					}
-//					proxy.overidesFieldsToDisplay((EntityMutable) g);
-//					computeImageGroup((EntityMutable) g, proxy, dotStrings);
-//					g.overideGroup(proxy);
-//					((IEntityMutable) g).setSvekImage(proxy.getSvekImage());
+					final List<Url> urls = new ArrayList<Url>(g.getUrls());
+					for (IEntity ent : g.zentities()) {
+						urls.addAll(ent.getUrls());
+					}
+					g.overideImage42(img, urls);
 
 					changed = true;
 				}
@@ -88,11 +71,11 @@ public final class CucaDiagramSimplifierState {
 		} while (changed);
 	}
 
-	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
-			InterruptedException {
-		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);
-		proxy.setSvekImage(maker.getImage());
-	}
+//	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
+//			InterruptedException {
+//		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);
+//		proxy.setSvekImage(maker.getImage());
+//	}
 
 	private IEntityImage computeImage(IEntityMutable g) throws IOException, InterruptedException {
 		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);

@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -56,7 +57,7 @@ public class EntityImageClass extends AbstractEntityImage {
 	final private TextBlockWidth body;
 	final private int shield;
 	final private EntityImageClassHeader2 header;
-	final private Url url;
+	final private List<Url> url;
 	final private TextBlockWidth mouseOver;
 
 	public EntityImageClass(IEntity entity, ISkinParam skinParam, PortionShower portionShower) {
@@ -66,7 +67,7 @@ public class EntityImageClass extends AbstractEntityImage {
 		this.body = entity.getBody(portionShower).asTextBlock(FontParam.CLASS_ATTRIBUTE, skinParam);
 
 		header = new EntityImageClassHeader2(entity, skinParam, portionShower);
-		this.url = entity.getUrl();
+		this.url = entity.getUrls();
 		if (entity.getMouseOver() == null) {
 			this.mouseOver = null;
 		} else {
@@ -87,8 +88,8 @@ public class EntityImageClass extends AbstractEntityImage {
 	}
 
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
-		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+		if (url.size()>0 && url.get(0).isMember()==false) {
+			ug.startUrl(url.get(0));
 		}
 		drawInternal(ug, xTheoricalPosition, yTheoricalPosition);
 		if (mouseOver != null) {
@@ -113,7 +114,7 @@ public class EntityImageClass extends AbstractEntityImage {
 			g.close();
 		}
 
-		if (url != null) {
+		if (url.size()>0 && url.get(0).isMember()==false) {
 			ug.closeAction();
 		}
 	}
@@ -132,7 +133,11 @@ public class EntityImageClass extends AbstractEntityImage {
 
 		final HtmlColor classBorder = getColor(ColorParam.classBorder, getStereo());
 		ug.getParam().setColor(classBorder);
-		ug.getParam().setBackcolor(getColor(ColorParam.classBackground, getStereo()));
+		HtmlColor backcolor = getEntity().getSpecificBackColor();
+		if (backcolor==null) {
+			backcolor = getColor(ColorParam.classBackground, getStereo());
+		}
+		ug.getParam().setBackcolor(backcolor);
 
 		double x = xTheoricalPosition;
 		double y = yTheoricalPosition;
@@ -140,14 +145,14 @@ public class EntityImageClass extends AbstractEntityImage {
 		ug.draw(x, y, rect);
 		ug.getParam().setStroke(new UStroke());
 
-		ug.getParam().setBackcolor(getColor(ColorParam.classBackground, getStereo()));
+		ug.getParam().setBackcolor(backcolor);
 		header.drawU(ug, x, y, dimTotal.getWidth(), dimHeader.getHeight());
 
 		y += dimHeader.getHeight();
 
 		x = xTheoricalPosition;
 		if (body != null) {
-			ug.getParam().setBackcolor(getColor(ColorParam.classBackground, getStereo()));
+			ug.getParam().setBackcolor(backcolor);
 			ug.getParam().setColor(classBorder);
 			body.drawU(ug, x, y, widthTotal);
 		}

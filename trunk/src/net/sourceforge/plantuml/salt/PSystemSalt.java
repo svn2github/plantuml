@@ -48,7 +48,7 @@ import net.sourceforge.plantuml.AbstractPSystem;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.salt.element.Element;
 import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -80,7 +80,7 @@ public class PSystemSalt extends AbstractPSystem {
 		g2d.translate(3, 3);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		final UGraphic ug = new UGraphicG2d(new ColorMapperIdentity(), g2d, null, 1.0);
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		salt.drawU(ug, 0, 0, 0, new Dimension2DDouble(size.getWidth(), size.getHeight()));
 		salt.drawU(ug, 0, 0, 1, new Dimension2DDouble(size.getWidth(), size.getHeight()));
 		g2d.dispose();

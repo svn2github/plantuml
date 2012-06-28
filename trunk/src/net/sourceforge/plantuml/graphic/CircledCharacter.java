@@ -28,27 +28,27 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.PathIterator;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.skin.UDrawable;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
-import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
 
 public class CircledCharacter implements UDrawable, TextBlock {
 
@@ -122,6 +122,10 @@ public class CircledCharacter implements UDrawable, TextBlock {
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		return new Dimension2DDouble(getPreferredWidth(stringBounder), getPreferredHeight(stringBounder));
+	}
+
+	public List<Url> getUrls() {
+		return Collections.emptyList();
 	}
 
 }

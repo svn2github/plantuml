@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sourceforge.plantuml.EmptyImageBuilder;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.png.PngIO;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UMotif;
@@ -71,7 +71,7 @@ public class GraphicsPath {
 		final Graphics2D g2d = builder.getGraphics2D();
 		
 		final UGraphicG2d ug = new UGraphicG2d(colorMapper, g2d, im, 1.0);
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		final UMotif motif = new UMotif(path);
 		motif.drawHorizontal(ug, 20, 20, 1);
 

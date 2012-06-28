@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -63,7 +63,7 @@ public class ElementRadioCheckbox implements Element {
 	private final boolean checked;
 
 	public ElementRadioCheckbox(List<String> text, UFont font, boolean radio, boolean checked, SpriteContainer spriteContainer) {
-		final FontConfiguration config = new FontConfiguration(font, HtmlColor.BLACK);
+		final FontConfiguration config = new FontConfiguration(font, HtmlColorUtils.BLACK);
 		this.block = TextBlockUtils.create(text, config, HorizontalAlignement.LEFT, spriteContainer);
 		this.radio = radio;
 		this.checked = checked;
@@ -108,7 +108,7 @@ public class ElementRadioCheckbox implements Element {
 		}
 		ug.getParam().setStroke(new UStroke());
 
-		// ug.getParam().setColor(HtmlColor.BLACK);
+		// ug.getParam().setColor(HtmlColorUtils.BLACK);
 		// final Dimension2D dim = getDimension(ug.getStringBounder());
 		// ug.getParam().setStroke(new UStroke(stroke));
 		// ug.draw(x, y, new URectangle(dim.getWidth() - 2 * stroke,

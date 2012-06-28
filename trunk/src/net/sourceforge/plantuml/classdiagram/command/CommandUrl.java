@@ -60,7 +60,7 @@ public class CommandUrl extends SingleLineCommand<AbstractEntityDiagram> {
 				url = top + url;
 			}
 		}
-		entity.setUrl(new Url(url, title));
+		entity.addUrl(new Url(url, title));
 		return CommandExecutionResult.ok();
 	}
 

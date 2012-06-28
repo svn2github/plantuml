@@ -38,7 +38,7 @@ import java.awt.geom.Dimension2D;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -60,7 +60,7 @@ public class EntityImageAssociationPoint extends AbstractEntityImage {
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
 		final UShape circle = new UEllipse(SIZE, SIZE);
 		ug.getParam().setColor(null);
-		ug.getParam().setBackcolor(HtmlColor.BLACK);
+		ug.getParam().setBackcolor(HtmlColorUtils.BLACK);
 		ug.draw(xTheoricalPosition, yTheoricalPosition, circle);
 	}
 

@@ -50,5 +50,6 @@ public interface IEntityImage {
 	HtmlColor getBackcolor();
 	
 	int getShield();
+	
 
 }

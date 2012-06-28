@@ -28,13 +28,13 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7906 $
+ * Revision $Revision: 7983 $
  *
  */
 package net.sourceforge.plantuml;
 
 public enum FileFormat {
-	PNG, SVG, EPS, EPS_TEXT, ATXT, UTXT, XMI_STANDARD, XMI_STAR, XMI_ARGO, PDF, MJPEG, HTML;
+	PNG, SVG, EPS, EPS_TEXT, ATXT, UTXT, XMI_STANDARD, XMI_STAR, XMI_ARGO, PDF, MJPEG, HTML, HTML5;
 
 	public String getFileSuffix() {
 		if (name().startsWith("XMI")) {

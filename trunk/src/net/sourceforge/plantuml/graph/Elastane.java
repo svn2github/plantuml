@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -60,7 +60,7 @@ import net.sourceforge.plantuml.geom.PolylineBreakeable;
 import net.sourceforge.plantuml.geom.XMoveable;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -144,7 +144,7 @@ public class Elastane {
 				final double dist = polyline.getDistance(b);
 				assert dist >= 0;
 				assert dist != Double.MAX_VALUE;
-				// System.err.println("dist=" + dist + " exp=" + (100000 -
+				// Log.println("dist=" + dist + " exp=" + (100000 -
 				// dist));
 				result += 100000 - dist;
 			}
@@ -184,7 +184,7 @@ public class Elastane {
 		}
 		// if (trace) {
 		// final double diff = getCost() - initCost;
-		// System.err.println("moving " + boxes + " " + delta + " diff=" +
+		// Log.println("moving " + boxes + " " + delta + " diff=" +
 		// diff);
 		// }
 		// for (Map.Entry<ALink, Polyline> entry : lines.entrySet()) {
@@ -224,7 +224,7 @@ public class Elastane {
 			assert getCost() <= initCost;
 
 		}
-		// System.err.println("COSTB=" + getCost());
+		// Log.println("COSTB=" + getCost());
 		return changed;
 	}
 
@@ -270,7 +270,7 @@ public class Elastane {
 			if (label != null) {
 				final Point2DInt center = polyline.getFirst().getCenter();
 				final TextBlock textBlock = TextBlockUtils.create(Arrays.asList(label),
-						new FontConfiguration(UFont.getCurrentFont(g2d), HtmlColor.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
+						new FontConfiguration(UFont.getCurrentFont(g2d), HtmlColorUtils.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 				final Dimension2D dim = textBlock.calculateDimension(StringBounderUtils.asStringBounder(g2d));
 //				textBlock.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, center.getXint() - dim.getWidth() / 2,
 //						center.getYint() - dim.getHeight() / 2);
@@ -311,7 +311,7 @@ public class Elastane {
 		for (Map.Entry<ALink, PolylineBreakeable> entry : lines.entrySet()) {
 			final PolylineBreakeable p = entry.getValue();
 			final List<XMoveable> freedoms = p.getFreedoms();
-			// System.err.println("freedoms=" + freedoms);
+			// Log.println("freedoms=" + freedoms);
 			if (freedoms.size() > 0) {
 				linkMoveables.put(entry.getKey(), freedoms);
 				// xmoveableGroups.addAll(CollectionUtils.selectUpTo(freedoms,

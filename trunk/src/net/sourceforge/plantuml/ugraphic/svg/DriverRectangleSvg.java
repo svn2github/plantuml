@@ -34,12 +34,13 @@ package net.sourceforge.plantuml.ugraphic.svg;
 import java.awt.geom.Rectangle2D;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.svg.SvgGraphics;
 import net.sourceforge.plantuml.ugraphic.ClipContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UClip;
 import net.sourceforge.plantuml.ugraphic.UDriver;
-import net.sourceforge.plantuml.ugraphic.UGradient;
 import net.sourceforge.plantuml.ugraphic.UParam;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -59,26 +60,26 @@ public class DriverRectangleSvg implements UDriver<SvgGraphics> {
 		final double ry = rect.getRy();
 		double width = rect.getWidth();
 		double height = rect.getHeight();
-		
-//		// Shadow
-//		if (rect.getDeltaShadow() != 0) {
-//			svg.svgRectangleShadow(x, y, width, height, rx / 2, ry / 2, rect.getDeltaShadow());
-//		}
 
+		// // Shadow
+		// if (rect.getDeltaShadow() != 0) {
+		// svg.svgRectangleShadow(x, y, width, height, rx / 2, ry / 2, rect.getDeltaShadow());
+		// }
 
-		final UGradient gr = param.getGradient();
-		if (gr == null) {
-			final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param
-					.getColor()));
+		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param
+				.getColor()));
+		final HtmlColor back = param.getBackcolor();
+		if (back instanceof HtmlColorGradient) {
+			HtmlColorGradient gr = (HtmlColorGradient) back;
+			final String id = svg.createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
+					StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())), gr.getPolicy());
+			svg.setFillColor("url(#" + id + ")");
+			svg.setStrokeColor(color);
+		} else {
 			final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper
 					.getMappedColor(param.getBackcolor()));
 			svg.setFillColor(backcolor);
 			svg.setStrokeColor(color);
-		} else {
-			final String id = svg.createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
-					StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())));
-			svg.setFillColor("url(#" + id + ")");
-			svg.setStrokeColor(null);
 		}
 
 		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());

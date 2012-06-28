@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.eggs;
@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
 import net.sourceforge.plantuml.AbstractPSystem;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class PSystemEgg extends AbstractPSystem {
@@ -63,7 +63,7 @@ public class PSystemEgg extends AbstractPSystem {
 
 	private GraphicStrings getGraphicStrings() throws IOException {
 		final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-		return new GraphicStrings(strings, font, HtmlColor.BLACK, HtmlColor.WHITE, false);
+		return new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, false);
 	}
 
 	public String getDescription() {

@@ -128,13 +128,13 @@ public class DotStringFactory implements Moveable {
 			nodesep = getMinNodeSep();
 		}
 		final String nodesepInches = SvekUtils.pixelToInches(nodesep);
-		// System.err.println("nodesep=" + nodesepInches);
+		// Log.println("nodesep=" + nodesepInches);
 		double ranksep = getVerticalDzeta();
 		if (ranksep < getMinRankSep()) {
 			ranksep = getMinRankSep();
 		}
 		final String ranksepInches = SvekUtils.pixelToInches(ranksep);
-		// System.err.println("ranksep=" + ranksepInches);
+		// Log.println("ranksep=" + ranksepInches);
 		sb.append("digraph unix {");
 		SvekUtils.println(sb);
 
@@ -233,7 +233,7 @@ public class DotStringFactory implements Moveable {
 	String getSVG(String... dotStrings) throws IOException, InterruptedException {
 		final String dotString = createDotString(dotStrings);
 		if (OptionFlags.TRACE_DOT) {
-			System.err.println("dotString=" + dotString);
+			Log.println("dotString=" + dotString);
 		}
 
 		final Graphviz graphviz = GraphvizUtils.create(dotString, "svg");
@@ -279,8 +279,9 @@ public class DotStringFactory implements Moveable {
 				final List<Point2D.Double> points = SvekUtils.extractPointsList(svg, idx, fullHeight);
 				final double minX = SvekUtils.getMinX(points);
 				final double minY = SvekUtils.getMinY(points);
-				sh.setMinX(minX);
-				sh.setMinY(minY);
+				sh.moveSvek(minX, minY);
+//				sh.setMinX(minX);
+//				sh.setMinY(minY);
 			} else if (sh.getType() == ShapeType.ROUND_RECTANGLE) {
 				idx = svg.indexOf("points=\"", idx + 1);
 				final List<Point2D.Double> points = SvekUtils.extractPointsList(svg, idx, fullHeight);
@@ -290,16 +291,18 @@ public class DotStringFactory implements Moveable {
 				}
 				final double minX = SvekUtils.getMinX(points);
 				final double minY = SvekUtils.getMinY(points);
-				sh.setMinX(minX);
-				sh.setMinY(minY);
+				sh.moveSvek(minX, minY);
+//				sh.setMinX(minX);
+//				sh.setMinY(minY);
 			} else if (sh.getType() == ShapeType.CIRCLE || sh.getType() == ShapeType.CIRCLE_IN_RECT
 					|| sh.getType() == ShapeType.OVAL) {
 				final double cx = SvekUtils.getValue(svg, idx, "cx");
 				final double cy = SvekUtils.getValue(svg, idx, "cy") + fullHeight;
 				final double rx = SvekUtils.getValue(svg, idx, "rx");
 				final double ry = SvekUtils.getValue(svg, idx, "ry");
-				sh.setMinX(cx - rx);
-				sh.setMinY(cy - ry);
+				sh.moveSvek(cx - rx, cy - ry);
+//				sh.setMinX(cx - rx);
+//				sh.setMinY(cy - ry);
 			} else {
 				throw new IllegalStateException(sh.getType().toString() + " " + sh.getUid());
 			}

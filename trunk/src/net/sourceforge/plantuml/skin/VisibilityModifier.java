@@ -33,15 +33,16 @@
  */
 package net.sourceforge.plantuml.skin;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
@@ -85,6 +86,10 @@ public enum VisibilityModifier {
 				ug.translate(x, y);
 				drawInternal(ug, size, foregroundColor, backgoundColor);
 				ug.setTranslate(tx, ty);
+			}
+
+			public List<Url> getUrls() {
+				return Collections.emptyList();
 			}
 		};
 	}

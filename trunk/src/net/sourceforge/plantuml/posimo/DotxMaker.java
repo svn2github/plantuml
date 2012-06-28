@@ -36,6 +36,8 @@ package net.sourceforge.plantuml.posimo;
 import java.awt.geom.Dimension2D;
 import java.util.Collection;
 
+import net.sourceforge.plantuml.Log;
+
 public class DotxMaker {
 
 	private final Cluster root;
@@ -109,7 +111,7 @@ public class DotxMaker {
 		if (p.getLength() <= 1) {
 			final boolean samePackage = p.getStart().getParent() == p.getEnd().getParent();
 			if (samePackage == false) {
-				System.err.println("!!!!!!!!!!!!!!!!!TURNING ARROUND DOT BUG!!!!!!!!!!!!!!!!!!");
+				Log.println("!!!!!!!!!!!!!!!!!TURNING ARROUND DOT BUG!!!!!!!!!!!!!!!!!!");
 			} else {
 				sb.append("{rank=same; b" + p.getStart().getUid() + "; b" + p.getEnd().getUid() + "}");
 			}

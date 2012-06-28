@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7951 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -81,8 +81,8 @@ public enum FontStyle {
 			return null;
 		}
 		final String color = m.group(1);
-		if (color!= null && HtmlColor.isValid(color)) {
-			return HtmlColor.getColorIfValid(color);
+		if (HtmlColorUtils.getColorIfValid(color) != null) {
+			return HtmlColorUtils.getColorIfValid(color);
 		}
 		return null;
 	}

@@ -39,6 +39,7 @@ import java.util.List;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.skin.AbstractTextualComponent;
@@ -75,8 +76,8 @@ public class ComponentBlueModernDivider extends AbstractTextualComponent {
 		final double xpos = (dimensionToUse.getWidth() - textWidth - deltaX) / 2;
 		final double ypos = (dimensionToUse.getHeight() - textHeight) / 2;
 
-		ug.getParam().setColor(HtmlColor.BLACK);
-		ug.getParam().setBackcolor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
+		ug.getParam().setBackcolor(HtmlColorUtils.BLACK);
 
 		ug.getParam().setStroke(new UStroke(2));
 

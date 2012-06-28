@@ -70,7 +70,7 @@ class FtpLoop implements Runnable {
 	public FtpLoop(Socket socket, FtpServer ftpServer) throws IOException {
 		this.incoming = socket;
 		this.ftpServer = ftpServer;
-		this.br = new BufferedReader(new InputStreamReader(incoming.getInputStream()));
+		this.br = new BufferedReader(new InputStreamReader(incoming.getInputStream(), ftpServer.getCharset()));
 		this.pw = new PrintWriter(incoming.getOutputStream(), true);
 	}
 
@@ -238,7 +238,7 @@ class FtpLoop implements Runnable {
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		FileUtils.copyToStream(is, baos);
 		myOut("226 Transfer complete.");
-		final String data = new String(baos.toByteArray());
+		final String data = new String(baos.toByteArray(), ftpServer.getCharset());
 		final FileFormat format = FileFormat.PNG;
 		final String pngFileName = format.changeName(fileName, 0);
 		connexion.removeOutgoing(pngFileName);

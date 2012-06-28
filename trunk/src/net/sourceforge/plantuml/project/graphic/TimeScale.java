@@ -43,7 +43,7 @@ import java.util.TreeMap;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -60,7 +60,7 @@ class TimeScale {
 
 	private final UFont font = new UFont("Serif", Font.PLAIN, 9);
 	private final Project project;
-	private final FontConfiguration fontConfig = new FontConfiguration(font, HtmlColor.BLACK);
+	private final FontConfiguration fontConfig = new FontConfiguration(font, HtmlColorUtils.BLACK);
 
 	public TimeScale(Project project) {
 		this.project = project;
@@ -73,7 +73,7 @@ class TimeScale {
 		final double caseHeight = getCaseHeight(stringBounder);
 		final int nb = getNbCase();
 
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		ug.draw(x, y, new URectangle(nb * caseWidth, monthHeight));
 		final Instant end = project.getEnd();
 

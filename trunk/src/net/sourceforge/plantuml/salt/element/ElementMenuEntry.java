@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -56,7 +57,7 @@ public class ElementMenuEntry implements Element {
 	private double x;
 	
 	public ElementMenuEntry(String text, UFont font, SpriteContainer spriteContainer) {
-		final FontConfiguration config = new FontConfiguration(font, HtmlColor.BLACK);
+		final FontConfiguration config = new FontConfiguration(font, HtmlColorUtils.BLACK);
 		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT, spriteContainer);
 		this.text = text;
 	}

@@ -118,9 +118,9 @@ public class EntityMutable implements IEntityMutable {
 		this.entityFactory = entityFactory;
 	}
 
-	public void overideImage42(IEntityImage img) {
+	public void overideImage42(IEntityImage img, List<Url> url) {
 		entityFactory.overideImage42(this);
-		this.entity = new MyEntity42(getContainer(), img, getStereotype(), getCode());
+		this.entity = new MyEntity42(getContainer(), img, getStereotype(), getCode(), url);
 		this.group = null;
 	}
 
@@ -130,13 +130,22 @@ public class EntityMutable implements IEntityMutable {
 		private final IEntityImage img;
 		private final Stereotype stereotype;
 		private final String code;
+		private final List<Url> url;
 
-		public MyEntity42(Group container, IEntityImage img, Stereotype stereotype, String code) {
+		public MyEntity42(Group container, IEntityImage img, Stereotype stereotype, String code, List<Url> url) {
 			this.container = container;
 			this.img = img;
 			this.code = code;
 			this.stereotype = stereotype;
+			this.url = url;
 		}
+		
+//		@Override
+//		public String getUid() {
+//			// Only for CMAPX
+//			return code;
+//		}
+
 
 		@Override
 		public String getCode() {
@@ -154,8 +163,8 @@ public class EntityMutable implements IEntityMutable {
 		}
 
 		@Override
-		public Url getUrl() {
-			return null;
+		public List<Url> getUrls() {
+			return url;
 		}
 
 		@Override
@@ -257,12 +266,12 @@ public class EntityMutable implements IEntityMutable {
 		return entity.getUid();
 	}
 
-	public Url getUrl() {
+	public List<Url> getUrls() {
 		checkValid();
 		if (entity == null) {
 			return null;
 		}
-		return entity.getUrl();
+		return entity.getUrls();
 	}
 
 	public Stereotype getStereotype() {
@@ -366,9 +375,9 @@ public class EntityMutable implements IEntityMutable {
 		entity.mouseOver(s);
 	}
 
-	public void setUrl(Url url) {
+	public void addUrl(Url url) {
 		checkValid();
-		entity.setUrl(url);
+		entity.addUrl(url);
 	}
 
 	public void setSvekImage(IEntityImage svekImage) {
@@ -567,7 +576,7 @@ class UnsupportedEntity implements IEntity {
 		throw new UnsupportedOperationException();
 	}
 
-	public Url getUrl() {
+	public List<Url> getUrls() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -654,7 +663,7 @@ class UnsupportedEntity implements IEntity {
 
 	}
 
-	public void setUrl(Url url) {
+	public void addUrl(Url url) {
 		throw new UnsupportedOperationException();
 
 	}

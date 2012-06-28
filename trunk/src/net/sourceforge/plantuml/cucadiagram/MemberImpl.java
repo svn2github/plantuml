@@ -33,17 +33,32 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public class MemberImpl implements Member {
 
-	private String display;
+	private final String display;
 	private final boolean staticModifier;
 	private final boolean abstractModifier;
+	private final Url url;
 
 	private final VisibilityModifier visibilityModifier;
 
 	public MemberImpl(String display, boolean isMethod) {
+		final Pattern p = Pattern.compile("^(.*)\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\](.*)$");
+		final Matcher m = p.matcher(display);
+		if (m.matches()) {
+			url = new Url(m.group(2), m.group(3));
+			url.setMember(true);
+			display = m.group(1).trim() + m.group(4).trim();
+		} else {
+			url = null;
+		}
+		
 		final String lower = display.toLowerCase();
 		this.staticModifier = lower.contains("{static}") || lower.contains("{classifier}");
 		this.abstractModifier = lower.contains("{abstract}");
@@ -59,10 +74,6 @@ public class MemberImpl implements Member {
 			this.display = displayClean;
 			visibilityModifier = null;
 		}
-		// assert
-		// VisibilityModifier.isVisibilityCharacter(this.display.charAt(0)) ==
-		// false;
-
 	}
 
 	public String getDisplay(boolean withVisibilityChar) {
@@ -134,6 +145,10 @@ public class MemberImpl implements Member {
 
 	public final VisibilityModifier getVisibilityModifier() {
 		return visibilityModifier;
+	}
+
+	public final Url getUrl() {
+		return url;
 	}
 
 }

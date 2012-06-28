@@ -44,14 +44,13 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.EntityMutable;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.dot.PlayField;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -83,7 +82,7 @@ public class EntityImageBlock implements IEntityImageBlock {
 
 		if (StringUtils.isNotEmpty(entity.getDisplay2())) {
 			this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-					param.getFont(titleParam, null), HtmlColor.BLACK), HorizontalAlignement.CENTER, param);
+					param.getFont(titleParam, null), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, param);
 		} else {
 			this.name = null;
 		}

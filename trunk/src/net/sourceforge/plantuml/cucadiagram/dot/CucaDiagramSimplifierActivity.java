@@ -39,9 +39,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityMutable;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.svek.GroupPngMakerActivity;
 import net.sourceforge.plantuml.svek.IEntityImage;
@@ -59,40 +56,29 @@ public final class CucaDiagramSimplifierActivity {
 			final Collection<IEntityMutable> groups = new ArrayList<IEntityMutable>(diagram.getGroups(false));
 			for (IEntityMutable g : groups) {
 				if (diagram.isAutarkic(g)) {
-					final EntityType type;
-					if (g.zgetGroupType() == GroupType.INNER_ACTIVITY) {
-						type = EntityType.ACTIVITY;
-					} else if (g.zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
-						type = EntityType.ACTIVITY_CONCURRENT;
-					} else {
-						throw new IllegalStateException();
-					}
+//					final EntityType type;
+//					if (g.zgetGroupType() == GroupType.INNER_ACTIVITY) {
+//						type = EntityType.ACTIVITY;
+//					} else if (g.zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
+//						type = EntityType.ACTIVITY_CONCURRENT;
+//					} else {
+//						throw new IllegalStateException();
+//					}
 					
 					final IEntityImage img = computeImage(g);
-					g.overideImage42(img);
+					g.overideImage42(img, g.getUrls());
 					
-					// final EntityMutable proxy = (EntityMutable) diagram.getEntityFactory().createEntity(
-					// "#" + g.zgetGroupCode(), g.zgetDisplay(), type, (IEntityMutable) g.zgetParent(),
-					// diagram.getHides());
-					// if (g.zgetBackColor() != null) {
-					// proxy.setSpecificBackcolor(g.zgetBackColor());
-					// }
-					// proxy.overidesFieldsToDisplay((EntityMutable) g);
-					// computeImageGroup((EntityMutable) g, proxy, dotStrings);
-					// g.overideGroup(proxy);
-					// ((IEntityMutable) g).setSvekImage(proxy.getSvekImage());
-
 					changed = true;
 				}
 			}
 		} while (changed);
 	}
 
-	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
-			InterruptedException {
-		final GroupPngMakerActivity maker = new GroupPngMakerActivity(diagram, g);
-		proxy.setSvekImage(maker.getImage());
-	}
+//	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
+//			InterruptedException {
+//		final GroupPngMakerActivity maker = new GroupPngMakerActivity(diagram, g);
+//		proxy.setSvekImage(maker.getImage());
+//	}
 
 	private IEntityImage computeImage(IEntityMutable g) throws IOException, InterruptedException {
 		final GroupPngMakerActivity maker = new GroupPngMakerActivity(diagram, g);

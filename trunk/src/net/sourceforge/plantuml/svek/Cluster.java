@@ -57,6 +57,7 @@ import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
@@ -350,7 +351,7 @@ public class Cluster implements Moveable {
 	}
 
 	public void printCluster2(StringBuilder sb, Collection<Line> lines) {
-		// System.err.println("Cluster::printCluster " + this);
+		// Log.println("Cluster::printCluster " + this);
 
 		final Set<String> rankSame = new HashSet<String>();
 		for (Line l : lines) {
@@ -490,14 +491,14 @@ public class Cluster implements Moveable {
 			sb.append("{rank = source; ");
 			sb.append(getSourceInPoint());
 			sb.append(" [shape=point,width=.01,label=\"\"];");
-			sb.append(getMinPoint() + "->" + getSourceInPoint() + ";");
+			sb.append(getMinPoint() + "->" + getSourceInPoint() + "  [weight=999];");
 			sb.append("}");
 			SvekUtils.println(sb);
 			sb.append("{rank = sink; ");
 			sb.append(getSinkInPoint());
 			sb.append(" [shape=point,width=.01,label=\"\"];");
 			sb.append("}");
-			sb.append(getSinkInPoint() + "->" + getMaxPoint() + ";");
+			sb.append(getSinkInPoint() + "->" + getMaxPoint() + "  [weight=999];");
 			SvekUtils.println(sb);
 		}
 		SvekUtils.println(sb);
@@ -572,7 +573,7 @@ public class Cluster implements Moveable {
 			stateBack = skinParam.getHtmlColor(ColorParam.background, stereotype);
 		}
 		if (stateBack == null) {
-			stateBack = HtmlColor.WHITE;
+			stateBack = HtmlColorUtils.WHITE;
 		}
 		return stateBack;
 	}

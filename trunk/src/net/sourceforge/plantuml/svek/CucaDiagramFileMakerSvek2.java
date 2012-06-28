@@ -60,6 +60,7 @@ import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
@@ -84,10 +85,6 @@ public final class CucaDiagramFileMakerSvek2 {
 	public CucaDiagramFileMakerSvek2(DotData dotData) {
 		this.dotData = dotData;
 	}
-
-	// protected UFont getFont(FontParam fontParam) {
-	// return getData().getSkinParam().getFont(fontParam, null);
-	// }
 
 	private DotStringFactory dotStringFactory;
 
@@ -118,7 +115,7 @@ public final class CucaDiagramFileMakerSvek2 {
 					lhead = getCluster(g2).getClusterId();
 				}
 				final FontConfiguration labelFont = new FontConfiguration(dotData.getSkinParam().getFont(
-						FontParam.ACTIVITY_ARROW, null), HtmlColor.BLACK);
+						FontParam.ACTIVITY_ARROW, null), HtmlColorUtils.BLACK);
 
 				final Line line = new Line(shapeUid1, shapeUid2, link, colorSequence, ltail, lhead,
 						dotData.getSkinParam(), stringBounder, labelFont, getBibliotekon());
@@ -209,7 +206,7 @@ public final class CucaDiagramFileMakerSvek2 {
 		final IEntityImage image = Shape.printEntity(ent, dotData);
 		final Dimension2D dim = image.getDimension(stringBounder);
 		final Shape shape = new Shape(image, image.getShapeType(), dim.getWidth(), dim.getHeight(), colorSequence,
-				ent.isTop(), image.getShield());
+				ent.isTop(), image.getShield(), ent.getUrls());
 		dotStringFactory.addShape(shape);
 		getBibliotekon().putShape(ent, shape);
 	}

@@ -38,6 +38,7 @@ import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -52,7 +53,7 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public final class FactoryNoteActivityCommand implements SingleMultiFactoryCommand<ActivityDiagram> {
 
@@ -82,10 +83,22 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 			public final CommandExecutionResult execute(List<String> lines) {
 				// StringUtils.trim(lines, true);
 				final Map<String, RegexPartialMatch> arg = getStartingPattern().matcher(lines.get(0).trim());
-				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
+				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
+
+				Url url = null;
+				if (strings.size() > 0) {
+					url = StringUtils.extractUrl(strings.get(0));
+				}
+				if (url != null) {
+					strings = strings.subList(1, strings.size());
+				}
+
 				final String s = StringUtils.getMergedLines(strings);
 
 				final IEntity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+				if (url != null) {
+					note.addUrl(url);
+				}
 				return executeInternal(getSystem(), arg, note);
 			}
 		};
@@ -105,7 +118,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 	private CommandExecutionResult executeInternal(ActivityDiagram system, Map<String, RegexPartialMatch> arg,
 			IEntity note) {
 
-		note.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
+		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
 
 		IEntity activity = system.getLastEntityConsulted();
 		if (activity == null) {

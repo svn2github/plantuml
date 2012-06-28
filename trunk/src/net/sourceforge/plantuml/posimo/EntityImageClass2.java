@@ -49,6 +49,7 @@ import net.sourceforge.plantuml.graphic.CircledCharacter;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -71,7 +72,7 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 	public EntityImageClass2(IEntity entity, ISkinParam skinParam, Collection<Link> links) {
 		super(entity, skinParam);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.CLASS),
-				HtmlColor.BLACK), HorizontalAlignement.CENTER, skinParam);
+				HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;

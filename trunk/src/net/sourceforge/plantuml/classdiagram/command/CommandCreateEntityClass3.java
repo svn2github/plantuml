@@ -49,6 +49,7 @@ import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> {
 
@@ -70,6 +71,7 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<{2}.*\\>{2}))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("$"));
 	}
@@ -105,7 +107,8 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		if (generic != null) {
 			entity.setGeneric(generic);
 		}
-
+		
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
 		manageExtends(getSystem(), arg, entity);
 
 		return CommandExecutionResult.ok();

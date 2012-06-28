@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7928 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram.command;
@@ -41,7 +41,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
 
@@ -56,7 +56,7 @@ public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, null, GroupType.PACKAGE, currentPackage);
 		final String color = arg.get(1);
 		if (color != null) {
-			p.zsetBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

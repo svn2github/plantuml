@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.geom;
@@ -108,8 +108,8 @@ public class Box implements XMoveable, Pointable {
 		if (seg.side(this) != 0) {
 			return new Point2DInt[0];
 		}
-		// System.err.println("THIS=" + this);
-		// System.err.println("LineSegment=" + seg);
+		// Log.println("THIS=" + this);
+		// Log.println("LineSegment=" + seg);
 		final Point2DInt corners[] = getCorners();
 		final LineSegmentInt seg1 = new LineSegmentInt(corners[0], corners[1]);
 		final LineSegmentInt seg2 = new LineSegmentInt(corners[1], corners[2]);
@@ -120,10 +120,10 @@ public class Box implements XMoveable, Pointable {
 		Point2DInt i3 = seg.getSegIntersection(seg3);
 		Point2DInt i4 = seg.getSegIntersection(seg4);
 
-		// System.err.println("i1="+i1);
-		// System.err.println("i2="+i2);
-		// System.err.println("i3="+i3);
-		// System.err.println("i4="+i4);
+		// Log.println("i1="+i1);
+		// Log.println("i2="+i2);
+		// Log.println("i3="+i3);
+		// Log.println("i4="+i4);
 
 		if (i2 != null && i2.equals(i1)) {
 			i2 = null;

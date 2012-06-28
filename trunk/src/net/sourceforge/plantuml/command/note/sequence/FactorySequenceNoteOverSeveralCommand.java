@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Note;
 import net.sourceforge.plantuml.sequencediagram.NoteStyle;
 import net.sourceforge.plantuml.sequencediagram.Participant;
@@ -111,7 +111,7 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 
 		if (strings.size() > 0) {
 			final Note note = new Note(p1, p2, strings);
-			note.setSpecificBackcolor(HtmlColor.getColorIfValid(line0.get("COLOR").get(0)));
+			note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR").get(0)));
 			note.setStyle(NoteStyle.getNoteStyle(line0.get("STYLE").get(0)));
 			system.addNote(note);
 		}

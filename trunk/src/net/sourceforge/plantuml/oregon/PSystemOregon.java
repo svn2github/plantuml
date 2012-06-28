@@ -40,7 +40,7 @@ import java.io.OutputStream;
 import net.sourceforge.plantuml.AbstractPSystem;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class PSystemOregon extends AbstractPSystem {
@@ -65,7 +65,7 @@ public class PSystemOregon extends AbstractPSystem {
 
 	private GraphicStrings getGraphicStrings() throws IOException {
 		final UFont font = new UFont("Monospaced", Font.PLAIN, 14);
-		return new GraphicStrings(screen.getLines(), font, HtmlColor.GREEN, HtmlColor.BLACK, true);
+		return new GraphicStrings(screen.getLines(), font, HtmlColorUtils.GREEN, HtmlColorUtils.BLACK, true);
 	}
 
 	public String getDescription() {

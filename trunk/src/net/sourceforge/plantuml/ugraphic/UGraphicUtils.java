@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.ugraphic;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.UDrawable3;
 
@@ -90,8 +91,8 @@ public abstract class UGraphicUtils {
 				g.setAntiAliasing(trueForOn);
 			}
 
-			public void startUrl(String url, String tooltip) {
-				g.startUrl(url, tooltip);
+			public void startUrl(Url url) {
+				g.startUrl(url);
 			}
 			
 			public void closeAction() {

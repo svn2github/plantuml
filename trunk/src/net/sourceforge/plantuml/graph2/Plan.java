@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph2;
@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.graph2.Dijkstra.Vertex;
 
 public class Plan {
@@ -56,12 +57,12 @@ public class Plan {
 	}
 
 	public void debugPrint() {
-		System.err.println("PLAN PRINT");
+		Log.println("PLAN PRINT");
 		for (Singularity2 s : points.values()) {
-			System.err.println(s);
+			Log.println("s="+s);
 		}
 		for (Line2D.Double l : lines) {
-			System.err.println(GeomUtils.toString(l));
+			Log.println(GeomUtils.toString(l));
 		}
 	}
 
@@ -124,7 +125,7 @@ public class Plan {
 				final double dist = n1.getCenter().distance(n2.getCenter());
 				v1.addAdjacencies(v2, dist);
 				v2.addAdjacencies(v1, dist);
-				// System.err.println("=(" + n1 + ") (" + n2 + ") " + dist);
+				// Log.println("=(" + n1 + ") (" + n2 + ") " + dist);
 			}
 		}
 
@@ -140,21 +141,21 @@ public class Plan {
 	}
 
 	public List<Point2D.Double> getIntermediatePoints(Point2D start, Point2D end) {
-		// System.err.println("start=" + start + " end=" + end);
+		// Log.println("start=" + start + " end=" + end);
 		final List<Point2D.Double> result = new ArrayList<Point2D.Double>();
 		final List<Neighborhood2> list = getShortestPathToInternal(start, end);
-		// System.err.println("Neighborhood2 = " + list);
+		// Log.println("Neighborhood2 = " + list);
 		for (int i = 1; i < list.size() - 1; i++) {
 			final Neighborhood2 n = list.get(i);
 			final Point2D.Double before = list.get(i - 1).getCenter();
 			final Point2D.Double after = list.get(i + 1).getCenter();
-			// System.err.println("before="+before);
-			// System.err.println("after="+after);
-			// System.err.println("n.getCenter()="+n.getCenter());
-			// System.err.println("getMindist(n.getCenter())="+getMindist(n.getCenter()));
+			// Log.println("before="+before);
+			// Log.println("after="+after);
+			// Log.println("n.getCenter()="+n.getCenter());
+			// Log.println("getMindist(n.getCenter())="+getMindist(n.getCenter()));
 			final Point2D.Double pointInNeighborhood = n.getPointInNeighborhood(getMindist(n.getCenter()) / 2, before,
 					after);
-			// System.err.println("pointInNeighborhood="+pointInNeighborhood);
+			// Log.println("pointInNeighborhood="+pointInNeighborhood);
 			result.add(pointInNeighborhood);
 		}
 		return result;
@@ -246,7 +247,7 @@ public class Plan {
 		if (result == 0) {
 			throw new IllegalStateException();
 		}
-		// System.err.println("getMindist=" + result);
+		// Log.println("getMindist=" + result);
 		return result;
 	}
 }

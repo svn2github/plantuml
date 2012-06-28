@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -39,6 +39,7 @@ import java.awt.Shape;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 
+import net.sourceforge.plantuml.EnsureVisible;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
@@ -46,16 +47,20 @@ import net.sourceforge.plantuml.ugraphic.UParam;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
 public class DriverEllipseG2d extends DriverShadowedG2d implements UDriver<Graphics2D> {
-	
-	private final double dpiFactor;
 
-	public DriverEllipseG2d(double dpiFactor) {
+	private final double dpiFactor;
+	private final EnsureVisible visible;
+
+	public DriverEllipseG2d(double dpiFactor, EnsureVisible visible) {
 		this.dpiFactor = dpiFactor;
+		this.visible = visible;
 	}
 
 	public void draw(UShape ushape, double x, double y, ColorMapper mapper, UParam param, Graphics2D g2d) {
 		final UEllipse shape = (UEllipse) ushape;
 		g2d.setStroke(new BasicStroke((float) param.getStroke().getThickness()));
+		visible.ensureVisible(x, y);
+		visible.ensureVisible(x + shape.getWidth(), y + shape.getHeight());
 		if (shape.getStart() == 0 && shape.getExtend() == 0) {
 			final Shape ellipse = new Ellipse2D.Double(x, y, shape.getWidth(), shape.getHeight());
 
@@ -73,8 +78,8 @@ public class DriverEllipseG2d extends DriverShadowedG2d implements UDriver<Graph
 				g2d.draw(ellipse);
 			}
 		} else {
-			final Shape arc = new Arc2D.Double(x, y, shape.getWidth(), shape.getHeight(), shape.getStart(), shape
-					.getExtend(), Arc2D.OPEN);
+			final Shape arc = new Arc2D.Double(x, y, shape.getWidth(), shape.getHeight(), shape.getStart(),
+					shape.getExtend(), Arc2D.OPEN);
 			if (param.getColor() != null) {
 				g2d.setColor(mapper.getMappedColor(param.getBackcolor()));
 				g2d.fill(arc);

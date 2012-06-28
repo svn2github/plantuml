@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram> {
 
@@ -69,7 +69,7 @@ public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram
 		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
 		final String color = arg.get(2);
 		if (color != null) {
-			p.zsetBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
 		}
 		getSystem().endGroup();
 		return CommandExecutionResult.ok();

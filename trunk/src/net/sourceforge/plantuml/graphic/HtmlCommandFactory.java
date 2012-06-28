@@ -28,13 +28,16 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
 import java.util.EnumSet;
 import java.util.regex.Pattern;
+
+import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 
 class HtmlCommandFactory {
 
@@ -76,7 +79,6 @@ class HtmlCommandFactory {
 		}
 
 		if (addStyle.matcher(s).matches()) {
-			// return new AddStyle(FontStyle.getStyle(s));
 			return new AddStyle(s);
 		}
 		if (removeStyle.matcher(s).matches()) {
@@ -105,6 +107,12 @@ class HtmlCommandFactory {
 
 		if (s.matches(Splitter.spritePattern)) {
 			return new SpriteCommand(s);
+		}
+
+		if (s.matches(Splitter.linkPattern)) {
+			final Url url = StringUtils.extractUrl(s);
+			url.setMember(true);
+			return new TextLink(url);
 		}
 
 		return null;

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7908 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -37,7 +37,6 @@ import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
@@ -106,9 +105,9 @@ public class StateDiagram extends AbstractEntityDiagram {
 	}
 
 //	private void printlink(String comment) {
-//		System.err.println("COMMENT="+comment);
+// Log.println("COMMENT="+comment);
 //		for (Link l : getLinks()) {
-//			System.err.println(l);
+// Log.println(l);
 //		}
 //	}
 

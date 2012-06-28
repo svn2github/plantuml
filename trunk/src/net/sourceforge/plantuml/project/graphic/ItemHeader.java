@@ -40,7 +40,7 @@ import java.util.Arrays;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -55,7 +55,7 @@ class ItemHeader {
 
 	private final UFont font = new UFont("Serif", Font.PLAIN, 9);
 	private final Project project;
-	private final FontConfiguration fontConfig = new FontConfiguration(font, HtmlColor.BLACK);
+	private final FontConfiguration fontConfig = new FontConfiguration(font, HtmlColorUtils.BLACK);
 
 	public ItemHeader(Project project) {
 		this.project = project;
@@ -65,7 +65,7 @@ class ItemHeader {
 
 		final StringBounder stringBounder = ug.getStringBounder();
 
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		ug.draw(x, y, new URectangle(getWidth(stringBounder), getHeight(stringBounder)));
 
 		for (Item it : project.getValidItems()) {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -86,7 +86,7 @@ public class BoardCollection {
 			if (ent.explored == false) {
 				ent.explored = true;
 				assert costComputer.getCost(ent.board) == ent.cost;
-				// System.err.println("Peeking " + ent.cost);
+				// Log.println("Peeking " + ent.cost);
 				return ent.board;
 			}
 		}

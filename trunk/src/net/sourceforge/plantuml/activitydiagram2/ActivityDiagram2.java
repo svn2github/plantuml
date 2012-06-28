@@ -117,8 +117,8 @@ public class ActivityDiagram2 extends CucaDiagram {
 
 	private void afterAdd(final IEntity dest, Direction direction) {
 		for (IEntity last : this.waitings) {
-			// System.err.println("last=" + last);
-			// System.err.println("act=" + act);
+			// Log.println("last=" + last);
+			// Log.println("act=" + act);
 			final Link link;
 			if (direction == Direction.DOWN) {
 				link = new Link(last, dest, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), futureLabel, 2);
@@ -192,13 +192,13 @@ public class ActivityDiagram2 extends CucaDiagram {
 
 	public void endif() {
 		// final boolean hasElse = currentContext.isHasElse();
-		// System.err.println("CALL endif hasElse " + hasElse);
+		// Log.println("CALL endif hasElse " + hasElse);
 		this.waitings.addAll(currentContext.getPendings());
 		currentContext = currentContext.getParent();
 		// if (currentContext == null) {
-		// System.err.println("after endif " + currentContext);
+		// Log.println("after endif " + currentContext);
 		// } else {
-		// System.err.println("after endif " + currentContext.getPendings());
+		// Log.println("after endif " + currentContext.getPendings());
 		// }
 	}
 
@@ -229,7 +229,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 	private final Collection<PendingLink> pendingLinks = new ArrayList<PendingLink>();
 
 	public void callGoto(String gotoLabel) {
-		// System.err.println("CALL goto " + gotoLabel);
+		// Log.println("CALL goto " + gotoLabel);
 		final IEntity dest = labels.get(gotoLabel);
 		for (IEntity last : this.waitings) {
 			if (dest == null) {
@@ -245,7 +245,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 			}
 		}
 		this.futureLabel = null;
-		// System.err.println("Avant fin goto, waitings=" + waitings);
+		// Log.println("Avant fin goto, waitings=" + waitings);
 		this.waitings.clear();
 		// currentContext.clearPendingsButFirst();
 	}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7755 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -48,6 +48,7 @@ import java.util.Map;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.geom.InflationTransform;
 import net.sourceforge.plantuml.geom.Point2DInt;
@@ -191,7 +192,7 @@ public class Graph4 {
 			line.draw(g2d);
 		}
 		final long TPS5 = System.currentTimeMillis() - start;
-		System.err.println("TPS5 = " + TPS5);
+		Log.println("TPS5 = " + TPS5);
 
 		g2d.setColor(Color.GREEN);
 		for (ANodePoint nodePoint : nodePoints.values()) {

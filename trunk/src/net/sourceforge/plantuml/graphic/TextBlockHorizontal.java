@@ -33,11 +33,12 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public class TextBlockHorizontal implements TextBlock {
@@ -64,5 +65,10 @@ public class TextBlockHorizontal implements TextBlock {
 		final Dimension2D dim1 = b1.calculateDimension(ug.getStringBounder());
 		b2.drawU(ug, x + dim1.getWidth(), y + (dim.getHeight() - dimb2.getHeight()) / 2);
 	}
+	
+	public List<Url> getUrls() {
+		return StringUtils.merge(b1.getUrls(), b2.getUrls());
+	}
+
 
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7755 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -233,21 +233,21 @@ public class Graph3 {
 			final Pointable pp1 = nodePoints.get(link.getNode1());
 			final Pointable pp2 = nodePoints.get(link.getNode2());
 			if (kingdom.isSimpleSegmentPossible(pp1.getPosition(), pp2.getPosition())) {
-				System.err.println("OK for " + link);
+				Log.println("OK for " + link);
 				kingdom.addDirectLink(pp1.getPosition(), pp2.getPosition());
 				polylines.add(new PolylineImpl(pp1, pp2));
 			} else {
-				System.err.println("Latter for " + link);
+				Log.println("Latter for " + link);
 				latter.add(link);
 			}
 		}
 
-		System.err.println("latters=" + latter.size());
+		Log.println("latters=" + latter.size());
 		for (ALink link : latter) {
-			System.err.println("Alatter=" + link);
+			Log.println("Alatter=" + link);
 		}
 		for (ALink link : latter) {
-			System.err.println("Blatter=" + link);
+			Log.println("Blatter=" + link);
 			final Pointable pp1 = nodePoints.get(link.getNode1());
 			final Pointable pp2 = nodePoints.get(link.getNode2());
 			polylines.add((PolylineImpl) kingdom.getPath(pp1, pp2));
@@ -257,14 +257,14 @@ public class Graph3 {
 	private void manyPasses(Board board) {
 		final Collection<Collection<XMoveable>> xmoveableGroups = getXMoveables(board);
 
-		System.err.println("COST_INIT=" + getCost());
+		Log.println("COST_INIT=" + getCost());
 		for (int i = 0; i < 300; i++) {
 			final boolean changed = onePass(xmoveableGroups);
 			if (changed == false) {
 				break;
 			}
 		}
-		System.err.println("COST_FIN=" + getCost());
+		Log.println("COST_FIN=" + getCost());
 	}
 
 	private Collection<Collection<XMoveable>> getXMoveables(Board board) {
@@ -317,7 +317,7 @@ public class Graph3 {
 			assert getCost() <= initCost;
 
 		}
-		// System.err.println("COSTB=" + getCost());
+		// Log.println("COSTB=" + getCost());
 		return changed;
 	}
 
@@ -449,7 +449,7 @@ public class Graph3 {
 		g2d.setColor(Color.BLUE);
 		for (Polyline p : polylines) {
 			if (p == null) {
-				System.err.println("Polyline NULL!!");
+				Log.println("Polyline NULL!!");
 				continue;
 			}
 			for (LineSegmentInt seg : p.segments()) {
@@ -462,7 +462,7 @@ public class Graph3 {
 		g2d.setColor(Color.GREEN);
 		for (ANodePoint nodePoint : nodePoints.values()) {
 			final Point2DInt p = nodePoint.getPosition();
-			// System.err.println("p=" + p);
+			// Log.println("p=" + p);
 			final AbstractEntityImage image = getImage(nodePoint.getNode());
 			final int width = (int) (image.getDimension(StringBounderUtils.asStringBounder(g2d)).getWidth());
 			final int height = (int) (image.getDimension(StringBounderUtils.asStringBounder(g2d)).getHeight());

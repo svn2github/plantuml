@@ -28,12 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.geom.kinetic;
 
 import java.awt.geom.Point2D;
+
+import net.sourceforge.plantuml.Log;
 
 public class Point2DCharge extends Point2D.Double {
 
@@ -51,7 +53,7 @@ public class Point2DCharge extends Point2D.Double {
 	}
 
 	public void apply(VectorForce value) {
-		System.err.println("Applying " + value);
+		Log.println("Applying " + value);
 		x += value.getX();
 		y += value.getY();
 		if (moveObserver != null) {

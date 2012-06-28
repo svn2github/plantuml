@@ -44,6 +44,7 @@ import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
@@ -59,6 +60,7 @@ import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -120,7 +122,7 @@ public final class GroupPngMakerState {
 	public IEntityImage getImage() throws IOException, InterruptedException {
 		final String display = group.zgetDisplay();
 		final TextBlock title = TextBlockUtils.create(StringUtils.getWithNewlines(display), new FontConfiguration(
-				getFont(FontParam.STATE), HtmlColor.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
+				getFont(FontParam.STATE), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.zsize() == 0) {
 			return new EntityImageState((IEntity) group, diagram.getSkinParam());
@@ -148,8 +150,12 @@ public final class GroupPngMakerState {
 			} else {
 				attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, diagram.getSkinParam());
 			}
+			final List<Url> subUrls = new ArrayList<Url>();
+			for (IEntity ent : group.zentities()) {
+				subUrls.addAll(ent.getUrls());
+			}
 			return new InnerStateAutonom(svek2.createFile(), title, attribute, borderColor, backColor,
-					skinParam.shadowing());
+					skinParam.shadowing(), subUrls, ((IEntityMutable)group).getUrls());
 		}
 
 		throw new UnsupportedOperationException(group.zgetGroupType().toString());

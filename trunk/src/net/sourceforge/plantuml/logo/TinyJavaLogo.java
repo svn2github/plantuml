@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class TinyJavaLogo {
 	private final LogoScanner scanner = new LogoScanner();
@@ -188,7 +189,7 @@ public class TinyJavaLogo {
 
 			case LogoToken.SETPC:
 				token = scanner.getToken();
-				final HtmlColor newPenColor = HtmlColor.getColorIfValid(token.lexeme);
+				final HtmlColor newPenColor = HtmlColorUtils.getColorIfValid(token.lexeme);
 				if (newPenColor == null) {
 					error("Unrecognized color name");
 					return;

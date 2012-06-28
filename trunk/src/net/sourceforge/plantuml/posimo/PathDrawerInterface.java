@@ -91,10 +91,10 @@ public class PathDrawerInterface implements PathDrawer {
 		// final Point2D inPoint = in.getFrontierIntersection(end);
 		final Point2D inPoint = in.getEndPoint();
 		// final double theta1_ = in.getEndAngle() + Math.PI / 2;
-		// System.err.println("theta1_=" + theta1_ + " " + theta1_ * 180 /
+		// Log.println("theta1_=" + theta1_ + " " + theta1_ * 180 /
 		// Math.PI);
 		final double theta1 = atan2(endPath, inPoint);
-		// System.err.println("theta1=" + theta1 + " " + theta1 * 180 /
+		// Log.println("theta1=" + theta1 + " " + theta1 * 180 /
 		// Math.PI);
 		final Point2D middle1 = drawSymbol(ug, theta1, inPoint, linkType.getDecor1());
 
@@ -103,10 +103,10 @@ public class PathDrawerInterface implements PathDrawer {
 		// final Point2D outPoint = out.getFrontierIntersection(start);
 		final Point2D outPoint = out.getStartPoint();
 		// final double theta2_ = out.getStartAngle() - Math.PI / 2;
-		// System.err.println("theta2_=" + theta2_ + " " + theta2_ * 180 /
+		// Log.println("theta2_=" + theta2_ + " " + theta2_ * 180 /
 		// Math.PI);
 		final double theta2 = atan2(startPath, outPoint);
-		// System.err.println("theta2=" + theta2 + " " + theta2 * 180 /
+		// Log.println("theta2=" + theta2 + " " + theta2 * 180 /
 		// Math.PI);
 		final Point2D middle2 = drawSymbol(ug, theta2, outPoint, linkType.getDecor2());
 
@@ -148,7 +148,7 @@ public class PathDrawerInterface implements PathDrawer {
 		final double y = -endPath.getX() + inPoint.getX();
 		final double x = endPath.getY() - inPoint.getY();
 		final double angle = Math.atan2(y, x);
-		System.err.println("x=" + x + " y=" + y + " angle=" + angle + " " + angle * 180.0 / Math.PI);
+// Log.println("x=" + x + " y=" + y + " angle=" + angle + " " + angle * 180.0 / Math.PI);
 		return angle;
 	}
 

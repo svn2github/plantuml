@@ -39,7 +39,7 @@ import java.util.List;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -53,7 +53,7 @@ public class ElementText implements Element {
 	private final String text;
 
 	public ElementText(List<String> text, UFont font, SpriteContainer spriteContainer) {
-		final FontConfiguration config = new FontConfiguration(font, HtmlColor.BLACK);
+		final FontConfiguration config = new FontConfiguration(font, HtmlColorUtils.BLACK);
 		this.block = TextBlockUtils.create(text, config, HorizontalAlignement.LEFT, spriteContainer);
 		this.show = text.get(0).equals(".") == false;
 		this.text = text.get(0);

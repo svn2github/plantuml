@@ -49,7 +49,7 @@ public class EntityImageGroup extends AbstractEntityImage {
 	public EntityImageGroup(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 //		this.desc = TextBlockUtils.create(StringUtils.getWithNewlines(entity.getDisplay()), new FontConfiguration(
-//				getFont(FontParam.ACTIVITY), HtmlColor.BLACK), HorizontalAlignement.CENTER);
+//				getFont(FontParam.ACTIVITY), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER);
 	}
 
 	@Override

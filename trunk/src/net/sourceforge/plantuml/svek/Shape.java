@@ -35,9 +35,12 @@ package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
@@ -56,6 +59,7 @@ public class Shape implements Positionable {
 	private double minX;
 	private double minY;
 	private final int shield;
+	private final List<Url> urls = new ArrayList<Url>();
 
 	private Cluster cluster;
 
@@ -69,7 +73,8 @@ public class Shape implements Positionable {
 		this.cluster = cluster;
 	}
 
-	public Shape(IEntityImage image, ShapeType type, double width, double height, ColorSequence colorSequence, boolean top, int shield) {
+	public Shape(IEntityImage image, ShapeType type, double width, double height, ColorSequence colorSequence,
+			boolean top, int shield, List<Url> urls) {
 		this.image = image;
 		this.top = top;
 		this.type = type;
@@ -78,6 +83,7 @@ public class Shape implements Positionable {
 		this.color = colorSequence.getValue();
 		this.uid = String.format("sh%04d", color);
 		this.shield = shield;
+		this.urls.addAll(urls);
 		if (shield > 0 && type != ShapeType.RECTANGLE) {
 			throw new IllegalArgumentException();
 		}
@@ -137,7 +143,7 @@ public class Shape implements Positionable {
 	}
 
 	private void appendLabelHtml(StringBuilder sb) {
-		// System.err.println("shield=" + shield);
+		// Log.println("shield=" + shield);
 		sb.append("<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"0\">");
 		sb.append("<TR>");
 		appendTd(sb);
@@ -203,23 +209,11 @@ public class Shape implements Positionable {
 		return minX;
 	}
 
-	public final void setMinX(double minX) {
-		// if (minX < 0) {
-		// minX = 0;
-		// }
-		this.minX = minX;
-	}
 
 	public final double getMinY() {
 		return minY;
 	}
 
-	public final void setMinY(double minY) {
-		if (minY < 0) {
-			minY = 0;
-		}
-		this.minY = minY;
-	}
 
 	private final IEntityImage image;
 
@@ -239,52 +233,15 @@ public class Shape implements Positionable {
 		return new Dimension2DDouble(width, height);
 	}
 
-	// public boolean contains(Point2D pt) {
-	// return pt.getX() >= minX && pt.getX() <= minX + width && pt.getY() >=
-	// minY && pt.getY() <= minY + height;
-	// }
-	//
-	// public boolean intersect(Point2D pt, Dimension2D dim) {
-	// if (contains(pt)) {
-	// return true;
-	// }
-	// if (contains(new Point2D.Double(pt.getX() + dim.getWidth(), pt.getY())))
-	// {
-	// return true;
-	// }
-	// if (contains(new Point2D.Double(pt.getX() + dim.getWidth(), pt.getY() +
-	// dim.getHeight()))) {
-	// return true;
-	// }
-	// if (contains(new Point2D.Double(pt.getX(), pt.getY() + dim.getHeight())))
-	// {
-	// return true;
-	// }
-	// return false;
-	// }
-	//	
-	// public boolean intersect(Positionable p) {
-	// return intersect(p.getPosition(), p.getSize());
-	// }
-
 	public boolean isShielded() {
 		return shield > 0;
-	}
-
-	public String getCoords(double deltaX, double deltaY) {
-		final int x1 = (int) (getMinX() + deltaX);
-		final int y1 = (int) (getMinY() + deltaY);
-		final int x2 = (int) (getMinX() + getWidth() + deltaX);
-		final int y2 = (int) (getMinY() + getHeight() + deltaY);
-		return "" + x1 + "," + y1 + "," + x2 + "," + y2;
 	}
 
 	public void moveSvek(double deltaX, double deltaY) {
 		this.minX += deltaX;
 		this.minY += deltaY;
 	}
-	
-	
+
 	public static IEntityImage printEntity(IEntity ent, DotData dotData) {
 
 		final IEntityImage image;
@@ -295,7 +252,7 @@ public class Shape implements Positionable {
 		}
 		return image;
 	}
-	
+
 	private static IEntityImage createEntityImageBlock(DotData dotData, IEntity ent) {
 		if (ent.getEntityType() == EntityType.CLASS || ent.getEntityType() == EntityType.ABSTRACT_CLASS
 				|| ent.getEntityType() == EntityType.INTERFACE || ent.getEntityType() == EntityType.ENUM) {

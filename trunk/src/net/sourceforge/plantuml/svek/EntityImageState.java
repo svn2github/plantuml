@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -62,6 +63,7 @@ public class EntityImageState extends AbstractEntityImage {
 	public static final int CORNER = 25;
 	final private TextBlock desc;
 	final private TextBlock fields;
+	final private List<Url> url;
 
 	final public static int MARGIN = 5;
 	final public static int MARGIN_LINE = 5;
@@ -79,6 +81,8 @@ public class EntityImageState extends AbstractEntityImage {
 		for (Member att : entity.getFieldsToDisplay()) {
 			list.addAll(StringUtils.getWithNewlines(att.getDisplay(true)));
 		}
+		
+		this.url = entity.getUrls();
 
 		this.fields = TextBlockUtils.create(list, new FontConfiguration(getFont(FontParam.STATE_ATTRIBUTE, stereotype),
 				getFontColor(FontParam.STATE_ATTRIBUTE, stereotype)), HorizontalAlignement.LEFT, skinParam);
@@ -94,6 +98,9 @@ public class EntityImageState extends AbstractEntityImage {
 	}
 
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
+		}
 		final StringBounder stringBounder = ug.getStringBounder();
 		final Dimension2D dimTotal = getDimension(stringBounder);
 		final Dimension2D dimDesc = desc.calculateDimension(stringBounder);
@@ -127,7 +134,10 @@ public class EntityImageState extends AbstractEntityImage {
 		final double xFields = xTheoricalPosition + MARGIN;
 		final double yFields = yLine + MARGIN_LINE;
 		fields.drawU(ug, xFields, yFields);
-
+		
+		if (url.size()>0) {
+			ug.closeAction();
+		}
 	}
 
 	public ShapeType getShapeType() {

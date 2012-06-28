@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8021 $
  *
  */
 package net.sourceforge.plantuml;
@@ -67,5 +67,19 @@ public abstract class Log {
 		sb.append(s);
 		return sb.toString();
 
+	}
+
+	public static void println(Object s) {
+		if (header != null) {
+			System.err.println(header + " " + s);
+		} else {
+			System.err.println("L = " + s);
+		}
+	}
+
+	private static String header;
+
+	public static void header(String s) {
+		header = s;
 	}
 }

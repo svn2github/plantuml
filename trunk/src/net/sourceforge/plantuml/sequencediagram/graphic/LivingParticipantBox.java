@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7880 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -67,8 +67,8 @@ public class LivingParticipantBox implements InGroupable {
 		final double right = lifeLine.getRightShift(y);
 		assert right >= 0 : "right=" + right;
 		final double centerX = participantBox.getCenterX(stringBounder);
-		// System.err.println("AZERTY " + y + " centerX=" + centerX + " left=" + left + " right=" + right);
-		// System.err.println("Attention, null for segment");
+		// Log.println("AZERTY " + y + " centerX=" + centerX + " left=" + left + " right=" + right);
+		// Log.println("Attention, null for segment");
 		return new SegmentColored(centerX - left, centerX + right, null, lifeLine.shadowing());
 	}
 

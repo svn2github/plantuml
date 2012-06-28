@@ -45,6 +45,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.Reference;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
@@ -67,8 +68,8 @@ public class CommandReferenceOverSeveral extends SingleLineCommand2<SequenceDiag
 
 	@Override
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final HtmlColor backColorElement = HtmlColor.getColorIfValid(arg.get("REF").get(0));
-		// final HtmlColor backColorGeneral = HtmlColor.getColorIfValid(arg.get("REF").get(1));
+		final HtmlColor backColorElement = HtmlColorUtils.getColorIfValid(arg.get("REF").get(0));
+		// final HtmlColor backColorGeneral = HtmlColorUtils.getColorIfValid(arg.get("REF").get(1));
 		
 		final List<String> participants = StringUtils.splitComma(arg.get("PARTS").get(0));
 		final String url = arg.get("URL").get(0);

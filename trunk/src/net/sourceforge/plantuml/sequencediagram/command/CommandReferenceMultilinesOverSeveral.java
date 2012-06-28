@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Note;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.Reference;
@@ -62,8 +63,8 @@ public class CommandReferenceMultilinesOverSeveral extends CommandMultilines<Seq
 
 	public CommandExecutionResult execute(List<String> lines) {
 		final List<String> line0 = StringUtils.getSplit(getStartingPattern(), lines.get(0).trim());
-		final HtmlColor backColorElement = HtmlColor.getColorIfValid(line0.get(0));
-		// final HtmlColor backColorGeneral = HtmlColor.getColorIfValid(line0.get(1));
+		final HtmlColor backColorElement = HtmlColorUtils.getColorIfValid(line0.get(0));
+		// final HtmlColor backColorGeneral = HtmlColorUtils.getColorIfValid(line0.get(1));
 
 		final List<String> participants = StringUtils.splitComma(line0.get(1));
 		final List<Participant> p = new ArrayList<Participant>();
@@ -75,7 +76,7 @@ public class CommandReferenceMultilinesOverSeveral extends CommandMultilines<Seq
 
 		Url u = null;
 		if (strings.size() > 0) {
-			u = Note.extractUrl(strings.get(0));
+			u = StringUtils.extractUrl(strings.get(0));
 		}
 		if (u != null) {
 			strings = strings.subList(1, strings.size());

@@ -38,6 +38,7 @@ import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -51,6 +52,7 @@ import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<ClassDiagram> {
@@ -58,6 +60,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 	enum Mode {
 		EXTENDS, IMPLEMENTS
 	};
+
 	public CommandCreateEntityClassMultilines2(ClassDiagram diagram) {
 		super(diagram, getRegexConcat());
 	}
@@ -76,6 +79,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
 				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("\\s*\\{\\s*$"));
 	}
@@ -87,18 +91,31 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		if (entity == null) {
 			return CommandExecutionResult.error("No such entity");
 		}
-		for (String s : lines.subList(1, lines.size() - 1)) {
+		lines = lines.subList(1, lines.size() - 1);
+		final Url url;
+		if (lines.size() > 0) {
+			url = StringUtils.extractUrl(lines.get(0).toString());
+		} else {
+			url = null;
+		}
+		if (url != null) {
+			lines = lines.subList(1, lines.size());
+		}
+		for (String s : lines) {
 			if (s.length() > 0 && VisibilityModifier.isVisibilityCharacter(s.charAt(0))) {
 				getSystem().setVisibilityModifierPresent(true);
 			}
 			entity.addFieldOrMethod(s);
+		}
+		if (url != null) {
+			entity.addUrl(url);
 		}
 
 		manageExtends(getSystem(), line0, entity);
 
 		return CommandExecutionResult.ok();
 	}
-	
+
 	private static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final IEntity entity) {
 		if (arg.get("EXTENDS").get(1) != null) {
 			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
@@ -120,8 +137,6 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 			system.addLink(link);
 		}
 	}
-
-
 
 	private IEntity executeArg0(Map<String, RegexPartialMatch> arg) {
 
@@ -151,6 +166,9 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+
 		if (generic != null) {
 			entity.setGeneric(generic);
 		}

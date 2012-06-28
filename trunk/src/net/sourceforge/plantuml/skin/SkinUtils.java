@@ -28,13 +28,15 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.skin;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sourceforge.plantuml.Log;
 
 public class SkinUtils {
 
@@ -58,7 +60,7 @@ public class SkinUtils {
 			return result;
 		}
 		for (String e : errors) {
-			System.err.println(e);
+			Log.println("err="+e);
 		}
 		return null;
 	}

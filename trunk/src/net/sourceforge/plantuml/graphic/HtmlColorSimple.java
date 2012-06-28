@@ -27,51 +27,51 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
+ * 
+ * Revision $Revision: 7946 $
  *
  */
-package net.sourceforge.plantuml.ugraphic;
+package net.sourceforge.plantuml.graphic;
 
 import java.awt.Color;
 
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.ugraphic.ColorChangerMonochrome;
 
-public class UGradient {
+public class HtmlColorSimple implements HtmlColor {
 
-	private final HtmlColor color1;
-	private final HtmlColor color2;
 
-	public UGradient(HtmlColor color1, HtmlColor color2) {
-		if (color1 == null || color2 == null) {
-			throw new IllegalArgumentException();
+	private final Color color;
+	private final boolean monochrome;
+
+	@Override
+	public int hashCode() {
+		return color.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof HtmlColorSimple == false) {
+			return false;
 		}
-		this.color1 = color1;
-		this.color2 = color2;
+		return this.color.equals(((HtmlColorSimple) other).color);
 	}
 
-	public final HtmlColor getColor1() {
-		return color1;
+
+	HtmlColorSimple(Color c, boolean monochrome) {
+		this.color = c;
+		this.monochrome = monochrome;
 	}
 
-	public final HtmlColor getColor2() {
-		return color2;
+
+	public Color getColor999() {
+		return color;
 	}
 
-	public final Color getColor(ColorMapper mapper, double coeff) {
-		if (coeff > 1 || coeff < 0) {
-			throw new IllegalArgumentException("c=" + coeff);
+	public HtmlColorSimple asMonochrome() {
+		if (monochrome) {
+			throw new IllegalStateException();
 		}
-		final Color c1 = mapper.getMappedColor(color1);
-		final Color c2 = mapper.getMappedColor(color2);
-		final int vred = c2.getRed() - c1.getRed();
-		final int vgreen = c2.getGreen() - c1.getGreen();
-		final int vblue = c2.getBlue() - c1.getBlue();
-
-		final int red = c1.getRed() + (int) (coeff * vred);
-		final int green = c1.getGreen() + (int) (coeff * vgreen);
-		final int blue = c1.getBlue() + (int) (coeff * vblue);
-
-		return new Color(red, green, blue);
-
+		return new HtmlColorSimple(new ColorChangerMonochrome().getChangedColor(color), true);
 	}
 
 }

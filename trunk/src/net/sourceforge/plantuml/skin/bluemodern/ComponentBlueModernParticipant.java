@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 7950 $
  *
  */
 package net.sourceforge.plantuml.skin.bluemodern;
@@ -63,6 +63,7 @@ public class ComponentBlueModernParticipant extends AbstractTextualComponent {
 
 		final ShadowShape shadowShape = new ShadowShape(getTextWidth(stringBounder), getTextHeight(stringBounder), 10);
 		ug.translate(shadowview, shadowview);
+		ug.getParam().setColor(null);
 		shadowShape.drawU(ug);
 		ug.translate(-shadowview, -shadowview);
 

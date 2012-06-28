@@ -41,6 +41,7 @@ import java.net.Socket;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.SourceStringReader;
 
 class AcceptTelnetClient extends Thread {
@@ -64,7 +65,7 @@ class AcceptTelnetClient extends Thread {
 			if (s == null) {
 				return sb.toString();
 			}
-			System.err.println("S=" + s);
+			Log.println("S=" + s);
 			sb.append(s);
 			sb.append('\n');
 			if (s.equalsIgnoreCase("@enduml")) {
@@ -76,7 +77,7 @@ class AcceptTelnetClient extends Thread {
 	public void run() {
 		try {
 			final String uml = runInternal();
-			System.err.println("UML=" + uml);
+			Log.println("UML=" + uml);
 			SourceStringReader s = new SourceStringReader(uml);
 			s.generateImage(os, new FileFormatOption(FileFormat.ATXT));
 			os.close();

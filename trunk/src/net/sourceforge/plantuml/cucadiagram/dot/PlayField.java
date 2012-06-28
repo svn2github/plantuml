@@ -48,7 +48,6 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
-import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.Group;
@@ -58,7 +57,7 @@ import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -80,7 +79,6 @@ import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
-import net.sourceforge.plantuml.ugraphic.URectangle;
 
 public final class PlayField {
 
@@ -129,7 +127,7 @@ public final class PlayField {
 		}
 
 		for (IEntity ent : entities) {
-			// System.err.println("ENT=" + ent);
+			// Log.println("ENT=" + ent);
 			if (((IEntityMutable) ent).isGroup() && ((Group) ent).zisAutonom() == false) {
 				assert clusters.containsKey(ent);
 				continue;
@@ -162,7 +160,7 @@ public final class PlayField {
 		}
 
 		for (Link link : links) {
-			// System.err.println("LINK=" + link);
+			// Log.println("LINK=" + link);
 			if (entities.contains(link.getEntity1()) && entities.contains(link.getEntity2())) {
 				final Block b1 = getToto(link.getEntity1());
 				final Block b2 = getToto(link.getEntity2());
@@ -236,7 +234,7 @@ public final class PlayField {
 			// PositionableUtils.addMargin(p.getEnd(), -marginDecorator,
 			// -marginDecorator), p);
 			if (p.getLabel() != null) {
-				ug.getParam().setColor(HtmlColor.BLACK);
+				ug.getParam().setColor(HtmlColorUtils.BLACK);
 				drawLabel(ug, p);
 			}
 		}
@@ -290,7 +288,7 @@ public final class PlayField {
 
 	public Dimension2D solve() throws IOException, InterruptedException {
 		final GraphvizSolverB solver = new GraphvizSolverB();
-		// System.err.println("sub=" + root.getSubClusters());
+		// Log.println("sub=" + root.getSubClusters());
 		final Dimension2D dim = Dimension2DDouble.delta(solver.solve(root, paths.keySet()), 20);
 		return dim;
 	}

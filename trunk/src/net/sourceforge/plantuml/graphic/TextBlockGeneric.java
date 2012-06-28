@@ -33,10 +33,11 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.Collections;
+import java.util.List;
 
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
@@ -68,6 +69,10 @@ public class TextBlockGeneric implements TextBlock {
 		ug.getParam().setStroke(new UStroke());
 
 		textBlock.drawU(ug, x, y);
+	}
+
+	public List<Url> getUrls() {
+		return textBlock.getUrls();
 	}
 
 }

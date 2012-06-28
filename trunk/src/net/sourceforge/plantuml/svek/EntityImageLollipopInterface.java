@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -55,14 +56,14 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 
 	private static final int SIZE = 10;
 	private final TextBlock desc;
-	final private Url url;
+	final private List<Url> url;
 
 	public EntityImageLollipopInterface(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.CLASS,
 				stereotype), getFontColor(FontParam.CLASS, stereotype)), HorizontalAlignement.CENTER, skinParam);
-		this.url = entity.getUrl();
+		this.url = entity.getUrls();
 
 	}
 
@@ -79,8 +80,8 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 		ug.getParam().setStroke(new UStroke(1.5));
 		ug.getParam().setColor(getColor(ColorParam.classBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.classBackground, getStereo()));
-		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
 		}
 		ug.draw(xTheoricalPosition, yTheoricalPosition, circle);
 		ug.getParam().setStroke(new UStroke());
@@ -92,7 +93,7 @@ public class EntityImageLollipopInterface extends AbstractEntityImage {
 		final double x = xTheoricalPosition + SIZE / 2 - widthDesc / 2;
 		final double y = yTheoricalPosition + SIZE;
 		desc.drawU(ug, x, y);
-		if (url != null) {
+		if (url.size()>0) {
 			ug.closeAction();
 		}
 	}

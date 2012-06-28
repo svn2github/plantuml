@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8047 $
  *
  */
 package net.sourceforge.plantuml;
@@ -249,7 +249,7 @@ public class StringUtils {
 
 	public static boolean isCJK(char c) {
 		final Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
-		System.err.println(block);
+		Log.println("block="+block);
 		return false;
 	}
 
@@ -430,5 +430,22 @@ public class StringUtils {
 	public static boolean isMethod(String s) {
 		return s.contains("(") || s.contains(")");
 	}
+	
+	public static Url extractUrl(String s) {
+		final Pattern p = Pattern.compile("(?i)^\\[\\[([^| \\]\\[]*)(?:\\|([^| \\]\\[]*))?(?: ([^| \\]\\[]*))?\\]\\]$");
+		final Matcher m = p.matcher(s.trim());
+		if (m.matches() == false) {
+			return null;
+		}
+		return new Url(m.group(1), m.group(2));
+	}
+	
+	public static <O> List<O> merge(List<O> l1, List<O> l2) {
+		final List<O> result = new ArrayList<O>(l1);
+		result.addAll(l2);
+		return Collections.unmodifiableList(result);
+	}
+
+
 
 }

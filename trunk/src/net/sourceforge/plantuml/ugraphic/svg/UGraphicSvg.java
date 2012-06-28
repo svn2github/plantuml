@@ -40,6 +40,7 @@ import java.io.OutputStream;
 import javax.xml.transform.TransformerException;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.UnusedSpace;
@@ -141,8 +142,8 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void startUrl(String url, String tooltip) {
-		getGraphicObject().openLink(url, tooltip);
+	public void startUrl(Url url) {
+		getGraphicObject().openLink(url.getUrl(), url.getTooltip());
 	}
 
 	public void closeAction() {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7903 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -39,7 +39,12 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sourceforge.plantuml.EnsureVisible;
+import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.UnusedSpace;
@@ -57,7 +62,7 @@ import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UText;
 
-public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
+public class UGraphicG2d extends AbstractUGraphic<Graphics2D> implements EnsureVisible {
 
 	private final BufferedImage bufferedImage;
 
@@ -79,12 +84,12 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 			g2d.transform(affineTransform);
 		}
 		this.bufferedImage = bufferedImage;
-		registerDriver(URectangle.class, new DriverRectangleG2d(dpiFactor));
-		registerDriver(UText.class, new DriverTextG2d());
+		registerDriver(URectangle.class, new DriverRectangleG2d(dpiFactor, this));
+		registerDriver(UText.class, new DriverTextG2d(this));
 		registerDriver(ULine.class, new DriverLineG2d(dpiFactor));
 		registerDriver(UPixel.class, new DriverPixelG2d());
-		registerDriver(UPolygon.class, new DriverPolygonG2d(dpiFactor));
-		registerDriver(UEllipse.class, new DriverEllipseG2d(dpiFactor));
+		registerDriver(UPolygon.class, new DriverPolygonG2d(dpiFactor, this));
+		registerDriver(UEllipse.class, new DriverEllipseG2d(dpiFactor, this));
 		registerDriver(UImage.class, new DriverImageG2d());
 		registerDriver(DotPath.class, new DriverDotPathG2d());
 		registerDriver(UPath.class, new DriverPathG2d(dpiFactor));
@@ -121,11 +126,11 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 		// getTranslateX()), Math.round(ypos + getTranslateY()));
 	}
 
-//	static public String getSvgString(ColorMapper colorMapper, UDrawable udrawable) throws IOException {
-//		final UGraphicSvg ug = new UGraphicSvg(colorMapper, false);
-//		udrawable.drawU(ug);
-//		return CucaDiagramFileMaker.getSvg(ug);
-//	}
+	// static public String getSvgString(ColorMapper colorMapper, UDrawable udrawable) throws IOException {
+	// final UGraphicSvg ug = new UGraphicSvg(colorMapper, false);
+	// udrawable.drawU(ug);
+	// return CucaDiagramFileMaker.getSvg(ug);
+	// }
 
 	protected final double getDpiFactor() {
 		return dpiFactor;
@@ -140,10 +145,20 @@ public class UGraphicG2d extends AbstractUGraphic<Graphics2D> {
 
 	}
 
-	public void startUrl(String url, String tooltip) {
+	private final List<Url> urls = new ArrayList<Url>();
+
+	public void startUrl(Url url) {
+		urls.add(url);
 	}
-	
+
 	public void closeAction() {
+		urls.remove(urls.size() - 1);
+	}
+
+	public void ensureVisible(double x, double y) {
+		for (Url u : urls) {
+			u.ensureVisible(x, y);
+		}
 	}
 
 }

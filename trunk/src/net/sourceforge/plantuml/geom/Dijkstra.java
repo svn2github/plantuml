@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.geom;
@@ -60,7 +60,7 @@ public class Dijkstra {
 	}
 
 	public void addLink(int n1, int n2, double d) {
-		System.err.println("Adding " + n1 + " " + n2 + " " + d);
+// Log.println("Adding " + n1 + " " + n2 + " " + d);
 		if (n1 == n2) {
 			throw new IllegalArgumentException();
 		}

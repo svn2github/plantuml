@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7906 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -82,12 +82,12 @@ public class GraphicStrings implements IEntityImage {
 	private final ColorMapper colorMapper = new ColorMapperIdentity();
 
 	public GraphicStrings(List<String> strings) {
-		this(strings, new UFont("SansSerif", Font.BOLD, 14), HtmlColor.getColorIfValid("#33FF02"), HtmlColor.BLACK,
+		this(strings, new UFont("SansSerif", Font.BOLD, 14), HtmlColorUtils.getColorIfValid("#33FF02"), HtmlColorUtils.BLACK,
 				null, null, false);
 	}
 
 	public GraphicStrings(List<String> strings, BufferedImage image) {
-		this(strings, new UFont("SansSerif", Font.BOLD, 14), HtmlColor.getColorIfValid("#33FF02"), HtmlColor.BLACK,
+		this(strings, new UFont("SansSerif", Font.BOLD, 14), HtmlColorUtils.getColorIfValid("#33FF02"), HtmlColorUtils.BLACK,
 				image, null, false);
 	}
 

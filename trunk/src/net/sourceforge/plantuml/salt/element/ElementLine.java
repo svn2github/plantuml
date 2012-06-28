@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
@@ -52,7 +53,7 @@ public class ElementLine implements Element {
 			return;
 		}
 		final HtmlColor old = ug.getParam().getColor();
-		ug.getParam().setColor(HtmlColor.getColorIfValid("#AAAAAA"));
+		ug.getParam().setColor(HtmlColorUtils.getColorIfValid("#AAAAAA"));
 		ug.draw(x, y, new ULine(dimToUse.getWidth(), 0));
 		ug.getParam().setColor(old);
 	}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7857 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
@@ -77,8 +78,8 @@ public class Stereotype implements CharSequence {
 				this.label = null;
 			}
 			final String colName = mCircleSprite.group(2);
-			final HtmlColor col = HtmlColor.getColorIfValid(colName);
-			this.htmlColor = col == null ? HtmlColor.BLACK : col;
+			final HtmlColor col = HtmlColorUtils.getColorIfValid(colName);
+			this.htmlColor = col == null ? HtmlColorUtils.BLACK : col;
 			this.sprite = mCircleSprite.group(1);
 			this.character = '\0';
 		} else if (mCircleChar.find()) {
@@ -88,7 +89,7 @@ public class Stereotype implements CharSequence {
 				this.label = null;
 			}
 			final String colName = mCircleChar.group(2);
-			this.htmlColor = HtmlColor.getColorIfValid(colName);
+			this.htmlColor = HtmlColorUtils.getColorIfValid(colName);
 			this.character = mCircleChar.group(1).charAt(0);
 			this.sprite = null;
 		} else {

@@ -28,16 +28,15 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8023 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.SpecificBackcolorable;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 
@@ -66,7 +65,7 @@ public class Note implements Event, SpecificBackcolorable {
 		this.p2 = p2;
 		this.position = position;
 		if (strings != null && strings.size() > 0) {
-			this.url = extractUrl(strings.get(0));
+			this.url = StringUtils.extractUrl(strings.get(0));
 		} else {
 			this.url = null;
 		}
@@ -76,15 +75,6 @@ public class Note implements Event, SpecificBackcolorable {
 		} else {
 			this.strings = strings.subList(1, strings.size());
 		}
-	}
-
-	public static Url extractUrl(String s) {
-		final Pattern p = Pattern.compile("(?i)^\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\]$");
-		final Matcher m = p.matcher(s.trim());
-		if (m.matches() == false) {
-			return null;
-		}
-		return new Url(m.group(1), m.group(2));
 	}
 
 	public Participant getParticipant() {

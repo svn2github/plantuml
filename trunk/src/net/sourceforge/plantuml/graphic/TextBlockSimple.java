@@ -28,12 +28,11 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +41,8 @@ import java.util.List;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmbededDiagram;
 import net.sourceforge.plantuml.SpriteContainer;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 class TextBlockSimple implements TextBlock {
@@ -63,6 +62,15 @@ class TextBlockSimple implements TextBlock {
 			}
 		}
 	}
+	
+	public List<Url> getUrls() {
+		final List<Url> result = new ArrayList<Url>();
+		for (Line line : lines) {
+			result.addAll(line.getUrls());
+		}
+		return Collections.unmodifiableList(result);
+	}
+
 
 	private List<SingleLine> createLinesForStereotype(FontConfiguration fontConfiguration, Stereotype s,
 			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
@@ -104,5 +112,6 @@ class TextBlockSimple implements TextBlock {
 			y += line.calculateDimension(ug.getStringBounder()).getHeight();
 		}
 	}
+
 
 }

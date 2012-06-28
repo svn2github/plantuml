@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.sudoku;
@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.png.PngIO;
@@ -101,13 +101,13 @@ public class GraphicsSudoku {
 				final int num = sudoku.getGiven(x, y);
 				if (num > 0) {
 					final TextBlock text = TextBlockUtils.create(Arrays.asList("" + num), new FontConfiguration(
-							numberFont, HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
+							numberFont, HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 					text.drawU(ug, numberxOffset + x * cellWidth, numberyOffset + y * cellHeight);
 				}
 			}
 		}
 
-		ug.getParam().setBackcolor(HtmlColor.BLACK);
+		ug.getParam().setBackcolor(HtmlColorUtils.BLACK);
 		ug.getParam().setColor(null);
 		for (int i = 0; i < 10; i++) {
 			final boolean bold = i % boldWidth == 0;
@@ -125,7 +125,7 @@ public class GraphicsSudoku {
 		texts.add("http://plantuml.sourceforge.net");
 		texts.add("Seed " + Long.toString(sudoku.getSeed(), 36));
 		texts.add("Difficulty " + sudoku.getRatting());
-		final TextBlock textBlock = TextBlockUtils.create(texts, new FontConfiguration(font, HtmlColor.BLACK),
+		final TextBlock textBlock = TextBlockUtils.create(texts, new FontConfiguration(font, HtmlColorUtils.BLACK),
 				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		textBlock.drawU(ug, 0, 0);
 		g3d.dispose();

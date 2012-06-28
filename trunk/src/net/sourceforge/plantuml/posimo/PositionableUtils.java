@@ -160,7 +160,7 @@ public class PositionableUtils {
 			} else {
 				max = candidat;
 			}
-			// System.err.println("min=" + min + " max=" + max);
+			// Log.println("min=" + min + " max=" + max);
 		}
 		final double candidat = (min + max) / 2.0;
 		return move(toMove, deltaX * candidat, deltaY * candidat);

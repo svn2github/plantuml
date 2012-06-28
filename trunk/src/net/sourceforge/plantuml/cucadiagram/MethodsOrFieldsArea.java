@@ -33,15 +33,17 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
+import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -51,7 +53,6 @@ import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 import net.sourceforge.plantuml.skin.rose.Rose;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.PlacementStrategyVisibility;
 import net.sourceforge.plantuml.ugraphic.PlacementStrategyY1Y2Left;
 import net.sourceforge.plantuml.ugraphic.UFont;
@@ -88,15 +89,17 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		double x = 0;
 		double y = 0;
+		double smallIcon = 0;
+		if (hasSmallIcon()) {
+			smallIcon = skinParam.getCircledCharacterRadius() + 3;
+		}
 		for (Member m : members) {
 			final TextBlock bloc = createTextBlock(m);
 			final Dimension2D dim = bloc.calculateDimension(stringBounder);
-			y += dim.getHeight();
 			x = Math.max(dim.getWidth(), x);
+			y += dim.getHeight();
 		}
-		if (hasSmallIcon()) {
-			x += skinParam.getCircledCharacterRadius() + 3;
-		}
+		x += smallIcon;
 		return new Dimension2DDouble(x, y);
 	}
 
@@ -110,11 +113,45 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 		if (m.isStatic()) {
 			config = config.underline();
 		}
-		final TextBlock bloc = TextBlockUtils.create(StringUtils.getWithNewlines(s), config, HorizontalAlignement.LEFT, skinParam);
-		return bloc;
+		final TextBlock bloc = TextBlockUtils.create(StringUtils.getWithNewlines(s), config, HorizontalAlignement.LEFT,
+				skinParam);
+		return new TextBlockTracer(m, bloc);
 	}
 
-	public void drawU(UGraphic ug, double x, double y, double widthToUse) {
+	static class TextBlockTracer implements TextBlock {
+
+		private final TextBlock bloc;
+		private final Url url;
+
+		public TextBlockTracer(Member m, TextBlock bloc) {
+			this.bloc = bloc;
+			this.url = m.getUrl();
+		}
+
+		public void drawU(UGraphic ug, double x, double y) {
+			if (url != null) {
+				ug.startUrl(url);
+			}
+			bloc.drawU(ug, x, y);
+			if (url != null) {
+				ug.closeAction();
+			}
+		}
+		public List<Url> getUrls() {
+			if (url!=null) {
+				return Collections.singletonList(url);
+			}
+			return Collections.emptyList();
+		}
+
+		public Dimension2D calculateDimension(StringBounder stringBounder) {
+			final Dimension2D dim = bloc.calculateDimension(stringBounder);
+			return dim;
+		}
+
+	}
+
+	public void drawU(UGraphic ug, final double x, final double y, double widthToUse) {
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
 		final ULayoutGroup group;
 		if (hasSmallIcon()) {
@@ -146,6 +183,10 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 
 				public Dimension2D calculateDimension(StringBounder stringBounder) {
 					return new Dimension2DDouble(1, 1);
+				}
+
+				public List<Url> getUrls() {
+					return Collections.emptyList();
 				}
 			};
 		}

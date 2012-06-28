@@ -28,20 +28,19 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.BasicStroke;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Log;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UText;
 
@@ -49,10 +48,12 @@ class TileText implements TextBlock {
 
 	private final String text;
 	private final FontConfiguration fontConfiguration;
+	private final Url url;
 
-	public TileText(String text, FontConfiguration fontConfiguration) {
+	public TileText(String text, FontConfiguration fontConfiguration, Url url) {
 		this.fontConfiguration = fontConfiguration;
 		this.text = text;
+		this.url = url;
 	}
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
@@ -76,6 +77,9 @@ class TileText implements TextBlock {
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
+		if (url!=null) {
+			ug.startUrl(url);
+		}
 		ug.getParam().setColor(fontConfiguration.getColor());
 
 		final StringTokenizer tokenizer = new StringTokenizer(text, "\t", true);
@@ -95,6 +99,9 @@ class TileText implements TextBlock {
 				}
 			}
 		}
+		if (url!=null) {
+			ug.closeAction();
+		}
 	}
 
 	double getWidth(StringBounder stringBounder) {
@@ -112,6 +119,13 @@ class TileText implements TextBlock {
 			}
 		}
 		return x;
+	}
+
+	public List<Url> getUrls() {
+		if (url!=null) {
+			return Collections.singletonList(url);
+		}
+		return Collections.emptyList();
 	}
 
 }

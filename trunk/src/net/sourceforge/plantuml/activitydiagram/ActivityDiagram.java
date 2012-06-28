@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7833 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram;
@@ -140,24 +140,24 @@ public class ActivityDiagram extends CucaDiagram {
 	}
 
 	public IEntity createInnerActivity() {
-		// System.err.println("createInnerActivity A");
+		// Log.println("createInnerActivity A");
 		final String code = "##" + UniqueSequence.getValue();
 		final IEntityMutable g = getOrCreateGroup(code, code, null, GroupType.INNER_ACTIVITY, getCurrentGroup());
 		// g.setRankdir(Rankdir.LEFT_TO_RIGHT);
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
-		// System.err.println("createInnerActivity B "+getCurrentGroup());
+		// Log.println("createInnerActivity B "+getCurrentGroup());
 		return g;
 	}
 
 	public void concurrentActivity(String name) {
-		// System.err.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
+		// Log.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
 		if (getCurrentGroup().zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
 			// getCurrentGroup().setRankdir(Rankdir.LEFT_TO_RIGHT);
 			endGroup();
-			System.err.println("endgroup");
+			//Log.println("endgroup");
 		}
-		// System.err.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
+		// Log.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
 		final String code = "##" + UniqueSequence.getValue();
 		if (getCurrentGroup().zgetGroupType() != GroupType.INNER_ACTIVITY) {
 			throw new IllegalStateException("type=" + getCurrentGroup().zgetGroupType());

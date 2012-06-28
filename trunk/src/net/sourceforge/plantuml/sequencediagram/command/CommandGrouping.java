@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.command;
@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.GroupingType;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
 
@@ -53,8 +54,8 @@ public class CommandGrouping extends SingleLineCommand<SequenceDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String type = arg.get(0).toLowerCase();
-		final HtmlColor backColorElement = HtmlColor.getColorIfValid(arg.get(1));
-		final HtmlColor backColorGeneral = HtmlColor.getColorIfValid(arg.get(2));
+		final HtmlColor backColorElement = HtmlColorUtils.getColorIfValid(arg.get(1));
+		final HtmlColor backColorGeneral = HtmlColorUtils.getColorIfValid(arg.get(2));
 		String comment = arg.get(3);
 		if ("group".equals(type) && StringUtils.isEmpty(comment)) {
 			comment = "group";

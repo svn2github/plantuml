@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7847 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -78,7 +78,7 @@ abstract class Arrow extends GraphicalElement implements InGroupable {
 
 	protected final void startUrl(UGraphic ug) {
 		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+			ug.startUrl(url);
 		}
 	}
 

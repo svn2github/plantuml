@@ -33,6 +33,9 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+import java.util.List;
+
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.svek.IEntityImage;
 
 public interface IEntityMutable extends IEntity, Group {
@@ -41,6 +44,6 @@ public interface IEntityMutable extends IEntity, Group {
 
 	public boolean isGroup();
 
-	public void overideImage42(IEntityImage img);
+	public void overideImage42(IEntityImage img, List<Url> url);
 
 }

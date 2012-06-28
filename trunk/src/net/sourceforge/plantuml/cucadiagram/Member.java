@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public interface Member {
@@ -44,5 +45,7 @@ public interface Member {
 	public  boolean isAbstract() ;
 	
 	public  VisibilityModifier getVisibilityModifier() ;
+	
+	public Url getUrl();
 
 }

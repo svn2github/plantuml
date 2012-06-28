@@ -28,13 +28,15 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 8038 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 interface Line {
@@ -44,5 +46,7 @@ interface Line {
 	void drawU(UGraphic ug, double x, double y);
 
 	HorizontalAlignement getHorizontalAlignement();
+
+	List<Url> getUrls();
 
 }

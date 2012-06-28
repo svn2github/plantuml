@@ -44,7 +44,7 @@ import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 
@@ -88,7 +88,7 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 		}
 		final String color = arg.get("COLOR").get(0);
 		if (color != null) {
-			p.zsetBackColor(HtmlColor.getColorIfValid(color));
+			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

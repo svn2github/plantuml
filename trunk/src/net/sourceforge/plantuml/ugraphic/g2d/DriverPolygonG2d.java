@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -38,6 +38,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 
+import net.sourceforge.plantuml.EnsureVisible;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
 import net.sourceforge.plantuml.ugraphic.UParam;
@@ -47,9 +48,11 @@ import net.sourceforge.plantuml.ugraphic.UShape;
 public class DriverPolygonG2d extends DriverShadowedG2d implements UDriver<Graphics2D> {
 
 	private final double dpiFactor;
+	private final EnsureVisible visible;
 
-	public DriverPolygonG2d(double dpiFactor) {
+	public DriverPolygonG2d(double dpiFactor, EnsureVisible visible) {
 		this.dpiFactor = dpiFactor;
+		this.visible = visible;
 	}
 
 	public void draw(UShape ushape, double x, double y, ColorMapper mapper, UParam param, Graphics2D g2d) {
@@ -63,6 +66,7 @@ public class DriverPolygonG2d extends DriverShadowedG2d implements UDriver<Graph
 		for (Point2D pt : shape.getPoints()) {
 			final double xp = pt.getX() + x;
 			final double yp = pt.getY() + y;
+			visible.ensureVisible(xp, yp);
 			if (first) {
 				path.moveTo((float) xp, (float) yp);
 			} else {

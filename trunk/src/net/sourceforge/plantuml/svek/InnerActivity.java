@@ -82,5 +82,4 @@ public final class InnerActivity implements IEntityImage {
 		return 0;
 	}
 
-
 }

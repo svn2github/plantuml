@@ -33,12 +33,13 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 
@@ -89,6 +90,10 @@ public class TextBlockArrow implements TextBlock {
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		return new Dimension2DDouble(size, size);
+	}
+
+	public List<Url> getUrls() {
+		return Collections.emptyList();
 	}
 
 }

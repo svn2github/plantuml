@@ -106,7 +106,7 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 			List<CharSequence> strings = StringUtils.manageEmbededDiagrams(in);
 			final Url url;
 			if (strings.size() > 0) {
-				url = Note.extractUrl(strings.get(0).toString());
+				url = StringUtils.extractUrl(strings.get(0).toString());
 			} else {
 				url = null;
 			}

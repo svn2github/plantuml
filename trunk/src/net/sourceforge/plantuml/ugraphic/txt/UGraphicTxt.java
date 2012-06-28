@@ -31,6 +31,7 @@
  */
 package net.sourceforge.plantuml.ugraphic.txt;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.asciiart.TextStringBounder;
 import net.sourceforge.plantuml.asciiart.TranslatedCharArea;
 import net.sourceforge.plantuml.asciiart.UmlCharArea;
@@ -88,7 +89,7 @@ public class UGraphicTxt extends AbstractCommonUGraphic {
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void startUrl(String url, String tooltip) {
+	public void startUrl(Url url) {
 	}
 	
 	public void closeAction() {

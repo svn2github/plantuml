@@ -45,6 +45,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
 import net.sourceforge.plantuml.sequencediagram.Message;
 import net.sourceforge.plantuml.sequencediagram.Participant;
@@ -202,7 +203,7 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 			return CommandExecutionResult.error(error);
 		}
 
-		final HtmlColor activationColor = HtmlColor.getColorIfValid(arg2.get("LIFECOLOR").get(0));
+		final HtmlColor activationColor = HtmlColorUtils.getColorIfValid(arg2.get("LIFECOLOR").get(0));
 
 		if (activationSpec != null) {
 			switch (activationSpec.charAt(0)) {

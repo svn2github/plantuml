@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7911 $
+ * Revision $Revision: 8006 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -50,7 +50,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
@@ -95,7 +94,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	public boolean hasUrl() {
 		for (IEntity entity : entities3().values()) {
-			if (entity.getUrl() != null) {
+			if (entity.getUrls().size()>0) {
 				return true;
 			}
 		}
@@ -263,8 +262,6 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		maker.createFiles(suggestedFile);
 	}
 
-	public static boolean BETA;
-
 	private List<File> createFilesHtml(File suggestedFile) throws IOException {
 		final String name = suggestedFile.getName();
 		final int idx = name.lastIndexOf('.');
@@ -330,7 +327,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		// if (OptionFlags.getInstance().useJavaInsteadOfDot()) {
 		// return createPng2(suggestedFile);
 		// }
-		if (getUmlDiagramType() == UmlDiagramType.COMPOSITE || (BETA && getUmlDiagramType() == UmlDiagramType.CLASS)) {
+		if (getUmlDiagramType() == UmlDiagramType.COMPOSITE) {
 			final CucaDiagramFileMakerBeta maker = new CucaDiagramFileMakerBeta(this);
 			try {
 				maker.createFile(os, getDotStrings(), fileFormat);

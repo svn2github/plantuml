@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 8003 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -77,6 +77,7 @@ import net.sourceforge.plantuml.skin.Skin;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.eps.UGraphicEps;
 import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
+import net.sourceforge.plantuml.ugraphic.html5.UGraphicHtml5;
 import net.sourceforge.plantuml.ugraphic.svg.UGraphicSvg;
 
 public class SequenceDiagramFileMaker implements FileMaker {
@@ -170,6 +171,9 @@ public class SequenceDiagramFileMaker implements FileMaker {
 		} else if (createImage instanceof UGraphicEps) {
 			final UGraphicEps eps = (UGraphicEps) createImage;
 			os.write(eps.getEPSCode().getBytes());
+		} else if (createImage instanceof UGraphicHtml5) {
+			final UGraphicHtml5 html5 = (UGraphicHtml5) createImage;
+			os.write(html5.generateHtmlCode().getBytes());
 		}
 		return new UmlDiagramInfo(fullDimension.getWidth());
 	}
@@ -278,6 +282,8 @@ public class SequenceDiagramFileMaker implements FileMaker {
 			ug = new UGraphicEps(diagram.getSkinParam().getColorMapper(), EpsStrategy.getDefault2());
 		} else if (fileFormat == FileFormat.EPS_TEXT) {
 			ug = new UGraphicEps(diagram.getSkinParam().getColorMapper(), EpsStrategy.WITH_MACRO_AND_TEXT);
+		} else if (fileFormat == FileFormat.HTML5) {
+			ug = new UGraphicHtml5(diagram.getSkinParam().getColorMapper());
 		} else {
 			throw new UnsupportedOperationException();
 		}

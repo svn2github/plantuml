@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7896 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -250,7 +250,7 @@ class DrawableSetInitializer {
 	// final double x1 = drawableSet.getX1(pe);
 	// final double x2 = drawableSet.getX2(stringBounder, pe);
 	// final double missing = preferredWidth - (x2 - x1);
-	// System.err.println("x1=" + x1 + " x2=" + x2 + " preferredWidth=" +
+	// Log.println("x1=" + x1 + " x2=" + x2 + " preferredWidth=" +
 	// preferredWidth + " missing=" + missing);
 	// if (missing > 0) {
 	// constraintSet.getConstraintAfter(last).push(missing);

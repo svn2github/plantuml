@@ -39,6 +39,8 @@ import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -145,8 +147,8 @@ public final class CucaDiagramFileMakerSvek {
 		final Dimension2D finalDimension = Dimension2DDouble.delta(dim, deltaX, deltaY);
 
 		String cmap = null;
-		if (diagram.hasUrl()) {
-			cmap = cmapString(svek2, deltaX, deltaY);
+		if (diagram.hasUrl() && fileFormatOption.getFileFormat() == FileFormat.PNG) {
+			cmap = cmapString(svek2);
 		}
 
 		final String widthwarning = diagram.getSkinParam().getValue("widthwarning");
@@ -165,28 +167,27 @@ public final class CucaDiagramFileMakerSvek {
 		return warningOrError;
 	}
 
-	private String cmapString(CucaDiagramFileMakerSvek2 svek2, double deltaX, double deltaY) {
+	private String cmapString(CucaDiagramFileMakerSvek2 svek2) {
 		final StringBuilder sb = new StringBuilder();
+		int seq = 1;
 		sb.append("<map id=\"unix\" name=\"unix\">\n");
 		for (IEntity ent : diagram.getEntities().values()) {
-			final Url url = ent.getUrl();
-			if (url == null) {
-				continue;
+			List<Url> rev = new ArrayList<Url>(ent.getUrls());
+			// For zlevel order
+			Collections.reverse(rev);
+			for (Url url : rev) {
+				sb.append("<area shape=\"rect\" id=\"id");
+				sb.append(seq++);
+				sb.append("\" href=\"");
+				sb.append(url.getUrl());
+				sb.append("\" title=\"");
+				sb.append(url.getTooltip());
+				sb.append("\" alt=\"\" coords=\"");
+				sb.append(url.getCoords());
+				sb.append("\"/>");
+
+				sb.append("\n");
 			}
-			sb.append("<area shape=\"rect\" id=\"");
-			sb.append(ent.getUid());
-			sb.append("\" href=\"");
-			sb.append(url.getUrl());
-			sb.append("\" title=\"");
-			sb.append(url.getTooltip());
-			sb.append("\" alt=\"\" coords=\"");
-
-			final Shape sh = svek2.getBibliotekon().getShape(ent);
-			sb.append(sh.getCoords(deltaX, deltaY));
-
-			sb.append("\"/>");
-
-			sb.append("\n");
 		}
 		sb.append("</map>\n");
 		return sb.toString();

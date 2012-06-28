@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -49,24 +50,22 @@ import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram> {
 
 	public CommandLinkLongActivity(final ActivityDiagram diagram) {
 		super(diagram, getRegexConcat());
 	}
-	
+
 	@Override
 	public String getPatternEnd() {
 		return "(?i)^\\s*([^\"]*)\"(?:\\s+as\\s+([\\p{L}0-9][\\p{L}0-9_.]*))?\\s*(\\<\\<.*\\>\\>)?\\s*(?:in\\s+(\"[^\"]+\"|\\S+))?\\s*(#\\w+)?$";
 	}
-
 
 	static RegexConcat getRegexConcat() {
 		return new RegexConcat(new RegexLeaf("^"), //
@@ -99,24 +98,36 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			entity1.setStereotype(new Stereotype(line0.get("STEREOTYPE").get(0)));
 		}
 		if (line0.get("BACKCOLOR").get(0) != null) {
-			entity1.setSpecificBackcolor(HtmlColor.getColorIfValid(line0.get("BACKCOLOR").get(0)));
+			entity1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("BACKCOLOR").get(0)));
 		}
 		final StringBuilder sb = new StringBuilder();
 
-		if (StringUtils.isNotEmpty(line0.get("DESC").get(0))) {
-			sb.append(line0.get("DESC").get(0));
-			sb.append("\\n");
+		final String desc0 = line0.get("DESC").get(0);
+		Url url = null;
+		if (StringUtils.isNotEmpty(desc0)) {
+			url = StringUtils.extractUrl(desc0);
+			if (url == null) {
+				sb.append(desc0);
+				sb.append("\\n");
+			}
 		}
 		for (int i = 1; i < lines.size() - 1; i++) {
+			if (i == 1 && url == null) {
+				url = StringUtils.extractUrl(lines.get(i));
+				if (url != null) {
+					continue;
+				}
+			}
 			sb.append(lines.get(i));
 			if (i < lines.size() - 2) {
 				sb.append("\\n");
 			}
 		}
 
-		final List<String> lineLast = StringUtils.getSplit(Pattern.compile(getPatternEnd()), lines.get(lines.size() - 1));
+		final List<String> lineLast = StringUtils.getSplit(Pattern.compile(getPatternEnd()),
+				lines.get(lines.size() - 1));
 		if (StringUtils.isNotEmpty(lineLast.get(0))) {
-			if (sb.toString().endsWith("\\n") == false) {
+			if (sb.length() > 0 && sb.toString().endsWith("\\n") == false) {
 				sb.append("\\n");
 			}
 			sb.append(lineLast.get(0));
@@ -137,12 +148,15 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		if (partition != null) {
 			getSystem().endGroup();
 		}
+		if (url != null) {
+			entity2.addUrl(url);
+		}
 
 		if (lineLast.get(2) != null) {
 			entity2.setStereotype(new Stereotype(lineLast.get(2)));
 		}
 		if (lineLast.get(4) != null) {
-			entity2.setSpecificBackcolor(HtmlColor.getColorIfValid(lineLast.get(4)));
+			entity2.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(lineLast.get(4)));
 		}
 
 		if (entity1 == null || entity2 == null) {

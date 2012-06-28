@@ -55,7 +55,7 @@ import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.cucadiagram.dot.GraphvizUtils;
 import net.sourceforge.plantuml.graphic.GraphicPosition;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class PSystemVersion extends AbstractPSystem {
@@ -193,7 +193,7 @@ public class PSystemVersion extends AbstractPSystem {
 
 	private GraphicStrings getGraphicStrings() throws IOException {
 		final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-		return new GraphicStrings(strings, font, HtmlColor.BLACK, HtmlColor.WHITE, image,
+		return new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, image,
 				GraphicPosition.BACKGROUND_CORNER, false);
 		// return new GraphicStrings(strings, font, Color.BLACK, Color.WHITE,
 		// false);

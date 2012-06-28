@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.ugraphic;
 import java.awt.Color;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorSimple;
 
 public class ColorMapperIdentity implements ColorMapper {
 
@@ -43,6 +44,6 @@ public class ColorMapperIdentity implements ColorMapper {
 		if (color == null) {
 			return null;
 		}
-		return color.getColor999();
+		return ((HtmlColorSimple)color).getColor999();
 	}
 }

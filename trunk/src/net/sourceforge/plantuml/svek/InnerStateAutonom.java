@@ -34,8 +34,10 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
@@ -50,15 +52,19 @@ public final class InnerStateAutonom implements IEntityImage {
 	private final HtmlColor borderColor;
 	private final HtmlColor backColor;
 	private final boolean shadowing;
+	private final List<Url> url;
+	private final List<Url> suburl;
 
 	public InnerStateAutonom(final IEntityImage im, final TextBlock title, TextBlockWidth attribute,
-			HtmlColor borderColor, HtmlColor backColor, boolean shadowing) {
+			HtmlColor borderColor, HtmlColor backColor, boolean shadowing, List<Url> suburl, List<Url> url) {
 		this.im = im;
 		this.title = title;
 		this.borderColor = borderColor;
 		this.backColor = backColor;
 		this.shadowing = shadowing;
 		this.attribute = attribute;
+		this.url = url;
+		this.suburl = suburl;
 	}
 
 	public final static double THICKNESS_BORDER = 1.5;
@@ -70,16 +76,33 @@ public final class InnerStateAutonom implements IEntityImage {
 		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
 
 		final double titreHeight = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
-		final double suppY = titreHeight + marginForFields + attr.getHeight();
 		final RoundedContainer r = new RoundedContainer(total, titreHeight, attr.getHeight() + marginForFields,
 				borderColor, backColor, im.getBackcolor());
 
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
+		}
+		
 		r.drawU(ug, x, y, shadowing);
 		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + EntityImageState.MARGIN);
 		attribute.drawU(ug, x + EntityImageState.MARGIN, y + EntityImageState.MARGIN + text.getHeight()
 				+ EntityImageState.MARGIN, total.getWidth());
 
-		im.drawU(ug, x + EntityImageState.MARGIN, y + suppY + EntityImageState.MARGIN_LINE);
+		final double spaceYforURL = getSpaceYforURL(ug.getStringBounder());
+		im.drawU(ug, x + EntityImageState.MARGIN, y + spaceYforURL);
+		
+		if (url.size()>0) {
+			ug.closeAction();
+		}
+	}
+
+	private double getSpaceYforURL(StringBounder stringBounder) {
+		final Dimension2D text = title.calculateDimension(stringBounder);
+		final Dimension2D attr = attribute.calculateDimension(stringBounder);
+		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
+		final double titreHeight = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
+		final double suppY = titreHeight + marginForFields + attr.getHeight();
+		return suppY + EntityImageState.MARGIN_LINE;
 	}
 
 	public HtmlColor getBackcolor() {

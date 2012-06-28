@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7903 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -45,6 +45,7 @@ import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -409,7 +410,7 @@ public class Link {
 			SpriteContainer spriteContainer) {
 		if (qualif != null) {
 			final TextBlock b = TextBlockUtils.create(Arrays.asList(qualif), new FontConfiguration(fontQualif,
-					HtmlColor.BLACK), HorizontalAlignement.LEFT, spriteContainer);
+					HtmlColorUtils.BLACK), HorizontalAlignement.LEFT, spriteContainer);
 			final Dimension2D dim = b.calculateDimension(stringBounder);
 			return Math.max(dim.getWidth(), dim.getHeight());
 		}
@@ -421,7 +422,7 @@ public class Link {
 	}
 
 	public void setSpecificColor(String s) {
-		this.specificColor = HtmlColor.getColorIfValid(s);
+		this.specificColor = HtmlColorUtils.getColorIfValid(s);
 	}
 
 	public final boolean isConstraint() {

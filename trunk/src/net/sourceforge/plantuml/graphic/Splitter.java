@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8037 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -54,6 +54,8 @@ public class Splitter {
 	static final String fontFamilyPattern = "\\<font[\\s:]+([^>]+)/?\\>";
 	static final String spritePattern = "\\<\\$[\\p{L}0-9_]+\\>";
 	static final String htmlTag;
+
+	static final String linkPattern = "\\[\\[([^\\[\\]]+)\\]\\]";
 
 	private static final Pattern tagOrText;
 
@@ -84,6 +86,8 @@ public class Splitter {
 		sb.append(fontFamilyPattern);
 		sb.append('|');
 		sb.append(spritePattern);
+		sb.append('|');
+		sb.append(linkPattern);
 
 		htmlTag = sb.toString();
 		tagOrText = Pattern.compile(htmlTag + "|.+?(?=" + htmlTag + ")|.+$", Pattern.CASE_INSENSITIVE);

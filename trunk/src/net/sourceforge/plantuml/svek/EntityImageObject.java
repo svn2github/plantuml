@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -65,7 +66,7 @@ public class EntityImageObject extends AbstractEntityImage {
 	final private TextBlock name;
 	final private TextBlock stereo;
 	final private TextBlockWidth fields;
-	final private Url url;
+	final private List<Url> url;
 
 	public EntityImageObject(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
@@ -94,7 +95,7 @@ public class EntityImageObject extends AbstractEntityImage {
 			}).asTextBlock(FontParam.OBJECT_ATTRIBUTE, skinParam);
 
 		}
-		this.url = entity.getUrl();
+		this.url = entity.getUrls();
 
 	}
 
@@ -150,8 +151,8 @@ public class EntityImageObject extends AbstractEntityImage {
 
 		ug.getParam().setColor(getColor(ColorParam.objectBorder, getStereo()));
 		ug.getParam().setBackcolor(getColor(ColorParam.objectBackground, getStereo()));
-		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
 		}
 
 		double x = xTheoricalPosition;
@@ -175,7 +176,7 @@ public class EntityImageObject extends AbstractEntityImage {
 		// ug.draw(x, y, new ULine(widthTotal, 0));
 		// ug.getParam().setStroke(new UStroke());
 		fields.drawU(ug, x, y, widthTotal);
-		if (url != null) {
+		if (url.size()>0) {
 			ug.closeAction();
 		}
 

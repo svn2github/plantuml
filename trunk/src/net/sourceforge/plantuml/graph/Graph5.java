@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7755 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -90,7 +90,7 @@ public class Graph5 {
 			maxCol = Math.max(maxCol, board.getCol(n));
 			final Point2D.Double pos = getPosition(n);
 			plan.addPoint2D(pos);
-			// System.err.println("n=" + n + " pos=" + pos);
+			// Log.println("n=" + n + " pos=" + pos);
 		}
 		for (ANode n : board.getNodes()) {
 			final AbstractEntityImage image = getImage(n);
@@ -103,7 +103,7 @@ public class Graph5 {
 			inflationTransform.addInflationY(pos.getY(), heightCell);
 		}
 
-		// System.err.println("inflationTransform=" + inflationTransform);
+		// Log.println("inflationTransform=" + inflationTransform);
 
 	}
 

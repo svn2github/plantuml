@@ -40,9 +40,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.ShadowManager;
-import net.sourceforge.plantuml.ugraphic.UGradient;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegment;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
@@ -275,7 +276,7 @@ public class EpsGraphics {
 				} else if (type == USegmentType.SEG_CLOSE) {
 					// Nothing
 				} else {
-					System.err.println("unknown " + seg);
+					Log.println("unknown " + seg);
 				}
 			}
 			append("closepath eofill", true);
@@ -299,7 +300,7 @@ public class EpsGraphics {
 				} else if (type == USegmentType.SEG_CLOSE) {
 					// Nothing
 				} else {
-					System.err.println("unknown " + seg);
+					Log.println("unknown " + seg);
 				}
 			}
 			append("closepath stroke", true);
@@ -374,7 +375,7 @@ public class EpsGraphics {
 		append("/ANN pdfmark", true);
 	}
 
-	public void epsRectangle(double x, double y, double width, double height, double rx, double ry, UGradient gr,
+	public void epsRectangle(double x, double y, double width, double height, double rx, double ry, HtmlColorGradient gr,
 			ColorMapper mapper) {
 		checkCloseDone();
 		ensureVisible(x, y);

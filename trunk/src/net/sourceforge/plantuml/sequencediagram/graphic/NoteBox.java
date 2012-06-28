@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7744 $
+ * Revision $Revision: 8033 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -100,7 +100,7 @@ final class NoteBox extends GraphicalElement implements InGroupable {
 		final Dimension2D dimensionToUse = new Dimension2DDouble(getPreferredWidth(stringBounder), comp
 				.getPreferredHeight(stringBounder));
 		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+			ug.startUrl(url);
 		}
 		comp.drawU(ug, new Area(dimensionToUse), context);
 		if (url != null) {
@@ -126,7 +126,7 @@ final class NoteBox extends GraphicalElement implements InGroupable {
 			throw new IllegalStateException();
 		}
 		// if (InGroupableList.NEW_METHOD) {
-		// System.err.println("GET STARTING X OF " + this + " " + (xStart +
+		// Log.println("GET STARTING X OF " + this + " " + (xStart +
 		// delta));
 		// }
 		return xStart + delta;

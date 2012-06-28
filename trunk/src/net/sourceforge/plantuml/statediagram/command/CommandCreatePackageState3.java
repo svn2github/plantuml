@@ -45,34 +45,35 @@ import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
 
 public class CommandCreatePackageState3 extends SingleLineCommand2<StateDiagram> {
 
 	public CommandCreatePackageState3(StateDiagram diagram) {
 		super(diagram, getRegexConcat());
-//		super(diagram,
-//				"(?i)^state\\s+([\\p{L}0-9_.]+)\\s+as\\s+\"([^\"]+)\"\\s*(\\<\\<.*\\>\\>)?\\s*(#\\w+)?(?:\\s*\\{|\\s+begin)$");
+		// super(diagram,
+		// "(?i)^state\\s+([\\p{L}0-9_.]+)\\s+as\\s+\"([^\"]+)\"\\s*(\\<\\<.*\\>\\>)?\\s*(#\\w+)?(?:\\s*\\{|\\s+begin)$");
 	}
-	
-//	"");
-	
+
+	// "");
+
 	private static RegexConcat getRegexConcat() {
 		return new RegexConcat(new RegexLeaf("^state\\s+"), //
 				new RegexOr(//
 						new RegexConcat(//
-							new RegexLeaf("CODE1", "([\\p{L}0-9_.]+)\\s+"), //
-							new RegexLeaf("DISPLAY1", "as\\s+\"([^\"]+)\"")), //
+								new RegexLeaf("CODE1", "([\\p{L}0-9_.]+)\\s+"), //
+								new RegexLeaf("DISPLAY1", "as\\s+\"([^\"]+)\"")), //
 						new RegexConcat(//
-							new RegexLeaf("DISPLAY2", "(?:\"([^\"]+)\"\\s+as\\s+)?"), //
-							new RegexLeaf("CODE2", "([\\p{L}0-9_.]+)"))), //
+								new RegexLeaf("DISPLAY2", "(?:\"([^\"]+)\"\\s+as\\s+)?"), //
+								new RegexLeaf("CODE2", "([\\p{L}0-9_.]+)"))), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+)?"), //
 				new RegexLeaf("(?:\\s*\\{|\\s+begin)$"));
 	}
-	
+
 	private String getNotNull(Map<String, RegexPartialMatch> arg, String v1, String v2) {
 		if (arg.get(v1).get(0) == null) {
 			return arg.get(v2).get(0);
@@ -94,8 +95,8 @@ public class CommandCreatePackageState3 extends SingleLineCommand2<StateDiagram>
 			p.zsetStereotype(new Stereotype(stereotype));
 		}
 		final String color = arg.get("COLOR").get(0);
-		if (color != null && HtmlColor.isValid(color)) {
-			p.zsetBackColor(HtmlColor.getColorIfValid(color));
+		if (HtmlColorUtils.getColorIfValid(color) != null) {
+			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

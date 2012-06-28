@@ -33,12 +33,12 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -49,7 +49,7 @@ import net.sourceforge.plantuml.EmbededDiagram;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.PSystem;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UImage;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -106,6 +106,10 @@ class EmbededSystemLine implements Line {
 		final BlockUml blockUml = new BlockUml(lines);
 		return blockUml.getSystem();
 
+	}
+
+	public List<Url> getUrls() {
+		return Collections.emptyList();
 	}
 
 }

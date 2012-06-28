@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.command;
@@ -38,7 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
@@ -54,7 +54,7 @@ public class CommandActivate extends SingleLineCommand<SequenceDiagram> {
 		final LifeEventType type = LifeEventType.valueOf(arg.get(0).toUpperCase());
 		final Participant p = getSystem().getOrCreateParticipant(
 				StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1)));
-		final String error = getSystem().activate(p, type, HtmlColor.getColorIfValid(arg.get(2)));
+		final String error = getSystem().activate(p, type, HtmlColorUtils.getColorIfValid(arg.get(2)));
 		if (error == null) {
 			return CommandExecutionResult.ok();
 		}

@@ -33,15 +33,16 @@
  */
 package net.sourceforge.plantuml.svek;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
@@ -60,7 +61,6 @@ import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableUtils;
 import net.sourceforge.plantuml.svek.SvekUtils.PointListIterator;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -116,6 +116,14 @@ public class Line implements Moveable {
 			} else {
 				reverse.drawU(ug, x, y);
 			}
+		}
+
+		public List<Url> getUrls() {
+			boolean isDirect = isDirect();
+			if (isDirect) {
+				return direct.getUrls();
+			}
+			return reverse.getUrls();
 		}
 
 		public Dimension2D calculateDimension(StringBounder stringBounder) {
@@ -221,7 +229,7 @@ public class Line implements Moveable {
 	}
 
 	public void appendLine(StringBuilder sb) {
-		// System.err.println("inverted=" + isInverted());
+		// Log.println("inverted=" + isInverted());
 		// if (isInverted()) {
 		// sb.append(endUid);
 		// sb.append("->");
@@ -467,8 +475,8 @@ public class Line implements Moveable {
 	// final double frontierX = frontier.getPoints().get(2).getX();
 	// final Point2D pt = dotPath.getStartPoint();
 	// if (pt.getY() < frontierY) {
-	// System.err.println("frontier = " + frontier);
-	// System.err.println("p1 = " + pt);
+	// Log.println("frontier = " + frontier);
+	// Log.println("p1 = " + pt);
 	// final double deltaY = frontierY - pt.getY();
 	// dotPath.forceStartPoint(pt.getX(), frontierY);
 	// if (endHead != null) {
@@ -492,8 +500,8 @@ public class Line implements Moveable {
 	// final double frontierX = frontier.getPoints().get(2).getX();
 	// final Point2D pt = dotPath.getEndPoint();
 	// if (pt.getY() < frontierY) {
-	// System.err.println("frontier = " + frontier);
-	// System.err.println("p2 = " + pt);
+	// Log.println("frontier = " + frontier);
+	// Log.println("p2 = " + pt);
 	// dotPath.forceEndPoint(pt.getX(), frontierY);
 	// final double deltaY = frontierY - pt.getY();
 	// if (startTail != null) {
@@ -669,7 +677,7 @@ public class Line implements Moveable {
 	private boolean tooClose(Positionable pos) {
 		final double dist = dotPath.getMinDist(BezierUtils.getCenter(pos));
 		final Dimension2D dim = pos.getSize();
-		// System.err.println("dist=" + dist);
+		// Log.println("dist=" + dist);
 		return dist < (dim.getWidth() / 2 + 2) || dist < (dim.getHeight() / 2 + 2);
 	}
 

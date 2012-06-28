@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.graph2;
@@ -53,7 +53,7 @@ public class Polyline2 {
 	}
 
 	public void addLine(Line2D.Double newLine) {
-		// System.err.println("# Polyline2::addLine " +
+		// Log.println("# Polyline2::addLine " +
 		// GeomUtils.toString(newLine));
 		if (lastCurrent.equals(newLine.getP1()) == false) {
 			lines.add(new Line2D.Double(lastCurrent, newLine.getP1()));

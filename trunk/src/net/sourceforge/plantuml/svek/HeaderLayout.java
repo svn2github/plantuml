@@ -117,8 +117,8 @@ public class HeaderLayout {
 			final double delta = 4;
 			final double xGeneric = x + width - genericDim.getWidth() + delta;
 			final double yGeneric = y - delta;
-//			ug.getParam().setBackcolor(HtmlColor.WHITE);
-//			ug.getParam().setColor(HtmlColor.BLACK);
+//			ug.getParam().setBackcolor(HtmlColorUtils.WHITE);
+//			ug.getParam().setColor(HtmlColorUtils.BLACK);
 //			ug.getParam().setStroke(new UStroke(2, 2, 1));
 //			ug.draw(xGeneric, yGeneric, new URectangle(genericDim.getWidth(), genericDim.getHeight()));
 //			ug.getParam().setStroke(new UStroke());

@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.eps.EpsGraphics;
 import net.sourceforge.plantuml.eps.EpsStrategy;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -140,8 +141,8 @@ public class UGraphicEps extends AbstractUGraphic<EpsGraphics> implements ClipCo
 	public void setAntiAliasing(boolean trueForOn) {
 	}
 
-	public void startUrl(String url, String tooltip) {
-		getGraphicObject().openLink(url);
+	public void startUrl(Url url) {
+		getGraphicObject().openLink(url.getUrl());
 	}
 
 	public void closeAction() {

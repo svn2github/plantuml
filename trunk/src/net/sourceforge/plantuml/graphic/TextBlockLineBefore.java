@@ -87,6 +87,8 @@ public class TextBlockLineBefore implements TextBlockWidth {
 	}
 
 	private void drawLine(UGraphic ug, double x, double y, double widthToUse) {
+		x += 1;
+		widthToUse -= 2;
 		if (separator == '=') {
 			ug.draw(x, y, new ULine(widthToUse, 0));
 			ug.draw(x, y + 2, new ULine(widthToUse, 0));

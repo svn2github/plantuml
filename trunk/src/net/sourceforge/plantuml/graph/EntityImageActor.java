@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7913 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -43,7 +43,7 @@ import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
@@ -59,7 +59,7 @@ class EntityImageActor extends AbstractEntityImage {
 	public EntityImageActor(IEntity entity) {
 		super(entity);
 		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
-				getFont14(), HtmlColor.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
+				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.stickman = new StickMan(getYellow(), getRed());
 	}
 

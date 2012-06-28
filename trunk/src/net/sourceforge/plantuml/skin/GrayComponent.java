@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -40,7 +40,7 @@ import java.util.List;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -61,8 +61,8 @@ class GrayComponent extends AbstractComponent {
 	@Override
 	protected void drawInternalU(UGraphic ug, Area area) {
 		final StringBounder stringBounder = ug.getStringBounder();
-		ug.getParam().setBackcolor(HtmlColor.LIGHT_GRAY);
-		ug.getParam().setColor(HtmlColor.BLACK);
+		ug.getParam().setBackcolor(HtmlColorUtils.LIGHT_GRAY);
+		ug.getParam().setColor(HtmlColorUtils.BLACK);
 		ug.draw(0, 0, new URectangle(getPreferredWidth(stringBounder), getPreferredHeight(stringBounder)));
 
 		final String n = type.name();
@@ -72,7 +72,7 @@ class GrayComponent extends AbstractComponent {
 			strings.add(n.substring(i, Math.min(i + split, n.length())));
 		}
 
-		final TextBlock textBlock = TextBlockUtils.create(strings, new FontConfiguration(NORMAL, HtmlColor.BLACK),
+		final TextBlock textBlock = TextBlockUtils.create(strings, new FontConfiguration(NORMAL, HtmlColorUtils.BLACK),
 				HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		textBlock.drawU(ug, 0, 0);
 	}

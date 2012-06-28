@@ -44,6 +44,7 @@ import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
@@ -59,7 +60,7 @@ class TurtleGraphicsPane {
 	private double turtleDirection = 90;
 	private boolean penIsDown = true;
 	private boolean showTurtle = true;
-	private HtmlColor penColor = HtmlColor.BLACK;
+	private HtmlColor penColor = HtmlColorUtils.BLACK;
 	private List<Rectangle2D.Double> lines = new ArrayList<Rectangle2D.Double>();
 	private List<HtmlColor> colors = new ArrayList<HtmlColor>();
 
@@ -114,8 +115,8 @@ class TurtleGraphicsPane {
 		final double angle = -dtor(turtleDirection - 90);
 		poly.rotate(angle);
 		// ug.setAntiAliasing(false);
-		final HtmlColor turtleColor1 = HtmlColor.getColorIfValid("OliveDrab");
-		final HtmlColor turtleColor2 = HtmlColor.getColorIfValid("MediumSpringGreen");
+		final HtmlColor turtleColor1 = HtmlColorUtils.getColorIfValid("OliveDrab");
+		final HtmlColor turtleColor2 = HtmlColorUtils.getColorIfValid("MediumSpringGreen");
 
 		ug.getParam().setColor(turtleColor1);
 		ug.getParam().setBackcolor(turtleColor2);
@@ -193,7 +194,7 @@ class TurtleGraphicsPane {
 		}
 		drawTurtle(ug);
 		if (message != null) {
-			final FontConfiguration font = new FontConfiguration(new UFont("", Font.PLAIN, 14), HtmlColor.BLACK);
+			final FontConfiguration font = new FontConfiguration(new UFont("", Font.PLAIN, 14), HtmlColorUtils.BLACK);
 			final TextBlock text = TextBlockUtils.create(Arrays.asList(message), font, HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 			final Dimension2D dim = text.calculateDimension(ug.getStringBounder());
 			final double textHeight = dim.getHeight();

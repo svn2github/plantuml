@@ -33,11 +33,11 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public class TextBlockMarged implements TextBlock {
@@ -63,6 +63,10 @@ public class TextBlockMarged implements TextBlock {
 
 	public void drawU(UGraphic ug, double x, double y) {
 		textBlock.drawU(ug, x + x1, y + y1);
+	}
+
+	public List<Url> getUrls() {
+		return textBlock.getUrls();
 	}
 
 }

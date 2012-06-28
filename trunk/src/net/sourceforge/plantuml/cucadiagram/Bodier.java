@@ -49,6 +49,8 @@ public class Bodier {
 	private final List<String> rawBody = new ArrayList<String>();
 	private final Set<VisibilityModifier> hides;
 	private final EntityType type;
+	private List<Member> methodsToDisplay;
+	private List<Member> fieldsToDisplay;
 
 	public Bodier(EntityType type, Set<VisibilityModifier> hides) {
 		this.hides = hides;
@@ -56,6 +58,9 @@ public class Bodier {
 	}
 
 	public void addFieldOrMethod(String s) {
+		// Empty cache
+		methodsToDisplay = null;
+		fieldsToDisplay = null;
 		rawBody.add(s);
 	}
 
@@ -67,7 +72,7 @@ public class Bodier {
 		}
 		return false;
 	}
-	
+
 	public BlockMember getBodyEnhanced() {
 		return new BlockMember() {
 			public TextBlockWidth asTextBlock(FontParam fontParam, ISkinParam skinParam) {
@@ -76,8 +81,6 @@ public class Bodier {
 		};
 	}
 
-
-	
 	private EntityType getEntityType() {
 		return type;
 	}
@@ -91,22 +94,24 @@ public class Bodier {
 	}
 
 	public List<Member> getMethodsToDisplay() {
-		final List<Member> result = new ArrayList<Member>();
-		for (int i = 0; i < rawBody.size(); i++) {
-			final String s = rawBody.get(i);
-			if (isMethod(i, rawBody) == false) {
-				continue;
+		if (methodsToDisplay == null) {
+			methodsToDisplay = new ArrayList<Member>();
+			for (int i = 0; i < rawBody.size(); i++) {
+				final String s = rawBody.get(i);
+				if (isMethod(i, rawBody) == false) {
+					continue;
+				}
+				if (s.length() == 0 && methodsToDisplay.size() == 0) {
+					continue;
+				}
+				final Member m = new MemberImpl(s, true);
+				if (hides == null || hides.contains(m.getVisibilityModifier()) == false) {
+					methodsToDisplay.add(m);
+				}
 			}
-			if (s.length() == 0 && result.size() == 0) {
-				continue;
-			}
-			final Member m = new MemberImpl(s, true);
-			if (hides == null || hides.contains(m.getVisibilityModifier()) == false) {
-				result.add(m);
-			}
+			removeFinalEmptyMembers(methodsToDisplay);
 		}
-		removeFinalEmptyMembers(result);
-		return Collections.unmodifiableList(result);
+		return Collections.unmodifiableList(methodsToDisplay);
 	}
 
 	private boolean isMethod(int i, List<String> rawBody) {
@@ -118,21 +123,23 @@ public class Bodier {
 	}
 
 	public List<Member> getFieldsToDisplay() {
-		final List<Member> result = new ArrayList<Member>();
-		for (String s : rawBody) {
-			if (isMethod(s) == true) {
-				continue;
+		if (fieldsToDisplay == null) {
+			fieldsToDisplay = new ArrayList<Member>();
+			for (String s : rawBody) {
+				if (isMethod(s) == true) {
+					continue;
+				}
+				if (s.length() == 0 && fieldsToDisplay.size() == 0) {
+					continue;
+				}
+				final Member m = new MemberImpl(s, false);
+				if (hides == null || hides.contains(m.getVisibilityModifier()) == false) {
+					fieldsToDisplay.add(m);
+				}
 			}
-			if (s.length() == 0 && result.size() == 0) {
-				continue;
-			}
-			final Member m = new MemberImpl(s, false);
-			if (hides == null || hides.contains(m.getVisibilityModifier()) == false) {
-				result.add(m);
-			}
+			removeFinalEmptyMembers(fieldsToDisplay);
 		}
-		removeFinalEmptyMembers(result);
-		return Collections.unmodifiableList(result);
+		return Collections.unmodifiableList(fieldsToDisplay);
 	}
 
 	private void removeFinalEmptyMembers(List<Member> result) {

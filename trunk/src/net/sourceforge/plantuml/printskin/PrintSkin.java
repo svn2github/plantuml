@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7754 $
+ * Revision $Revision: 7947 $
  *
  */
 package net.sourceforge.plantuml.printskin;
@@ -50,7 +50,7 @@ import net.sourceforge.plantuml.SkinParam;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.png.PngIO;
@@ -135,8 +135,8 @@ class PrintSkin extends AbstractPSystem {
 		if (width == 0) {
 			width = 42;
 		}
-		ug.getParam().setColor(HtmlColor.LIGHT_GRAY);
-		ug.getParam().setBackcolor(HtmlColor.LIGHT_GRAY);
+		ug.getParam().setColor(HtmlColorUtils.LIGHT_GRAY);
+		ug.getParam().setBackcolor(HtmlColorUtils.LIGHT_GRAY);
 		ug.draw(xpos - 1, ypos - 1, new URectangle(width + 2, height + 2));
 		// g2d.drawRect((int) xpos - 1, (int) ypos - 1, (int) width + 2, (int) height + 2);
 
@@ -153,7 +153,7 @@ class PrintSkin extends AbstractPSystem {
 
 	private void println(String s) {
 		final TextBlock textBlock = TextBlockUtils.create(Arrays.asList(s), new FontConfiguration(FONT1,
-				HtmlColor.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
+				HtmlColorUtils.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
 		textBlock.drawU(ug, xpos, ypos);
 		ypos += textBlock.calculateDimension(ug.getStringBounder()).getHeight();
 	}

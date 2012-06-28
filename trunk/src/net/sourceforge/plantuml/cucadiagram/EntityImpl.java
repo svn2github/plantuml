@@ -33,11 +33,9 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
@@ -61,12 +59,12 @@ public class EntityImpl implements IEntity {
 
 	private IEntityMutable container;
 
-	private Url url2;
-	
+	private final List<Url> urls = new ArrayList<Url>();
+
 	private final Bodier bodier;
 
 	private boolean top;
-	
+
 	public final boolean isTop() {
 		return top;
 	}
@@ -154,9 +152,9 @@ public class EntityImpl implements IEntity {
 
 	@Override
 	public String toString() {
-//		if (type == EntityType.GROUP) {
-//			return "GROUP " + display2 + "(" + getEntityType() + ")" + this.container;
-//		}
+		// if (type == EntityType.GROUP) {
+		// return "GROUP " + display2 + "(" + getEntityType() + ")" + this.container;
+		// }
 		return display2 + "(" + getEntityType() + ") " + xposition + " " + getUid();
 	}
 
@@ -170,14 +168,29 @@ public class EntityImpl implements IEntity {
 		this.specificBackcolor = color;
 	}
 
-	public final Url getUrl() {
-		return url2;
+	public final List<Url> getUrls() {
+		final List<Url> result = new ArrayList<Url>(urls);
+		for (Member m : getFieldsToDisplay()) {
+			final Url u = m.getUrl();
+			if (u != null) {
+				result.add(u);
+			}
+		}
+		for (Member m : getMethodsToDisplay()) {
+			final Url u = m.getUrl();
+			if (u != null) {
+				result.add(u);
+			}
+		}
+		return Collections.unmodifiableList(result);
 	}
 
-	public final void setUrl(Url url) {
-		this.url2 = url;
+	public final void addUrl(Url url) {
+		if (url == null) {
+			throw new UnsupportedOperationException();
+		}
+		this.urls.add(url);
 	}
-
 
 	private boolean nearDecoration = false;
 
@@ -189,9 +202,9 @@ public class EntityImpl implements IEntity {
 		this.nearDecoration = nearDecoration;
 	}
 
-//	public int compareTo(IEntity other) {
-//		return getUid().compareTo(other.getUid());
-//	}
+	// public int compareTo(IEntity other) {
+	// return getUid().compareTo(other.getUid());
+	// }
 
 	private int xposition;
 

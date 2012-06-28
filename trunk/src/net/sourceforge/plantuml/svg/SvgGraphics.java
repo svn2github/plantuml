@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8019 $
  *
  */
 package net.sourceforge.plantuml.svg;
@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -176,17 +177,34 @@ public class SvgGraphics {
 		ensureVisible(x + xRadius + deltaShadow * 2, y + yRadius + deltaShadow * 2);
 	}
 
-	private Map<List<String>, String> gradients = new HashMap<List<String>, String>();
+	private Map<List<Object>, String> gradients = new HashMap<List<Object>, String>();
 
-	public String createSvgGradient(String color1, String color2) {
-		final List<String> key = Arrays.asList(color1, color2);
+	public String createSvgGradient(String color1, String color2, char policy) {
+		final List<Object> key = Arrays.asList((Object)color1, color2, policy);
 		String id = gradients.get(key);
 		if (id == null) {
 			final Element elt = (Element) document.createElement("linearGradient");
-			elt.setAttribute("x1", "0%");
-			elt.setAttribute("y1", "0%");
-			elt.setAttribute("x2", "100%");
-			elt.setAttribute("y2", "100%");
+			if (policy == '-') {
+				elt.setAttribute("x1", "0%");
+				elt.setAttribute("y1", "50%");
+				elt.setAttribute("x2", "100%");
+				elt.setAttribute("y2", "50%");
+			} else if (policy == '/') {
+				elt.setAttribute("x1", "0%");
+				elt.setAttribute("y1", "100%");
+				elt.setAttribute("x2", "100%");
+				elt.setAttribute("y2", "0%");
+			} else  if (policy == '|') {
+				elt.setAttribute("x1", "50%");
+				elt.setAttribute("y1", "0%");
+				elt.setAttribute("x2", "50%");
+				elt.setAttribute("y2", "100%");
+			} else {
+				elt.setAttribute("x1", "0%");
+				elt.setAttribute("y1", "0%");
+				elt.setAttribute("x2", "100%");
+				elt.setAttribute("y2", "100%");
+			}
 			id = "gr" + gradients.size();
 			gradients.put(key, id);
 			elt.setAttribute("id", id);
@@ -218,54 +236,34 @@ public class SvgGraphics {
 		this.strokeDasharray = strokeDasharray;
 	}
 
-	// private boolean xlinkXmlns = false;
-
 	public void closeLink() {
-		gRoot.appendChild(pendingLink);
-		pendingLink = null;
+		final Element element = pendingLink2.get(0);
+		pendingLink2.remove(0);
+		getG().appendChild(element);
 	}
 
-	private Element pendingLink;
+	private final List<Element> pendingLink2 = new ArrayList<Element>();
 
 	public void openLink(String url, String title) {
 		if (url == null) {
 			throw new IllegalArgumentException();
 		}
-		// if (xlinkXmlns == false) {
-		// root.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-		// xlinkXmlns = true;
-		// }
-		if (pendingLink != null) {
-			throw new IllegalStateException();
-		}
-		pendingLink = (Element) document.createElement("a");
-		pendingLink.setAttribute("xlink:href", url);
+
+		pendingLink2.add(0, (Element) document.createElement("a"));
+		pendingLink2.get(0).setAttribute("xlink:href", url);
 		if (title == null) {
-			pendingLink.setAttribute("xlink:title", url);
+			pendingLink2.get(0).setAttribute("xlink:title", url);
 		} else {
-			pendingLink.setAttribute("xlink:title", title);
+			pendingLink2.get(0).setAttribute("xlink:title", title);
 		}
 	}
-	
-//	public void startHiddenGroup() {
-//		if (pendingLink != null) {
-//			throw new IllegalStateException();
-//		}
-//		pendingLink = (Element) document.createElement("g");
-//		pendingLink.setAttribute("visibility", "hidden");
-//		pendingLink.setAttribute("id", "toto3");
-//	}
-//
-//	public void closeHiddenGroup() {
-//		closeLink();
-//	}
 
 
 	public final Element getG() {
-		if (pendingLink == null) {
+		if (pendingLink2.size() == 0) {
 			return gRoot;
 		}
-		return pendingLink;
+		return pendingLink2.get(0);
 	}
 
 	public void svgRectangle(double x, double y, double width, double height, double rx, double ry, double deltaShadow) {
@@ -466,7 +464,7 @@ public class SvgGraphics {
 			} else if (type == USegmentType.SEG_CLOSE) {
 				// Nothing
 			} else {
-				System.err.println("unknown " + seg);
+				Log.println("unknown " + seg);
 			}
 
 		}

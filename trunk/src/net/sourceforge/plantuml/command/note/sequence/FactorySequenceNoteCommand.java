@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Note;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
 import net.sourceforge.plantuml.sequencediagram.NoteStyle;
@@ -108,7 +108,7 @@ public final class FactorySequenceNoteCommand implements SingleMultiFactoryComma
 
 		if (strings.size() > 0) {
 			final Note note = new Note(p, position, strings);
-			note.setSpecificBackcolor(HtmlColor.getColorIfValid(arg.get("COLOR").get(0)));
+			note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
 			note.setStyle(NoteStyle.getNoteStyle(arg.get("STYLE").get(0)));
 			system.addNote(note);
 		}

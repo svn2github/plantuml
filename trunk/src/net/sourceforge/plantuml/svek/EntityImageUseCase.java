@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -57,7 +58,7 @@ public class EntityImageUseCase extends AbstractEntityImage {
 	final private TextBlock desc;
 	final private static int MARGIN = 10;
 	final private TextBlock stereo;
-	final private Url url;
+	final private List<Url> url;
 
 	public EntityImageUseCase(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
@@ -73,7 +74,7 @@ public class EntityImageUseCase extends AbstractEntityImage {
 					new FontConfiguration(getFont(FontParam.USECASE_ACTOR_STEREOTYPE, stereotype), getFontColor(
 							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
-		this.url = entity.getUrl();
+		this.url = entity.getUrls();
 
 	}
 
@@ -103,8 +104,8 @@ public class EntityImageUseCase extends AbstractEntityImage {
 		if (getSkinParam().shadowing()) {
 			ellipse.setDeltaShadow(3);
 		}
-		if (url != null) {
-			ug.startUrl(url.getUrl(), url.getTooltip());
+		if (url.size()>0) {
+			ug.startUrl(url.get(0));
 		}
 
 		ug.getParam().setStroke(new UStroke(1.5));
@@ -121,7 +122,7 @@ public class EntityImageUseCase extends AbstractEntityImage {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition + MARGIN);
 		}
-		if (url != null) {
+		if (url.size()>0) {
 			ug.closeAction();
 		}
 
