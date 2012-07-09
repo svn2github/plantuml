@@ -100,4 +100,8 @@ abstract class AbstractElementText implements Element {
 		return 8;
 	}
 
+	protected final FontConfiguration getConfig() {
+		return config;
+	}
+
 }

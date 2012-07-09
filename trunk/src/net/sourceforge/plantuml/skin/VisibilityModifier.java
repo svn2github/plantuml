@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
@@ -67,8 +68,8 @@ public enum VisibilityModifier {
 
 	public UDrawable getUDrawable(final int size, final HtmlColor foregroundColor, final HtmlColor backgoundColor) {
 		return new UDrawable() {
-			public void drawU(UGraphic ug) {
-				drawInternal(ug, size, foregroundColor, backgoundColor);
+			public void drawU(UGraphic ug, double x, double y) {
+				drawInternal(ug, size, foregroundColor, backgoundColor, x, y);
 			}
 		};
 	}
@@ -81,11 +82,11 @@ public enum VisibilityModifier {
 			}
 
 			public void drawU(UGraphic ug, double x, double y) {
-				final double tx = ug.getTranslateX();
-				final double ty = ug.getTranslateY();
-				ug.translate(x, y);
-				drawInternal(ug, size, foregroundColor, backgoundColor);
-				ug.setTranslate(tx, ty);
+				// final double tx = ug.getTranslateX();
+				// final double ty = ug.getTranslateY();
+				// ug.translate(x, y);
+				drawInternal(ug, size, foregroundColor, backgoundColor, x, y);
+				// ug.setTranslate(tx, ty);
 			}
 
 			public List<Url> getUrls() {
@@ -94,41 +95,42 @@ public enum VisibilityModifier {
 		};
 	}
 
-	private void drawInternal(UGraphic ug, int size, final HtmlColor foregroundColor, final HtmlColor backgoundColor) {
+	private void drawInternal(UGraphic ug, int size, final HtmlColor foregroundColor, final HtmlColor backgoundColor,
+			double x, double y) {
 		ug.getParam().setBackcolor(backgoundColor);
 		ug.getParam().setColor(foregroundColor);
 		size = ensureEven(size);
 		switch (this) {
 		case PACKAGE_PRIVATE_FIELD:
-			drawTriangle(ug, false, size);
+			drawTriangle(ug, false, size, x, y);
 			break;
 
 		case PRIVATE_FIELD:
-			drawSquare(ug, false, size);
+			drawSquare(ug, false, size, x, y);
 			break;
 
 		case PROTECTED_FIELD:
-			drawDiamond(ug, false, size);
+			drawDiamond(ug, false, size, x, y);
 			break;
 
 		case PUBLIC_FIELD:
-			drawCircle(ug, false, size);
+			drawCircle(ug, false, size, x, y);
 			break;
 
 		case PACKAGE_PRIVATE_METHOD:
-			drawTriangle(ug, true, size);
+			drawTriangle(ug, true, size, x, y);
 			break;
 
 		case PRIVATE_METHOD:
-			drawSquare(ug, true, size);
+			drawSquare(ug, true, size, x, y);
 			break;
 
 		case PROTECTED_METHOD:
-			drawDiamond(ug, true, size);
+			drawDiamond(ug, true, size, x, y);
 			break;
 
 		case PUBLIC_METHOD:
-			drawCircle(ug, true, size);
+			drawCircle(ug, true, size, x, y);
 			break;
 
 		default:
@@ -136,12 +138,12 @@ public enum VisibilityModifier {
 		}
 	}
 
-	private void drawSquare(UGraphic ug, boolean filled, int size) {
-		ug.draw(2, 2, new URectangle(size - 4, size - 4));
+	private void drawSquare(UGraphic ug, boolean filled, int size, double x, double y) {
+		ug.draw(x + 2, y + 2, new URectangle(size - 4, size - 4));
 	}
 
-	private void drawCircle(UGraphic ug, boolean filled, int size) {
-		ug.draw(2, 2, new UEllipse(size - 4, size - 4));
+	private void drawCircle(UGraphic ug, boolean filled, int size, double x, double y) {
+		ug.draw(x + 2, y + 2, new UEllipse(size - 4, size - 4));
 	}
 
 	static private int ensureEven(int n) {
@@ -151,23 +153,23 @@ public enum VisibilityModifier {
 		return n;
 	}
 
-	private void drawDiamond(UGraphic ug, boolean filled, int size) {
+	private void drawDiamond(UGraphic ug, boolean filled, int size, double x, double y) {
 		final UPolygon poly = new UPolygon();
 		size -= 2;
 		poly.addPoint(size / 2.0, 0);
 		poly.addPoint(size, size / 2.0);
 		poly.addPoint(size / 2.0, size);
 		poly.addPoint(0, size / 2.0);
-		ug.draw(1, 0, poly);
+		ug.draw(x + 1, y, poly);
 	}
 
-	private void drawTriangle(UGraphic ug, boolean filled, int size) {
+	private void drawTriangle(UGraphic ug, boolean filled, int size, double x, double y) {
 		final UPolygon poly = new UPolygon();
 		size -= 2;
 		poly.addPoint(size / 2.0, 1);
 		poly.addPoint(0, size - 1);
 		poly.addPoint(size, size - 1);
-		ug.draw(1, 0, poly);
+		ug.draw(x + 1, y, poly);
 	}
 
 	public static boolean isVisibilityCharacter(char c) {

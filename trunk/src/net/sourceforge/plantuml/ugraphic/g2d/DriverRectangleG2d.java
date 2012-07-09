@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8033 $
+ * Revision $Revision: 8049 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -84,19 +84,19 @@ public class DriverRectangleG2d extends DriverShadowedG2d implements UDriver<Gra
 			final HtmlColorGradient gr = (HtmlColorGradient) back;
 			final char policy = gr.getPolicy();
 			final GradientPaint paint;
-			if (policy == '-') {
+			if (policy == '|') {
 				paint = new GradientPaint((float) x, (float) (y + shape.getHeight()) / 2, mapper.getMappedColor(gr
 						.getColor1()), (float) (x + shape.getWidth()), (float) (y + shape.getHeight()) / 2,
 						mapper.getMappedColor(gr.getColor2()));
-			} else if (policy == '/') {
+			} else if (policy == '\\') {
 				paint = new GradientPaint((float) x, (float) (y + shape.getHeight()), mapper.getMappedColor(gr
 						.getColor1()), (float) (x + shape.getWidth()), (float) y, mapper.getMappedColor(gr.getColor2()));
-			} else if (policy == '|') {
+			} else if (policy == '-') {
 				paint = new GradientPaint((float) (x + shape.getWidth()) / 2, (float) y, mapper.getMappedColor(gr
 						.getColor1()), (float) (x + shape.getWidth()) / 2, (float) (y + shape.getHeight()),
 						mapper.getMappedColor(gr.getColor2()));
 			} else {
-				// for \
+				// for /
 				paint = new GradientPaint((float) x, (float) y, mapper.getMappedColor(gr.getColor1()),
 						(float) (x + shape.getWidth()), (float) (y + shape.getHeight()), mapper.getMappedColor(gr
 								.getColor2()));

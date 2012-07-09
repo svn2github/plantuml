@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8046 $
+ * Revision $Revision: 8094 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -91,19 +91,19 @@ class SingleLine implements Line {
 		return new Dimension2DDouble(width, height);
 	}
 
-	private double maxDeltaY(Graphics2D g2d) {
-		double result = 0;
-		final Dimension2D dim = calculateDimension(StringBounderUtils.asStringBounder(g2d));
-		for (TextBlock b : blocs) {
-			if (b instanceof TileText == false) {
-				continue;
-			}
-			final Dimension2D dimBloc = b.calculateDimension(StringBounderUtils.asStringBounder(g2d));
-			final double deltaY = dim.getHeight() - dimBloc.getHeight() + ((TileText) b).getFontSize2D();
-			result = Math.max(result, deltaY);
-		}
-		return result;
-	}
+//	private double maxDeltaY(Graphics2D g2d) {
+//		double result = 0;
+//		final Dimension2D dim = calculateDimension(StringBounderUtils.asStringBounder(g2d));
+//		for (TextBlock b : blocs) {
+//			if (b instanceof TileText == false) {
+//				continue;
+//			}
+//			final Dimension2D dimBloc = b.calculateDimension(StringBounderUtils.asStringBounder(g2d));
+//			final double deltaY = dim.getHeight() - dimBloc.getHeight() + ((TileText) b).getFontSize2D();
+//			result = Math.max(result, deltaY);
+//		}
+//		return result;
+//	}
 
 	private double maxDeltaY(UGraphic ug) {
 		double result = 0;

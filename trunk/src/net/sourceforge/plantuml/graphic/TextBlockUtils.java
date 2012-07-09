@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8038 $
+ * Revision $Revision: 8074 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -38,6 +38,7 @@ import java.awt.geom.Point2D;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -61,7 +62,8 @@ public class TextBlockUtils {
 	}
 
 	private static TextBlock createMessageNumber(List<? extends CharSequence> texts,
-			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
+			FontConfiguration fontConfiguration, HorizontalAlignement horizontalAlignement,
+			SpriteContainer spriteContainer) {
 		final MessageNumber number = (MessageNumber) texts.get(0);
 		return new TextBlockWithNumber(number.getNumber(), texts.subList(1, texts.size()), fontConfiguration,
 				horizontalAlignement, spriteContainer);
@@ -79,7 +81,8 @@ public class TextBlockUtils {
 				return new TextBlockSpotted(circledCharacter, texts.subList(1, texts.size()), fontConfiguration,
 						horizontalAlignement, spriteContainer);
 			}
-			return new TextBlockSpotted(circledCharacter, texts, fontConfiguration, horizontalAlignement, spriteContainer);
+			return new TextBlockSpotted(circledCharacter, texts, fontConfiguration, horizontalAlignement,
+					spriteContainer);
 		}
 		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 	}
@@ -101,10 +104,20 @@ public class TextBlockUtils {
 		return new TextBlockMarged(textBlock, marginX1, marginX2, marginY1, marginY2);
 	}
 
-	// static private Font deriveForCircleCharacter(Font font) {
-	// final float size = font.getSize2D();
-	// return font.deriveFont(size - 1).deriveFont(Font.BOLD);
-	// }
+	public static TextBlock empty(final double width, final double height) {
+		return new TextBlock() {
+			public void drawU(UGraphic ug, double x, double y) {
+			}
+
+			public Dimension2D calculateDimension(StringBounder stringBounder) {
+				return new Dimension2DDouble(width, height);
+			}
+
+			public List<Url> getUrls() {
+				return Collections.emptyList();
+			}
+		};
+	}
 
 	public static Positionable asPositionable(TextBlock textBlock, StringBounder stringBounder, Point2D pt) {
 		return new PositionableImpl(pt, textBlock.calculateDimension(stringBounder));
@@ -125,7 +138,7 @@ public class TextBlockUtils {
 			}
 		};
 	}
-	
+
 	public static TextBlock mergeLR(TextBlock b1, TextBlock b2) {
 		return new TextBlockHorizontal(b1, b2);
 	}

@@ -28,42 +28,58 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8052 $
  *
  */
 package net.sourceforge.plantuml.statediagram.command;
 
-import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.command.SingleLineCommand2;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
 
-public class CommandCreateState extends SingleLineCommand<StateDiagram> {
+public class CommandCreateState extends SingleLineCommand2<StateDiagram> {
 
 	public CommandCreateState(StateDiagram diagram) {
-		super(diagram, "(?i)^(?:state\\s+)(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)\\s*(\\<\\<.*\\>\\>)?\\s*(#\\w+)?$");
+		super(diagram, getRegexConcat()); 
+	}
+	
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexLeaf("(?:state\\s+)"), //
+				new RegexLeaf("DISPLAY", "(?:\"([^\"]+)\"\\s+as\\s+)?"), //
+				new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("$"));
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
-		String display = arg.get(0);
-		final String code = arg.get(1);
+	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
+		String display = arg2.get("DISPLAY").get(0);
+		final String code = arg2.get("CODE").get(0);
 		if (display == null) {
 			display = code;
 		}
 		final IEntity ent = getSystem().getOrCreateClass(code);
 		ent.setDisplay2(display);
 
-		final String stereotype = arg.get(2);
+		final String stereotype = arg2.get("STEREOTYPE").get(0);
 		if (stereotype != null) {
 			ent.setStereotype(new Stereotype(stereotype));
 		}
-		if (arg.get(3)!=null) {
-			ent.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get(3)));
+		final String color = arg2.get("COLOR").get(0);
+		if (color!=null) {
+			ent.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

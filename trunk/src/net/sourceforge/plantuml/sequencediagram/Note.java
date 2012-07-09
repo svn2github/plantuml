@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8023 $
+ * Revision $Revision: 8100 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram;
@@ -65,7 +65,7 @@ public class Note implements Event, SpecificBackcolorable {
 		this.p2 = p2;
 		this.position = position;
 		if (strings != null && strings.size() > 0) {
-			this.url = StringUtils.extractUrl(strings.get(0));
+			this.url = StringUtils.extractUrl(null, strings.get(0));
 		} else {
 			this.url = null;
 		}

@@ -36,13 +36,13 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-import net.sourceforge.plantuml.graphic.UDrawable3;
+import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
-class Plus implements UDrawable3 {
+class Plus implements UDrawable {
 
 	private final AffineTransform at;
 	private final AffineTransform at2;

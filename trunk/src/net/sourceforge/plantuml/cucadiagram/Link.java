@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8055 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -442,6 +442,9 @@ public class Link {
 	static public boolean onlyOneLink(IEntity ent, Collection<Link> links) {
 		int nb = 0;
 		for (Link link : links) {
+			if (link.isInvis()) {
+				continue;
+			}
 			if (link.contains(ent)) {
 				nb++;
 			}

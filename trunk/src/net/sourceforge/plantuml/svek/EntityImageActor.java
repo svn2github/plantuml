@@ -104,16 +104,16 @@ public class EntityImageActor extends AbstractEntityImage {
 		final Dimension2D dimStereo = getStereoDimension(stringBounder);
 		final Dimension2D dimTotal = getDimension(stringBounder);
 		final Dimension2D dimName = name.calculateDimension(stringBounder);
-		final double dx = ug.getTranslateX();
-		final double dy = ug.getTranslateY();
+//		final double dx = ug.getTranslateX();
+//		final double dy = ug.getTranslateY();
 		final double manX = (dimTotal.getWidth() - stickman.getPreferredWidth(stringBounder)) / 2;
 		final double manY = dimStereo.getHeight();
 		if (url.size()>0) {
 			ug.startUrl(url.get(0));
 		}
-		ug.translate(xTheoricalPosition + manX, yTheoricalPosition + manY);
-		stickman.drawU(ug);
-		ug.setTranslate(dx, dy);
+//		ug.translate(xTheoricalPosition + manX, yTheoricalPosition + manY);
+		stickman.drawU(ug, xTheoricalPosition + manX, yTheoricalPosition + manY);
+//		ug.setTranslate(dx, dy);
 		final double nameX = (dimTotal.getWidth() - dimName.getWidth()) / 2;
 		final double nameY = stickman.getPreferredHeight(stringBounder) + dimStereo.getHeight();
 		name.drawU(ug, xTheoricalPosition + nameX, yTheoricalPosition + nameY);

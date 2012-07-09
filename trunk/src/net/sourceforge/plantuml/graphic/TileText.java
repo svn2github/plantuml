@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8038 $
+ * Revision $Revision: 8095 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -58,6 +58,7 @@ class TileText implements TextBlock {
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
 		final Dimension2D rect = stringBounder.calculateDimension(fontConfiguration.getFont(), text);
+		final int spaceBottom = Math.abs(fontConfiguration.getSpace());
 		Log.debug("g2d=" + rect);
 		Log.debug("Size for " + text + " is " + rect);
 		double h = rect.getHeight();
@@ -65,7 +66,7 @@ class TileText implements TextBlock {
 			h = 10;
 		}
 		final double width = text.indexOf('\t') == -1 ? rect.getWidth() : getWidth(stringBounder);
-		return new Dimension2DDouble(width, h);
+		return new Dimension2DDouble(width, h + spaceBottom);
 	}
 
 	public double getFontSize2D() {
@@ -76,8 +77,8 @@ class TileText implements TextBlock {
 		return stringBounder.calculateDimension(fontConfiguration.getFont(), "        ").getWidth();
 	}
 
-	public void drawU(UGraphic ug, double x, double y) {
-		if (url!=null) {
+	public void drawU(UGraphic ug, double x, final double y) {
+		if (url != null) {
 			ug.startUrl(url);
 		}
 		ug.getParam().setColor(fontConfiguration.getColor());
@@ -93,13 +94,20 @@ class TileText implements TextBlock {
 					x += tabSize - remainder;
 				} else {
 					final UText utext = new UText(s, fontConfiguration);
-					ug.draw(x, y, utext);
 					final Dimension2D dim = ug.getStringBounder().calculateDimension(fontConfiguration.getFont(), s);
+					int space = fontConfiguration.getSpace();
+					final double ypos;
+					if (space < 0) {
+						ypos = y +space /*- getFontSize2D() - space*/;
+					} else {
+						ypos = y + space;
+					}
+					ug.draw(x, ypos, utext);
 					x += dim.getWidth();
 				}
 			}
 		}
-		if (url!=null) {
+		if (url != null) {
 			ug.closeAction();
 		}
 	}
@@ -122,7 +130,7 @@ class TileText implements TextBlock {
 	}
 
 	public List<Url> getUrls() {
-		if (url!=null) {
+		if (url != null) {
 			return Collections.singletonList(url);
 		}
 		return Collections.emptyList();

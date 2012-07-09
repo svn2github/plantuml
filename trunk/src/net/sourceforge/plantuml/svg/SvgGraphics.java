@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8059 $
  *
  */
 package net.sourceforge.plantuml.svg;
@@ -164,10 +164,10 @@ public class SvgGraphics {
 	public void svgEllipse(double x, double y, double xRadius, double yRadius, double deltaShadow) {
 		manageShadow(deltaShadow);
 		final Element elt = (Element) document.createElement("ellipse");
-		elt.setAttribute("cx", "" + x);
-		elt.setAttribute("cy", "" + y);
-		elt.setAttribute("rx", "" + xRadius);
-		elt.setAttribute("ry", "" + yRadius);
+		elt.setAttribute("cx", format(x));
+		elt.setAttribute("cy", format(y));
+		elt.setAttribute("rx", format(xRadius));
+		elt.setAttribute("ry", format(yRadius));
 		elt.setAttribute("fill", fill);
 		elt.setAttribute("style", getStyle());
 		if (deltaShadow > 0) {
@@ -184,17 +184,17 @@ public class SvgGraphics {
 		String id = gradients.get(key);
 		if (id == null) {
 			final Element elt = (Element) document.createElement("linearGradient");
-			if (policy == '-') {
+			if (policy == '|') {
 				elt.setAttribute("x1", "0%");
 				elt.setAttribute("y1", "50%");
 				elt.setAttribute("x2", "100%");
 				elt.setAttribute("y2", "50%");
-			} else if (policy == '/') {
+			} else if (policy == '\\') {
 				elt.setAttribute("x1", "0%");
 				elt.setAttribute("y1", "100%");
 				elt.setAttribute("x2", "100%");
 				elt.setAttribute("y2", "0%");
-			} else  if (policy == '|') {
+			} else  if (policy == '-') {
 				elt.setAttribute("x1", "50%");
 				elt.setAttribute("y1", "0%");
 				elt.setAttribute("x2", "50%");
@@ -269,18 +269,18 @@ public class SvgGraphics {
 	public void svgRectangle(double x, double y, double width, double height, double rx, double ry, double deltaShadow) {
 		manageShadow(deltaShadow);
 		final Element elt = (Element) document.createElement("rect");
-		elt.setAttribute("x", "" + x);
-		elt.setAttribute("y", "" + y);
-		elt.setAttribute("width", "" + width);
-		elt.setAttribute("height", "" + height);
+		elt.setAttribute("x", format(x));
+		elt.setAttribute("y", format(y));
+		elt.setAttribute("width", format(width));
+		elt.setAttribute("height", format(height));
 		elt.setAttribute("fill", fill);
 		elt.setAttribute("style", getStyle());
 		if (deltaShadow > 0) {
 			elt.setAttribute("filter", "url(#f1)");
 		}
 		if (rx > 0 && ry > 0) {
-			elt.setAttribute("rx", "" + rx);
-			elt.setAttribute("ry", "" + ry);
+			elt.setAttribute("rx", format(rx));
+			elt.setAttribute("ry", format(ry));
 		}
 
 		getG().appendChild(elt);
@@ -291,10 +291,10 @@ public class SvgGraphics {
 	public void svgLine(double x1, double y1, double x2, double y2, double deltaShadow) {
 		manageShadow(deltaShadow);
 		final Element elt = (Element) document.createElement("line");
-		elt.setAttribute("x1", "" + x1);
-		elt.setAttribute("y1", "" + y1);
-		elt.setAttribute("x2", "" + x2);
-		elt.setAttribute("y2", "" + y2);
+		elt.setAttribute("x1", format(x1));
+		elt.setAttribute("y1", format(y1));
+		elt.setAttribute("x2", format(x2));
+		elt.setAttribute("y2", format(y2));
 		elt.setAttribute("style", getStyle());
 		if (deltaShadow > 0) {
 			elt.setAttribute("filter", "url(#f1)");
@@ -324,7 +324,7 @@ public class SvgGraphics {
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
-			sb.append(coord);
+			sb.append(format(coord));
 		}
 		elt.setAttribute("points", sb.toString());
 		elt.setAttribute("fill", fill);
@@ -343,13 +343,13 @@ public class SvgGraphics {
 	public void text(String text, double x, double y, String fontFamily, int fontSize, String fontWeight,
 			String fontStyle, String textDecoration, double textLength) {
 		final Element elt = (Element) document.createElement("text");
-		elt.setAttribute("x", "" + x);
-		elt.setAttribute("y", "" + y);
+		elt.setAttribute("x", format(x));
+		elt.setAttribute("y", format(y));
 		elt.setAttribute("fill", fill);
-		elt.setAttribute("font-size", "" + fontSize);
+		elt.setAttribute("font-size", format(fontSize));
 		// elt.setAttribute("text-anchor", "middle");
 		elt.setAttribute("lengthAdjust", "spacingAndGlyphs");
-		elt.setAttribute("textLength", "" + textLength);
+		elt.setAttribute("textLength", format(textLength));
 		if (fontWeight != null) {
 			elt.setAttribute("font-weight", fontWeight);
 		}
@@ -417,8 +417,8 @@ public class SvgGraphics {
 			style += "background:" + backcolor + ";";
 		}
 		root.setAttribute("style", style);
-		root.setAttribute("width", "" + maxX + "pt");
-		root.setAttribute("height", "" + maxY + "pt");
+		root.setAttribute("width", format(maxX) + "pt");
+		root.setAttribute("height", format(maxY) + "pt");
 		root.setAttribute("viewBox", "0 0 " + maxX + " " + maxY);
 
 		// Get a StreamResult object that points to the
@@ -530,10 +530,10 @@ public class SvgGraphics {
 
 	public void svgImage(BufferedImage image, double x, double y) throws IOException {
 		final Element elt = (Element) document.createElement("image");
-		elt.setAttribute("width", "" + image.getWidth());
-		elt.setAttribute("height", "" + image.getHeight());
-		elt.setAttribute("x", "" + x);
-		elt.setAttribute("y", "" + y);
+		elt.setAttribute("width", format(image.getWidth()));
+		elt.setAttribute("height", format(image.getHeight()));
+		elt.setAttribute("x", format(x));
+		elt.setAttribute("y", format(y));
 		final String s = toBase64(image);
 		elt.setAttribute("xlink:href", "data:image/png;base64," + s);
 		getG().appendChild(elt);

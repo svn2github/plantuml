@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8038 $
+ * Revision $Revision: 8066 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -43,7 +43,6 @@ import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.skin.UDrawable;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -93,10 +92,6 @@ public class CircledCharacter implements UDrawable, TextBlock {
 
 	final public double getPreferredHeight(StringBounder stringBounder) {
 		return 2 * radius;
-	}
-
-	public void drawU(UGraphic ug) {
-		drawU(ug, 0, 0);
 	}
 
 	private PathIterator getPathIteratorCharacter(FontRenderContext frc) {

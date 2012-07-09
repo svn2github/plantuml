@@ -94,7 +94,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		lines = lines.subList(1, lines.size() - 1);
 		final Url url;
 		if (lines.size() > 0) {
-			url = StringUtils.extractUrl(lines.get(0).toString());
+			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(0).toString());
 		} else {
 			url = null;
 		}

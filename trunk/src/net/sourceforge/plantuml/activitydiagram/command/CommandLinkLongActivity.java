@@ -105,7 +105,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		final String desc0 = line0.get("DESC").get(0);
 		Url url = null;
 		if (StringUtils.isNotEmpty(desc0)) {
-			url = StringUtils.extractUrl(desc0);
+			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0);
 			if (url == null) {
 				sb.append(desc0);
 				sb.append("\\n");
@@ -113,7 +113,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		}
 		for (int i = 1; i < lines.size() - 1; i++) {
 			if (i == 1 && url == null) {
-				url = StringUtils.extractUrl(lines.get(i));
+				url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i));
 				if (url != null) {
 					continue;
 				}

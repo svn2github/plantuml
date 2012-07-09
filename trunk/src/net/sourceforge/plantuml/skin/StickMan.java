@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7879 $
+ * Revision $Revision: 8066 $
  *
  */
 package net.sourceforge.plantuml.skin;
@@ -42,6 +42,7 @@ import java.awt.geom.Rectangle2D;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
+import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -102,7 +103,7 @@ public class StickMan implements UDrawable {
 		throw new UnsupportedOperationException();
 	}
 
-	public void drawU(UGraphic ug) {
+	public void drawU(UGraphic ug, double x, double y) {
 
 		ug.getParam().setStroke(new UStroke(thickness));
 
@@ -127,8 +128,8 @@ public class StickMan implements UDrawable {
 
 		ug.getParam().setBackcolor(backgroundColor);
 		ug.getParam().setColor(foregroundColor);
-		ug.draw(startX, thickness, head);
-		ug.draw(centerX, headDiam + thickness, path);
+		ug.draw(x + startX, y + thickness, head);
+		ug.draw(x + centerX, y + headDiam + thickness, path);
 
 		ug.getParam().setStroke(new UStroke());
 	}

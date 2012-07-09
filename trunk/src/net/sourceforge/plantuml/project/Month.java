@@ -58,6 +58,10 @@ public enum Month {
 		return ordinal() + 1;
 	}
 
+	public final int getNumNormal() {
+		return ordinal();
+	}
+
 	public Month next() {
 		if (this == DEC) {
 			return null;

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8063 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -87,8 +87,8 @@ abstract class AbstractGraphviz implements Graphviz {
 		}
 
 		if (illegalDotExe()) {
-			createPngNoGraphviz(os, new FileFormatOption(FileFormat.valueOf(type[0].toUpperCase())));
-			return;
+//			createPngNoGraphviz(os, new FileFormatOption(FileFormat.valueOf(type[0].toUpperCase())));
+			throw new IllegalStateException();
 		}
 		final String cmd = getCommandLine();
 		ProcessRunner p = null;
@@ -155,32 +155,32 @@ abstract class AbstractGraphviz implements Graphviz {
 		return sb.toString().replace('\n', ' ').trim();
 	}
 
-	final private void createPngNoGraphviz(OutputStream os, FileFormatOption format) throws IOException {
-		final List<String> msg = new ArrayList<String>();
-		msg.add("Dot Executable: " + dotExe);
-		if (dotExe != null) {
-			if (dotExe.exists() == false) {
-				msg.add("File does not exist");
-			} else if (dotExe.isDirectory()) {
-				msg.add("It should be an executable, not a directory");
-			} else if (dotExe.isFile() == false) {
-				msg.add("Not a valid file");
-			} else if (dotExe.canRead() == false) {
-				msg.add("File cannot be read");
-			}
-		}
-		msg.add("Cannot find Graphviz. You should try");
-		msg.add(" ");
-		msg.add("@startuml");
-		msg.add("testdot");
-		msg.add("@enduml");
-		msg.add(" ");
-		msg.add(" or ");
-		msg.add(" ");
-		msg.add("java -jar plantuml.jar -testdot");
-		final GraphicStrings errorResult = new GraphicStrings(msg);
-		errorResult.writeImage(os, format);
-	}
+//	final private void createPngNoGraphviz(OutputStream os, FileFormatOption format) throws IOException {
+//		final List<String> msg = new ArrayList<String>();
+//		msg.add("Dot Executable: " + dotExe);
+//		if (dotExe != null) {
+//			if (dotExe.exists() == false) {
+//				msg.add("File does not exist");
+//			} else if (dotExe.isDirectory()) {
+//				msg.add("It should be an executable, not a directory");
+//			} else if (dotExe.isFile() == false) {
+//				msg.add("Not a valid file");
+//			} else if (dotExe.canRead() == false) {
+//				msg.add("File cannot be read");
+//			}
+//		}
+//		msg.add("Cannot find Graphviz. You should try");
+//		msg.add(" ");
+//		msg.add("@startuml");
+//		msg.add("testdot");
+//		msg.add("@enduml");
+//		msg.add(" ");
+//		msg.add(" or ");
+//		msg.add(" ");
+//		msg.add("java -jar plantuml.jar -testdot");
+//		final GraphicStrings errorResult = new GraphicStrings(msg);
+//		errorResult.writeImage(os, format);
+//	}
 
 	abstract String getCommandLine();
 

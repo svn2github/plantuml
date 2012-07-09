@@ -32,6 +32,8 @@
 package net.sourceforge.plantuml.ugraphic.svg;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.svg.SvgGraphics;
 import net.sourceforge.plantuml.ugraphic.ClipContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
@@ -54,31 +56,18 @@ public class DriverPathSvg extends DriverShadowedG2d implements UDriver<SvgGraph
 
 		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param
 				.getColor()));
-		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper
-				.getMappedColor(param.getBackcolor()));
-		
-//		// Shadow
-//		if (shape.getDeltaShadow() != 0) {
-//			double lastX = 0;
-//			double lastY = 0;
-//			for (USegment seg : shape) {
-//				final USegmentType type = seg.getSegmentType();
-//				final double coord[] = seg.getCoord();
-//				if (type == USegmentType.SEG_MOVETO) {
-//					lastX = x + coord[0];
-//					lastY = y + coord[1];
-//				} else if (type == USegmentType.SEG_LINETO) {
-//					svg.svgLineShadow(lastX, lastY, x + coord[0], y + coord[1], shape.getDeltaShadow());
-//					lastX = x + coord[0];
-//					lastY = y + coord[1];
-//				} else {
-//					throw new UnsupportedOperationException();
-//				}
-//			}
-//		}
+		final HtmlColor back = param.getBackcolor();
+		if (back instanceof HtmlColorGradient) {
+			HtmlColorGradient gr = (HtmlColorGradient) back;
+			final String id = svg.createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
+					StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())), gr.getPolicy());
+			svg.setFillColor("url(#" + id + ")");
+		} else {
+			final String backcolor = back == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(back));
+			svg.setFillColor(backcolor);
+		}
 
 
-		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
 

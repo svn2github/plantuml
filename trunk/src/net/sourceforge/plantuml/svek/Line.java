@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.ISkinParam;
@@ -54,7 +53,7 @@ import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockArrow;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
-import net.sourceforge.plantuml.graphic.UDrawable3;
+import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.posimo.BezierUtils;
 import net.sourceforge.plantuml.posimo.DotPath;
 import net.sourceforge.plantuml.posimo.Moveable;
@@ -90,8 +89,8 @@ public class Line implements Moveable {
 	private Positionable endHeadLabelXY;
 	private Positionable noteLabelXY;
 
-	private UDrawable3 endHead;
-	private UDrawable3 startTail;
+	private UDrawable endHead;
+	private UDrawable startTail;
 
 	private final StringBounder stringBounder;
 	private final Bibliotekon bibliotekon;
@@ -139,6 +138,10 @@ public class Line implements Moveable {
 			return end.getX() > start.getX();
 		}
 
+	}
+
+	private boolean projectionStart() {
+		return startUid.startsWith(Cluster.CENTER_ID);
 	}
 
 	public Line(String startUid, String endUid, Link link, ColorSequence colorSequence, String ltail, String lhead,
@@ -375,7 +378,7 @@ public class Line implements Moveable {
 			this.endHead = new Diamond(p1, pc, true);
 		} else if (link.getType().getDecor2() != LinkDecor.NONE) {
 			final UShape sh = new UPolygon(pointListIterator.next());
-			this.endHead = new UDrawable3() {
+			this.endHead = new UDrawable() {
 				public void drawU(UGraphic ug, double x, double y) {
 					ug.draw(x, y, sh);
 				}
@@ -405,7 +408,7 @@ public class Line implements Moveable {
 			this.startTail = new Diamond(p1, pc, true);
 		} else if (link.getType().getDecor1() != LinkDecor.NONE) {
 			final UShape sh = new UPolygon(pointListIterator.next());
-			this.startTail = new UDrawable3() {
+			this.startTail = new UDrawable() {
 				public void drawU(UGraphic ug, double x, double y) {
 					ug.draw(x, y, sh);
 				}
@@ -457,63 +460,6 @@ public class Line implements Moveable {
 
 	}
 
-	// public void patchLineForCluster(List<Cluster> clusters) {
-	// if (clusters != null) {
-	// return;
-	// }
-	// if (link.getEntity1().getType() == EntityType.GROUP) {
-	// final IEntity ent = link.getEntity1();
-	// for (Cluster cl : clusters) {
-	// if (cl.isClusterOf(ent) == false) {
-	// continue;
-	// }
-	// final UPolygon frontier = cl.getSpecificFrontier();
-	// if (frontier == null) {
-	// continue;
-	// }
-	// final double frontierY = frontier.getPoints().get(0).getY();
-	// final double frontierX = frontier.getPoints().get(2).getX();
-	// final Point2D pt = dotPath.getStartPoint();
-	// if (pt.getY() < frontierY) {
-	// Log.println("frontier = " + frontier);
-	// Log.println("p1 = " + pt);
-	// final double deltaY = frontierY - pt.getY();
-	// dotPath.forceStartPoint(pt.getX(), frontierY);
-	// if (endHead != null) {
-	// endHead = UGraphicUtils.translate(endHead, 0, deltaY);
-	// }
-	// }
-	// }
-	// }
-	//
-	// if (link.getEntity2().getType() == EntityType.GROUP) {
-	// final IEntity ent = link.getEntity2();
-	// for (Cluster cl : clusters) {
-	// if (cl.isClusterOf(ent) == false) {
-	// continue;
-	// }
-	// final UPolygon frontier = cl.getSpecificFrontier();
-	// if (frontier == null) {
-	// continue;
-	// }
-	// final double frontierY = frontier.getPoints().get(0).getY();
-	// final double frontierX = frontier.getPoints().get(2).getX();
-	// final Point2D pt = dotPath.getEndPoint();
-	// if (pt.getY() < frontierY) {
-	// Log.println("frontier = " + frontier);
-	// Log.println("p2 = " + pt);
-	// dotPath.forceEndPoint(pt.getX(), frontierY);
-	// final double deltaY = frontierY - pt.getY();
-	// if (startTail != null) {
-	// startTail = UGraphicUtils.translate(startTail, 0, deltaY);
-	// }
-	//
-	// }
-	// }
-	// }
-	//
-	// }
-
 	public void drawU(UGraphic ug, double x, double y, HtmlColor color/* , Map<Group, Cluster> groups */) {
 		if (opale) {
 			return;
@@ -538,7 +484,14 @@ public class Line implements Moveable {
 		ug.getParam().setColor(color);
 		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(link.getType().getStroke());
-		ug.draw(x, y, dotPath);
+//		if (projectionStart()) {
+//			DotPath copy = new DotPath(dotPath);
+//			final Point2D start = copy.getStartPoint();
+//			copy.forceStartPoint(start.getX() + 3, start.getY() + 3);
+//			ug.draw(x, y, copy);
+//		} else {
+			ug.draw(x, y, dotPath);
+//		}
 		ug.getParam().setStroke(new UStroke());
 
 		if (this.startTail != null) {

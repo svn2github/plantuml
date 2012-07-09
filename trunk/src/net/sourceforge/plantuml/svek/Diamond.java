@@ -36,12 +36,12 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-import net.sourceforge.plantuml.graphic.UDrawable3;
+import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 
-class Diamond implements UDrawable3 {
+class Diamond implements UDrawable {
 
 	private int radius;
 	private final Point2D center;

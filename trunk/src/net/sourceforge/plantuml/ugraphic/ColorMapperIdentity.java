@@ -37,11 +37,15 @@ import java.awt.Color;
 
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorSimple;
+import net.sourceforge.plantuml.graphic.HtmlColorTransparent;
 
 public class ColorMapperIdentity implements ColorMapper {
 
 	public Color getMappedColor(HtmlColor color) {
 		if (color == null) {
+			return null;
+		}
+		if (color instanceof HtmlColorTransparent) {
 			return null;
 		}
 		return ((HtmlColorSimple)color).getColor999();

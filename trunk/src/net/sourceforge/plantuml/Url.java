@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml;
 
-
 public class Url implements EnsureVisible {
 
 	private final String url;
@@ -45,8 +44,10 @@ public class Url implements EnsureVisible {
 		this(url, tooltip, null);
 	}
 
-
 	public Url(String url, String tooltip, String label) {
+		if (url.contains("{")) {
+			throw new IllegalArgumentException(url);
+		}
 		this.url = url;
 		if (tooltip == null) {
 			this.tooltip = url;
@@ -67,17 +68,15 @@ public class Url implements EnsureVisible {
 	public final String getTooltip() {
 		return tooltip;
 	}
-	
+
 	public String getLabel() {
 		return label;
 	}
 
-	
 	@Override
 	public String toString() {
 		return url;
 	}
-
 
 	public String getCoords() {
 		return visible.getCoords();
@@ -90,14 +89,11 @@ public class Url implements EnsureVisible {
 	public final boolean isMember() {
 		return member;
 	}
-	
+
 	private final BasicEnsureVisible visible = new BasicEnsureVisible();
 
 	public void ensureVisible(double x, double y) {
 		visible.ensureVisible(x, y);
 	}
 
-
-
-	
 }

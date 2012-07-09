@@ -58,7 +58,7 @@ import net.sourceforge.plantuml.objectdiagram.ObjectDiagramFactory;
 import net.sourceforge.plantuml.oregon.PSystemOregonFactory;
 import net.sourceforge.plantuml.postit.PostIdDiagramFactory;
 import net.sourceforge.plantuml.printskin.PrintSkinFactory;
-import net.sourceforge.plantuml.project.PSystemProjectFactory;
+import net.sourceforge.plantuml.project2.PSystemProjectFactory2;
 import net.sourceforge.plantuml.salt.PSystemSaltFactory;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagramFactory;
 import net.sourceforge.plantuml.statediagram.StateDiagramFactory;
@@ -131,7 +131,7 @@ public class PSystemBuilder {
 		factories.add(new PSystemPathFactory());
 		factories.add(new PSystemOregonFactory());
 		factories.add(new PSystemXearthFactory());
-		factories.add(new PSystemProjectFactory());
+		factories.add(new PSystemProjectFactory2());
 		return factories;
 	}
 

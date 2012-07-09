@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.cucadiagram;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
@@ -49,16 +50,17 @@ public class MemberImpl implements Member {
 	private final VisibilityModifier visibilityModifier;
 
 	public MemberImpl(String display, boolean isMethod) {
-		final Pattern p = Pattern.compile("^(.*)\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\](.*)$");
+		final Pattern p = Pattern.compile("^(.*)(" + StringUtils.URL_PATTERN + ")(.*)$");
 		final Matcher m = p.matcher(display);
+
 		if (m.matches()) {
-			url = new Url(m.group(2), m.group(3));
+			url = StringUtils.extractUrl(null, m.group(2));
 			url.setMember(true);
-			display = m.group(1).trim() + m.group(4).trim();
+			display = m.group(1).trim() + m.group(6).trim();
 		} else {
 			url = null;
 		}
-		
+
 		final String lower = display.toLowerCase();
 		this.staticModifier = lower.contains("{static}") || lower.contains("{classifier}");
 		this.abstractModifier = lower.contains("{abstract}");

@@ -34,6 +34,8 @@ package net.sourceforge.plantuml.ugraphic.svg;
 import java.awt.geom.Point2D;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.svg.SvgGraphics;
 import net.sourceforge.plantuml.ugraphic.ClipContainer;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
@@ -72,15 +74,18 @@ public class DriverPolygonSvg implements UDriver<SvgGraphics> {
 			}
 		}
 		
-//		if (shape.getDeltaShadow() != 0) {
-//			svg.svgPolygonShadow(shape.getDeltaShadow(), points);
-//		}
-
-
 		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getColor()));
-		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getBackcolor()));
+		final HtmlColor back = param.getBackcolor();
+		if (back instanceof HtmlColorGradient) {
+			HtmlColorGradient gr = (HtmlColorGradient) back;
+			final String id = svg.createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
+					StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())), gr.getPolicy());
+			svg.setFillColor("url(#" + id + ")");
+		} else {
+			final String backcolorString = back == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(back));
+			svg.setFillColor(backcolorString);
+		}
 
-		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
 

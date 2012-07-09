@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8047 $
+ * Revision $Revision: 8100 $
  *
  */
 package net.sourceforge.plantuml;
@@ -61,7 +61,7 @@ public class StringUtils {
 		final StringBuilder current = new StringBuilder();
 		for (int i = 0; i < s.length(); i++) {
 			final char c = s.charAt(i);
-			if (c == '\\' && i < s.length() + 1) {
+			if (c == '\\' && i < s.length() - 1) {
 				final char c2 = s.charAt(i + 1);
 				i++;
 				if (c2 == 'n') {
@@ -249,7 +249,7 @@ public class StringUtils {
 
 	public static boolean isCJK(char c) {
 		final Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
-		Log.println("block="+block);
+		Log.println("block=" + block);
 		return false;
 	}
 
@@ -430,22 +430,29 @@ public class StringUtils {
 	public static boolean isMethod(String s) {
 		return s.contains("(") || s.contains(")");
 	}
-	
-	public static Url extractUrl(String s) {
-		final Pattern p = Pattern.compile("(?i)^\\[\\[([^| \\]\\[]*)(?:\\|([^| \\]\\[]*))?(?: ([^| \\]\\[]*))?\\]\\]$");
+
+	public static final String URL_PATTERN = "\\[\\[([^{} \\]\\[]*)(?: *\\{([^{}]+)\\})?(?: ([^\\]\\[]*))?\\]\\]";
+
+	public static Url extractUrl(String topurl, String s) {
+		final Pattern p = Pattern.compile("(?i)^" + URL_PATTERN + "$");
 		final Matcher m = p.matcher(s.trim());
 		if (m.matches() == false) {
 			return null;
 		}
-		return new Url(m.group(1), m.group(2));
+		String url = m.group(1);
+		if (url.startsWith("http:") == false && url.startsWith("https:") == false) {
+//			final String top = getSystem().getSkinParam().getValue("topurl");
+			if (topurl != null) {
+				url = topurl + url;
+			}
+		}
+		return new Url(url, m.group(2), m.group(3));
 	}
-	
+
 	public static <O> List<O> merge(List<O> l1, List<O> l2) {
 		final List<O> result = new ArrayList<O>(l1);
 		result.addAll(l2);
 		return Collections.unmodifiableList(result);
 	}
-
-
 
 }

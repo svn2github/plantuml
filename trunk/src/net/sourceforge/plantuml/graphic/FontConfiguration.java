@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8096 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -45,9 +45,10 @@ public class FontConfiguration {
 	private final HtmlColor motherColor;
 	private final HtmlColor currentColor;
 	private final HtmlColor extendedColor;
+	private final FontPosition fontPosition;
 
 	public FontConfiguration(UFont font, HtmlColor color) {
-		this(getStyles(font), font, color, font, color, null);
+		this(getStyles(font), font, color, font, color, null, FontPosition.NORMAL);
 	}
 
 	private static EnumSet<FontStyle> getStyles(UFont font) {
@@ -71,41 +72,47 @@ public class FontConfiguration {
 	}
 
 	private FontConfiguration(EnumSet<FontStyle> styles, UFont motherFont, HtmlColor motherColor, UFont currentFont,
-			HtmlColor currentColor, HtmlColor extendedColor) {
+			HtmlColor currentColor, HtmlColor extendedColor, FontPosition fontPosition) {
 		this.styles = styles;
 		this.currentFont = currentFont;
 		this.motherFont = motherFont;
 		this.currentColor = currentColor;
 		this.motherColor = motherColor;
 		this.extendedColor = extendedColor;
+		this.fontPosition = fontPosition;
 	}
 
 	FontConfiguration changeColor(HtmlColor htmlColor) {
-		return new FontConfiguration(styles, motherFont, motherColor, currentFont, htmlColor, extendedColor);
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, htmlColor, extendedColor, fontPosition);
 	}
 
 	FontConfiguration changeExtendedColor(HtmlColor newExtendedColor) {
-		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, newExtendedColor);
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, newExtendedColor, fontPosition);
 	}
 
 	FontConfiguration changeSize(float size) {
 		return new FontConfiguration(styles, motherFont, motherColor, currentFont.deriveSize(size), currentColor,
-				extendedColor);
+				extendedColor, fontPosition);
+	}
+
+	FontConfiguration changeFontPosition(FontPosition fontPosition) {
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor,
+				extendedColor, fontPosition);
 	}
 
 	FontConfiguration changeFamily(String family) {
 		return new FontConfiguration(styles, motherFont, motherColor, new UFont(family, currentFont.getStyle(),
-				currentFont.getSize()), currentColor, extendedColor);
+				currentFont.getSize()), currentColor, extendedColor, fontPosition);
 	}
 
 	public FontConfiguration resetFont() {
-		return new FontConfiguration(styles, motherFont, motherColor, motherFont, motherColor, null);
+		return new FontConfiguration(styles, motherFont, motherColor, motherFont, motherColor, null, FontPosition.NORMAL);
 	}
 
 	FontConfiguration add(FontStyle style) {
 		final EnumSet<FontStyle> r = styles.clone();
 		r.add(style);
-		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor);
+		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor, fontPosition);
 	}
 
 	public FontConfiguration italic() {
@@ -119,7 +126,7 @@ public class FontConfiguration {
 	FontConfiguration remove(FontStyle style) {
 		final EnumSet<FontStyle> r = styles.clone();
 		r.remove(style);
-		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor);
+		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor, fontPosition);
 	}
 
 	public UFont getFont() {
@@ -127,7 +134,7 @@ public class FontConfiguration {
 		for (FontStyle style : styles) {
 			result = style.mutateFont(result);
 		}
-		return result;
+		return fontPosition.mute(result);
 	}
 
 	public HtmlColor getColor() {
@@ -140,6 +147,10 @@ public class FontConfiguration {
 
 	public boolean containsStyle(FontStyle style) {
 		return styles.contains(style);
+	}
+
+	public int getSpace() {
+		return fontPosition.getSpace();
 	}
 
 }

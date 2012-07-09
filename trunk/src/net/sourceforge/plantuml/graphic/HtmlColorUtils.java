@@ -214,12 +214,15 @@ public class HtmlColorUtils {
 	public static final HtmlColor BLUE = HtmlColorUtils.getColorIfValid("#0000FF");
 	public static final HtmlColor GRAY = HtmlColorUtils.getColorIfValid("#808080");
 	public static final HtmlColor LIGHT_GRAY = HtmlColorUtils.getColorIfValid("#C0C0C0");
+	public static final HtmlColor TRANSPARENT = new HtmlColorTransparent();
 
 	private static HtmlColor build(String s) {
 		final Color color;
 
 		s = removeFirstDieseAndToLowercase(s);
-		if (s.matches("[0-9A-Fa-f]{6}")) {
+		if (s.equalsIgnoreCase("transparent")) {
+			return TRANSPARENT;
+		} else if (s.matches("[0-9A-Fa-f]{6}")) {
 			color = new Color(Integer.parseInt(s, 16));
 		} else {
 			final String value = htmlNames.get(s);
@@ -231,9 +234,12 @@ public class HtmlColorUtils {
 		return new HtmlColorSimple(color, false);
 	}
 
-	static private boolean isValid(String s) {
+	static private boolean isValid(String s, boolean acceptTransparent) {
 		s = removeFirstDieseAndToLowercase(s);
 		if (s.matches("[0-9A-Fa-f]{6}")) {
+			return true;
+		}
+		if (acceptTransparent && s.equalsIgnoreCase("transparent")) {
 			return true;
 		}
 		if (htmlNames.containsKey(s)) {
@@ -244,6 +250,10 @@ public class HtmlColorUtils {
 	}
 
 	static public HtmlColor getColorIfValid(String s) {
+		return getColorIfValid(s, false);
+	}
+
+	static public HtmlColor getColorIfValid(String s, boolean acceptTransparent) {
 		if (s == null) {
 			return null;
 		}
@@ -253,13 +263,13 @@ public class HtmlColorUtils {
 			int idx = s.indexOf(sep);
 			String s1 = s.substring(0, idx);
 			String s2 = s.substring(idx + 1);
-			if (isValid(s1) == false || isValid(s2) == false) {
+			if (isValid(s1, false) == false || isValid(s2, false) == false) {
 				return null;
 			}
 			return new HtmlColorGradient(build(s1), build(s2), sep);
 			// return getColorIfValid(s2);
 		}
-		if (isValid(s) == false) {
+		if (isValid(s, acceptTransparent) == false) {
 			return null;
 		}
 		return build(s);

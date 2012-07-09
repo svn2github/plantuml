@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8056 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
@@ -42,15 +42,39 @@ public class UPolygon extends AbstractShadowable {
 
 	private final List<Point2D.Double> all = new ArrayList<Point2D.Double>();
 
+	private double minX = Double.MAX_VALUE;
+	private double minY = Double.MAX_VALUE;
+	private double maxX = -Double.MAX_VALUE;
+	private double maxY = -Double.MAX_VALUE;
+
 	public UPolygon() {
 	}
 
 	public UPolygon(List<Point2D.Double> points) {
 		all.addAll(points);
+		for (Point2D.Double pt : all) {
+			manageMinMax(pt.getX(), pt.getY());
+		}
 	}
 
 	public void addPoint(double x, double y) {
 		all.add(new Point2D.Double(x, y));
+		manageMinMax(x, y);
+	}
+
+	private void manageMinMax(double x, double y) {
+		if (x > maxX) {
+			maxX = x;
+		}
+		if (x < minX) {
+			minX = x;
+		}
+		if (y > maxY) {
+			maxY = y;
+		}
+		if (y < minY) {
+			minY = y;
+		}
 	}
 
 	public List<Point2D.Double> getPoints() {
@@ -75,5 +99,13 @@ public class UPolygon extends AbstractShadowable {
 	@Override
 	public String toString() {
 		return super.toString() + " " + all;
+	}
+
+	public double getHeight() {
+		return maxY - minY;
+	}
+
+	public double getWidth() {
+		return maxX - minX;
 	}
 }

@@ -35,12 +35,12 @@ package net.sourceforge.plantuml.ugraphic;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.graphic.UDrawable3;
+import net.sourceforge.plantuml.graphic.UDrawable;
 
 public abstract class UGraphicUtils {
 
-	public static UDrawable3 translate(final UDrawable3 d, final double dx, final double dy) {
-		return new UDrawable3() {
+	public static UDrawable translate(final UDrawable d, final double dx, final double dy) {
+		return new UDrawable() {
 			public void drawU(UGraphic ug, double x, double y) {
 				d.drawU(ug, x + dx, y + dy);
 			}

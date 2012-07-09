@@ -277,7 +277,7 @@ public final class CucaDiagramFileMakerSvek {
 			backColor = diagram.getSkinParam().getColorMapper().getMappedColor(result.getBackcolor());
 		}
 		final UGraphicSvg ug;
-		if (backColor.equals(Color.WHITE)) {
+		if (backColor == null || backColor.equals(Color.WHITE)) {
 			ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), false);
 		} else {
 			ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), StringUtils.getAsHtml(backColor), false);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8068 $
  *
  */
 package net.sourceforge.plantuml;
@@ -124,10 +124,11 @@ public class SkinParam implements ISkinParam {
 			}
 		}
 		final String value = getValue(param.name() + "color");
-		if (value == null || HtmlColorUtils.getColorIfValid(value) == null) {
+		final boolean acceptTransparent = param == ColorParam.background;
+		if (value == null) {
 			return null;
 		}
-		return HtmlColorUtils.getColorIfValid(value);
+		return HtmlColorUtils.getColorIfValid(value, acceptTransparent);
 	}
 
 	private void checkStereotype(String stereotype) {

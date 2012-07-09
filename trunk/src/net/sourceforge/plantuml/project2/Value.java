@@ -28,18 +28,10 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 3836 $
+ * Revision $Revision: 6104 $
  *
  */
-package net.sourceforge.plantuml.svek;
+package net.sourceforge.plantuml.project2;
 
-import java.awt.geom.Dimension2D;
-
-import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.skin.UDrawable;
-
-public interface UDrawable2 extends UDrawable {
-
-	Dimension2D getDimension(StringBounder stringBounder);
-
+public interface Value {
 }

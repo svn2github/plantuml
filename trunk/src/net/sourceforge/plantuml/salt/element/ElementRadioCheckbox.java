@@ -85,6 +85,7 @@ public class ElementRadioCheckbox implements Element {
 
 		ug.getParam().setStroke(new UStroke(stroke));
 		if (radio) {
+			ug.getParam().setBackcolor(null);
 			ug.draw(x + 2, y + (height - ELLIPSE) / 2, new UEllipse(ELLIPSE, ELLIPSE));
 			if (checked) {
 				ug.getParam().setBackcolor(ug.getParam().getColor());
@@ -94,6 +95,7 @@ public class ElementRadioCheckbox implements Element {
 				ug.getParam().setBackcolor(null);
 			}
 		} else {
+			ug.getParam().setBackcolor(null);
 			ug.draw(x + 2, y + (height - RECTANGLE) / 2, new URectangle(RECTANGLE, RECTANGLE));
 			if (checked) {
 				ug.getParam().setBackcolor(ug.getParam().getColor());

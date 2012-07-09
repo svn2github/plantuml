@@ -49,7 +49,6 @@ import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
-import net.sourceforge.plantuml.sequencediagram.Note;
 
 public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand<CucaDiagram> {
 
@@ -112,7 +111,7 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 		}
 		Url url = null;
 		if (note.size() > 0) {
-			url = StringUtils.extractUrl(note.get(0).toString());
+			url = StringUtils.extractUrl(system.getSkinParam().getValue("topurl"), note.get(0).toString());
 		}
 		if (url != null) {
 			note = note.subList(1, note.size());

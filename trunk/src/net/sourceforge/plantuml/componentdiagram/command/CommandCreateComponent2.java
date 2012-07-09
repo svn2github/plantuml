@@ -53,7 +53,6 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 	public CommandCreateComponent2(ComponentDiagram diagram) {
 		super(
 				diagram, getRegexConcat());
-				// "(?i)^(?:component\\s+)?([\\p{L}0-9_.]+|\\[[^\\]*]+[^\\]]*\\]|\"[^\"]+\")\\s*(?:as\\s+\\[?([\\p{L}0-9_.]+)\\]?)?(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?$");
 	}
 
 	private static RegexConcat getRegexConcat() {
@@ -62,7 +61,7 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 				new RegexLeaf("CODE", "([\\p{L}0-9_.]+|\\[[^\\]*]+[^\\]]*\\]|\"[^\"]+\")\\s*"), //
 				new RegexLeaf("AS", "(?:as\\s+\\[?([\\p{L}0-9_.]+)\\]?)?"), //
 				new RegexLeaf("STEREOTYPE", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 

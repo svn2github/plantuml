@@ -28,15 +28,21 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 6577 $
+ * Revision $Revision: 3834 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
-import net.sourceforge.plantuml.ugraphic.UGraphic;
+class ExposantChange implements FontChange {
+	
+	private final FontPosition fontPosition;
 
-public interface UDrawable3 {
+	ExposantChange(FontPosition fontPosition) {
+		this.fontPosition = fontPosition;
+	}
 
-	void drawU(UGraphic ug, double x, double y);
+	public FontConfiguration apply(FontConfiguration initial) {
+		return initial.changeFontPosition(fontPosition);
+	}
 
 }

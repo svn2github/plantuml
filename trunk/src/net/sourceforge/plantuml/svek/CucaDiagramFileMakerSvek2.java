@@ -193,6 +193,7 @@ public final class CucaDiagramFileMakerSvek2 {
 		msg.add(" or ");
 		msg.add(" ");
 		msg.add("java -jar plantuml.jar -testdot");
+		msg.add(" ");
 		return new GraphicStrings(msg);
 	}
 

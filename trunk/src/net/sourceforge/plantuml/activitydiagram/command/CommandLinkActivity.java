@@ -70,7 +70,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), // 
+//				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), // 
+				new RegexLeaf("BACKCOLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("\\s*"), // 
 				new RegexLeaf("ARROW", "([-=.]+(?:\\*|left|right|up|down|le?|ri?|up?|do?)?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
@@ -87,7 +88,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("PARTITION2", "(?:in\\s+(\"[^\"]+\"|\\S+))?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("BACKCOLOR2", "(#\\w+)?"), //
+//				new RegexLeaf("BACKCOLOR2", "(#\\w+)?"), //
+				new RegexLeaf("BACKCOLOR2", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 

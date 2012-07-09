@@ -87,7 +87,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(strings.get(0));
+					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0));
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());

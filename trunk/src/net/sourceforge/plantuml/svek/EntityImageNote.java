@@ -241,6 +241,9 @@ public class EntityImageNote extends AbstractEntityImage {
 			throw new IllegalArgumentException();
 		}
 
+//		if (withShadow && polygonOpale instanceof UPolygon) {
+//			((UPolygon) polygonOpale).setDeltaShadow(4);
+//		}
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(noteBackgroundColor);
 		ug.draw(0, 0, polygonOpale);
@@ -264,18 +267,6 @@ public class EntityImageNote extends AbstractEntityImage {
 		ug.draw(getTextWidth(stringBounder), cornersize, new ULine(-cornersize, 0));
 		getTextBlock().drawU(ug, marginX1, marginY);
 
-		// if (opaleLine != null) {
-		// ug.getParam().setColor(borderColor);
-		// ug.getParam().setBackcolor(noteBackgroundColor);
-		//
-		// final DotPath path = opaleLine.getDotPath();
-		// final Point2D p1 = path.getStartPoint();
-		// final Point2D p2 = path.getEndPoint();
-		// ug.draw(p1.getX() - shape.getMinX(), p1.getY() - shape.getMinY(), new
-		// UEllipse(2, 2));
-		// ug.draw(p2.getX() - shape.getMinX(), p2.getY() - shape.getMinY(), new
-		// UEllipse(2, 2));
-		// }
 	}
 
 	private UPolygon getPolygonNormal(final StringBounder stringBounder) {
@@ -291,99 +282,76 @@ public class EntityImageNote extends AbstractEntityImage {
 
 	private final double delta = 4;
 
-	private UShape getPolygonLeft(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
-		final UPath polygon = new UPath();
-		polygon.moveTo(0, 0);
+	private UPolygon getPolygonLeft(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2,
+			DotPath path) {
+		final UPolygon polygon = new UPolygon();
+		polygon.addPoint(0, 0);
 
 		double y1 = pp1.getY() - delta;
 		y1 = MathUtils.limitation(y1, 0, getTextHeight(stringBounder) - 2 * delta);
-		polygon.lineTo(0, y1);
-		polygon.lineTo(pp2.getX(), pp2.getY());
-		polygon.lineTo(0, y1 + 2 * delta);
+		polygon.addPoint(0, y1);
+		polygon.addPoint(pp2.getX(), pp2.getY());
+		polygon.addPoint(0, y1 + 2 * delta);
 
-		// final DotPath path1 = new DotPath(path);
-		// path1.moveSvek(0, -delta);
-		// path1.forceStartPoint(0, pp1.getY() - delta);
-		// path1.forceEndPoint(pp2.getX(), pp2.getY());
-		// appendPath(polygon, path1);
-		//
-		// final DotPath path2 = new DotPath(path);
-		// path2.reverse();
-		// path2.moveSvek(0, delta);
-		// path2.forceStartPoint(pp2.getX(), pp2.getY());
-		// path2.forceEndPoint(0, pp1.getY() + delta);
-		// appendPath(polygon, path2);
-
-		polygon.lineTo(0, getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), cornersize);
-		polygon.lineTo(getTextWidth(stringBounder) - cornersize, 0);
-		polygon.lineTo(0, 0);
+		polygon.addPoint(0, getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), cornersize);
+		polygon.addPoint(getTextWidth(stringBounder) - cornersize, 0);
+		polygon.addPoint(0, 0);
 		return polygon;
 	}
 
-	private void appendPath(UPath polygon, DotPath path) {
-		boolean start = true;
-		for (CubicCurve2D.Double bez : path.getBeziers()) {
-			if (start) {
-				polygon.lineTo(bez.x1, bez.y1);
-				start = false;
-			}
-			polygon.cubicTo(bez.ctrlx1, bez.ctrly1, bez.ctrlx2, bez.ctrly2, bez.x2, bez.y2);
-		}
-	}
-
-	private UShape getPolygonRight(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
-		final UPath polygon = new UPath();
-		polygon.moveTo(0, 0);
-		polygon.lineTo(0, getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), getTextHeight(stringBounder));
+	private UPolygon getPolygonRight(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
+		final UPolygon polygon = new UPolygon();
+		polygon.addPoint(0, 0);
+		polygon.addPoint(0, getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), getTextHeight(stringBounder));
 
 		double y1 = pp1.getY() - delta;
 		y1 = MathUtils.limitation(y1, cornersize, getTextHeight(stringBounder) - 2 * delta);
-		polygon.lineTo(getTextWidth(stringBounder), y1 + 2 * delta);
-		polygon.lineTo(pp2.getX(), pp2.getY());
-		polygon.lineTo(getTextWidth(stringBounder), y1);
+		polygon.addPoint(getTextWidth(stringBounder), y1 + 2 * delta);
+		polygon.addPoint(pp2.getX(), pp2.getY());
+		polygon.addPoint(getTextWidth(stringBounder), y1);
 
-		polygon.lineTo(getTextWidth(stringBounder), cornersize);
-		polygon.lineTo(getTextWidth(stringBounder) - cornersize, 0);
-		polygon.lineTo(0, 0);
+		polygon.addPoint(getTextWidth(stringBounder), cornersize);
+		polygon.addPoint(getTextWidth(stringBounder) - cornersize, 0);
+		polygon.addPoint(0, 0);
 		return polygon;
 	}
 
-	private UShape getPolygonUp(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
-		final UPath polygon = new UPath();
-		polygon.moveTo(0, 0);
-		polygon.lineTo(0, getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), cornersize);
-		polygon.lineTo(getTextWidth(stringBounder) - cornersize, 0);
+	private UPolygon getPolygonUp(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
+		final UPolygon polygon = new UPolygon();
+		polygon.addPoint(0, 0);
+		polygon.addPoint(0, getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), cornersize);
+		polygon.addPoint(getTextWidth(stringBounder) - cornersize, 0);
 
 		double x1 = pp1.getX() - delta;
 		x1 = MathUtils.limitation(x1, 0, getTextWidth(stringBounder) - cornersize);
-		polygon.lineTo(x1 + 2 * delta, 0);
-		polygon.lineTo(pp2.getX(), pp2.getY());
+		polygon.addPoint(x1 + 2 * delta, 0);
+		polygon.addPoint(pp2.getX(), pp2.getY());
 
-		polygon.lineTo(x1, 0);
-		polygon.lineTo(0, 0);
+		polygon.addPoint(x1, 0);
+		polygon.addPoint(0, 0);
 		return polygon;
 	}
 
-	private UShape getPolygonDown(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
-		final UPath polygon = new UPath();
-		polygon.moveTo(0, 0);
-		polygon.lineTo(0, getTextHeight(stringBounder));
+	private UPolygon getPolygonDown(final StringBounder stringBounder, final Point2D pp1, final Point2D pp2, DotPath path) {
+		final UPolygon polygon = new UPolygon();
+		polygon.addPoint(0, 0);
+		polygon.addPoint(0, getTextHeight(stringBounder));
 
 		double x1 = pp1.getX() - delta;
 		x1 = MathUtils.limitation(x1, 0, getTextWidth(stringBounder));
-		polygon.lineTo(x1, getTextHeight(stringBounder));
-		polygon.lineTo(pp2.getX(), pp2.getY());
-		polygon.lineTo(x1 + 2 * delta, getTextHeight(stringBounder));
+		polygon.addPoint(x1, getTextHeight(stringBounder));
+		polygon.addPoint(pp2.getX(), pp2.getY());
+		polygon.addPoint(x1 + 2 * delta, getTextHeight(stringBounder));
 
-		polygon.lineTo(getTextWidth(stringBounder), getTextHeight(stringBounder));
-		polygon.lineTo(getTextWidth(stringBounder), cornersize);
-		polygon.lineTo(getTextWidth(stringBounder) - cornersize, 0);
-		polygon.lineTo(0, 0);
+		polygon.addPoint(getTextWidth(stringBounder), getTextHeight(stringBounder));
+		polygon.addPoint(getTextWidth(stringBounder), cornersize);
+		polygon.addPoint(getTextWidth(stringBounder) - cornersize, 0);
+		polygon.addPoint(0, 0);
 		return polygon;
 	}
 

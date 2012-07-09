@@ -35,11 +35,11 @@ package net.sourceforge.plantuml.command;
 
 import java.util.List;
 
-import net.sourceforge.plantuml.UmlDiagram;
+import net.sourceforge.plantuml.PSystem;
 
-public class CommandMultilinesComment extends CommandMultilines<UmlDiagram> {
+public class CommandMultilinesComment extends CommandMultilines<PSystem> {
 
-	public CommandMultilinesComment(final UmlDiagram diagram) {
+	public CommandMultilinesComment(final PSystem diagram) {
 		super(diagram, "(?i)^\\s*/'.*$");
 	}
 

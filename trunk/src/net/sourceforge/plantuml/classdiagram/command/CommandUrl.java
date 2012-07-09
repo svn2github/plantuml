@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -44,23 +45,17 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 public class CommandUrl extends SingleLineCommand<AbstractEntityDiagram> {
 
 	public CommandUrl(AbstractEntityDiagram diagram) {
-		super(diagram,
-				"(?i)^url\\s*(?:of|for)?\\s+([\\p{L}0-9_.]+|\"[^\"]+\")\\s+(?:is)?\\s*\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\]$");
+		super(diagram, "(?i)^url\\s*(?:of|for)?\\s+([\\p{L}0-9_.]+|\"[^\"]+\")\\s+(?:is)?\\s*("
+				+ StringUtils.URL_PATTERN + ")$");
 	}
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
-		String url = arg.get(1);
-		final String title = arg.get(2);
+		final String urlString = arg.get(1);
 		final IEntity entity = getSystem().getOrCreateClass(code);
-		if (url.startsWith("http:") == false && url.startsWith("https:") == false) {
-			final String top = getSystem().getSkinParam().getValue("topurl");
-			if (top != null) {
-				url = top + url;
-			}
-		}
-		entity.addUrl(new Url(url, title));
+		final Url url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), urlString);
+		entity.addUrl(url);
 		return CommandExecutionResult.ok();
 	}
 

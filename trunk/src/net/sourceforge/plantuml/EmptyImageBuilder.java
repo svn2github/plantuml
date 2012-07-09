@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8068 $
  *
  */
 package net.sourceforge.plantuml;
@@ -50,11 +50,14 @@ public class EmptyImageBuilder {
 
 	public EmptyImageBuilder(int width, int height, Color background) {
 		Log.info("Creating image " + width + "x" + height);
-		im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		im = new BufferedImage(width, height, background == null ? BufferedImage.TYPE_INT_ARGB
+				: BufferedImage.TYPE_INT_RGB);
 		g2d = im.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(background);
-		g2d.fillRect(0, 0, width, height);
+		if (background != null) {
+			g2d.setColor(background);
+			g2d.fillRect(0, 0, width, height);
+		}
 	}
 
 	public EmptyImageBuilder(int width, int height, Color background, double dpiFactor) {

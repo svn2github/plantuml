@@ -56,7 +56,6 @@ import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
-import net.sourceforge.plantuml.sequencediagram.Note;
 
 public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryCommand<AbstractEntityDiagram> {
 
@@ -72,7 +71,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				new RegexOr( //
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$") //
 		);
@@ -84,7 +83,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				new RegexOr( //
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("\\s*\\{?"), //
 				new RegexLeaf("$") //
 		);
@@ -116,7 +115,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(strings.get(0));
+					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0));
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());

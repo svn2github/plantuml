@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainer;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -64,11 +65,13 @@ public class ElementButton extends AbstractElementText implements Element {
 			return;
 		}
 		final Dimension2D dim = getPreferredDimension(ug.getStringBounder(), x, y);
-		final Dimension2D dimPureText = getPureTextDimension(ug.getStringBounder());
-		drawText(ug, x + (dim.getWidth() - dimPureText.getWidth()) / 2, y + stroke + marginY);
 		ug.getParam().setStroke(new UStroke(stroke));
+		ug.getParam().setBackcolor(HtmlColorUtils.getColorIfValid("#EEEEEE"));
 		ug.draw(x + stroke, y + stroke, new URectangle(dim.getWidth() - 2 * stroke, dim.getHeight() - 2 * stroke, 10,
 				10));
+		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(new UStroke());
+		final Dimension2D dimPureText = getPureTextDimension(ug.getStringBounder());
+		drawText(ug, x + (dim.getWidth() - dimPureText.getWidth()) / 2, y + stroke + marginY);
 	}
 }

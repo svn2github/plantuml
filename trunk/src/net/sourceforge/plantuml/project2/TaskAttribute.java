@@ -28,15 +28,35 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 3836 $
+ * Revision $Revision: 6104 $
  *
  */
-package net.sourceforge.plantuml.skin;
+package net.sourceforge.plantuml.project2;
 
-import net.sourceforge.plantuml.ugraphic.UGraphic;
+public enum TaskAttribute {
 
-public interface UDrawable {
+	START, END, COMPLETED, DURATION, LOAD;
 
-	public void drawU(UGraphic ug);
+	static public TaskAttribute fromString(String n) {
+		if (n.equalsIgnoreCase("begin")) {
+			return START;
+		}
+		if (n.equalsIgnoreCase("start")) {
+			return START;
+		}
+		if (n.equalsIgnoreCase("work")) {
+			return LOAD;
+		}
+		if (n.equalsIgnoreCase("load")) {
+			return LOAD;
+		}
+		if (n.equalsIgnoreCase("duration")) {
+			return DURATION;
+		}
+		if (n.equalsIgnoreCase("completed")) {
+			return COMPLETED;
+		}
+		return null;
+	}
 
 }
