@@ -41,6 +41,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -75,21 +77,13 @@ public abstract class AbstractMessage implements Event {
 		return url;
 	}
 
-	static final Pattern PATTERN_URL1 = Pattern.compile("(?: )*\\[\\[([^|]*)(?:\\|([^|]*))?\\]\\](?: )*");
 
 	private List<String> removeUrl(List<String> label) {
 		if (url == null) {
 			return label;
 		}
-		final String label0 = label.get(0);
-		final Matcher m = PATTERN_URL1.matcher(label0);
-		if (m.find() == false) {
-			throw new IllegalStateException();
-		}
-		final String url = m.group(0);
-		final int x = label0.indexOf(url);
 		final List<String> result = new ArrayList<String>();
-		result.add(label0.substring(0, x) + label0.substring(x + url.length()));
+		result.add(StringUtils.removeUrl(label.get(0)));
 		result.addAll(label.subList(1, label.size()));
 		return result;
 
@@ -99,11 +93,7 @@ public abstract class AbstractMessage implements Event {
 		if (label.size() == 0) {
 			return null;
 		}
-		final Matcher m = PATTERN_URL1.matcher(label.get(0));
-		if (m.find() == false) {
-			return null;
-		}
-		return new Url(m.group(1), m.group(2));
+		return StringUtils.extractUrl(null, label.get(0).trim(), false);
 	}
 
 	public final boolean addLifeEvent(LifeEvent lifeEvent) {

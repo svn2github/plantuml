@@ -28,71 +28,75 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7908 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
 
+import java.util.List;
+
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.objectdiagram.AbstractClassOrObjectDiagram;
 
 public class ClassDiagram extends AbstractClassOrObjectDiagram {
 
 	@Override
-	public IEntity getOrCreateEntity(String code, EntityType defaultType) {
-		assert defaultType == EntityType.ABSTRACT_CLASS || defaultType == EntityType.CLASS
-				|| defaultType == EntityType.INTERFACE || defaultType == EntityType.ENUM
-				|| defaultType == EntityType.LOLLIPOP || defaultType == EntityType.POINT_FOR_ASSOCIATION;
+	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
+		assert defaultType == LeafType.ABSTRACT_CLASS || defaultType == LeafType.CLASS
+				|| defaultType == LeafType.INTERFACE || defaultType == LeafType.ENUM
+				|| defaultType == LeafType.LOLLIPOP || defaultType == LeafType.POINT_FOR_ASSOCIATION;
 		code = getFullyQualifiedCode(code);
-		if (super.entityExist(code)) {
-			return super.getOrCreateEntity(code, defaultType);
+		if (super.leafExist(code)) {
+			return super.getOrCreateLeaf(code, defaultType);
 		}
-		return createEntityWithNamespace(code, getShortName(code), defaultType);
+		return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
 	}
 
 	@Override
-	public IEntity createEntity(String code, String display, EntityType type) {
-		if (type != EntityType.ABSTRACT_CLASS && type != EntityType.CLASS && type != EntityType.INTERFACE
-				&& type != EntityType.ENUM && type != EntityType.LOLLIPOP) {
-			return super.createEntity(code, display, type);
+	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+		if (type != LeafType.ABSTRACT_CLASS && type != LeafType.CLASS && type != LeafType.INTERFACE
+				&& type != LeafType.ENUM && type != LeafType.LOLLIPOP) {
+			return super.createLeaf(code, display, type);
 		}
 		code = getFullyQualifiedCode(code);
-		if (super.entityExist(code)) {
+		if (super.leafExist(code)) {
 			throw new IllegalArgumentException("Already known: " + code);
 		}
 		return createEntityWithNamespace(code, display, type);
 	}
 
-	private IEntity createEntityWithNamespace(String fullyCode, String display, EntityType type) {
-		IEntityMutable group = getCurrentGroup();
+	private ILeaf createEntityWithNamespace(String fullyCode, List<? extends CharSequence> display, LeafType type) {
+		IGroup group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (group == null || group.zgetGroupCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(namespace, namespace, namespace, GroupType.PACKAGE, null);
+		if (namespace != null && (EntityUtils.groupNull(group) || group.getCode().equals(namespace) == false)) {
+			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
 		}
-		return createEntityInternal(fullyCode, display == null ? getShortName(fullyCode) : display, type, group);
+		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode)) : display, type, group);
 	}
 
 	@Override
-	public final boolean entityExist(String code) {
-		return super.entityExist(getFullyQualifiedCode(code));
+	public final boolean leafExist(String code) {
+		return super.leafExist(getFullyQualifiedCode(code));
 	}
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
-		return getOrCreateEntity(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), EntityType.CLASS);
+	public ILeaf getOrCreateClass(String code) {
+		return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.CLASS);
 	}
 
-	final public IEntity getOrCreateClass(String code, EntityType type) {
-		if (type != EntityType.ABSTRACT_CLASS && type != EntityType.CLASS && type != EntityType.INTERFACE
-				&& type != EntityType.ENUM && type != EntityType.LOLLIPOP) {
+	final public IEntity getOrCreateClass(String code, LeafType type) {
+		if (type != LeafType.ABSTRACT_CLASS && type != LeafType.CLASS && type != LeafType.INTERFACE
+				&& type != LeafType.ENUM && type != LeafType.LOLLIPOP) {
 			throw new IllegalArgumentException();
 		}
-		return getOrCreateEntity(code, type);
+		return getOrCreateLeaf(code, type);
 	}
 
 	@Override

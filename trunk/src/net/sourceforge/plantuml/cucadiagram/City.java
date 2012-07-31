@@ -44,13 +44,13 @@ public class City {
 	private final Map<String, IEntity> entities = new LinkedHashMap<String, IEntity>();
 
 	private HtmlColor backColor;
-	private Group parent;
+	private IEntity parent;
 
 //	private boolean dashed;
 //	private boolean rounded;
 //	private boolean bold;
 
-	public City(Group parent) {
+	public City(IEntity parent) {
 		this.parent = parent;
 	}
 
@@ -91,7 +91,7 @@ public class City {
 		this.backColor = backColor;
 	}
 
-	public final Group getParent() {
+	public final IEntity getParent() {
 		return parent;
 	}
 

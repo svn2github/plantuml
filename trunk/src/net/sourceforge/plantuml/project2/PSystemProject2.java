@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
@@ -66,7 +67,7 @@ public class PSystemProject2 extends AbstractPSystem {
 		return "(Project)";
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormatOption)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormatOption)
 			throws IOException {
 		final GanttDiagram2 diagram = new GanttDiagram2(project);
 		final FileFormat fileFormat = fileFormatOption.getFileFormat();

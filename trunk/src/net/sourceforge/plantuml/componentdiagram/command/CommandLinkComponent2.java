@@ -43,7 +43,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -89,7 +89,7 @@ public class CommandLinkComponent2 extends SingleLineCommand2<ComponentDiagram> 
 		}
 
 		final IEntity cl1 = getSystem().getOrCreateClass(g1);
-		final IEntity cl2 = getSystem().getOrCreateEntity(g2, EntityType.ARC_CIRCLE);
+		final IEntity cl2 = getSystem().getOrCreateLeaf(g2, LeafType.ARC_CIRCLE);
 		
 
 		if (arg.get("G1").get(1) != null) {

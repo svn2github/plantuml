@@ -38,6 +38,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.version.Version;
 
 public class ProtectedCommand implements Command {
 
@@ -56,7 +57,7 @@ public class ProtectedCommand implements Command {
 			final PrintWriter pw = new PrintWriter(baos);
 			t.printStackTrace(pw);
 			Log.error("Error " + t);
-			String msg = "You should send a mail to plantuml@gmail.com with this log";
+			String msg = "You should send a mail to plantuml@gmail.com with this log (V" + Version.versionString() + ")";
 			Log.error(msg);
 			msg += " " + new String(baos.toByteArray());
 			return CommandExecutionResult.error(msg);

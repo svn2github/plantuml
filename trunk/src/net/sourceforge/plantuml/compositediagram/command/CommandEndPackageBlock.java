@@ -38,7 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.compositediagram.CompositeDiagram;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandEndPackageBlock extends SingleLineCommand<CompositeDiagram> {
 
@@ -48,7 +48,7 @@ public class CommandEndPackageBlock extends SingleLineCommand<CompositeDiagram> 
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntity currentPackage = getSystem().getCurrentGroup();
 		if (currentPackage == null) {
 			return CommandExecutionResult.error("No inner block defined");
 		}

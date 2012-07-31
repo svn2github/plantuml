@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public class TextBlockMarged implements TextBlock {
+class TextBlockMarged implements TextBlock {
 
 	private final TextBlock textBlock;
 	private final double x1;

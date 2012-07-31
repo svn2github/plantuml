@@ -28,72 +28,76 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7908 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
 
+import java.util.List;
+
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class ComponentDiagram extends AbstractEntityDiagram {
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
+	public ILeaf getOrCreateClass(String code) {
 		if (code.startsWith("[") && code.endsWith("]")) {
-			return getOrCreateEntity(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
-					EntityType.COMPONENT);
+			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
+					LeafType.COMPONENT);
 		}
 		if (code.startsWith(":") && code.endsWith(":")) {
-			return getOrCreateEntity(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), EntityType.ACTOR);
+			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
 		}
 		if (code.startsWith("()")) {
 			code = code.substring(2).trim();
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
-			return getOrCreateEntity(code, EntityType.CIRCLE_INTERFACE);
+			return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
 		}
 		code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
-		return getOrCreateEntity(code, EntityType.CIRCLE_INTERFACE);
+		return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
 	}
 	
 	@Override
-	public IEntity getOrCreateEntity(String code, EntityType defaultType) {
+	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
 		code = getFullyQualifiedCode(code);
-		if (super.entityExist(code)) {
-			return super.getOrCreateEntity(code, defaultType);
+		if (super.leafExist(code)) {
+			return super.getOrCreateLeaf(code, defaultType);
 		}
-		return createEntityWithNamespace(code, getShortName(code), defaultType);
+		return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
 	}
 	
 	@Override
-	public IEntity createEntity(String code, String display, EntityType type) {
-		if (type != EntityType.COMPONENT) {
-			return super.createEntity(code, display, type);
+	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+		if (type != LeafType.COMPONENT) {
+			return super.createLeaf(code, display, type);
 		}
 		code = getFullyQualifiedCode(code);
-		if (super.entityExist(code)) {
+		if (super.leafExist(code)) {
 			throw new IllegalArgumentException("Already known: " + code);
 		}
 		return createEntityWithNamespace(code, display, type);
 	}
 
-	private IEntity createEntityWithNamespace(String fullyCode, String display, EntityType type) {
-		IEntityMutable group = getCurrentGroup();
+	private ILeaf createEntityWithNamespace(String fullyCode, List<? extends CharSequence> display, LeafType type) {
+		IGroup group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (group == null || group.zgetGroupCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(namespace, namespace, namespace, GroupType.PACKAGE, null);
+		if (namespace != null && (EntityUtils.groupNull(group) || group.getCode().equals(namespace) == false)) {
+			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
 		}
-		return createEntityInternal(fullyCode, display == null ? getShortName(fullyCode) : display, type, group);
+		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode)) : display, type, group);
 	}
 
 	@Override
-	public final boolean entityExist(String code) {
-		return super.entityExist(getFullyQualifiedCode(code));
+	public final boolean leafExist(String code) {
+		return super.leafExist(getFullyQualifiedCode(code));
 	}
 
 

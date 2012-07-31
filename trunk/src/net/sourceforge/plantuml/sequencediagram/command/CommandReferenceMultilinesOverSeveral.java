@@ -76,7 +76,7 @@ public class CommandReferenceMultilinesOverSeveral extends CommandMultilines<Seq
 
 		Url u = null;
 		if (strings.size() > 0) {
-			u = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0));
+			u = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0), true);
 		}
 		if (u != null) {
 			strings = strings.subList(1, strings.size());

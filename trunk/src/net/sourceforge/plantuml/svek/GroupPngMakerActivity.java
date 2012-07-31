@@ -46,11 +46,12 @@ import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
@@ -66,24 +67,24 @@ import net.sourceforge.plantuml.ugraphic.UFont;
 public final class GroupPngMakerActivity {
 
 	private final CucaDiagram diagram;
-	private final Group group;
+	private final IGroup group;
 
 	class InnerGroupHierarchy implements GroupHierarchy {
 
-		public Collection<? extends Group> getChildrenGroups(Group parent) {
-			if (parent == null) {
+		public Collection<IGroup> getChildrenGroups(IGroup parent) {
+			if (EntityUtils.groupNull(parent)) {
 				return diagram.getChildrenGroups(group);
 			}
 			return diagram.getChildrenGroups(parent);
 		}
 
-		public boolean isEmpty(Group g) {
+		public boolean isEmpty(IGroup g) {
 			return diagram.isEmpty(g);
 		}
 
 	}
 
-	public GroupPngMakerActivity(CucaDiagram diagram, Group group) {
+	public GroupPngMakerActivity(CucaDiagram diagram, IGroup group) {
 		this.diagram = diagram;
 		this.group = group;
 	}
@@ -91,9 +92,9 @@ public final class GroupPngMakerActivity {
 	private List<Link> getPureInnerLinks() {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link link : diagram.getLinks()) {
-			final IEntityMutable e1 = (IEntityMutable) link.getEntity1();
-			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
-			if (EntityUtils.equals(e1.getContainer(), group) && e1.isGroup()==false && EntityUtils.equals(e2.getContainer(), group)
+			final IEntity e1 = (IEntity) link.getEntity1();
+			final IEntity e2 = (IEntity) link.getEntity2();
+			if (EntityUtils.equals(e1.getParentContainer(), group) && e1.isGroup()==false && EntityUtils.equals(e2.getParentContainer(), group)
 					&& e2.isGroup()==false) {
 				result.add(link);
 			}
@@ -102,8 +103,8 @@ public final class GroupPngMakerActivity {
 	}
 
 	public IEntityImage getImage() throws IOException, InterruptedException {
-		final String display = group.zgetDisplay();
-		final TextBlock title = TextBlockUtils.create(StringUtils.getWithNewlines(display), new FontConfiguration(
+		final List<? extends CharSequence> display = group.getDisplay();
+		final TextBlock title = TextBlockUtils.create(display, new FontConfiguration(
 				getFont(FontParam.STATE), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.zsize() == 0) {
@@ -111,10 +112,10 @@ public final class GroupPngMakerActivity {
 		}
 		final List<Link> links = getPureInnerLinks();
 		ISkinParam skinParam = diagram.getSkinParam();
-		if (OptionFlags.PBBACK && group.zgetBackColor() != null) {
-			skinParam = new SkinParamBackcolored(skinParam, null, group.zgetBackColor());
+		if (OptionFlags.PBBACK && group.getSpecificBackColor() != null) {
+			skinParam = new SkinParamBackcolored(skinParam, null, group.getSpecificBackColor());
 		}
-		final DotData dotData = new DotData(group, links, group.zentities(), diagram.getUmlDiagramType(), skinParam,
+		final DotData dotData = new DotData(group, links, group.getLeafsDirect(), diagram.getUmlDiagramType(), skinParam,
 				group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(), diagram.getEntityFactory());
 
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);

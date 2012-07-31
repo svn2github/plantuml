@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7920 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -43,8 +43,8 @@ import net.sourceforge.plantuml.classdiagram.command.CommandDiamondAssociation;
 import net.sourceforge.plantuml.classdiagram.command.CommandHideShow;
 import net.sourceforge.plantuml.classdiagram.command.CommandHideShow3;
 import net.sourceforge.plantuml.classdiagram.command.CommandImport;
-import net.sourceforge.plantuml.classdiagram.command.CommandLinkClass3;
-import net.sourceforge.plantuml.classdiagram.command.CommandLinkLollipop2;
+import net.sourceforge.plantuml.classdiagram.command.CommandLinkClass;
+import net.sourceforge.plantuml.classdiagram.command.CommandLinkLollipop;
 import net.sourceforge.plantuml.classdiagram.command.CommandMouseOver;
 import net.sourceforge.plantuml.classdiagram.command.CommandStereotype;
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
@@ -61,7 +61,9 @@ import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -96,8 +98,8 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(new CommandEndNamespace(system));
 		addCommand(new CommandStereotype(system));
 
-		addCommand(new CommandLinkClass3(system));
-		addCommand(new CommandLinkLollipop2(system));
+		addCommand(new CommandLinkClass(system));
+		addCommand(new CommandLinkLollipop(system));
 
 		addCommand(new CommandImport(system));
 		final FactoryNoteOnEntityCommand factoryNoteOnEntityCommand = new FactoryNoteOnEntityCommand(new RegexLeaf(
@@ -123,9 +125,9 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 	@Override
 	public String checkFinalError() {
-		for (IEntityMutable g : system.getGroups(true)) {
-			final List<IEntity> standalones = new ArrayList<IEntity>();
-			for (IEntity ent : g.zentities()) {
+		for (IGroup g : system.getGroups(true)) {
+			final List<ILeaf> standalones = new ArrayList<ILeaf>();
+			for (ILeaf ent : g.getLeafsDirect()) {
 				if (system.isStandalone(ent)) {
 					standalones.add(ent);
 				}
@@ -138,7 +140,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 		return super.checkFinalError();
 	}
 
-	private void putInSquare(List<IEntity> standalones) {
+	private void putInSquare(List<ILeaf> standalones) {
 		final LinkType linkType = new LinkType(LinkDecor.NONE, LinkDecor.NONE).getInvisible();
 		final int branch = computeBranch(standalones.size());
 		int headBranch = 0;

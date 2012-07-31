@@ -106,7 +106,7 @@ public class XmiClassDiagramStandard implements IXmiClassDiagram {
 		this.ownedElement = document.createElement("UML:Namespace.ownedElement");
 		model.appendChild(ownedElement);
 
-		for (final IEntity ent : classDiagram.getEntities().values()) {
+		for (final IEntity ent : classDiagram.getLeafs().values()) {
 			// if (fileFormat == FileFormat.XMI_ARGO && isStandalone(ent) == false) {
 			// continue;
 			// }
@@ -237,7 +237,7 @@ public class XmiClassDiagramStandard implements IXmiClassDiagram {
 		final Element cla = document.createElement("UML:Class");
 
 		cla.setAttribute("xmi.id", entity.getUid());
-		cla.setAttribute("name", entity.getDisplay2().get(0).toString());
+		cla.setAttribute("name", entity.getDisplay().get(0).toString());
 		cla.setAttribute("namespace", "model1");
 
 		final Element feature = document.createElement("UML:Classifier.feature");

@@ -34,104 +34,152 @@
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.graphic.TextBlockWidthVertical;
+import net.sourceforge.plantuml.skin.VisibilityModifier;
 import net.sourceforge.plantuml.svek.IEntityImage;
+import net.sourceforge.plantuml.svek.PackageStyle;
 
-public class EntityImpl implements IEntity {
+public class EntityImpl implements ILeaf, IGroup {
 
+	private final EntityFactory entityFactory;
+
+	// Entity
 	private final String code;
-	private List<? extends CharSequence> display2;
-
-	private final String uid;
-	private EntityType type;
-
-	private Stereotype stereotype;
-	private String generic;
-
-	private IEntityMutable container;
-
 	private final List<Url> urls = new ArrayList<Url>();
 
 	private final Bodier bodier;
+	private final String uid = StringUtils.getUid("cl", UniqueSequence.getValue());
+	private final List<CharSequence> display = new ArrayList<CharSequence>();
+
+	private LeafType leafType;
+	private Stereotype stereotype;
+	private String generic;
+	private IGroup parentContainer;
 
 	private boolean top;
 
+	private final List<String> mouseOver = new ArrayList<String>();
+
+	// Group
+	private String namespace;
+
+	private GroupType groupType;
+
+	private boolean autonom = true;
+	private Rankdir rankdir = Rankdir.TOP_TO_BOTTOM;
+
+	// Other
+
+	private HtmlColor specificBackcolor;
+	private boolean nearDecoration = false;
+	private int xposition;
+	private IEntityImage svekImage;
+
+	// Back to Entity
 	public final boolean isTop() {
+		checkNotGroup();
 		return top;
 	}
 
 	public final void setTop(boolean top) {
+		checkNotGroup();
 		this.top = top;
 	}
 
-	static EntityImpl createInternal(String uid1, int uid2, String code, List<? extends CharSequence> display,
-			EntityType type, IEntityMutable entityPackage, Bodier bodier) {
-		return new EntityImpl(uid1, uid2, code, display, type, entityPackage, bodier);
+	public static ILeaf createEntity_A1_leaf(EntityFactory factory, String code,
+			List<? extends CharSequence> display, LeafType entityType, IGroup parentContainer,
+			Set<VisibilityModifier> hides) {
+		if (entityType == null) {
+			throw new IllegalArgumentException();
+		}
+		final Bodier bodier = new Bodier(entityType, hides);
+		final EntityImpl result = new EntityImpl(factory, code, bodier);
+		result.parentContainer = parentContainer;
+		result.leafType = entityType;
+		result.setDisplay(display);
+		return result;
 	}
 
-	private EntityImpl(String uid1, int uid2, String code, List<? extends CharSequence> display, EntityType type,
-			IEntityMutable container, Bodier bodier) {
-		if (code == null || code.length() == 0) {
+	static IGroup createEntity_A2_group(EntityFactory factory, String code, List<? extends CharSequence> display,
+			String namespace, GroupType groupType, IGroup parentContainer, Set<VisibilityModifier> hides) {
+		if (groupType == null) {
 			throw new IllegalArgumentException();
 		}
-		if (display == null) {
+		final Bodier bodier = new Bodier(null, hides);
+		final EntityImpl result = new EntityImpl(factory, code, bodier);
+		result.parentContainer = parentContainer;
+		result.groupType = groupType;
+		result.namespace = namespace;
+		if (parentContainer.isGroup() == false) {
 			throw new IllegalArgumentException();
 		}
-		// this.bodier = new Bodier(type, hides);
+		if (display != null) {
+			result.setDisplay(display);
+		}
+		return result;
+	}
+
+	private EntityImpl(EntityFactory entityFactory, String code, Bodier bodier) {
+		if (code == null) {
+			throw new IllegalArgumentException();
+		}
+		this.entityFactory = entityFactory;
 		this.bodier = bodier;
-		this.uid = StringUtils.getUid(uid1, uid2);
-		this.type = type;
 		this.code = code;
-		this.display2 = display;
-		this.container = container;
 	}
 
-	public void setContainer(IEntityMutable container) {
+	public void setContainer(IGroup container) {
+		checkNotGroup();
 		if (container == null) {
 			throw new IllegalArgumentException();
 		}
-		this.container = container;
+		this.parentContainer = container;
 	}
 
-	public EntityType getEntityType() {
-		return type;
+	public LeafType getEntityType() {
+		checkNotGroup();
+		return leafType;
 	}
 
-	public void muteToType(EntityType newType) {
-		if (type != EntityType.ABSTRACT_CLASS && type != EntityType.CLASS && type != EntityType.ENUM
-				&& type != EntityType.INTERFACE) {
-			throw new IllegalArgumentException("type=" + type);
+	public void muteToType(LeafType newType) {
+		checkNotGroup();
+		if (newType == null) {
+			throw new IllegalArgumentException();
 		}
-		if (newType != EntityType.ABSTRACT_CLASS && newType != EntityType.CLASS && newType != EntityType.ENUM
-				&& newType != EntityType.INTERFACE) {
+		if (leafType != LeafType.ABSTRACT_CLASS && leafType != LeafType.CLASS && leafType != LeafType.ENUM
+				&& leafType != LeafType.INTERFACE) {
+			throw new IllegalArgumentException("type=" + leafType);
+		}
+		if (newType != LeafType.ABSTRACT_CLASS && newType != LeafType.CLASS && newType != LeafType.ENUM
+				&& newType != LeafType.INTERFACE) {
 			throw new IllegalArgumentException("newtype=" + newType);
 		}
-		this.type = newType;
+		this.leafType = newType;
 	}
 
 	public String getCode() {
 		return code;
 	}
 
-	public List<? extends CharSequence> getDisplay2() {
-		return display2;
+	public List<? extends CharSequence> getDisplay() {
+		return Collections.unmodifiableList(display);
 	}
 
-	public void setDisplay2(String display) {
-		this.display2 = StringUtils.getWithNewlines(display);
-	}
-
-	public void setDisplay2(List<? extends CharSequence> display) {
-		this.display2 = display;
+	public void setDisplay(List<? extends CharSequence> display) {
+		this.display.clear();
+		this.display.addAll(display);
 	}
 
 	public String getUid() {
@@ -146,19 +194,17 @@ public class EntityImpl implements IEntity {
 		this.stereotype = stereotype;
 	}
 
-	public final Group getContainer() {
-		return container;
+	public final IGroup getParentContainer() {
+		if (parentContainer == null) {
+			throw new IllegalArgumentException();
+		}
+		return parentContainer;
 	}
 
 	@Override
 	public String toString() {
-		// if (type == EntityType.GROUP) {
-		// return "GROUP " + display2 + "(" + getEntityType() + ")" + this.container;
-		// }
-		return display2 + "(" + getEntityType() + ") " + xposition + " " + getUid();
+		return display + "(" + getEntityType() + ") " + xposition + " " + getUid();
 	}
-
-	private HtmlColor specificBackcolor;
 
 	public HtmlColor getSpecificBackColor() {
 		return specificBackcolor;
@@ -192,56 +238,55 @@ public class EntityImpl implements IEntity {
 		this.urls.add(url);
 	}
 
-	private boolean nearDecoration = false;
-
 	public final boolean hasNearDecoration() {
+		checkNotGroup();
 		return nearDecoration;
 	}
 
 	public final void setNearDecoration(boolean nearDecoration) {
+		checkNotGroup();
 		this.nearDecoration = nearDecoration;
 	}
 
-	// public int compareTo(IEntity other) {
-	// return getUid().compareTo(other.getUid());
-	// }
-
-	private int xposition;
-
 	public int getXposition() {
+		checkNotGroup();
 		return xposition;
 	}
 
 	public void setXposition(int pos) {
+		checkNotGroup();
 		xposition = pos;
 	}
 
-	private IEntityImage svekImage;
-
 	public final IEntityImage getSvekImage() {
+		checkNotGroup();
 		return svekImage;
 	}
 
 	public final void setSvekImage(IEntityImage svekImage) {
+		checkNotGroup();
 		this.svekImage = svekImage;
 	}
 
 	public final void setGeneric(String generic) {
+		checkNotGroup();
 		this.generic = generic;
 	}
 
 	public final String getGeneric() {
+		checkNotGroup();
 		return generic;
 	}
 
 	public BlockMember getBody(final PortionShower portionShower) {
-		if (getEntityType() == EntityType.CLASS && bodier.isBodyEnhanced()) {
+		checkNotGroup();
+		if (getEntityType() == LeafType.CLASS && bodier.isBodyEnhanced()) {
 			return bodier.getBodyEnhanced();
 		}
 		return new BlockMember() {
 			public TextBlockWidth asTextBlock(FontParam fontParam, ISkinParam skinParam) {
-				if (getEntityType() == EntityType.ABSTRACT_CLASS || getEntityType() == EntityType.CLASS
-						|| getEntityType() == EntityType.INTERFACE || getEntityType() == EntityType.ENUM) {
+				if (getEntityType() == LeafType.ABSTRACT_CLASS || getEntityType() == LeafType.CLASS
+						|| getEntityType() == LeafType.INTERFACE || getEntityType() == LeafType.ENUM) {
 
 					final boolean showMethods = portionShower.showPortion(EntityPortion.METHOD, EntityImpl.this);
 					final boolean showFields = portionShower.showPortion(EntityPortion.FIELD, EntityImpl.this);
@@ -257,7 +302,7 @@ public class EntityImpl implements IEntity {
 					}
 					return null;
 				}
-				if (getEntityType() == EntityType.OBJECT) {
+				if (getEntityType() == LeafType.OBJECT) {
 					return new BlockMemberImpl(getFieldsToDisplay()).asTextBlock(fontParam, skinParam);
 				}
 				throw new UnsupportedOperationException();
@@ -276,21 +321,215 @@ public class EntityImpl implements IEntity {
 		};
 	}
 
-	private final List<String> mouseOver = new ArrayList<String>();
-
 	public void mouseOver(String s) {
 		mouseOver.add(s);
 	}
 
 	public List<Member> getFieldsToDisplay() {
+		// checkNotGroup();
 		return bodier.getFieldsToDisplay();
 	}
 
 	public List<Member> getMethodsToDisplay() {
+		// checkNotGroup();
 		return bodier.getMethodsToDisplay();
 	}
 
 	public void addFieldOrMethod(String s) {
+		// checkNotGroup();
 		bodier.addFieldOrMethod(s);
 	}
+
+	public EntityPosition getEntityPosition() {
+		checkNotGroup();
+		if (leafType != LeafType.STATE) {
+			return EntityPosition.NORMAL;
+		}
+		final Stereotype stereotype = getStereotype();
+		if (stereotype == null) {
+			return EntityPosition.NORMAL;
+		}
+		final String label = stereotype.getLabel();
+		if ("<<entrypoint>>".equalsIgnoreCase(label)) {
+			return EntityPosition.ENTRY_POINT;
+		}
+		if ("<<exitpoint>>".equalsIgnoreCase(label)) {
+			return EntityPosition.EXIT_POINT;
+		}
+		return EntityPosition.NORMAL;
+
+	}
+
+	// ----------
+
+	private void checkGroup() {
+		if (isGroup() == false) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private void checkNotGroup() {
+		if (isGroup()) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	public boolean containsLeafRecurse(ILeaf leaf) {
+		if (leaf == null) {
+			throw new IllegalArgumentException();
+		}
+		if (leaf.isGroup()) {
+			throw new IllegalArgumentException();
+		}
+		checkGroup();
+		if (EntityUtils.equals(leaf.getParentContainer(), this)) {
+			return true;
+		}
+		for (IGroup child : zgetChildren()) {
+			if (child.containsLeafRecurse(leaf)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Collection<ILeaf> getLeafsDirect() {
+		checkGroup();
+		final List<ILeaf> result = new ArrayList<ILeaf>();
+		for (ILeaf ent : entityFactory.getLeafs().values()) {
+			if (ent.isGroup()) {
+				throw new IllegalStateException();
+			}
+			if (EntityUtils.equals(ent.getParentContainer(), this)) {
+				result.add(ent);
+			}
+		}
+		return Collections.unmodifiableCollection(result);
+	}
+
+	public Collection<IGroup> zgetChildren() {
+		checkGroup();
+		final Collection<IGroup> result = new ArrayList<IGroup>();
+		for (IGroup g : entityFactory.getGroups().values()) {
+			if (g != this && g.getParentContainer() == this) {
+				result.add(g);
+			}
+		}
+		return Collections.unmodifiableCollection(result);
+	}
+
+	public void zmoveEntitiesTo(IGroup dest) {
+		checkGroup();
+		if (dest.isGroup() == false) {
+			throw new UnsupportedOperationException();
+		}
+		for (ILeaf ent : getLeafsDirect()) {
+			((EntityImpl) ent).parentContainer = dest;
+		}
+		for (IGroup g : dest.zgetChildren()) {
+			((EntityImpl) g).parentContainer = dest;
+		}
+	}
+
+	public int zsize() {
+		checkGroup();
+		return getLeafsDirect().size();
+	}
+
+	public GroupType zgetGroupType() {
+		checkGroup();
+		return groupType;
+	}
+
+	public String zgetNamespace() {
+		checkGroup();
+		return namespace;
+	}
+
+	public boolean zisAutonom() {
+		checkGroup();
+		return autonom;
+	}
+
+	public void zsetAutonom(boolean autonom) {
+		this.autonom = autonom;
+
+	}
+
+	public Rankdir zgetRankdir() {
+		checkGroup();
+		return rankdir;
+	}
+
+	public void zsetRankdir(Rankdir rankdir) {
+		checkGroup();
+		this.rankdir = rankdir;
+	}
+
+	public PackageStyle zgetPackageStyle() {
+		checkGroup();
+		if (stereotype == null) {
+			return null;
+		}
+		return stereotype.getPackageStyle();
+	}
+
+	public boolean isGroup() {
+		if (groupType != null && leafType != null) {
+			throw new IllegalStateException();
+		}
+		if (groupType != null) {
+			return true;
+		}
+		if (leafType != null) {
+			return false;
+		}
+		throw new IllegalStateException();
+	}
+
+	// ---- other
+
+	public boolean getContainerOrEquivalentThenEqualsLeaf(IEntity gr) {
+		checkNotGroup();
+		if (gr == null) {
+			throw new IllegalArgumentException();
+		}
+		return EntityUtils.equals(getParentContainer(), gr);
+	}
+
+	public void overideImage42(IEntityImage img, List<Url> url, LeafType leafType) {
+		checkGroup();
+		this.svekImage = img;
+		this.urls.clear();
+		this.urls.addAll(url);
+
+		for (final Link link : new ArrayList<Link>(entityFactory.getLinks())) {
+			if (EntityUtils.isPureInnerLink12(this, link)) {
+				entityFactory.removeLink(link);
+			}
+		}
+
+		entityFactory.removeGroup(this.getCode());
+		for (IEntity ent : new ArrayList<IEntity>(entityFactory.getLeafs().values())) {
+			if (ent != this && ((EntityImpl) ent).getContainerOrEquivalentThenEqualsLeaf(this)) {
+				entityFactory.removeLeaf(ent.getCode());
+			}
+		}
+
+		entityFactory.addLeaf(this);
+		this.groupType = null;
+		this.leafType = leafType;
+	}
+
+	public void muteToGroup99(String namespace, GroupType groupType, IGroup parentContainer) {
+		checkNotGroup();
+		if (parentContainer.isGroup() == false) {
+			throw new IllegalArgumentException();
+		}
+		this.namespace = namespace;
+		this.groupType = groupType;
+		this.leafType = null;
+		this.parentContainer = parentContainer;
+	}
+
 }

@@ -45,6 +45,7 @@ import jcckit.data.DataPlot;
 import jcckit.util.ConfigParameters;
 import jcckit.util.PropertiesBasedConfigData;
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 
 public class PSystemJcckit extends AbstractPSystem {
@@ -59,7 +60,7 @@ public class PSystemJcckit extends AbstractPSystem {
 		prop = new PropertiesBasedConfigData(p);
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 

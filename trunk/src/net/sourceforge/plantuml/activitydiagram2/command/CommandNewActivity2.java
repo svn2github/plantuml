@@ -49,7 +49,7 @@ public class CommandNewActivity2 extends SingleLineCommand<ActivityDiagram2> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		if (getSystem().getEntities().size() == 0) {
+		if (getSystem().getLeafs().size() == 0) {
 			return CommandExecutionResult.error("Missing start keyword");
 		}
 

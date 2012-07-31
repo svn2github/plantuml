@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.classdiagram.command;
 import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
@@ -43,7 +44,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -78,7 +80,7 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 
 	@Override
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final EntityType type = EntityType.getEntityType(arg.get("TYPE").get(0).toUpperCase());
+		final LeafType type = LeafType.getLeafType(arg.get("TYPE").get(0).toUpperCase());
 		final String code;
 		final String display;
 		if (arg.get("NAME1").get(1) != null) {
@@ -93,12 +95,12 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		}
 		final String stereotype = arg.get("STEREO").get(0);
 		final String generic = arg.get("GENERIC").get(0);
-		final IEntity entity;
-		if (getSystem().entityExist(code)) {
-			entity = getSystem().getOrCreateEntity(code, type);
+		final ILeaf entity;
+		if (getSystem().leafExist(code)) {
+			entity = getSystem().getOrCreateLeaf(code, type);
 			entity.muteToType(type);
 		} else {
-			entity = getSystem().createEntity(code, display, type);
+			entity = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), type);
 		}
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
@@ -118,16 +120,16 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		if (arg.get("EXTENDS").get(1) != null) {
 			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
 			final String other = arg.get("EXTENDS").get(2);
-			EntityType type2 = EntityType.CLASS;
+			LeafType type2 = LeafType.CLASS;
 			if (mode == Mode.IMPLEMENTS) {
-				type2 = EntityType.INTERFACE;
+				type2 = LeafType.INTERFACE;
 			}
-			if (mode == Mode.EXTENDS && entity.getEntityType() == EntityType.INTERFACE) {
-				type2 = EntityType.INTERFACE;
+			if (mode == Mode.EXTENDS && entity.getEntityType() == LeafType.INTERFACE) {
+				type2 = LeafType.INTERFACE;
 			}
 			final IEntity cl2 = system.getOrCreateClass(other, type2);
 			LinkType typeLink = new LinkType(LinkDecor.NONE, LinkDecor.EXTENDS);
-			if (type2 == EntityType.INTERFACE && entity.getEntityType() != EntityType.INTERFACE) {
+			if (type2 == LeafType.INTERFACE && entity.getEntityType() != LeafType.INTERFACE) {
 				typeLink = typeLink.getDashed();
 			}
 			final Link link = new Link(cl2, entity, typeLink, null, 2, null, null, system.getLabeldistance(),

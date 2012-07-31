@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 8439 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -215,9 +216,9 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 			textPos = (dimensionToUse.getWidth() - textWidth) / 2;
 		} else if (messagePosition == HorizontalAlignement.RIGHT) {
 			final double textWidth = getTextBlock().calculateDimension(stringBounder).getWidth();
-			textPos = dimensionToUse.getWidth() - textWidth - getMarginX2();
+			textPos = dimensionToUse.getWidth() - textWidth - getMarginX2() - (direction == 1 ? getArrowDeltaX() : 0);
 		} else {
-			textPos = getMarginX1();
+			textPos = getMarginX1() + (direction == -1 ? getArrowDeltaX() : 0);
 		}
 		getTextBlock().drawU(ug, textPos, 0);
 	}
@@ -236,6 +237,9 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 			polygon.addPoint(x2 - getArrowDeltaX(), textHeight - getArrowDeltaY());
 			polygon.addPoint(x2, textHeight);
 			polygon.addPoint(x2 - getArrowDeltaX(), textHeight + getArrowDeltaY());
+			if (OptionFlags.NICE_ARROW) {
+				polygon.addPoint(x2 - getArrowDeltaX() + 4, textHeight);
+			}
 		}
 		return polygon;
 	}
@@ -254,6 +258,9 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 			polygon.addPoint(getArrowDeltaX(), textHeight - getArrowDeltaY());
 			polygon.addPoint(0, textHeight);
 			polygon.addPoint(getArrowDeltaX(), textHeight + getArrowDeltaY());
+			if (OptionFlags.NICE_ARROW) {
+				polygon.addPoint(getArrowDeltaX() - 4, textHeight);
+			}
 		}
 		return polygon;
 	}
@@ -291,7 +298,7 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
-		return getTextWidth(stringBounder);
+		return getTextWidth(stringBounder) + getArrowDeltaX();
 	}
 
 }

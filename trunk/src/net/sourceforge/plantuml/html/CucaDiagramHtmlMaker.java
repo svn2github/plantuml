@@ -46,7 +46,7 @@ import java.util.TreeMap;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Member;
@@ -70,18 +70,18 @@ public final class CucaDiagramHtmlMaker {
 		final File f = new File(dir, "index.html");
 		final PrintWriter pw = new PrintWriter(f);
 		pw.println("<html>");
-		printAllType(pw, EntityType.ENUM);
-		printAllType(pw, EntityType.INTERFACE);
-		printAllType(pw, EntityType.ABSTRACT_CLASS);
-		printAllType(pw, EntityType.CLASS);
+		printAllType(pw, LeafType.ENUM);
+		printAllType(pw, LeafType.INTERFACE);
+		printAllType(pw, LeafType.ABSTRACT_CLASS);
+		printAllType(pw, LeafType.CLASS);
 		htmlClose(pw);
 		return Arrays.asList(dir);
 	}
 
-	private void printAllType(final PrintWriter pw, EntityType type) throws IOException {
+	private void printAllType(final PrintWriter pw, LeafType type) throws IOException {
 		if (hasSome(type)) {
 			pw.println("<h2>" + type.toHtml() + "</h2>");
-			for (Map.Entry<String, IEntity> ent : new TreeMap<String, IEntity>(diagram.getEntities()).entrySet()) {
+			for (Map.Entry<String, IEntity> ent : new TreeMap<String, IEntity>(diagram.getLeafs()).entrySet()) {
 				if (ent.getValue().getEntityType() != type) {
 					continue;
 				}
@@ -93,8 +93,8 @@ public final class CucaDiagramHtmlMaker {
 		}
 	}
 
-	private boolean hasSome(final EntityType type) {
-		for (IEntity ent : diagram.getEntities().values()) {
+	private boolean hasSome(final LeafType type) {
+		for (IEntity ent : diagram.getLeafs().values()) {
 			if (ent.getEntityType() == type) {
 				return true;
 			}
@@ -108,7 +108,7 @@ public final class CucaDiagramHtmlMaker {
 		pw.println("<html>");
 		pw.println("<title>" + StringUtils.unicodeForHtml(entity.getCode()) + "</title>");
 		pw.println("<h2>" + entity.getEntityType().toHtml() + "</h2>");
-		for (CharSequence s : entity.getDisplay2()) {
+		for (CharSequence s : entity.getDisplay()) {
 			pw.println(StringUtils.unicodeForHtml(s.toString()));
 			pw.println("<br>");
 		}
@@ -172,7 +172,7 @@ public final class CucaDiagramHtmlMaker {
 			pw.println("<ul>");
 			for (IEntity note : notes) {
 				pw.println("<li>");
-				for (CharSequence s : note.getDisplay2()) {
+				for (CharSequence s : note.getDisplay()) {
 					pw.println(StringUtils.unicodeForHtml(s.toString()));
 					pw.println("<br>");
 				}
@@ -198,7 +198,7 @@ public final class CucaDiagramHtmlMaker {
 			if (link.contains(ent) == false) {
 				continue;
 			}
-			if (link.getEntity1().getEntityType() == EntityType.NOTE || link.getEntity2().getEntityType() == EntityType.NOTE) {
+			if (link.getEntity1().getEntityType() == LeafType.NOTE || link.getEntity2().getEntityType() == LeafType.NOTE) {
 				result.add(link.getOther(ent));
 			}
 		}
@@ -211,7 +211,7 @@ public final class CucaDiagramHtmlMaker {
 			if (link.contains(ent) == false) {
 				continue;
 			}
-			if (link.getEntity1().getEntityType() == EntityType.NOTE || link.getEntity2().getEntityType() == EntityType.NOTE) {
+			if (link.getEntity1().getEntityType() == LeafType.NOTE || link.getEntity2().getEntityType() == LeafType.NOTE) {
 				continue;
 			}
 			result.add(link);

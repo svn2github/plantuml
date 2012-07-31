@@ -34,7 +34,7 @@
 package net.sourceforge.plantuml.activitydiagram;
 
 import net.sourceforge.plantuml.Direction;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class ConditionalContext {
@@ -44,7 +44,7 @@ public class ConditionalContext {
 	private final ConditionalContext parent;
 
 	public ConditionalContext(ConditionalContext parent, IEntity branch, Direction direction) {
-		if (branch.getEntityType() != EntityType.BRANCH) {
+		if (branch.getEntityType() != LeafType.BRANCH) {
 			throw new IllegalArgumentException();
 		}
 		this.branch = branch;

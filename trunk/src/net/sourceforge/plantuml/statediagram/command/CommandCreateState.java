@@ -28,13 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8052 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.statediagram.command;
 
 import java.util.Map;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
@@ -71,7 +72,7 @@ public class CommandCreateState extends SingleLineCommand2<StateDiagram> {
 			display = code;
 		}
 		final IEntity ent = getSystem().getOrCreateClass(code);
-		ent.setDisplay2(display);
+		ent.setDisplay(StringUtils.getWithNewlines(display));
 
 		final String stereotype = arg2.get("STEREOTYPE").get(0);
 		if (stereotype != null) {

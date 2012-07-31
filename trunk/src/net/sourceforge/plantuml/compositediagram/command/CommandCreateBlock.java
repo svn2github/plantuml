@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.compositediagram.command;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.compositediagram.CompositeDiagram;
@@ -54,7 +55,7 @@ public class CommandCreateBlock extends SingleLineCommand<CompositeDiagram> {
 			display = code;
 		}
 		final IEntity ent = getSystem().getOrCreateClass(code);
-		ent.setDisplay2(display);
+		ent.setDisplay(StringUtils.getWithNewlines(display));
 		return CommandExecutionResult.ok();
 	}
 

@@ -34,14 +34,14 @@
 package net.sourceforge.plantuml.objectdiagram;
 
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class ObjectDiagram extends AbstractClassOrObjectDiagram {
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
-		return getOrCreateEntity(code, EntityType.OBJECT);
+	public ILeaf getOrCreateClass(String code) {
+		return getOrCreateLeaf(code, LeafType.OBJECT);
 	}
 
 	@Override

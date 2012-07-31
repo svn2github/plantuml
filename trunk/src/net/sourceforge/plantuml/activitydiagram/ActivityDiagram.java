@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram;
@@ -37,13 +37,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.plantuml.Direction;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class ActivityDiagram extends CucaDiagram {
 
@@ -55,23 +56,23 @@ public class ActivityDiagram extends CucaDiagram {
 		return "#" + UniqueSequence.getValue();
 	}
 
-	public IEntity getOrCreate(String code, String display, EntityType type) {
+	public IEntity getOrCreate(String code, List<? extends CharSequence> display, LeafType type) {
 		final IEntity result;
-		if (entityExist(code)) {
-			result = super.getOrCreateEntity(code, type);
+		if (leafExist(code)) {
+			result = super.getOrCreateLeaf(code, type);
 			if (result.getEntityType() != type) {
 				// throw new IllegalArgumentException("Already known: " + code + " " + result.getType() + " " + type);
 				return null;
 			}
 		} else {
-			result = createEntity(code, display, type);
+			result = createLeaf(code, display, type);
 		}
 		updateLasts(result);
 		return result;
 	}
 
 	public void startIf(String optionalCode) {
-		final IEntity br = createEntity(optionalCode == null ? getAutoBranch() : optionalCode, "", EntityType.BRANCH);
+		final IEntity br = createLeaf(optionalCode == null ? getAutoBranch() : optionalCode, Arrays.asList(""), LeafType.BRANCH);
 		currentContext = new ConditionalContext(currentContext, br, Direction.DOWN);
 	}
 
@@ -79,33 +80,33 @@ public class ActivityDiagram extends CucaDiagram {
 		currentContext = currentContext.getParent();
 	}
 
-	public IEntity getStart() {
-		return getOrCreate("start", "start", EntityType.CIRCLE_START);
+	public ILeaf getStart() {
+		return (ILeaf) getOrCreate("start", StringUtils.getWithNewlines("start"), LeafType.CIRCLE_START);
 	}
 
-	public IEntity getEnd() {
-		return getOrCreate("end", "end", EntityType.CIRCLE_END);
+	public ILeaf getEnd() {
+		return (ILeaf) getOrCreate("end", StringUtils.getWithNewlines("end"), LeafType.CIRCLE_END);
 	}
 
 	private void updateLasts(final IEntity result) {
-		if (result.getEntityType() == EntityType.NOTE) {
+		if (result.getEntityType() == LeafType.NOTE) {
 			return;
 		}
 		this.lastEntityConsulted = result;
-		if (result.getEntityType() == EntityType.BRANCH) {
+		if (result.getEntityType() == LeafType.BRANCH) {
 			lastEntityBrancheConsulted = result;
 		}
 	}
 
 	@Override
-	public IEntity createEntity(String code, String display, EntityType type) {
-		final IEntity result = super.createEntity(code, display, type);
+	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+		final ILeaf result = super.createLeaf(code, display, type);
 		updateLasts(result);
 		return result;
 	}
 
-	public IEntity createNote(String code, String display) {
-		return super.createEntity(code, display, EntityType.NOTE);
+	public IEntity createNote(String code, List<? extends CharSequence> display) {
+		return super.createLeaf(code, display, LeafType.NOTE);
 	}
 
 	final protected List<String> getDotStrings() {
@@ -114,7 +115,7 @@ public class ActivityDiagram extends CucaDiagram {
 	}
 
 	public String getDescription() {
-		return "(" + getEntities().size() + " activities)";
+		return "(" + getLeafs().size() + " activities)";
 	}
 
 	public IEntity getLastEntityConsulted() {
@@ -142,7 +143,7 @@ public class ActivityDiagram extends CucaDiagram {
 	public IEntity createInnerActivity() {
 		// Log.println("createInnerActivity A");
 		final String code = "##" + UniqueSequence.getValue();
-		final IEntityMutable g = getOrCreateGroup(code, code, null, GroupType.INNER_ACTIVITY, getCurrentGroup());
+		final IEntity g = getOrCreateGroup(code, StringUtils.getWithNewlines(code), null, GroupType.INNER_ACTIVITY, getCurrentGroup());
 		// g.setRankdir(Rankdir.LEFT_TO_RIGHT);
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
@@ -162,7 +163,7 @@ public class ActivityDiagram extends CucaDiagram {
 		if (getCurrentGroup().zgetGroupType() != GroupType.INNER_ACTIVITY) {
 			throw new IllegalStateException("type=" + getCurrentGroup().zgetGroupType());
 		}
-		final IEntityMutable g = getOrCreateGroup(code, "code", null, GroupType.CONCURRENT_ACTIVITY, getCurrentGroup());
+		final IEntity g = getOrCreateGroup(code, StringUtils.getWithNewlines("code"), null, GroupType.CONCURRENT_ACTIVITY, getCurrentGroup());
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
 	}

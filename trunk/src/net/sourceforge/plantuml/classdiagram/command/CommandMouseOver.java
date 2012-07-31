@@ -73,10 +73,10 @@ public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
 		if (code == null) {
 			code = line0.get("NAME3").get(0);
 		}
-		if (getSystem().entityExist(code) == false) {
+		if (getSystem().leafExist(code) == false) {
 			return CommandExecutionResult.error("No such entity");
 		}
-		final IEntity entity = getSystem().getEntities().get(code);
+		final IEntity entity = getSystem().getLeafs().get(code);
 		for (String s : lines.subList(1, lines.size() - 1)) {
 			entity.mouseOver(s);
 		}

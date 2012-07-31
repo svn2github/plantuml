@@ -38,7 +38,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -73,12 +73,12 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 	}
 
 	public int getNbOfHozizontalLollipop(IEntity entity) {
-		if (entity.getEntityType() == EntityType.LOLLIPOP) {
+		if (entity.getEntityType() == LeafType.LOLLIPOP) {
 			throw new IllegalArgumentException();
 		}
 		int result = 0;
 		for (Link link : getLinks()) {
-			if (link.getLength() == 1 && link.contains(entity) && link.containsType(EntityType.LOLLIPOP)) {
+			if (link.getLength() == 1 && link.contains(entity) && link.containsType(LeafType.LOLLIPOP)) {
 				result++;
 			}
 
@@ -133,7 +133,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 			this.entity1 = entity1;
 			this.entity2 = entity2;
 			this.associed = associed;
-			point = getOrCreateEntity("apoint" + UniqueSequence.getValue(), EntityType.POINT_FOR_ASSOCIATION);
+			point = getOrCreateLeaf("apoint" + UniqueSequence.getValue(), LeafType.POINT_FOR_ASSOCIATION);
 
 		}
 
@@ -201,7 +201,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 			// null, 2);
 			addLink(entity1ToPoint);
 			addLink(pointToEntity2);
-			if (other.pointToAssocied.getEntity1().getEntityType() == EntityType.POINT_FOR_ASSOCIATION) {
+			if (other.pointToAssocied.getEntity1().getEntityType() == LeafType.POINT_FOR_ASSOCIATION) {
 				removeLink(other.pointToAssocied);
 				other.pointToAssocied = other.pointToAssocied.getInv();
 				addLink(other.pointToAssocied);

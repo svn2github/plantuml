@@ -28,28 +28,26 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8066 $
+ * Revision $Revision: 8152 $
  *
  */
 package net.sourceforge.plantuml.skin;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Dimension2D;
+import java.util.Collections;
+import java.util.List;
 
+import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.graphic.UDrawable;
-import net.sourceforge.plantuml.ugraphic.ColorMapper;
+import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
-public class StickMan implements UDrawable {
+public class StickMan implements TextBlock {
 
 	private final float thickness = 2;
 
@@ -63,44 +61,21 @@ public class StickMan implements UDrawable {
 	private final HtmlColor backgroundColor;
 	private final HtmlColor foregroundColor;
 
-	public StickMan(HtmlColor backgroundColor, HtmlColor foregroundColor) {
-		this.backgroundColor = backgroundColor;
-		this.foregroundColor = foregroundColor;
+	private double deltaShadow;
+
+	public void setDeltaShadow(double deltaShadow) {
+		this.deltaShadow = deltaShadow;
 	}
 
-	public void draw(ColorMapper colorMapper, Graphics2D g2d) {
 
-		g2d.setStroke(new BasicStroke(thickness));
+	public StickMan(HtmlColor backgroundColor, HtmlColor foregroundColor, double deltaShadow) {
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.deltaShadow = deltaShadow;
+	}
 
-		final double startX = Math.max(armsLenght, legsX) - headDiam / 2.0 + thickness;
-
-		final Shape head = new Ellipse2D.Double(startX, thickness, headDiam, headDiam);
-		final Rectangle2D headBound = head.getBounds2D();
-
-		final double centerX = headBound.getCenterX();
-
-		final Shape body = new Line2D.Double(centerX, headBound.getMaxY(), centerX, headBound.getMaxY() + bodyLenght);
-
-		final Shape arms = new Line2D.Double(centerX - armsLenght, headBound.getMaxY() + armsY, centerX + armsLenght,
-				headBound.getMaxY() + armsY);
-
-		final double y = body.getBounds2D().getMaxY();
-
-		final Shape legs1 = new Line2D.Double(centerX, y, centerX - legsX, y + legsY);
-		final Shape legs2 = new Line2D.Double(centerX, y, centerX + legsX, y + legsY);
-
-		g2d.setColor(colorMapper.getMappedColor(backgroundColor));
-		g2d.fill(head);
-
-		g2d.setColor(colorMapper.getMappedColor(foregroundColor));
-		g2d.draw(head);
-		g2d.draw(body);
-		g2d.draw(arms);
-		g2d.draw(legs1);
-		g2d.draw(legs2);
-
-		g2d.setStroke(new BasicStroke());
-		throw new UnsupportedOperationException();
+	public StickMan(HtmlColor backgroundColor, HtmlColor foregroundColor) {
+		this(backgroundColor, foregroundColor, 0);
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
@@ -134,17 +109,19 @@ public class StickMan implements UDrawable {
 		ug.getParam().setStroke(new UStroke());
 	}
 
-	public double getPreferredWidth(StringBounder stringBounder) {
+	public double getPreferredWidth() {
 		return Math.max(armsLenght, legsX) * 2 + 2 * thickness;
 	}
 
-	public double getPreferredHeight(StringBounder stringBounder) {
+	public double getPreferredHeight() {
 		return headDiam + bodyLenght + legsY + 2 * thickness + deltaShadow + 1;
 	}
 
-	private double deltaShadow;
+	public Dimension2D calculateDimension(StringBounder stringBounder) {
+		return new Dimension2DDouble(getPreferredWidth(), getPreferredHeight());
+	}
 
-	public void setDeltaShadow(double deltaShadow) {
-		this.deltaShadow = deltaShadow;
+	public List<Url> getUrls() {
+		return Collections.emptyList();
 	}
 }

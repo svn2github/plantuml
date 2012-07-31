@@ -85,7 +85,7 @@ public class EntityImageNote extends AbstractEntityImage {
 		super(entity, getSkin(skinParam, entity));
 
 		this.withShadow = skinParam.shadowing();
-		final List<? extends CharSequence> strings = entity.getDisplay2();
+		final List<? extends CharSequence> strings = entity.getDisplay();
 
 		final Rose rose = new Rose();
 

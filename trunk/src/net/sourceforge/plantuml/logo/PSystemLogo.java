@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.png.PngIO;
@@ -55,7 +56,7 @@ public class PSystemLogo extends AbstractPSystem {
 	public PSystemLogo() {
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		// getGraphicStrings().writeImage(os, fileFormat);
 		final int width = 640;
@@ -76,7 +77,8 @@ public class PSystemLogo extends AbstractPSystem {
 
 	// private GraphicStrings getGraphicStrings() throws IOException {
 	// final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-	// final GraphicStrings result = new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, image,
+	// final GraphicStrings result = new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE,
+	// image,
 	// GraphicPosition.BOTTOM, false);
 	// result.setMinWidth(200);
 	// return result;

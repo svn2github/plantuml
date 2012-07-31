@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormat;
@@ -115,7 +116,7 @@ public final class CucaDiagramFileMakerSvek {
 		double deltaX = 0;
 		double deltaY = 0;
 
-		final DotData dotData = new DotData(null, diagram.getLinks(), diagram.getEntities().values(),
+		final DotData dotData = new DotData(diagram.getEntityFactory().getRootGroup(), diagram.getLinks(), diagram.getLeafs().values(),
 				diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram,
 				diagram.getColorMapper(), diagram.getEntityFactory());
 		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
@@ -146,7 +147,7 @@ public final class CucaDiagramFileMakerSvek {
 
 		final Dimension2D finalDimension = Dimension2DDouble.delta(dim, deltaX, deltaY);
 
-		String cmap = null;
+		CMapData cmap = null;
 		if (diagram.hasUrl() && fileFormatOption.getFileFormat() == FileFormat.PNG) {
 			cmap = cmapString(svek2);
 		}
@@ -167,30 +168,31 @@ public final class CucaDiagramFileMakerSvek {
 		return warningOrError;
 	}
 
-	private String cmapString(CucaDiagramFileMakerSvek2 svek2) {
-		final StringBuilder sb = new StringBuilder();
+	private CMapData cmapString(CucaDiagramFileMakerSvek2 svek2) {
+		final CMapData cmapdata = new CMapData();
 		int seq = 1;
-		sb.append("<map id=\"unix\" name=\"unix\">\n");
-		for (IEntity ent : diagram.getEntities().values()) {
+//		sb.append("<map id=\"unix\" name=\"unix\">\n");
+//		cmapdata.appendHeader(diagram);
+		for (IEntity ent : diagram.getLeafs().values()) {
 			List<Url> rev = new ArrayList<Url>(ent.getUrls());
 			// For zlevel order
 			Collections.reverse(rev);
 			for (Url url : rev) {
-				sb.append("<area shape=\"rect\" id=\"id");
-				sb.append(seq++);
-				sb.append("\" href=\"");
-				sb.append(url.getUrl());
-				sb.append("\" title=\"");
-				sb.append(url.getTooltip());
-				sb.append("\" alt=\"\" coords=\"");
-				sb.append(url.getCoords());
-				sb.append("\"/>");
+				cmapdata.appendString("<area shape=\"rect\" id=\"id");
+				cmapdata.appendLong(seq++);
+				cmapdata.appendString("\" href=\"");
+				cmapdata.appendString(url.getUrl());
+				cmapdata.appendString("\" title=\"");
+				cmapdata.appendString(url.getTooltip());
+				cmapdata.appendString("\" alt=\"\" coords=\"");
+				cmapdata.appendString(url.getCoords());
+				cmapdata.appendString("\"/>");
 
-				sb.append("\n");
+				cmapdata.appendString("\n");
 			}
 		}
-		sb.append("</map>\n");
-		return sb.toString();
+//		cmapdata.appendString("</map>\n");
+		return cmapdata;
 	}
 
 	private IEntityImage addHeaderAndFooter(IEntityImage original) {

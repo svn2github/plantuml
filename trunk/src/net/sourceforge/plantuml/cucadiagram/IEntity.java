@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 4749 $
+ * Revision $Revision: 8218 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -37,17 +37,16 @@ import java.util.List;
 
 import net.sourceforge.plantuml.SpecificBackcolorable;
 import net.sourceforge.plantuml.Url;
-import net.sourceforge.plantuml.svek.IEntityImage;
 
 public interface IEntity extends SpecificBackcolorable {
 
-	public Group getContainer();
+	public LeafType getEntityType();
 
-	public void setContainer(IEntityMutable container);
+	public List<? extends CharSequence> getDisplay();
 
-	public List<? extends CharSequence> getDisplay2();
+	public IGroup getParentContainer();
 
-	public EntityType getEntityType();
+	public void setDisplay(List<? extends CharSequence> display);
 
 	public String getUid();
 
@@ -65,27 +64,7 @@ public interface IEntity extends SpecificBackcolorable {
 
 	public String getCode();
 
-	public boolean isTop();
-
-	public void setTop(boolean top);
-
-	public boolean hasNearDecoration();
-
-	public void setNearDecoration(boolean nearDecoration);
-
-	public int getXposition();
-
-	public void setXposition(int pos);
-
-	public IEntityImage getSvekImage();
-
-	public String getGeneric();
-
 	public BlockMember getMouseOver();
-
-	public void muteToType(EntityType newType);
-
-	public void setGeneric(String generic);
 
 	public void addFieldOrMethod(String s);
 
@@ -93,7 +72,6 @@ public interface IEntity extends SpecificBackcolorable {
 
 	public void addUrl(Url url);
 
-	public void setSvekImage(IEntityImage svekImage);
+	public boolean isGroup();
 
-	public void setDisplay2(String display);
 }

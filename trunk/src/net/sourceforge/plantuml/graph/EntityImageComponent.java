@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -59,7 +59,7 @@ class EntityImageComponent extends AbstractEntityImage {
 
 	public EntityImageComponent(IEntity entity) {
 		super(entity);
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 	}
 

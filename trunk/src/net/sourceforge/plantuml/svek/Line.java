@@ -43,6 +43,8 @@ import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Position;
+import net.sourceforge.plantuml.cucadiagram.EntityPosition;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -171,8 +173,10 @@ public class Line implements Moveable {
 						new TextBlockArrow(LinkArrow.BACKWARD, labelFont));
 			}
 		} else {
-			final TextBlock label = TextBlockUtils.create(StringUtils.getWithNewlines(link.getLabel()), labelFont,
-					HorizontalAlignement.CENTER, skinParam);
+			final double marginLabel = startUid.equals(endUid) ? 6 : 1;
+			final TextBlock label = TextBlockUtils.withMargin(TextBlockUtils.create(
+					StringUtils.getWithNewlines(link.getLabel()), labelFont, HorizontalAlignement.CENTER, skinParam),
+					marginLabel, marginLabel);
 			if (getLinkArrow() == LinkArrow.NONE) {
 				labelOnly = label;
 			} else {
@@ -199,9 +203,9 @@ public class Line implements Moveable {
 			} else if (link.getNotePosition() == Position.RIGHT) {
 				noteLabelText = TextBlockUtils.mergeLR(labelOnly, noteOnly);
 			} else if (link.getNotePosition() == Position.TOP) {
-				noteLabelText = TextBlockUtils.mergeTB(noteOnly, labelOnly);
+				noteLabelText = TextBlockUtils.mergeTB(noteOnly, labelOnly, HorizontalAlignement.CENTER);
 			} else {
-				noteLabelText = TextBlockUtils.mergeTB(labelOnly, noteOnly);
+				noteLabelText = TextBlockUtils.mergeTB(labelOnly, noteOnly, HorizontalAlignement.CENTER);
 			}
 		} else if (labelOnly != null) {
 			noteLabelText = labelOnly;
@@ -289,7 +293,7 @@ public class Line implements Moveable {
 			sb.append("style=invis");
 		}
 
-		if (link.isConstraint() == false) {
+		if (link.isConstraint() == false || link.hasTwoEntryPointsSameContainer()) {
 			sb.append("constraint=false,");
 		}
 
@@ -339,6 +343,27 @@ public class Line implements Moveable {
 		return endUid;
 	}
 
+	public UDrawable getExtremity(LinkDecor decor, PointListIterator pointListIterator) {
+		final ExtremityFactory extremityFactory2 = decor.getExtremityFactory();
+
+		if (extremityFactory2 != null) {
+			final List<Point2D.Double> points = pointListIterator.next();
+			final Point2D p0 = points.get(0);
+			final Point2D p1 = points.get(1);
+			final Point2D p2 = points.get(2);
+			return extremityFactory2.createUDrawable(p0, p1, p2);
+		} else if (decor != LinkDecor.NONE) {
+			final UShape sh = new UPolygon(pointListIterator.next());
+			return new UDrawable() {
+				public void drawU(UGraphic ug, double x, double y) {
+					ug.draw(x, y, sh);
+				}
+			};
+		}
+		return null;
+
+	}
+
 	public void solveLine(final String svg, final int fullHeight) {
 		if (this.link.isInvis()) {
 			return;
@@ -355,65 +380,8 @@ public class Line implements Moveable {
 
 		final PointListIterator pointListIterator = new PointListIterator(svg.substring(end), fullHeight);
 
-		if (link.getType().getDecor2() == LinkDecor.PLUS) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.endHead = new Plus(p1, pc);
-		} else if (OptionFlags.NEW_DIAMOND && link.getType().getDecor2() == LinkDecor.AGREGATION) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.endHead = new Diamond(p1, pc, false);
-		} else if (OptionFlags.NEW_DIAMOND && link.getType().getDecor2() == LinkDecor.COMPOSITION) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.endHead = new Diamond(p1, pc, true);
-		} else if (link.getType().getDecor2() != LinkDecor.NONE) {
-			final UShape sh = new UPolygon(pointListIterator.next());
-			this.endHead = new UDrawable() {
-				public void drawU(UGraphic ug, double x, double y) {
-					ug.draw(x, y, sh);
-				}
-			};
-		}
-
-		if (link.getType().getDecor1() == LinkDecor.PLUS) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.startTail = new Plus(p1, pc);
-		} else if (OptionFlags.NEW_DIAMOND && link.getType().getDecor1() == LinkDecor.AGREGATION) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.startTail = new Diamond(p1, pc, false);
-		} else if (OptionFlags.NEW_DIAMOND && link.getType().getDecor1() == LinkDecor.COMPOSITION) {
-			final List<Point2D.Double> points = pointListIterator.next();
-			final Point2D p0 = points.get(0);
-			final Point2D p1 = points.get(1);
-			final Point2D p2 = points.get(2);
-			final Point2D pc = new Point2D.Double((p0.getX() + p2.getX()) / 2, (p0.getY() + p2.getY()) / 2);
-			this.startTail = new Diamond(p1, pc, true);
-		} else if (link.getType().getDecor1() != LinkDecor.NONE) {
-			final UShape sh = new UPolygon(pointListIterator.next());
-			this.startTail = new UDrawable() {
-				public void drawU(UGraphic ug, double x, double y) {
-					ug.draw(x, y, sh);
-				}
-			};
-		}
+		this.endHead = getExtremity(link.getType().getDecor2(), pointListIterator);
+		this.startTail = getExtremity(link.getType().getDecor1(), pointListIterator);
 
 		if (this.noteLabelText != null) {
 			this.noteLabelXY = TextBlockUtils.asPositionable(noteLabelText, stringBounder,
@@ -484,14 +452,27 @@ public class Line implements Moveable {
 		ug.getParam().setColor(color);
 		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(link.getType().getStroke());
-//		if (projectionStart()) {
-//			DotPath copy = new DotPath(dotPath);
-//			final Point2D start = copy.getStartPoint();
-//			copy.forceStartPoint(start.getX() + 3, start.getY() + 3);
-//			ug.draw(x, y, copy);
-//		} else {
-			ug.draw(x, y, dotPath);
-//		}
+		// if (projectionStart()) {
+		// DotPath copy = new DotPath(dotPath);
+		// final Point2D start = copy.getStartPoint();
+		// copy.forceStartPoint(start.getX() + 3, start.getY() + 3);
+		// ug.draw(x, y, copy);
+		// } else {
+		ug.draw(x, y, dotPath);
+		// }
+
+		// if (picLine1 != null) {
+		// final ClusterPosition clusterPosition = picLine1.getClusterPosition();
+		// final PointDirected inters = dotPath.getIntersection(clusterPosition);
+		// ExtremityStateLine1 extr1 = new ExtremityStateLine1(inters.getAngle(), inters.getPoint2D());
+		// extr1.drawU(ug, x, y);
+		// } else if (picLine2 != null) {
+		// final ClusterPosition clusterPosition = picLine2.getClusterPosition();
+		// final PointDirected inters = dotPath.getIntersection(clusterPosition);
+		// ExtremityStateLine2 extr2 = new ExtremityStateLine2(inters.getAngle(), inters.getPoint2D());
+		// extr2.drawU(ug, x, y);
+		// }
+
 		ug.getParam().setStroke(new UStroke());
 
 		if (this.startTail != null) {
@@ -531,8 +512,8 @@ public class Line implements Moveable {
 	}
 
 	private double getDecorDzeta() {
-		final int size1 = link.getType().getDecor1().getSize();
-		final int size2 = link.getType().getDecor2().getSize();
+		final int size1 = link.getType().getDecor1().getMargin();
+		final int size2 = link.getType().getDecor2().getMargin();
 		return size1 + size2;
 	}
 
@@ -668,18 +649,23 @@ public class Line implements Moveable {
 		return link.isHorizontalSolitary();
 	}
 
-	// public void moveSvek(double deltaX, double deltaY) {
-	// if (startTailLabelXY != null) {
-	// startTailLabelXY.moveSvek(deltaX, deltaY);
-	// }
-	// if (endHeadLabelXY != null) {
-	// endHeadLabelXY.moveSvek(deltaX, deltaY);
-	// }
-	// if (noteLabelXY != null) {
-	// noteLabelXY.moveSvek(deltaX, deltaY);
-	// }
-	// dotPath.moveSvek(deltaX, deltaY);
+	public boolean isSpecial(IEntity group) {
+		return link.getEntity1() == group || link.getEntity2() == group;
+	}
+
+	public boolean hasEntryPoint() {
+		return link.hasEntryPoint();
+	}
+
+	// private Cluster picLine1 = null;
+	// private Cluster picLine2 = null;
 	//
+	// public void setPicLine1(Cluster cluster) {
+	// this.picLine1 = cluster;
+	// }
+	//
+	// public void setPicLine2(Cluster cluster) {
+	// this.picLine2 = cluster;
 	// }
 
 }

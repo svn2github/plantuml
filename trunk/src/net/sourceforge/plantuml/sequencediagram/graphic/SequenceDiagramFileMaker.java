@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8003 $
+ * Revision $Revision: 8441 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormat;
@@ -380,8 +381,8 @@ public class SequenceDiagramFileMaker implements FileMaker {
 		return dummyStringBounder;
 	}
 
-	public void appendCmap(StringBuilder cmap) {
-		drawableSet.appendCmap(cmap, offsetX, offsetY, dummyStringBounder);
+	public void appendCmap(CMapData cmap) {
+		drawableSet.appendCmap(cmap, offsetX, offsetY, dummyStringBounder, diagram);
 	}
 
 }

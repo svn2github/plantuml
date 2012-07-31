@@ -45,6 +45,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicPosition;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
@@ -73,13 +74,15 @@ public class PSystemRIP extends AbstractPSystem {
 		is.close();
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat) throws IOException {
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
+			throws IOException {
 		getGraphicStrings().writeImage(os, fileFormat);
 	}
 
 	private GraphicStrings getGraphicStrings() throws IOException {
 		final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
-		return new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, image, GraphicPosition.BOTTOM, false);
+		return new GraphicStrings(strings, font, HtmlColorUtils.BLACK, HtmlColorUtils.WHITE, image,
+				GraphicPosition.BOTTOM, false);
 	}
 
 	public String getDescription() {

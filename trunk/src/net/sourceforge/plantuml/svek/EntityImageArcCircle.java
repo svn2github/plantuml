@@ -60,7 +60,7 @@ public class EntityImageArcCircle extends AbstractEntityImage {
 
 		final Stereotype stereotype = entity.getStereotype();
 
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont(FontParam.COMPONENT, stereotype), getFontColor(FontParam.COMPONENT, stereotype)),
 				HorizontalAlignement.CENTER, skinParam);
 

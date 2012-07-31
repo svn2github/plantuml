@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8426 $
  *
  */
 package net.sourceforge.plantuml.classdiagram.command;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 class JavaFile {
 
@@ -79,25 +79,25 @@ class JavaFile {
 				if (matchClassDefinition.find()) {
 					final String n = matchClassDefinition.group(2);
 					final String p = matchClassDefinition.group(4);
-					final EntityType type = EntityType.valueOf(matchClassDefinition.group(1).toUpperCase());
-					final EntityType parentType = getParentType(type, matchClassDefinition.group(3));
+					final LeafType type = LeafType.valueOf(matchClassDefinition.group(1).toUpperCase());
+					final LeafType parentType = getParentType(type, matchClassDefinition.group(3));
 					all.add(new JavaClass(javaPackage, n, p, type, parentType));
 				}
 			}
 		}
 	}
 
-	static EntityType getParentType(EntityType type, String extendsOrImplements) {
+	static LeafType getParentType(LeafType type, String extendsOrImplements) {
 		if (extendsOrImplements == null) {
 			return null;
 		}
-		if (type == EntityType.CLASS) {
+		if (type == LeafType.CLASS) {
 			if (extendsOrImplements.equals("extends")) {
-				return EntityType.CLASS;
+				return LeafType.CLASS;
 			}
-			return EntityType.INTERFACE;
+			return LeafType.INTERFACE;
 		}
-		return EntityType.INTERFACE;
+		return LeafType.INTERFACE;
 	}
 
 	public List<JavaClass> getJavaClasses() {

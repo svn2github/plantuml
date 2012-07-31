@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.Log;
@@ -156,6 +157,14 @@ public class SequenceDiagram extends UmlDiagram {
 		events.add(new Divider(strings));
 	}
 
+	public void hspace() {
+		events.add(new HSpace());
+	}
+
+	public void hspace(int pixel) {
+		events.add(new HSpace(pixel));
+	}
+
 	private Delay lastDelay;
 
 	public void delay(List<String> strings) {
@@ -187,13 +196,13 @@ public class SequenceDiagram extends UmlDiagram {
 			final File f = SequenceDiagramFileMaker.computeFilename(suggestedFile, i, fileFormat.getFileFormat());
 			Log.info("Creating file: " + f);
 			final OutputStream fos = new BufferedOutputStream(new FileOutputStream(f));
-			final StringBuilder cmap = new StringBuilder();
+			final CMapData cmap = new CMapData();
 			try {
 				exportDiagram(fos, cmap, i, fileFormat);
 			} finally {
 				fos.close();
 			}
-			if (this.hasUrl() && cmap.length() > 0) {
+			if (this.hasUrl() && cmap.containsData()) {
 				exportCmap(suggestedFile, cmap);
 			}
 			Log.info("File size : " + f.length());
@@ -203,7 +212,7 @@ public class SequenceDiagram extends UmlDiagram {
 	}
 
 	@Override
-	protected UmlDiagramInfo exportDiagramInternal(OutputStream os, StringBuilder cmap, int index,
+	protected UmlDiagramInfo exportDiagramInternal(OutputStream os, CMapData cmap, int index,
 			FileFormatOption fileFormat, List<BufferedImage> flashcodes) throws IOException {
 		final FileMaker sequenceDiagramPngMaker = getSequenceDiagramPngMaker(fileFormat, flashcodes);
 		final UmlDiagramInfo info = sequenceDiagramPngMaker.createOne2(os, index);

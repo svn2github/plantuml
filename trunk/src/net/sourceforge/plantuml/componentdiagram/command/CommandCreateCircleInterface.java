@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7753 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram.command;
@@ -40,7 +40,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 
@@ -62,7 +62,7 @@ public class CommandCreateCircleInterface extends SingleLineCommand<ComponentDia
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final EntityType type = EntityType.CIRCLE_INTERFACE;
+		final LeafType type = LeafType.CIRCLE_INTERFACE;
 		final String code;
 		final String display;
 		if (arg.get(1) == null) {
@@ -74,8 +74,8 @@ public class CommandCreateCircleInterface extends SingleLineCommand<ComponentDia
 		}
 		final String stereotype = arg.get(2);
 		// final Entity entity = getSystem().createEntity(code, display, type);
-		final IEntity entity = getSystem().getOrCreateEntity(code, type);
-		entity.setDisplay2(display);
+		final IEntity entity = getSystem().getOrCreateLeaf(code, type);
+		entity.setDisplay(StringUtils.getWithNewlines(display));
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

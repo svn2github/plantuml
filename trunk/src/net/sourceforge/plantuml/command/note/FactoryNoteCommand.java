@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
@@ -75,7 +75,7 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 			@Override
 			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 				final String display = arg.get("DISPLAY").get(0);
-				return executeInternal(getSystem(), arg, display);
+				return executeInternal(getSystem(), arg, StringUtils.getWithNewlines(display));
 			}
 
 		};
@@ -94,17 +94,16 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
 
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
-				final String display = StringUtils.getMergedLines(strings);
 
-				return executeInternal(getSystem(), line0, display);
+				return executeInternal(getSystem(), line0, strings);
 			}
 		};
 	}
 	
 	private CommandExecutionResult executeInternal(AbstractEntityDiagram system, Map<String, RegexPartialMatch> arg,
-			final String display) {
+			final List<? extends CharSequence> display) {
 		final String code = arg.get("CODE").get(0);
-		final IEntity entity = system.createEntity(code, display, EntityType.NOTE);
+		final IEntity entity = system.createLeaf(code, display, LeafType.NOTE);
 		assert entity != null;
 		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
 		return CommandExecutionResult.ok();

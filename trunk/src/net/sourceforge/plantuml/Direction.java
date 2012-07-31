@@ -64,4 +64,20 @@ public enum Direction {
 		}
 		return Direction.DOWN;
 	}
+
+	public Direction clockwise() {
+		if (this == RIGHT) {
+			return DOWN;
+		}
+		if (this == LEFT) {
+			return UP;
+		}
+		if (this == DOWN) {
+			return LEFT;
+		}
+		if (this == UP) {
+			return RIGHT;
+		}
+		throw new IllegalStateException();
+	}
 }

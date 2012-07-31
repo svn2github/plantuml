@@ -39,7 +39,8 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram> {
@@ -65,11 +66,11 @@ public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
 			code = arg.get(1);
 		}
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
-		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
+		final IGroup currentPackage = getSystem().getCurrentGroup();
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);
 		final String color = arg.get(2);
 		if (color != null) {
-			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
+			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}
 		getSystem().endGroup();
 		return CommandExecutionResult.ok();

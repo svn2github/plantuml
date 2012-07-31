@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 
 public class CommandInnerConcurrent extends SingleLineCommand<ActivityDiagram> {
 
@@ -47,7 +48,7 @@ public class CommandInnerConcurrent extends SingleLineCommand<ActivityDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		if (getSystem().getCurrentGroup() == null) {
+		if (EntityUtils.groupNull(getSystem().getCurrentGroup())) {
 			return CommandExecutionResult.error("No inner activity");
 		}
 		getSystem().concurrentActivity(arg.get(0));

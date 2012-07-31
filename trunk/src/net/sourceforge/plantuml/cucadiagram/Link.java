@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8055 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -78,9 +78,8 @@ public class Link {
 	private boolean inverted = false;
 	private LinkArrow linkArrow = LinkArrow.NONE;
 
-	public final boolean isInverted() {
-		return inverted;
-	}
+	private boolean opale;
+	private boolean horizontalSolitary;
 
 	public Link(IEntity cl1, IEntity cl2, LinkType type, String label, int length) {
 		this(cl1, cl2, type, label, length, null, null, null, null, null);
@@ -99,18 +98,12 @@ public class Link {
 		if (cl1 == null || cl2 == null) {
 			throw new IllegalArgumentException();
 		}
-		if (cl1.getEntityType() == EntityType.STATE_CONCURRENT) {
-			throw new IllegalArgumentException();
-		}
-		if (cl2.getEntityType() == EntityType.STATE_CONCURRENT) {
-			throw new IllegalArgumentException();
-		}
-		if (cl1 instanceof EntityMutable == false) {
-			throw new IllegalArgumentException();
-		}
-		if (cl2 instanceof EntityMutable == false) {
-			throw new IllegalArgumentException();
-		}
+		// if (cl1.getEntityType() == LeafType.STATE_CONCURRENT) {
+		// throw new IllegalArgumentException();
+		// }
+		// if (cl2.getEntityType() == LeafType.STATE_CONCURRENT) {
+		// throw new IllegalArgumentException();
+		// }
 		this.cl1 = cl1;
 		this.cl2 = cl2;
 		this.type = type;
@@ -122,10 +115,10 @@ public class Link {
 		this.labelangle = labelangle;
 		this.specificColor = specificColor;
 		if (qualifier1 != null) {
-			cl1.setNearDecoration(true);
+			((ILeaf)cl1).setNearDecoration(true);
 		}
 		if (qualifier2 != null) {
-			cl2.setNearDecoration(true);
+			((ILeaf)cl2).setNearDecoration(true);
 		}
 	}
 
@@ -178,47 +171,6 @@ public class Link {
 
 	public final void setInvis(boolean invis) {
 		this.invis = invis;
-	}
-
-	public boolean insideGroup(Group g) {
-		if (EntityUtils.equals(cl1.getContainer(), g) && ((IEntityMutable) cl1).isGroup() == false
-				&& EntityUtils.equals(cl2.getContainer(), g) && ((IEntityMutable) cl2).isGroup() == false) {
-			return true;
-		}
-		return false;
-	}
-
-	private static IEntity muteProxy(IEntity ent, Group g, IEntity proxy) {
-		if (((IEntityMutable) ent).isGroup()) {
-			if (EntityUtils.equals((Group) ent, g)) {
-				return proxy;
-			}
-		}
-		return ent;
-	}
-
-	public Link mute(Group g, IEntity proxy) {
-		final Group g1 = EntityUtils.getContainerOrEquivalent(cl1);
-		final Group g2 = EntityUtils.getContainerOrEquivalent(cl2);
-		if (EntityUtils.equals(g1, g) && ((IEntityMutable) cl1).isGroup() == false && EntityUtils.equals(g, g2)
-				&& ((IEntityMutable) cl2).isGroup() == false) {
-			return null;
-		}
-		final IEntity ent1 = muteProxy(cl1, g, proxy);
-		final IEntity ent2 = muteProxy(cl2, g, proxy);
-		if (this.cl1 == ent1 && this.cl2 == ent2) {
-			return this;
-		}
-		return new Link(ent1, ent2, getType(), label, length, qualifier1, qualifier2, labeldistance, labelangle);
-	}
-
-	public Link mute2(Group g) {
-		final Group g1 = cl1.getContainer();
-		final Group g2 = cl2.getContainer();
-		if (g1 == g && g2 == g) {
-			return null;
-		}
-		return this;
 	}
 
 	public boolean isBetween(IEntity cl1, IEntity cl2) {
@@ -303,29 +255,24 @@ public class Link {
 		this.noteColor = noteColor;
 	}
 
-	public boolean isAutolink(Group g) {
-		if (((IEntityMutable) getEntity1()).isGroup() == false) {
+	public boolean isAutolink(IEntity g) {
+		if (getEntity1().isGroup() == false) {
 			return false;
 		}
-		if (((IEntityMutable) getEntity2()).isGroup() == false) {
+		if (getEntity2().isGroup() == false) {
 			return false;
 		}
-		if (EntityUtils.equals(g, (Group) getEntity1()) && EntityUtils.equals(g, (Group) getEntity1())) {
+		if (EntityUtils.equals(g, getEntity1()) && EntityUtils.equals(g, getEntity1())) {
 			return true;
 		}
-		// if (getEntity1() == g.zgetEntityCluster() && getEntity2() == g.zgetEntityCluster()) {
-		// assert getEntity1().getType() == EntityType.GROUP;
-		// assert getEntity2().getType() == EntityType.GROUP;
-		// return true;
-		// }
 		return false;
 	}
 
 	public boolean isAutoLinkOfAGroup() {
-		if (((IEntityMutable) getEntity1()).isGroup() == false) {
+		if (getEntity1().isGroup() == false) {
 			return false;
 		}
-		if (((IEntityMutable) getEntity2()).isGroup() == false) {
+		if (getEntity2().isGroup() == false) {
 			return false;
 		}
 		if (getEntity1() == getEntity2()) {
@@ -334,43 +281,39 @@ public class Link {
 		return false;
 	}
 
-	public boolean isToEdgeLink(Group g) {
-		final Group g1 = EntityUtils.getContainerOrEquivalent(getEntity1());
-		final Group g2 = EntityUtils.getContainerOrEquivalent(getEntity2());
-		if (EntityUtils.equals(g1, g) == false || EntityUtils.equals(g2, g) == false) {
+	public boolean isToEdgeLink(IEntity g) {
+		if (((EntityImpl) getEntity1()).getContainerOrEquivalentThenEqualsLeaf(g) == false
+				|| ((EntityImpl) getEntity2()).getContainerOrEquivalentThenEqualsLeaf(g) == false) {
 			return false;
 		}
-		assert EntityUtils.equals(g1, g) && EntityUtils.equals(g2, g);
 		if (isAutolink(g)) {
 			return false;
 		}
 
-		if (((IEntityMutable) getEntity2()).isGroup()) {
-			assert ((EntityMutable) getEntity1()).isGroup() == false;
+		if (getEntity2().isGroup()) {
+			assert getEntity1().isGroup() == false;
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isFromEdgeLink(Group g) {
-		final Group g1 = EntityUtils.getContainerOrEquivalent(getEntity1());
-		final Group g2 = EntityUtils.getContainerOrEquivalent(getEntity2());
-		if (EntityUtils.equals(g1, g) == false || EntityUtils.equals(g2, g) == false) {
+	public boolean isFromEdgeLink(IEntity g) {
+		if (((EntityImpl) getEntity1()).getContainerOrEquivalentThenEqualsLeaf(g) == false
+				|| ((EntityImpl) getEntity2()).getContainerOrEquivalentThenEqualsLeaf(g) == false) {
 			return false;
 		}
-		assert EntityUtils.equals(g1, g) && EntityUtils.equals(g2, g);
 		if (isAutolink(g)) {
 			return false;
 		}
 
-		if (((EntityMutable) getEntity1()).isGroup()) {
-			assert ((EntityMutable) getEntity2()).isGroup() == false;
+		if (getEntity1().isGroup()) {
+			assert getEntity2().isGroup() == false;
 			return true;
 		}
 		return false;
 	}
 
-	public boolean containsType(EntityType type) {
+	public boolean containsType(LeafType type) {
 		if (getEntity1().getEntityType() == type || getEntity2().getEntityType() == type) {
 			return true;
 		}
@@ -397,13 +340,13 @@ public class Link {
 	public double getMarginDecors1(StringBounder stringBounder, UFont fontQualif, SpriteContainer spriteContainer) {
 		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier1, spriteContainer);
 		final LinkDecor decor = getType().getDecor1();
-		return decor.getSize() + q;
+		return decor.getMargin() + q;
 	}
 
 	public double getMarginDecors2(StringBounder stringBounder, UFont fontQualif, SpriteContainer spriteContainer) {
 		final double q = getQualifierMargin(stringBounder, fontQualif, qualifier2, spriteContainer);
 		final LinkDecor decor = getType().getDecor2();
-		return decor.getSize() + q;
+		return decor.getMargin() + q;
 	}
 
 	private double getQualifierMargin(StringBounder stringBounder, UFont fontQualif, String qualif,
@@ -433,8 +376,6 @@ public class Link {
 		this.constraint = constraint;
 	}
 
-	private boolean opale;
-
 	public void setOpale(boolean opale) {
 		this.opale = opale;
 	}
@@ -455,8 +396,6 @@ public class Link {
 		return nb == 1;
 	}
 
-	private boolean horizontalSolitary;
-
 	public final void setHorizontalSolitary(boolean horizontalSolitary) {
 		this.horizontalSolitary = horizontalSolitary;
 	}
@@ -475,5 +414,31 @@ public class Link {
 	public final void setLinkArrow(LinkArrow linkArrow) {
 		this.linkArrow = linkArrow;
 	}
+
+	public final boolean isInverted() {
+		return inverted;
+	}
+
+	public boolean hasEntryPoint() {
+		return (getEntity1().isGroup() == false && ((ILeaf)getEntity1()).getEntityPosition() != EntityPosition.NORMAL)
+				|| (getEntity2().isGroup() == false && ((ILeaf)getEntity2()).getEntityPosition() != EntityPosition.NORMAL);
+	}
+
+	public boolean hasTwoEntryPointsSameContainer() {
+		return getEntity1().isGroup() == false && getEntity2().isGroup() == false
+				&& ((ILeaf)getEntity1()).getEntityPosition() != EntityPosition.NORMAL
+				&& ((ILeaf)getEntity2()).getEntityPosition() != EntityPosition.NORMAL
+				&& getEntity1().getParentContainer() == getEntity2().getParentContainer();
+	}
+
+	// private Group containerEntryPoint;
+	//
+	// public void setEntryPoint(Group container) {
+	// containerEntryPoint = container;
+	// }
+	//
+	// public Group getEntryPoint() {
+	// return containerEntryPoint;
+	// }
 
 }

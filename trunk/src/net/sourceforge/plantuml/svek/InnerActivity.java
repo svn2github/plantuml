@@ -59,8 +59,8 @@ public final class InnerActivity implements IEntityImage {
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
-		ug.draw(x, y, new URectangle(total.getWidth(), total.getHeight(), EntityImageState.CORNER,
-				EntityImageState.CORNER));
+		ug.draw(x, y, new URectangle(total.getWidth(), total.getHeight(), IEntityImage.CORNER,
+				IEntityImage.CORNER));
 		ug.getParam().setStroke(new UStroke());
 		im.drawU(ug, x, y);
 	}

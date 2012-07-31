@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7910 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -44,9 +44,10 @@ import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.EntityFactory;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.PortionShower;
 import net.sourceforge.plantuml.cucadiagram.Rankdir;
@@ -55,12 +56,12 @@ import net.sourceforge.plantuml.ugraphic.ColorMapper;
 final public class DotData implements PortionShower {
 
 	final private List<Link> links;
-	final private Collection<? extends IEntity> entities;
+	final private Collection<ILeaf> leafs;
 	final private UmlDiagramType umlDiagramType;
 	final private ISkinParam skinParam;
 	final private Rankdir rankdir;
 	final private GroupHierarchy groupHierarchy;
-	final private Group topParent;
+	final private IEntity topParent;
 	final private PortionShower portionShower;
 	private int dpi = 96;
 
@@ -68,13 +69,16 @@ final public class DotData implements PortionShower {
 	private final ColorMapper colorMapper;
 	private final EntityFactory entityFactory;
 
-	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
+	public DotData(IEntity topParent, List<Link> links, Collection<ILeaf> leafs,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
 			PortionShower portionShower, ColorMapper colorMapper, EntityFactory entityFactory) {
 		this.topParent = topParent;
+		if (topParent == null) {
+			throw new IllegalArgumentException();
+		}
 		this.colorMapper = colorMapper;
 		this.links = links;
-		this.entities = entities;
+		this.leafs = leafs;
 		this.umlDiagramType = umlDiagramType;
 		this.skinParam = skinParam;
 		this.rankdir = rankdir;
@@ -83,10 +87,10 @@ final public class DotData implements PortionShower {
 		this.entityFactory = entityFactory;
 	}
 
-	public DotData(Group topParent, List<Link> links, Collection<? extends IEntity> entities,
+	public DotData(IEntity topParent, List<Link> links, Collection<ILeaf> leafs,
 			UmlDiagramType umlDiagramType, ISkinParam skinParam, Rankdir rankdir, GroupHierarchy groupHierarchy,
 			ColorMapper colorMapper, EntityFactory entityFactory) {
-		this(topParent, links, entities, umlDiagramType, skinParam, rankdir, groupHierarchy, new PortionShower() {
+		this(topParent, links, leafs, umlDiagramType, skinParam, rankdir, groupHierarchy, new PortionShower() {
 			public boolean showPortion(EntityPortion portion, IEntity entity) {
 				return true;
 			}
@@ -132,17 +136,17 @@ final public class DotData implements PortionShower {
 		return links;
 	}
 
-	public Collection<? extends IEntity> getEntities() {
-		return entities;
+	public Collection<ILeaf> getLeafs() {
+		return leafs;
 	}
 
-	public final Set<IEntity> getAllLinkedTo(final IEntity ent1) {
-		final Set<IEntity> result = new HashSet<IEntity>();
+	public final Set<ILeaf> getAllLinkedTo(final ILeaf ent1) {
+		final Set<ILeaf> result = new HashSet<ILeaf>();
 		result.add(ent1);
 		int size = 0;
 		do {
 			size = result.size();
-			for (IEntity ent : entities) {
+			for (ILeaf ent : leafs) {
 				if (isDirectyLinked(ent, result)) {
 					result.add(ent);
 				}
@@ -152,9 +156,9 @@ final public class DotData implements PortionShower {
 		return Collections.unmodifiableSet(result);
 	}
 
-	public final Set<IEntity> getAllLinkedDirectedTo(final IEntity ent1) {
-		final Set<IEntity> result = new HashSet<IEntity>();
-		for (IEntity ent : entities) {
+	public final Set<ILeaf> getAllLinkedDirectedTo(final ILeaf ent1) {
+		final Set<ILeaf> result = new HashSet<ILeaf>();
+		for (ILeaf ent : leafs) {
 			if (isDirectlyLinkedSlow(ent, ent1)) {
 				result.add(ent);
 			}
@@ -162,8 +166,8 @@ final public class DotData implements PortionShower {
 		return Collections.unmodifiableSet(result);
 	}
 
-	private boolean isDirectyLinked(IEntity ent1, Collection<IEntity> others) {
-		for (IEntity ent2 : others) {
+	private boolean isDirectyLinked(IEntity ent1, Collection<ILeaf> others) {
+		for (ILeaf ent2 : others) {
 			if (isDirectlyLinkedSlow(ent1, ent2)) {
 				return true;
 			}
@@ -180,16 +184,7 @@ final public class DotData implements PortionShower {
 		return false;
 	}
 
-	public boolean isThereLink(Group g) {
-		for (Link l : links) {
-			if (l.getEntity1() == g || l.getEntity2() == g) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public List<Link> getAutoLinks(Group g) {
+	public List<Link> getAutoLinks(IEntity g) {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link l : links) {
 			if (l.isAutolink(g)) {
@@ -199,7 +194,7 @@ final public class DotData implements PortionShower {
 		return Collections.unmodifiableList(result);
 	}
 
-	public List<Link> getToEdgeLinks(Group g) {
+	public List<Link> getToEdgeLinks(IEntity g) {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link l : links) {
 			if (l.isToEdgeLink(g)) {
@@ -209,7 +204,7 @@ final public class DotData implements PortionShower {
 		return Collections.unmodifiableList(result);
 	}
 
-	public List<Link> getFromEdgeLinks(Group g) {
+	public List<Link> getFromEdgeLinks(IEntity g) {
 		final List<Link> result = new ArrayList<Link>();
 		for (Link l : links) {
 			if (l.isFromEdgeLink(g)) {
@@ -219,11 +214,11 @@ final public class DotData implements PortionShower {
 		return Collections.unmodifiableList(result);
 	}
 
-	public final Group getTopParent() {
+	public final IEntity getTopParent() {
 		return topParent;
 	}
 
-	public boolean isEmpty(Group g) {
+	public boolean isEmpty(IGroup g) {
 		return groupHierarchy.isEmpty(g);
 	}
 

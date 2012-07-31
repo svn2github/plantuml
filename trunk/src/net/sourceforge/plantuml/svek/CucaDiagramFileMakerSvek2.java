@@ -45,13 +45,14 @@ import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FontParam;
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityImpl;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
@@ -96,7 +97,7 @@ public final class CucaDiagramFileMakerSvek2 {
 
 		dotStringFactory = new DotStringFactory(colorSequence, stringBounder, dotData);
 
-		printGroups(null);
+		printGroups(dotData.getEntityFactory().getRootGroup());
 		printEntities(getUnpackagedEntities());
 
 		for (Link link : dotData.getLinks()) {
@@ -106,26 +107,41 @@ public final class CucaDiagramFileMakerSvek2 {
 
 				String ltail = null;
 				if (shapeUid1.startsWith(Cluster.CENTER_ID)) {
-					final Group g1 = EntityUtils.getContainerOrEquivalent(link.getEntity1());
-					ltail = getCluster(g1).getClusterId();
+					// final Group g1 = ((IEntityMutable) link.getEntity1()).getContainerOrEquivalent();
+					ltail = getCluster2((IEntity) link.getEntity1()).getClusterId();
 				}
 				String lhead = null;
 				if (shapeUid2.startsWith(Cluster.CENTER_ID)) {
-					final Group g2 = EntityUtils.getContainerOrEquivalent(link.getEntity2());
-					lhead = getCluster(g2).getClusterId();
+					// final Group g2 = ((IEntityMutable) link.getEntity2()).getContainerOrEquivalent();
+					lhead = getCluster2((IEntity) link.getEntity2()).getClusterId();
 				}
 				final FontConfiguration labelFont = new FontConfiguration(dotData.getSkinParam().getFont(
 						FontParam.ACTIVITY_ARROW, null), HtmlColorUtils.BLACK);
 
 				final Line line = new Line(shapeUid1, shapeUid2, link, colorSequence, ltail, lhead,
 						dotData.getSkinParam(), stringBounder, labelFont, getBibliotekon());
+				// if (OptionFlags.PIC_LINE && link.getLabel() != null && link.getLabel().startsWith("@")) {
+				// final Group container1 = link.getEntity1().getContainer();
+				// if (container1 != null) {
+				// line.setPicLine1(getBibliotekon().getCluster((IEntity) container1));
+				// }
+				// final Group container2 = link.getEntity2().getContainer();
+				// if (container2 != null) {
+				// line.setPicLine2(getBibliotekon().getCluster((IEntity) container2));
+				// }
+				// }
+				// if (link.getEntryPoint() != null) {
+				// line.setPicLine2(getBibliotekon().getCluster((IEntity) link.getEntryPoint()));
+				// }
 				getBibliotekon().addLine(line);
 
-				if (link.getEntity1().getEntityType() == EntityType.NOTE && onlyOneLink(link.getEntity1())) {
+				if (link.getEntity1().isGroup() == false && link.getEntity1().getEntityType() == LeafType.NOTE
+						&& onlyOneLink(link.getEntity1())) {
 					final Shape shape = getBibliotekon().getShape(link.getEntity1());
 					((EntityImageNote) shape.getImage()).setOpaleLine(line, shape);
 					line.setOpale(true);
-				} else if (link.getEntity2().getEntityType() == EntityType.NOTE && onlyOneLink(link.getEntity2())) {
+				} else if (link.getEntity2().isGroup() == false && link.getEntity2().getEntityType() == LeafType.NOTE
+						&& onlyOneLink(link.getEntity2())) {
 					final Shape shape = getBibliotekon().getShape(link.getEntity2());
 					((EntityImageNote) shape.getImage()).setOpaleLine(line, shape);
 					line.setOpale(true);
@@ -160,13 +176,22 @@ public final class CucaDiagramFileMakerSvek2 {
 		return new Rose().getHtmlColor(dotData.getSkinParam(), colorParam, stereo);
 	}
 
-	private Cluster getCluster(Group g) {
+	private Cluster getCluster(IEntity g) {
 		for (Cluster cl : getBibliotekon().allCluster()) {
 			if (EntityUtils.equals(cl.getGroup(), g)) {
 				return cl;
 			}
 		}
 		throw new IllegalArgumentException(g.toString());
+	}
+
+	private Cluster getCluster2(IEntity entityMutable) {
+		for (Cluster cl : getBibliotekon().allCluster()) {
+			if (entityMutable == cl.getGroup()) {
+				return cl;
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 
 	private IEntityImage error(File dotExe) {
@@ -197,37 +222,37 @@ public final class CucaDiagramFileMakerSvek2 {
 		return new GraphicStrings(msg);
 	}
 
-	private void printEntities(Collection<? extends IEntity> entities2) {
-		for (IEntity ent : entities2) {
+	private void printEntities(Collection<ILeaf> entities2) {
+		for (ILeaf ent : entities2) {
 			printEntity(ent);
 		}
 	}
 
-	private void printEntity(IEntity ent) {
+	private void printEntity(ILeaf ent) {
 		final IEntityImage image = Shape.printEntity(ent, dotData);
 		final Dimension2D dim = image.getDimension(stringBounder);
 		final Shape shape = new Shape(image, image.getShapeType(), dim.getWidth(), dim.getHeight(), colorSequence,
-				ent.isTop(), image.getShield(), ent.getUrls());
+				ent.isTop(), image.getShield(), ent.getUrls(), ent.getEntityPosition());
 		dotStringFactory.addShape(shape);
 		getBibliotekon().putShape(ent, shape);
 	}
 
-	private Collection<IEntity> getUnpackagedEntities() {
-		final List<IEntity> result = new ArrayList<IEntity>();
-		for (IEntity ent : dotData.getEntities()) {
-			if (EntityUtils.equals(EntityUtils.getContainerOrEquivalent(ent), dotData.getTopParent())) {
+	private Collection<ILeaf> getUnpackagedEntities() {
+		final List<ILeaf> result = new ArrayList<ILeaf>();
+		for (ILeaf ent : dotData.getLeafs()) {
+			if (((EntityImpl) ent).getContainerOrEquivalentThenEqualsLeaf(dotData.getTopParent())) {
 				result.add(ent);
 			}
 		}
 		return result;
 	}
 
-	private void printGroups(Group parent) throws IOException {
-		for (Group g : dotData.getGroupHierarchy().getChildrenGroups(parent)) {
+	private void printGroups(IGroup parent) throws IOException {
+		for (IGroup g : dotData.getGroupHierarchy().getChildrenGroups(parent)) {
 			if (dotData.isEmpty(g) && g.zgetGroupType() == GroupType.PACKAGE) {
-				final IEntity folder = dotData.getEntityFactory().createEntity(g.zgetUid1(), g.zgetUid2(),
-						g.zgetGroupCode(), g.zgetDisplay(), EntityType.EMPTY_PACKAGE, null, null);
-				folder.setSpecificBackcolor(g.zgetBackColor());
+				final ILeaf folder = EntityImpl.createEntity_A1_leaf(dotData.getEntityFactory(), g.getCode(),
+						g.getDisplay(), LeafType.EMPTY_PACKAGE, g.getParentContainer(), null);
+				folder.setSpecificBackcolor(g.getSpecificBackColor());
 				printEntity(folder);
 			} else {
 				printGroup(g);
@@ -235,7 +260,7 @@ public final class CucaDiagramFileMakerSvek2 {
 		}
 	}
 
-	private void printGroup(Group g) throws IOException {
+	private void printGroup(IGroup g) throws IOException {
 		if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			return;
 		}
@@ -244,16 +269,16 @@ public final class CucaDiagramFileMakerSvek2 {
 		int titleWidth = 0;
 		int titleHeight = 0;
 
-		final String label = g.zgetDisplay();
+		final List<? extends CharSequence> label = g.getDisplay();
 		TextBlock title = null;
 		if (label != null) {
 			final FontParam fontParam = g.zgetGroupType() == GroupType.STATE ? FontParam.STATE : FontParam.PACKAGE;
 
-			final String stereo = g.zgetStereotype() == null ? null : g.zgetStereotype().getLabel();
+			final String stereo = g.getStereotype() == null ? null : g.getStereotype().getLabel();
 
-			title = TextBlockUtils.create(StringUtils.getWithNewlines(label),
-					new FontConfiguration(dotData.getSkinParam().getFont(fontParam, stereo), dotData.getSkinParam()
-							.getFontHtmlColor(fontParam, stereo)), HorizontalAlignement.CENTER, dotData.getSkinParam());
+			title = TextBlockUtils.create(label, new FontConfiguration(dotData.getSkinParam()
+					.getFont(fontParam, stereo), dotData.getSkinParam().getFontHtmlColor(fontParam, stereo)),
+					HorizontalAlignement.CENTER, dotData.getSkinParam());
 
 			final Dimension2D dimLabel = title.calculateDimension(stringBounder);
 
@@ -265,14 +290,14 @@ public final class CucaDiagramFileMakerSvek2 {
 				attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, dotData.getSkinParam());
 			}
 			final double attributeHeight = attribute.calculateDimension(stringBounder).getHeight();
-			final double marginForFields = attributeHeight > 0 ? EntityImageState.MARGIN : 0;
+			final double marginForFields = attributeHeight > 0 ? IEntityImage.MARGIN : 0;
 
 			titleWidth = (int) dimLabel.getWidth();
 			titleHeight = (int) (dimLabel.getHeight() + attributeHeight + marginForFields);
 		}
 
-		dotStringFactory.openCluster(g, titleWidth, titleHeight, title, isSpecialGroup(g));
-		this.printEntities(g.zentities());
+		dotStringFactory.openCluster(g, titleWidth, titleHeight, title);
+		this.printEntities(g.getLeafsDirect());
 
 		// sb.append("subgraph " + g.getUid() + " {");
 		//
@@ -315,19 +340,6 @@ public final class CucaDiagramFileMakerSvek2 {
 		// sb.append("}");
 
 		dotStringFactory.closeCluster();
-	}
-
-	private boolean isSpecialGroup(Group g) {
-		if (g.zgetGroupType() == GroupType.STATE) {
-			return true;
-		}
-		if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
-			throw new IllegalStateException();
-		}
-		if (dotData.isThereLink(g)) {
-			return true;
-		}
-		return false;
 	}
 
 }

@@ -54,7 +54,7 @@ public class MemberImpl implements Member {
 		final Matcher m = p.matcher(display);
 
 		if (m.matches()) {
-			url = StringUtils.extractUrl(null, m.group(2));
+			url = StringUtils.extractUrl(null, m.group(2), true);
 			url.setMember(true);
 			display = m.group(1).trim() + m.group(6).trim();
 		} else {

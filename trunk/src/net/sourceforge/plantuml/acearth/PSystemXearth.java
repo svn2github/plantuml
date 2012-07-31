@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 
 import com.ctreber.acearth.ACearth;
@@ -72,7 +73,7 @@ public class PSystemXearth extends AbstractPSystem {
 		this.markers = markers;
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		final ACearth earth = new ACearth(markers);
 		final ConfigurationACearth conf = earth.getConf();

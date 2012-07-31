@@ -33,37 +33,26 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.OptionFlags;
+import net.sourceforge.plantuml.svek.ExtremityFactory;
+import net.sourceforge.plantuml.svek.ExtremityFactoryArrow;
+import net.sourceforge.plantuml.svek.ExtremityFactoryArrowAndCircle;
+import net.sourceforge.plantuml.svek.ExtremityFactoryCircleCross;
+import net.sourceforge.plantuml.svek.ExtremityFactoryDiamond;
+import net.sourceforge.plantuml.svek.ExtremityFactoryPlus;
 
 public enum LinkDecor {
 
-	NONE(2, false), EXTENDS(30, false), COMPOSITION(15, true), AGREGATION(15, false), ARROW(10, true), PLUS(0, false), SQUARRE(
-			30, false);
+	NONE(2, false, 0), EXTENDS(30, false, 2), COMPOSITION(15, true, 1.3), AGREGATION(15, false, 1.3), ARROW(10, true,
+			0.5), ARROW_AND_CIRCLE(10, false, 0.5), CIRCLE_CROSS(0, false, 0.5), PLUS(0, false, 1.5), SQUARRE(30, false, 0);
 
-	private final int size;
+	private final double arrowSize;
+	private final int margin;
 	private final boolean fill;
 
-	private LinkDecor(int size, boolean fill) {
-		this.size = size;
+	private LinkDecor(int margin, boolean fill, double arrowSize) {
+		this.margin = margin;
 		this.fill = fill;
-	}
-
-	public String getArrowDot() {
-		if (this == LinkDecor.NONE) {
-			return "none";
-		} else if (this == LinkDecor.EXTENDS) {
-			return "empty";
-		} else if (this == LinkDecor.COMPOSITION) {
-			return "diamond";
-		} else if (this == LinkDecor.AGREGATION) {
-			return "ediamond";
-		} else if (this == LinkDecor.ARROW) {
-			return "open";
-		} else if (this == LinkDecor.PLUS) {
-			return "odot";
-		} else {
-			throw new UnsupportedOperationException();
-		}
+		this.arrowSize = arrowSize;
 	}
 
 	public String getArrowDotSvek() {
@@ -72,30 +61,49 @@ public enum LinkDecor {
 		} else if (this == LinkDecor.EXTENDS) {
 			return "empty";
 		} else if (this == LinkDecor.COMPOSITION) {
-			if (OptionFlags.NEW_DIAMOND) {
-				return "empty";
-			}
-			return "diamond";
+			return "empty";
 		} else if (this == LinkDecor.AGREGATION) {
-			if (OptionFlags.NEW_DIAMOND) {
-				return "empty";
-			}
-			return "ediamond";
+			return "empty";
 		} else if (this == LinkDecor.ARROW) {
-			return "open";
+			return "empty";
+		} else if (this == LinkDecor.ARROW_AND_CIRCLE) {
+			return "empty";
 		} else if (this == LinkDecor.PLUS) {
+			return "empty";
+		} else if (this == LinkDecor.CIRCLE_CROSS) {
 			return "empty";
 		} else {
 			throw new UnsupportedOperationException();
 		}
 	}
 
-	public int getSize() {
-		return size;
+	public int getMargin() {
+		return margin;
 	}
 
 	public boolean isFill() {
 		return fill;
+	}
+
+	public double getArrowSize() {
+		return arrowSize;
+	}
+
+	public ExtremityFactory getExtremityFactory() {
+		if (this == LinkDecor.PLUS) {
+			return new ExtremityFactoryPlus();
+		} else if (this == LinkDecor.CIRCLE_CROSS) {
+			return new ExtremityFactoryCircleCross();
+		} else if (this == LinkDecor.ARROW) {
+			return new ExtremityFactoryArrow();
+		} else if (this == LinkDecor.ARROW_AND_CIRCLE) {
+			return new ExtremityFactoryArrowAndCircle();
+		} else if (this == LinkDecor.AGREGATION) {
+			return new ExtremityFactoryDiamond(false);
+		} else if (this == LinkDecor.COMPOSITION) {
+			return new ExtremityFactoryDiamond(true);
+		}
+		return null;
 	}
 
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7803 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.command;
@@ -36,7 +36,8 @@ package net.sourceforge.plantuml.command;
 import java.util.List;
 
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 
 public class CommandEndPackage extends SingleLineCommand<AbstractEntityDiagram> {
 
@@ -46,8 +47,8 @@ public class CommandEndPackage extends SingleLineCommand<AbstractEntityDiagram> 
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
-		if (currentPackage == null) {
+		final IGroup currentPackage = getSystem().getCurrentGroup();
+		if (EntityUtils.groupNull(currentPackage)) {
 			return CommandExecutionResult.error("No package defined");
 		}
 		getSystem().endGroup();

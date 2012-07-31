@@ -44,10 +44,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.plantuml.Direction;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -69,7 +70,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 	}
 
 	public String getDescription() {
-		return "(" + getEntities().size() + " activities)";
+		return "(" + getLeafs().size() + " activities)";
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() == 0) {
 			throw new IllegalStateException();
 		}
-		final IEntity act = createEntity(getAutoCode(), display, EntityType.ACTIVITY);
+		final IEntity act = createLeaf(getAutoCode(), StringUtils.getWithNewlines(display), LeafType.ACTIVITY);
 		afterAdd(act, direction);
 
 	}
@@ -98,7 +99,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 			final IEntity existingBar = bars.get(bar);
 			for (Iterator<IEntity> it = waitings.iterator(); it.hasNext();) {
 				final IEntity w = it.next();
-				if (w.getEntityType() == EntityType.SYNCHRO_BAR) {
+				if (w.getEntityType() == LeafType.SYNCHRO_BAR) {
 					it.remove();
 				}
 			}
@@ -110,7 +111,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 			// throw new IllegalStateException(bar);
 		}
 		label(bar);
-		final IEntity act = createEntity(getAutoCode(), bar, EntityType.SYNCHRO_BAR);
+		final IEntity act = createLeaf(getAutoCode(), StringUtils.getWithNewlines(bar), LeafType.SYNCHRO_BAR);
 		bars.put(bar, act);
 		afterAdd(act, direction);
 	}
@@ -160,11 +161,11 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() != 0) {
 			throw new IllegalStateException();
 		}
-		this.waitings.add(createEntity("start", "start", EntityType.CIRCLE_START));
+		this.waitings.add(createLeaf("start", StringUtils.getWithNewlines("start"), LeafType.CIRCLE_START));
 	}
 
 	public void startIf(String test, String when) {
-		final IEntity br = createEntity(getAutoCode(), test, EntityType.BRANCH);
+		final IEntity br = createLeaf(getAutoCode(), StringUtils.getWithNewlines(test), LeafType.BRANCH);
 //		if (DotMaker.MODE_BRANCHE_CLUSTER) {
 //			test = null;
 //		}
@@ -254,7 +255,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() == 0) {
 			throw new IllegalStateException();
 		}
-		final IEntity act = getOrCreateEntity("end", EntityType.CIRCLE_END);
+		final IEntity act = getOrCreateLeaf("end", LeafType.CIRCLE_END);
 		afterAdd(act, direction);
 	}
 

@@ -48,7 +48,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -87,15 +87,15 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0));
+					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0), true);
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());
 				}
 
-				final String s = StringUtils.getMergedLines(strings);
+//				final String s = StringUtils.getMergedLines(strings);
 
-				final IEntity note = getSystem().createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+				final IEntity note = getSystem().createLeaf("GMN" + UniqueSequence.getValue(), strings, LeafType.NOTE);
 				if (url != null) {
 					note.addUrl(url);
 				}
@@ -109,7 +109,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 			@Override
 			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(), arg.get("NOTE").get(0));
+				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(), StringUtils.getWithNewlines(arg.get("NOTE").get(0)));
 				return executeInternal(getSystem(), arg, note);
 			}
 		};

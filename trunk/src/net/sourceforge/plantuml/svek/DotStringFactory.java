@@ -50,7 +50,7 @@ import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Rankdir;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.cucadiagram.dot.Graphviz;
@@ -77,7 +77,7 @@ public class DotStringFactory implements Moveable {
 		this.colorSequence = colorSequence;
 		this.dotData = dotData;
 		this.stringBounder = stringBounder;
-		this.root = new Cluster(colorSequence, dotData.getSkinParam());
+		this.root = new Cluster(colorSequence, dotData.getSkinParam(), dotData.getEntityFactory().getRootGroup());
 		this.current = root;
 	}
 
@@ -359,8 +359,8 @@ public class DotStringFactory implements Moveable {
 		return idx;
 	}
 
-	public void openCluster(Group g, int titleWidth, int titleHeight, TextBlock title, boolean isSpecialGroup) {
-		this.current = current.createChild(g, titleWidth, titleHeight, title, isSpecialGroup, colorSequence, dotData
+	public void openCluster(IGroup g, int titleWidth, int titleHeight, TextBlock title) {
+		this.current = current.createChild(g, titleWidth, titleHeight, title, colorSequence, dotData
 				.getSkinParam());
 		bibliotekon.addCluster(this.current);
 	}

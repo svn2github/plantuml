@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram.command;
@@ -40,7 +40,8 @@ import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
@@ -52,11 +53,11 @@ public class CommandPartition extends SingleLineCommand<ActivityDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
-		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, null, GroupType.PACKAGE, currentPackage);
+		final IGroup currentPackage = getSystem().getCurrentGroup();
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), null, GroupType.PACKAGE, currentPackage);
 		final String color = arg.get(1);
 		if (color != null) {
-			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
+			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

@@ -40,9 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.plantuml.cucadiagram.Group;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
 
 public class Bibliotekon {
 
@@ -102,13 +100,13 @@ public class Bibliotekon {
 			return uid;
 		}
 		assert result == null;
-		if (((IEntityMutable) ent).isGroup()) {
+		if (ent.isGroup()) {
 			for (IEntity i : shapeMap.keySet()) {
-				if (((Group) ent).zgetGroupCode().equals(i.getCode())) {
+				if (ent.getCode().equals(i.getCode())) {
 					return getShape(i).getUid();
 				}
 			}
-			return Cluster.CENTER_ID + ((Group) ent).zgetUid2();
+			return Cluster.getSpecialPointId(ent);
 		}
 		throw new IllegalStateException();
 	}

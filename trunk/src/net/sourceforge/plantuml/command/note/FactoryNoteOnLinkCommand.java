@@ -111,7 +111,7 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 		}
 		Url url = null;
 		if (note.size() > 0) {
-			url = StringUtils.extractUrl(system.getSkinParam().getValue("topurl"), note.get(0).toString());
+			url = StringUtils.extractUrl(system.getSkinParam().getValue("topurl"), note.get(0).toString(), true);
 		}
 		if (url != null) {
 			note = note.subList(1, note.size());

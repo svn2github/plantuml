@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8006 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -46,18 +46,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagram;
 import net.sourceforge.plantuml.UmlDiagramInfo;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerBeta;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramPngMaker3;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramTxtMaker;
@@ -73,150 +73,140 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 	private int horizontalPages = 1;
 	private int verticalPages = 1;
 
-	private IEntityMutable currentGroup = null;
+	private final EntityFactory entityFactory = new EntityFactory();
+	private IGroup currentGroup = entityFactory.getRootGroup();
+
 	private Rankdir rankdir = Rankdir.TOP_TO_BOTTOM;
 
 	private boolean visibilityModifierPresent;
 
-	private final EntityFactory entityFactory = new EntityFactory();
-
-	private LinkedHashMap<String, IEntity> entities3() {
-		return entityFactory.getEntities();
-	}
-
-	private List<Link> links3() {
-		return entityFactory.getLinks();
-	}
-
-	private Map<String, IEntityMutable> groups3() {
-		return entityFactory.getGroups();
-	}
-
 	public boolean hasUrl() {
-		for (IEntity entity : entities3().values()) {
-			if (entity.getUrls().size()>0) {
+		for (IEntity entity : getLeafs().values()) {
+			if (entity.getUrls().size() > 0) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public IEntity getOrCreateEntity(String code, EntityType defaultType) {
-		IEntity result = entities3().get(code);
+	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
+		ILeaf result = getLeafs().get(code);
 		if (result == null) {
-			result = createEntityInternal(code, code, defaultType, getCurrentGroup());
+			result = createLeafInternal(code, StringUtils.getWithNewlines(code), defaultType, getCurrentGroup());
 		}
 		return result;
 	}
 
-	public IEntity createEntity(String code, String display, EntityType type) {
-		if (entities3().containsKey(code)) {
+	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+		if (getLeafs().containsKey(code)) {
 			throw new IllegalArgumentException("Already known: " + code);
 		}
-		return createEntityInternal(code, display, type, getCurrentGroup());
+		return createLeafInternal(code, display, type, getCurrentGroup());
 	}
 
-	final protected IEntity createEntityInternal(String code, String display, EntityType type, IEntityMutable group) {
+	final protected ILeaf createLeafInternal(String code, List<? extends CharSequence> display, LeafType type,
+			IGroup group) {
 		if (display == null) {
-			display = code;
+			display = StringUtils.getWithNewlines(code);
 		}
-		final IEntity entity = entityFactory.createEntity(code, display, type, group, getHides());
-		entities3().put(code, entity);
-		return entity;
+		final ILeaf leaf = EntityImpl.createEntity_A1_leaf(entityFactory, code, display, type, group, getHides());
+		entityFactory.addLeaf(leaf);
+		return leaf;
 	}
 
-	public boolean entityExist(String code) {
-		return entities3().containsKey(code);
+	public boolean leafExist(String code) {
+		return getLeafs().containsKey(code);
 	}
 
-	// public IEntityMutable getEntityMutable(Group g) {
-	// for (IEntityMutable ent : groups3().values()) {
-	// if (EntityUtils.equals(g, ent)) {
-	// return ent;
-	// }
-	// }
-	// throw new IllegalArgumentException();
-	// }
-
-	final public Collection<? extends Group> getChildrenGroups(Group parent) {
-		final Collection<IEntityMutable> result = new ArrayList<IEntityMutable>();
-		for (IEntityMutable gg : groups3().values()) {
-			if (EntityUtils.equals(gg.zgetParent(), parent)) {
+	final public Collection<IGroup> getChildrenGroups(IGroup parent) {
+		final Collection<IGroup> result = new ArrayList<IGroup>();
+		for (IGroup gg : getGroups(false)) {
+			if (EntityUtils.equals(gg.getParentContainer(), parent)) {
 				result.add(gg);
 			}
 		}
 		return Collections.unmodifiableCollection(result);
 	}
 
-	public final IEntityMutable getOrCreateGroup(String code, String display, String namespace, GroupType type,
-			IEntityMutable parent) {
-		final IEntityMutable g = getOrCreateGroupInternal(code, display, namespace, type, parent);
+	public final IGroup getOrCreateGroup(String code, List<? extends CharSequence> display, String namespace,
+			GroupType type, IGroup parent) {
+		final IGroup g = getOrCreateGroupInternal(code, display, namespace, type, parent);
 		currentGroup = g;
 		return g;
 	}
 
-	protected final IEntityMutable getOrCreateGroupInternal(String code, String display, String namespace,
-			GroupType type, IEntityMutable parent) {
-		return entityFactory.getOrCreateGroupInternal(code, display, namespace, type, parent, getHides());
+	protected final IGroup getOrCreateGroupInternal(String code, List<? extends CharSequence> display,
+			String namespace, GroupType type, IGroup parent) {
+		IEntity gg = entityFactory.getGroups().get(code);
+		if (gg != null) {
+			return (IGroup) gg;
+		}
+		if (entityFactory.getLeafs().containsKey(code)) {
+			gg = entityFactory.getLeafs().get(code);
+			((EntityImpl) gg).muteToGroup99(namespace, type, parent);
+			entityFactory.removeLeaf(code);
+			gg.setDisplay(display);
+		} else {
+			gg = EntityImpl.createEntity_A2_group(entityFactory, code, display, namespace, type, parent, getHides());
+		}
+		entityFactory.addGroup((IGroup) gg);
+		return (IGroup) gg;
 	}
 
-	public final IEntityMutable getCurrentGroup() {
+	public final IGroup getCurrentGroup() {
 		return currentGroup;
 	}
 
-	public final IEntityMutable getGroup(String code) {
-		final IEntityMutable p = groups3().get(code);
+	public final IGroup getGroup(String code) {
+		final IGroup p = entityFactory.getGroups().get(code);
 		if (p == null) {
-			return null;
+			throw new IllegalArgumentException();
+			// return null;
 		}
 		return p;
 	}
 
 	public void endGroup() {
-		if (currentGroup == null) {
+		if (EntityUtils.groupNull(currentGroup)) {
 			Log.error("No parent group");
 			return;
 		}
-		currentGroup = (IEntityMutable) currentGroup.zgetParent();
+		currentGroup = currentGroup.getParentContainer();
 	}
 
 	public final boolean isGroup(String code) {
-		return groups3().containsKey(code);
+		return entityFactory.getGroups().containsKey(code);
 	}
 
-	public final Collection<IEntityMutable> getGroups(boolean withRootGroup) {
+	public final Collection<IGroup> getGroups(boolean withRootGroup) {
 		if (withRootGroup == false) {
-			return Collections.unmodifiableCollection(groups3().values());
+			return entityFactory.getGroups().values();
 		}
-		final Collection<IEntityMutable> result = new ArrayList<IEntityMutable>();
+		final Collection<IGroup> result = new ArrayList<IGroup>();
 		result.add(getRootGroup());
-		result.addAll(groups3().values());
+		result.addAll(entityFactory.getGroups().values());
 		return Collections.unmodifiableCollection(result);
 	}
 
-	private IEntityMutable getRootGroup() {
-		return new EntityMutable(new GroupImpl(null, null, null, GroupType.ROOT, null, entities3().values(), groups3()
-				.values()), entityFactory);
+	public IGroup getRootGroup() {
+		return entityFactory.getRootGroup();
+
 	}
 
-	final public Map<String, IEntity> getEntities() {
-			return Collections.unmodifiableMap(entities3());
-		//		return Collections.unmodifiableMap(new TreeMap<String, IEntity>(entities3()));
+	final public Map<String, ILeaf> getLeafs() {
+		return entityFactory.getLeafs();
 	}
 
 	final public void addLink(Link link) {
-		links3().add(link);
+		entityFactory.addLink(link);
 	}
 
 	final protected void removeLink(Link link) {
-		final boolean ok = links3().remove(link);
-		if (ok == false) {
-			throw new IllegalStateException();
-		}
+		entityFactory.removeLink(link);
 	}
 
 	final public List<Link> getLinks() {
-		return Collections.unmodifiableList(links3());
+		return entityFactory.getLinks();
 	}
 
 	final public int getHorizontalPages() {
@@ -281,7 +271,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 			return createFilesHtml(suggestedFile);
 		}
 
-		final StringBuilder cmap = new StringBuilder();
+		final CMapData cmap = new CMapData();
 		OutputStream os = null;
 		try {
 			os = new BufferedOutputStream(new FileOutputStream(suggestedFile));
@@ -293,7 +283,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		}
 		List<File> result = Arrays.asList(suggestedFile);
 
-		if (this.hasUrl() && cmap.length() > 0) {
+		if (this.hasUrl() && cmap.containsData()) {
 			exportCmap(suggestedFile, cmap);
 		}
 
@@ -306,7 +296,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 	}
 
 	@Override
-	final protected UmlDiagramInfo exportDiagramInternal(OutputStream os, StringBuilder cmap, int index,
+	final protected UmlDiagramInfo exportDiagramInternal(OutputStream os, CMapData cmap, int index,
 			FileFormatOption fileFormatOption, List<BufferedImage> flashcodes) throws IOException {
 		final FileFormat fileFormat = fileFormatOption.getFileFormat();
 
@@ -323,34 +313,15 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 			createFilesXmi(os, fileFormat);
 			return new UmlDiagramInfo();
 		}
-		//
-		// if (OptionFlags.getInstance().useJavaInsteadOfDot()) {
-		// return createPng2(suggestedFile);
-		// }
-		if (getUmlDiagramType() == UmlDiagramType.COMPOSITE) {
-			final CucaDiagramFileMakerBeta maker = new CucaDiagramFileMakerBeta(this);
-			try {
-				maker.createFile(os, getDotStrings(), fileFormat);
-			} catch (InterruptedException e) {
-				throw new IOException(e.toString());
-			}
-			return new UmlDiagramInfo();
-		}
 
 		if (getUmlDiagramType() == UmlDiagramType.COMPOSITE) {
-			final CucaDiagramFileMakerBeta maker = new CucaDiagramFileMakerBeta(this);
-			try {
-				maker.createFile(os, getDotStrings(), fileFormat);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				throw new IOException(e.toString());
-			}
-			return new UmlDiagramInfo();
+			throw new UnsupportedOperationException();
 		}
+
 		final CucaDiagramFileMakerSvek maker = new CucaDiagramFileMakerSvek(this, flashcodes);
 		final CucaDiagramFileMakerResult result = maker.createFile(os, getDotStrings(), fileFormatOption);
 		if (result != null && cmap != null && result.getCmapResult() != null) {
-			cmap.append(result.getCmapResult());
+			cmap.copy(result.getCmapResult());
 		}
 		if (result != null) {
 			this.warningOrError = result.getWarningOrError();
@@ -385,7 +356,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		this.rankdir = rankdir;
 	}
 
-	public boolean isAutarkic(Group g) {
+	public boolean isAutarkic(IGroup g) {
 		if (g.zgetGroupType() == GroupType.PACKAGE) {
 			return false;
 		}
@@ -401,30 +372,12 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		if (getChildrenGroups(g).size() > 0) {
 			return false;
 		}
-		for (Link link : links3()) {
-			final IEntityMutable e1 = (IEntityMutable) link.getEntity1();
-			final IEntityMutable e2 = (IEntityMutable) link.getEntity2();
-			final Group g1 = e1.getContainer();
-			final Group g2 = e2.getContainer();
-			if (EntityUtils.equals(g1, g) == false && EntityUtils.equals(g2, g) && e2.isGroup() == false) {
+		for (Link link : getLinks()) {
+			if (EntityUtils.isPureInnerLink3(g, link) == false) {
 				return false;
 			}
-			if (EntityUtils.equals(g2, g) == false && EntityUtils.equals(g1, g) && e1.isGroup() == false) {
-				return false;
-			}
-			// if (link.isAutolink(g)) {
-			// continue;
-			// }
-			// if (e1.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
-			// return false;
-			// }
-			// if (e2.isGroup() && EntityUtils.equals(g1, g2) && EntityUtils.equals(g1, g)) {
-			// return false;
-			// }
-
 		}
 		return true;
-		// return false;
 	}
 
 	private static boolean isNumber(String s) {
@@ -470,12 +423,12 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return "25";
 	}
 
-	final public boolean isEmpty(Group gToTest) {
-		for (IEntityMutable gg : groups3().values()) {
+	final public boolean isEmpty(IGroup gToTest) {
+		for (IEntity gg : getGroups(false)) {
 			if (EntityUtils.equals(gg, gToTest)) {
 				continue;
 			}
-			if (EntityUtils.equals(gg.zgetParent(), gToTest)) {
+			if (EntityUtils.equals(gg.getParentContainer(), gToTest)) {
 				return false;
 			}
 		}
@@ -488,22 +441,6 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	public final void setVisibilityModifierPresent(boolean visibilityModifierPresent) {
 		this.visibilityModifierPresent = visibilityModifierPresent;
-	}
-
-	private boolean isAutonom(IEntityMutable g) {
-		for (Link link : links3()) {
-			final CrossingType type = ((EntityMutable) g).getCrossingType(link);
-			if (type == CrossingType.CUT) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public final void computeAutonomyOfGroups() {
-		for (IEntityMutable gg : groups3().values()) {
-			gg.zsetAutonom(isAutonom(gg));
-		}
 	}
 
 	public final boolean showPortion(EntityPortion portion, IEntity entity) {
@@ -571,17 +508,17 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		final List<Link> links = getLinks();
 		for (int i = links.size() - 1; i >= 0; i--) {
 			final Link link = links.get(i);
-			if (link.getEntity1().getEntityType() != EntityType.NOTE
-					&& link.getEntity2().getEntityType() != EntityType.NOTE) {
+			if (link.getEntity1().getEntityType() != LeafType.NOTE
+					&& link.getEntity2().getEntityType() != LeafType.NOTE) {
 				return link;
 			}
 		}
 		return null;
 	}
 
-	final public IEntity getLastEntity() {
-		for (final Iterator<IEntity> it = entities3().values().iterator(); it.hasNext();) {
-			final IEntity ent = it.next();
+	final public ILeaf getLastEntity() {
+		for (final Iterator<ILeaf> it = getLeafs().values().iterator(); it.hasNext();) {
+			final ILeaf ent = it.next();
 			if (it.hasNext() == false) {
 				return ent;
 			}

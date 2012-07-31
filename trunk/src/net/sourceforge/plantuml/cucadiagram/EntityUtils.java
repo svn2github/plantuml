@@ -33,50 +33,72 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+
 public abstract class EntityUtils {
 
-	public static boolean equals(Group g1, Group g2) {
-		if (g1 == null && g2 == null) {
-			return true;
+	public static boolean equals(IEntity g1, IEntity g2) {
+		if (g1 == null) {
+			throw new IllegalStateException("g1 null");
 		}
-		if (g1 == null || g2 == null) {
-			assert g1 == null ^ g2 == null;
+		if (g2 == null) {
+			throw new IllegalStateException("g2 null");
+		}
+		return g1 == g2;
+	}
+
+	public static boolean groupNull(IGroup g) {
+		if (g == null) {
+			throw new IllegalStateException();
+		}
+		return g instanceof GroupRoot;
+	}
+
+	private static boolean isParent(IGroup groupToBeTested, IGroup parentGroup) {
+		if (groupToBeTested.isGroup() == false) {
+			// Very strange!
 			return false;
 		}
-		if (g1 instanceof IEntityMutable && g2 instanceof IEntityMutable) {
-			final IEntityMutable gg1 = (IEntityMutable) g1;
-			final IEntityMutable gg2 = (IEntityMutable) g2;
-			if (gg1.isGroup() == false && gg2.isGroup()) {
-				return false;
-			}
-			if (gg2.isGroup() == false && gg1.isGroup()) {
-				return false;
-			}
+		if (groupToBeTested.isGroup() == false) {
+			throw new IllegalArgumentException();
 		}
-//		if ((g1 == g2) != (g1.zgetUid2() == g2.zgetUid2())) {
-//			throw new IllegalStateException();
-//
-//		}
-		return g1.zgetUid2() == g2.zgetUid2();
-	}
-
-	public static boolean doesContains(IEntityMutable container, IEntityMutable element) {
-		while (true) {
-			if (element.getContainer() == container) {
+		while (EntityUtils.groupNull(groupToBeTested) == false) {
+			if (EntityUtils.equals(groupToBeTested, parentGroup)) {
 				return true;
 			}
-			element = (IEntityMutable) element.getContainer();
-			if (element == null) {
-				return false;
+			groupToBeTested = groupToBeTested.getParentContainer();
+			if (groupToBeTested.isGroup() == false) {
+				throw new IllegalStateException();
 			}
 		}
+		return false;
 	}
 
-	public static Group getContainerOrEquivalent(IEntity entity) {
-		if (((IEntityMutable) entity).isGroup()) {
-			return (Group) entity;
+	public static boolean isPureInnerLink12(IGroup group, Link link) {
+		if (group.isGroup() == false) {
+			throw new IllegalArgumentException();
 		}
-		return entity.getContainer();
+		final IEntity e1 = link.getEntity1();
+		final IEntity e2 = link.getEntity2();
+		final IGroup group1 = e1.getParentContainer();
+		final IGroup group2 = e2.getParentContainer();
+		if (isParent(group1, group) && isParent(group2, group)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isPureInnerLink3(IGroup group, Link link) {
+		if (group.isGroup() == false) {
+			throw new IllegalArgumentException();
+		}
+		final IEntity e1 = link.getEntity1();
+		final IEntity e2 = link.getEntity2();
+		final IGroup group1 = e1.getParentContainer();
+		final IGroup group2 = e2.getParentContainer();
+		if (isParent(group2, group) == isParent(group1, group)) {
+			return true;
+		}
+		return false;
 	}
 
 }

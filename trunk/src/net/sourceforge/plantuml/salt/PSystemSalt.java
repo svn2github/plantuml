@@ -45,6 +45,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormatOption;
@@ -62,7 +63,7 @@ public class PSystemSalt extends AbstractPSystem {
 		this.data = data;
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 
 		final Element salt = SaltUtils.createElement(data);
@@ -70,8 +71,8 @@ public class PSystemSalt extends AbstractPSystem {
 		EmptyImageBuilder builder = new EmptyImageBuilder(10, 10, Color.WHITE);
 		Graphics2D g2d = builder.getGraphics2D();
 
-		final Dimension2D size = salt.getPreferredDimension(new UGraphicG2d(new ColorMapperIdentity(), g2d, null, 1.0)
-				.getStringBounder(), 0, 0);
+		final Dimension2D size = salt.getPreferredDimension(
+				new UGraphicG2d(new ColorMapperIdentity(), g2d, null, 1.0).getStringBounder(), 0, 0);
 		g2d.dispose();
 
 		builder = new EmptyImageBuilder(size.getWidth() + 6, size.getHeight() + 6, Color.WHITE);

@@ -41,7 +41,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -71,7 +71,7 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 
 	public EntityImageClass2(IEntity entity, ISkinParam skinParam, Collection<Link> links) {
 		super(entity, skinParam);
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.CLASS),
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(getFont(FontParam.CLASS),
 				HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		if (stereotype == null || stereotype.getLabel() == null) {
@@ -97,22 +97,22 @@ public class EntityImageClass2 extends AbstractEntityImage2 {
 			return new CircledCharacter(stereotype.getCharacter(), getSkinParam().getCircledCharacterRadius(), font,
 					stereotype.getHtmlColor(), classBorder, getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
+		if (entity.getEntityType() == LeafType.ABSTRACT_CLASS) {
 			return new CircledCharacter('A', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeABackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getEntityType() == EntityType.CLASS) {
+		if (entity.getEntityType() == LeafType.CLASS) {
 			return new CircledCharacter('C', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeCBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getEntityType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == LeafType.INTERFACE) {
 			return new CircledCharacter('I', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeIBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));
 		}
-		if (entity.getEntityType() == EntityType.ENUM) {
+		if (entity.getEntityType() == LeafType.ENUM) {
 			return new CircledCharacter('E', getSkinParam().getCircledCharacterRadius(),
 					getFont(FontParam.CIRCLED_CHARACTER), getColor(ColorParam.stereotypeEBackground),
 					getColor(ColorParam.classBorder), getFontColor(FontParam.CIRCLED_CHARACTER));

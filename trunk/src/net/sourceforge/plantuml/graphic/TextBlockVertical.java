@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.graphic;
 
 import java.awt.geom.Dimension2D;
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
@@ -41,14 +42,16 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public class TextBlockVertical implements TextBlock {
+class TextBlockVertical implements TextBlock {
 
 	private final TextBlock b1;
 	private final TextBlock b2;
+	private final HorizontalAlignement horizontalAlignement;
 
-	public TextBlockVertical(TextBlock b1, TextBlock b2) {
+	public TextBlockVertical(TextBlock b1, TextBlock b2, HorizontalAlignement horizontalAlignement) {
 		this.b1 = b1;
 		this.b2 = b2;
+		this.horizontalAlignement = horizontalAlignement;
 	}
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
@@ -61,9 +64,18 @@ public class TextBlockVertical implements TextBlock {
 		final Dimension2D dim = calculateDimension(ug.getStringBounder());
 		final Dimension2D dimb1 = b1.calculateDimension(ug.getStringBounder());
 		final Dimension2D dimb2 = b2.calculateDimension(ug.getStringBounder());
-		b1.drawU(ug, x + (dim.getWidth() - dimb1.getWidth()) / 2, y);
 		final Dimension2D dim1 = b1.calculateDimension(ug.getStringBounder());
-		b2.drawU(ug, x + (dim.getWidth() - dimb2.getWidth()) / 2, y + dim1.getHeight());
+
+		if (horizontalAlignement == HorizontalAlignement.CENTER) {
+			b1.drawU(ug, x + (dim.getWidth() - dimb1.getWidth()) / 2, y);
+			b2.drawU(ug, x + (dim.getWidth() - dimb2.getWidth()) / 2, y + dim1.getHeight());
+		} else if (horizontalAlignement == HorizontalAlignement.LEFT) {
+			b1.drawU(ug, x, y);
+			b2.drawU(ug, x, y + dim1.getHeight());
+
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public List<Url> getUrls() {

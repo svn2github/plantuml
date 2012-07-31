@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8426 $
  *
  */
 package net.sourceforge.plantuml.classdiagram.command;
@@ -38,17 +38,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 class JavaClass {
 
 	private final String name;
 	private final String javaPackage;
 	private final List<String> parents = new ArrayList<String>();
-	private final EntityType type;
-	private final EntityType parentType;
+	private final LeafType type;
+	private final LeafType parentType;
 
-	public JavaClass(String javaPackage, String name, String p, EntityType type, EntityType parentType) {
+	public JavaClass(String javaPackage, String name, String p, LeafType type, LeafType parentType) {
 		this.name = name;
 		this.javaPackage = javaPackage;
 		if (p == null) {
@@ -66,7 +66,7 @@ class JavaClass {
 		return name;
 	}
 
-	public final EntityType getType() {
+	public final LeafType getType() {
 		return type;
 	}
 
@@ -74,7 +74,7 @@ class JavaClass {
 		return Collections.unmodifiableList(parents);
 	}
 
-	public final EntityType getParentType() {
+	public final LeafType getParentType() {
 		return parentType;
 	}
 

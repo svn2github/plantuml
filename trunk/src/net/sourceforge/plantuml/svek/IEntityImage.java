@@ -41,6 +41,10 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public interface IEntityImage {
 
+	public static final int CORNER = 25;
+	public static final int MARGIN = 5;
+	public static final int MARGIN_LINE = 5;
+
 	Dimension2D getDimension(StringBounder stringBounder);
 
 	void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition);

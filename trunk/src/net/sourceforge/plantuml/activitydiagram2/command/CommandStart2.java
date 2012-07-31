@@ -47,7 +47,7 @@ public class CommandStart2 extends SingleLineCommand<ActivityDiagram2> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		if (getSystem().getEntities().size() > 0) {
+		if (getSystem().getLeafs().size() > 0) {
 			return CommandExecutionResult.error("Cannot start this here");
 		}
 		getSystem().start();

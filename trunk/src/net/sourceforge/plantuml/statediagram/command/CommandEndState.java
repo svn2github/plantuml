@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7805 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.statediagram.command;
@@ -37,7 +37,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.statediagram.StateDiagram;
 
 public class CommandEndState extends SingleLineCommand<StateDiagram> {
@@ -48,7 +48,7 @@ public class CommandEndState extends SingleLineCommand<StateDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
+		final IEntity currentPackage = getSystem().getCurrentGroup();
 		if (currentPackage == null) {
 			return CommandExecutionResult.error("No inner state defined");
 		}

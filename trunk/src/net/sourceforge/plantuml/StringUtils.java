@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8100 $
+ * Revision $Revision: 8466 $
  *
  */
 package net.sourceforge.plantuml;
@@ -55,7 +55,7 @@ public class StringUtils {
 
 	public static List<String> getWithNewlines(String s) {
 		if (s == null) {
-			throw new IllegalArgumentException();
+			return null;
 		}
 		final List<String> result = new ArrayList<String>();
 		final StringBuilder current = new StringBuilder();
@@ -433,20 +433,36 @@ public class StringUtils {
 
 	public static final String URL_PATTERN = "\\[\\[([^{} \\]\\[]*)(?: *\\{([^{}]+)\\})?(?: ([^\\]\\[]*))?\\]\\]";
 
-	public static Url extractUrl(String topurl, String s) {
-		final Pattern p = Pattern.compile("(?i)^" + URL_PATTERN + "$");
+	public static Url extractUrl(String topurl, String s, boolean strict) {
+		final Pattern p;
+		if (strict) {
+			p = Pattern.compile("(?i)^" + URL_PATTERN + "$");
+		} else {
+			p = Pattern.compile(".*" + URL_PATTERN + ".*");
+		}
 		final Matcher m = p.matcher(s.trim());
 		if (m.matches() == false) {
 			return null;
 		}
 		String url = m.group(1);
 		if (url.startsWith("http:") == false && url.startsWith("https:") == false) {
-//			final String top = getSystem().getSkinParam().getValue("topurl");
+			// final String top = getSystem().getSkinParam().getValue("topurl");
 			if (topurl != null) {
 				url = topurl + url;
 			}
 		}
 		return new Url(url, m.group(2), m.group(3));
+	}
+
+	public static String removeUrl(final String label) {
+		final Pattern p = Pattern.compile("(?: )*" + URL_PATTERN + "(?: )*");
+		final Matcher m = p.matcher(label);
+		if (m.find() == false) {
+			throw new IllegalStateException();
+		}
+		final String url = m.group(0);
+		final int x = label.indexOf(url);
+		return label.substring(0, x) + label.substring(x + url.length());
 	}
 
 	public static <O> List<O> merge(List<O> l1, List<O> l2) {

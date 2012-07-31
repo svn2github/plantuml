@@ -31,51 +31,43 @@
  */
 package net.sourceforge.plantuml.usecasediagram.command;
 
-import java.util.List;
+import java.util.Map;
 
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagram;
 
-public class CommandCreateActor extends SingleLineCommand<UsecaseDiagram> {
+public class CommandCreateActor extends AbstractCommandCreate {
 
 	public CommandCreateActor(UsecaseDiagram usecaseDiagram) {
-		super(
-				usecaseDiagram,
-				"(?i)^(?:actor\\s+)?([\\p{L}0-9_.]+|:[^:]+:|\"[^\"]+\")\\s*(?:as\\s+:?([\\p{L}0-9_.]+):?)?(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?$");
+		super(usecaseDiagram, getRegexConcat());
+	}
+
+	static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexLeaf("(?:actor\\s+)?"), //
+				new RegexLeaf("STRING1", getStringPattern()), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("STRING2", "(?:as\\s+" + getStringPattern() + ")?"), //
+				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
+				new RegexLeaf("$"));
+	}
+
+	private static String getStringPattern() {
+		return "([\\p{L}0-9_.]+|:[^:]+:|\"[^\"]+\")";
 	}
 
 	@Override
-	protected boolean isForbidden(String line) {
-		if (line.matches("^[\\p{L}0-9_.]+$")) {
-			return true;
-		}
-		return false;
+	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+		return executeArg(arg, LeafType.ACTOR);
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
-		// final EntityType type = EntityType.ACTOR;
-		final String code;
-		final String display;
-		if (arg.get(1) == null) {
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			display = code;
-		} else {
-			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
-		}
-		final IEntity entity = getSystem().getOrCreateClass(code);
-		entity.setDisplay2(display);
-
-		final String stereotype = arg.get(2);
-		if (stereotype != null) {
-			entity.setStereotype(new Stereotype(stereotype));
-		}
-		return CommandExecutionResult.ok();
+	protected boolean defineCode(String s) {
+		return s.matches(":?[\\p{L}0-9_.]+:?");
 	}
 
 }

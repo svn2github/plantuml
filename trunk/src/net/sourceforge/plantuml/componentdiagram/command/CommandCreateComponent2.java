@@ -43,7 +43,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -76,7 +76,7 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 
 	@Override
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final EntityType type = EntityType.COMPONENT;
+		final LeafType type = LeafType.COMPONENT;
 		final String code;
 		final String display;
 		if (arg.get("AS").get(0) == null) {
@@ -87,8 +87,8 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("AS").get(0));
 		}
 		final String stereotype = arg.get("STEREOTYPE").get(0);
-		final IEntity entity = getSystem().getOrCreateEntity(code, type);
-		entity.setDisplay2(display);
+		final IEntity entity = getSystem().getOrCreateLeaf(code, type);
+		entity.setDisplay(StringUtils.getWithNewlines(display));
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

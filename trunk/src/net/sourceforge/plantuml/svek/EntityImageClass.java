@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.PortionShower;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -60,7 +61,7 @@ public class EntityImageClass extends AbstractEntityImage {
 	final private List<Url> url;
 	final private TextBlockWidth mouseOver;
 
-	public EntityImageClass(IEntity entity, ISkinParam skinParam, PortionShower portionShower) {
+	public EntityImageClass(ILeaf entity, ISkinParam skinParam, PortionShower portionShower) {
 		super(entity, skinParam);
 
 		this.shield = entity.hasNearDecoration() ? 16 : 0;

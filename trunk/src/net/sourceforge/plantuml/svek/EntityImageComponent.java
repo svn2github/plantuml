@@ -68,7 +68,7 @@ public class EntityImageComponent extends AbstractEntityImage {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(
-				entity.getDisplay2(),
+				entity.getDisplay(),
 				new FontConfiguration(getFont(FontParam.COMPONENT, stereotype), getFontColor(FontParam.COMPONENT,
 						stereotype)), HorizontalAlignement.CENTER, skinParam);
 

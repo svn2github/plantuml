@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8441 $
  *
  */
 package net.sourceforge.plantuml.eggs;
@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -57,7 +58,7 @@ public class PSystemEgg extends AbstractPSystem {
 		}
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat) throws IOException {
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat) throws IOException {
 		getGraphicStrings().writeImage(os, fileFormat);
 	}
 

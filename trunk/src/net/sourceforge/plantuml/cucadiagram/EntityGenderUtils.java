@@ -35,7 +35,7 @@ package net.sourceforge.plantuml.cucadiagram;
 
 public class EntityGenderUtils {
 
-	static public EntityGender byEntityType(final EntityType type) {
+	static public EntityGender byEntityType(final LeafType type) {
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
 				return test.getEntityType() == type;
@@ -62,16 +62,16 @@ public class EntityGenderUtils {
 		};
 	}
 
-	static public EntityGender byPackage(final IEntityMutable group) {
-		if (group == null) {
+	static public EntityGender byPackage(final IGroup group) {
+		if (EntityUtils.groupNull(group)) {
 			throw new IllegalArgumentException();
 		}
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
-				if (test.getContainer() == null) {
+				if (EntityUtils.groupNull(test.getParentContainer())) {
 					return false;
 				}
-				if (EntityUtils.equals(group, test.getContainer())) {
+				if (EntityUtils.equals(group, test.getParentContainer())) {
 					return true;
 				}
 				return false;

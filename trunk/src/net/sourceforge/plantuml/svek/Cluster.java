@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,9 +51,10 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityMutable;
-import net.sourceforge.plantuml.cucadiagram.Group;
+import net.sourceforge.plantuml.cucadiagram.EntityPosition;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
@@ -71,10 +73,9 @@ import net.sourceforge.plantuml.ugraphic.UStroke;
 public class Cluster implements Moveable {
 
 	private final Cluster parent;
-	private final Group group;
+	private final IGroup group;
 	private final List<Shape> shapes = new ArrayList<Shape>();
 	private final List<Cluster> children = new ArrayList<Cluster>();
-	private final boolean special;
 	private final int color;
 	private final int colorTitle;
 	private final ISkinParam skinParam;
@@ -101,18 +102,25 @@ public class Cluster implements Moveable {
 
 	}
 
-	public Cluster(ColorSequence colorSequence, ISkinParam skinParam) {
-		this(null, null, false, colorSequence, skinParam);
+	private boolean hasEntryOrExitPoint() {
+		for (Shape sh : shapes) {
+			if (sh.getEntityPosition() != EntityPosition.NORMAL) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	private int getUid2() {
-		return group.zgetUid2();
+	public Cluster(ColorSequence colorSequence, ISkinParam skinParam, IGroup root) {
+		this(null, root, colorSequence, skinParam);
 	}
 
-	private Cluster(Cluster parent, Group group, boolean special, ColorSequence colorSequence, ISkinParam skinParam) {
+	private Cluster(Cluster parent, IGroup group, ColorSequence colorSequence, ISkinParam skinParam) {
+		if (group == null) {
+			throw new IllegalStateException();
+		}
 		this.parent = parent;
 		this.group = group;
-		this.special = special;
 		this.color = colorSequence.getValue();
 		this.colorTitle = colorSequence.getValue();
 		this.skinParam = skinParam;
@@ -147,7 +155,7 @@ public class Cluster implements Moveable {
 		for (final Iterator<Shape> it = shapes.iterator(); it.hasNext();) {
 			final Shape sh = it.next();
 			shs.put(sh.getUid(), sh);
-			if (sh.isTop()) {
+			if (sh.isTop() && sh.getEntityPosition() == EntityPosition.NORMAL) {
 				firsts.add(sh);
 				tops.add(sh.getUid());
 			}
@@ -156,20 +164,32 @@ public class Cluster implements Moveable {
 		for (Line l : lines) {
 			if (tops.contains(l.getStartUid())) {
 				final Shape sh = shs.get(l.getEndUid());
-				if (sh != null) {
+				if (sh != null && sh.getEntityPosition() == EntityPosition.NORMAL) {
 					firsts.add(0, sh);
 				}
 			}
 
 			if (l.isInverted()) {
 				final Shape sh = shs.get(l.getStartUid());
-				if (sh != null) {
+				if (sh != null && sh.getEntityPosition() == EntityPosition.NORMAL) {
 					firsts.add(0, sh);
 				}
 			}
 		}
 
 		return firsts;
+	}
+
+	private List<Shape> getShapesEntryExit(EntityPosition position) {
+		final List<Shape> result = new ArrayList<Shape>();
+
+		for (final Iterator<Shape> it = shapes.iterator(); it.hasNext();) {
+			final Shape sh = it.next();
+			if (sh.getEntityPosition() == position) {
+				result.add(sh);
+			}
+		}
+		return result;
 	}
 
 	private List<Shape> getShapesOrderedWithoutTop(Collection<Line> lines) {
@@ -179,6 +199,10 @@ public class Cluster implements Moveable {
 
 		for (final Iterator<Shape> it = all.iterator(); it.hasNext();) {
 			final Shape sh = it.next();
+			if (sh.getEntityPosition() != EntityPosition.NORMAL) {
+				it.remove();
+				continue;
+			}
 			shs.put(sh.getUid(), sh);
 			if (sh.isTop()) {
 				tops.add(sh.getUid());
@@ -209,9 +233,9 @@ public class Cluster implements Moveable {
 		return Collections.unmodifiableList(children);
 	}
 
-	public Cluster createChild(Group g, int titleWidth, int titleHeight, TextBlock title, boolean special,
+	public Cluster createChild(IGroup g, int titleWidth, int titleHeight, TextBlock title,
 			ColorSequence colorSequence, ISkinParam skinParam) {
-		final Cluster child = new Cluster(this, g, special, colorSequence, skinParam);
+		final Cluster child = new Cluster(this, g, colorSequence, skinParam);
 		child.titleWidth = titleWidth;
 		child.titleHeight = titleHeight;
 		child.title = title;
@@ -219,7 +243,7 @@ public class Cluster implements Moveable {
 		return child;
 	}
 
-	public final Group getGroup() {
+	public final IEntity getGroup() {
 		return group;
 	}
 
@@ -239,12 +263,19 @@ public class Cluster implements Moveable {
 		return minX;
 	}
 
+	public ClusterPosition getClusterPosition() {
+		return new ClusterPosition(minX, minY, maxX, maxY);
+	}
+
 	public void setTitlePosition(double x, double y) {
 		this.xTitle = x;
 		this.yTitle = y;
 	}
 
 	public void drawU(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
+		if (hasEntryOrExitPoint()) {
+			manageEntryExitPoint();
+		}
 		if (skinParam.useSwimlanes()) {
 			drawSwinLinesState(ug, x, y, borderColor, dotData);
 			return;
@@ -259,8 +290,8 @@ public class Cluster implements Moveable {
 			style = dotData.getSkinParam().getPackageStyle();
 		}
 		if (title != null) {
-			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(), group
-					.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
+			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
+					group.getStereotype() == null ? null : group.getStereotype().getLabel());
 			final ClusterDecoration decoration = new ClusterDecoration(style, title, stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
@@ -270,12 +301,35 @@ public class Cluster implements Moveable {
 			rect.setDeltaShadow(3.0);
 		}
 		final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
-				group.zgetStereotype() == null ? null : group.zgetStereotype().getLabel());
+				group.getStereotype() == null ? null : group.getStereotype().getLabel());
 		ug.getParam().setBackcolor(stateBack);
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setStroke(new UStroke(2));
 		ug.draw(x + minX, y + minY, rect);
 		ug.getParam().setStroke(new UStroke());
+	}
+
+	private void manageEntryExitPoint() {
+		final Collection<ClusterPosition> insides = new ArrayList<ClusterPosition>();
+		final List<Point2D> points = new ArrayList<Point2D>();
+		for (Shape sh : shapes) {
+			if (sh.getEntityPosition() == EntityPosition.NORMAL) {
+				insides.add(sh.getClusterPosition());
+			} else {
+				points.add(sh.getClusterPosition().getPointCenter());
+			}
+		}
+		for (Cluster in : children) {
+			insides.add(in.getClusterPosition());
+		}
+		final FrontierCalculator frontierCalculator = new FrontierCalculator(getClusterPosition(), insides, points);
+		final ClusterPosition forced = frontierCalculator.getSuggestedPosition();
+		xTitle += ((forced.getMinX() - minX) + (forced.getMaxX() - maxX)) / 2;
+		yTitle += forced.getMinY() - minY;
+		minX = forced.getMinX();
+		minY = forced.getMinY();
+		maxX = forced.getMaxX();
+		maxY = forced.getMaxY();
 	}
 
 	private void drawSwinLinesState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
@@ -294,19 +348,18 @@ public class Cluster implements Moveable {
 	}
 
 	private void drawUState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
-
 		final Dimension2D total = new Dimension2DDouble(maxX - minX, maxY - minY);
 		final double suppY;
 		if (title == null) {
 			suppY = 0;
 		} else {
-			suppY = title.calculateDimension(ug.getStringBounder()).getHeight() + EntityImageState.MARGIN
-					+ EntityImageState.MARGIN_LINE;
+			suppY = title.calculateDimension(ug.getStringBounder()).getHeight() + IEntityImage.MARGIN
+					+ IEntityImage.MARGIN_LINE;
 		}
 		HtmlColor stateBack = getBackColor();
 		if (stateBack == null) {
-			stateBack = getColor(dotData, ColorParam.stateBackground, group.zgetStereotype() == null ? null : group
-					.zgetStereotype().getLabel());
+			stateBack = getColor(dotData, ColorParam.stateBackground, group.getStereotype() == null ? null : group
+					.getStereotype().getLabel());
 		}
 		final HtmlColor background = getColor(dotData, ColorParam.background, null);
 		final List<Member> members = ((IEntity) group).getFieldsToDisplay();
@@ -318,7 +371,7 @@ public class Cluster implements Moveable {
 		}
 		final double attributeHeight = attribute.calculateDimension(ug.getStringBounder()).getHeight();
 		final RoundedContainer r = new RoundedContainer(total, suppY, attributeHeight
-				+ (attributeHeight > 0 ? EntityImageState.MARGIN : 0), borderColor, stateBack, background);
+				+ (attributeHeight > 0 ? IEntityImage.MARGIN : 0), borderColor, stateBack, background);
 		r.drawU(ug, x + minX, y + minY, dotData.getSkinParam().shadowing());
 
 		if (title != null) {
@@ -326,7 +379,7 @@ public class Cluster implements Moveable {
 		}
 
 		if (attributeHeight > 0) {
-			attribute.drawU(ug, x + minX + EntityImageState.MARGIN, y + minY + suppY + EntityImageState.MARGIN / 2.0,
+			attribute.drawU(ug, x + minX + IEntityImage.MARGIN, y + minY + suppY + IEntityImage.MARGIN / 2.0,
 					total.getWidth());
 		}
 
@@ -340,8 +393,13 @@ public class Cluster implements Moveable {
 
 	}
 
-	public boolean isSpecial() {
-		return special;
+	private boolean isSpecial(Collection<Line> lines) {
+		for (Line line : lines) {
+			if (line.isSpecial(group)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void printCluster1(StringBuilder sb, Collection<Line> lines) {
@@ -350,11 +408,39 @@ public class Cluster implements Moveable {
 		}
 	}
 
+	public void printClusterEntryExit(StringBuilder sb) {
+		final List<Shape> entries = getShapesEntryExit(EntityPosition.ENTRY_POINT);
+		if (entries.size() > 0) {
+			sb.append("{rank=source;");
+			for (Shape sh : entries) {
+				sb.append(sh.getUid() + ";");
+			}
+			sb.append("}");
+			for (Shape sh : entries) {
+				sh.appendShape(sb);
+			}
+		}
+		final List<Shape> exits = getShapesEntryExit(EntityPosition.EXIT_POINT);
+		if (exits.size() > 0) {
+			sb.append("{rank=sink;");
+			for (Shape sh : exits) {
+				sb.append(sh.getUid() + ";");
+			}
+			sb.append("}");
+			for (Shape sh : exits) {
+				sh.appendShape(sb);
+			}
+		}
+	}
+
 	public void printCluster2(StringBuilder sb, Collection<Line> lines) {
 		// Log.println("Cluster::printCluster " + this);
 
 		final Set<String> rankSame = new HashSet<String>();
 		for (Line l : lines) {
+			if (l.hasEntryPoint()) {
+				continue;
+			}
 			final String startUid = l.getStartUid();
 			final String endUid = l.getEndUid();
 			if (isInCluster(startUid) && isInCluster(endUid)) {
@@ -404,8 +490,8 @@ public class Cluster implements Moveable {
 		return "cluster" + color;
 	}
 
-	public String getSpecialPointId() {
-		return CENTER_ID + getUid2();
+	public static String getSpecialPointId(IEntity group) {
+		return CENTER_ID + group.getUid();
 	}
 
 	public final static String CENTER_ID = "za";
@@ -453,7 +539,7 @@ public class Cluster implements Moveable {
 	}
 
 	private void printInternal(StringBuilder sb, Collection<Line> lines) {
-		if (isSpecial()) {
+		if (isSpecial(lines)) {
 			subgraphCluster(sb, "a");
 		}
 		if (protection0()) {
@@ -466,22 +552,14 @@ public class Cluster implements Moveable {
 		final int titleWidth = getTitleWidth();
 		final int titleHeight = getTitleHeight();
 		if (titleHeight > 0 && titleWidth > 0) {
-			// if (skinParam.getPackageStyle() != PackageStyle.RECT) {
-			// titleWidth += ClusterDecoration.marginTitleX1 +
-			// ClusterDecoration.marginTitleX2
-			// + ClusterDecoration.marginTitleX3;
-			// titleHeight += ClusterDecoration.marginTitleY0 +
-			// ClusterDecoration.marginTitleY1
-			// + ClusterDecoration.marginTitleY2;
-			// }
 			sb.append("label=<");
 			Line.appendTable(sb, titleWidth, titleHeight - 5, colorTitle);
 			sb.append(">;");
 		}
 		SvekUtils.println(sb);
 
-		if (isSpecial()) {
-			sb.append(getSpecialPointId() + " [shape=point,width=.01,label=\"\"];");
+		if (isSpecial(lines)) {
+			sb.append(getSpecialPointId(group) + " [shape=point,width=.01,label=\"\"];");
 			subgraphCluster(sb, "i");
 		}
 		if (protection1()) {
@@ -501,28 +579,27 @@ public class Cluster implements Moveable {
 			sb.append(getSinkInPoint() + "->" + getMaxPoint() + "  [weight=999];");
 			SvekUtils.println(sb);
 		}
+		if (hasEntryOrExitPoint()) {
+			printClusterEntryExit(sb);
+			subgraphCluster(sb, "ee");
+		}
 		SvekUtils.println(sb);
 		printCluster1(sb, lines);
 		printCluster2(sb, lines);
 		if (protection1()) {
 			sb.append("}");
 		}
-		if (isSpecial()) {
+		if (isSpecial(lines)) {
 			sb.append("}");
-			// subgraphCluster(sb, "zb");
-			// if (OptionFlags.getInstance().isDebugDot()) {
-			// sb.append("zb" + child.getUid2() + ";");
-			// } else {
-			// sb.append("zb" + child.getUid2() + "
-			// [shape=point,width=.01,label=\"\"];");
-			// }
-			// sb.append("}");
 		}
 		sb.append("}");
+		if (hasEntryOrExitPoint()) {
+			sb.append("}");
+		}
 		if (protection0()) {
 			sb.append("}");
 		}
-		if (this.isSpecial()) {
+		if (this.isSpecial(lines)) {
 			// a
 			sb.append("}");
 		}
@@ -532,7 +609,7 @@ public class Cluster implements Moveable {
 	private void subgraphCluster(StringBuilder sb, String id) {
 		final String uid = getClusterId() + id;
 		sb.append("subgraph " + uid + " {");
-		sb.append("style=invis;");
+		// sb.append("style=invis;");
 		sb.append("label=\"\";");
 	}
 
@@ -545,10 +622,10 @@ public class Cluster implements Moveable {
 	}
 
 	private final HtmlColor getBackColor() {
-		if (group == null) {
+		if (EntityUtils.groupNull(group)) {
 			return null;
 		}
-		final HtmlColor result = group.zgetBackColor();
+		final HtmlColor result = group.getSpecificBackColor();
 		if (result != null) {
 			return result;
 		}
@@ -559,7 +636,7 @@ public class Cluster implements Moveable {
 	}
 
 	public boolean isClusterOf(IEntity ent) {
-		if (((EntityMutable) ent).isGroup() == false) {
+		if (ent.isGroup() == false) {
 			return false;
 		}
 		return group == ent;

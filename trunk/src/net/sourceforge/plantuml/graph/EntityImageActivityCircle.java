@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7752 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.graph;

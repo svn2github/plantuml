@@ -34,98 +34,67 @@
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
-
-import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.UniqueSequence;
-import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public class EntityFactory {
 
-	private final LinkedHashMap<String, IEntity> entities = new LinkedHashMap<String, IEntity>();
+	private final Map<String, ILeaf> leafs = new LinkedHashMap<String, ILeaf>();
 	private final List<Link> links = new ArrayList<Link>();
-	private final Map<String, IEntityMutable> groups = new LinkedHashMap<String, IEntityMutable>();
+	private final Map<String, IGroup> groups = new LinkedHashMap<String, IGroup>();
 
-	public IEntity createEntity(String code, String display, EntityType type, IEntityMutable container,
-			Set<VisibilityModifier> hides) {
-		return createEntity("cl", UniqueSequence.getValue(), code, display, type, container, hides);
+	private final IGroup rootGroup = new GroupRoot(this);
+
+	public IGroup getRootGroup() {
+		return rootGroup;
 	}
 
-	public IEntity createEntity(String uid1, int uid2, String code, String display, EntityType type,
-			IEntityMutable container, Set<VisibilityModifier> hides) {
-		return create(uid1, uid2, code, StringUtils.getWithNewlines(display), type, container, hides);
+	final Map<String, ILeaf> getLeafs() {
+		return Collections.unmodifiableMap(leafs);
 	}
 
-	public IEntity create(String uid1, int uid2, String code, List<? extends CharSequence> display, EntityType type,
-			IEntityMutable container, Set<VisibilityModifier> hides) {
-		final Bodier bodier = new Bodier(type, hides);
-		return new EntityMutable(EntityImpl.createInternal(uid1, uid2, code, display, type, container, bodier), this,
-				bodier);
+	void addLeaf(ILeaf entity) {
+		leafs.put(entity.getCode(), entity);
 	}
 
-	final LinkedHashMap<String, IEntity> getEntities() {
-		return entities;
+	void removeLeaf(String code) {
+		final IEntity removed = leafs.remove(code);
+		if (removed == null) {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	void addGroup(IGroup group) {
+		groups.put(group.getCode(), group);
+	}
+
+	void removeGroup(String code) {
+		final IEntity removed = groups.remove(code);
+		if (removed == null) {
+			throw new IllegalArgumentException();
+		}
+	}
+
+	final Map<String, IGroup> getGroups() {
+		return Collections.unmodifiableMap(groups);
 	}
 
 	final List<Link> getLinks() {
-		return links;
+		return Collections.unmodifiableList(links);
 	}
 
-	final Map<String, IEntityMutable> getGroups() {
-		return groups;
+	void addLink(Link link) {
+		links.add(link);
 	}
 
-	public void overideImage42(EntityMutable entityMutable) {
-		for (final ListIterator<Link> it = links.listIterator(); it.hasNext();) {
-			final Link link = it.next();
-			final Link newLink = link.mute2(entityMutable);
-			if (newLink == null) {
-				it.remove();
-			}
+	void removeLink(Link link) {
+		final boolean ok = links.remove(link);
+		if (ok == false) {
+			throw new IllegalArgumentException();
 		}
-		groups.remove(entityMutable.zgetGroupCode());
-
-		for (final Iterator<IEntity> it = entities.values().iterator(); it.hasNext();) {
-			final IEntity ent = it.next();
-			if (ent != entityMutable && EntityUtils.equals(EntityUtils.getContainerOrEquivalent(ent), entityMutable)) {
-				it.remove();
-			}
-		}
-		entities.put(entityMutable.getCode(), entityMutable);
-
 	}
 
-	public final IEntityMutable getOrCreateGroupInternal(String code, String display, String namespace, GroupType type,
-			IEntityMutable parent, final Set<VisibilityModifier> hides) {
-		EntityMutable gg = (EntityMutable) getGroups().get(code);
-		if (gg == null) {
-			gg = createGroupSvek(code, display, namespace, type, parent, hides);
-			getGroups().put(code, gg);
-		}
-		return gg;
-	}
-
-	private EntityMutable createGroupSvek(String code, String display, String namespace, GroupType type,
-			IEntityMutable parent, final Set<VisibilityModifier> hides) {
-
-		final GroupImpl g = new GroupImpl(code, display, namespace, type, parent, getEntities().values(), getGroups()
-				.values());
-		if (getEntities().containsKey(code)) {
-			final EntityMutable entityGroup = (EntityMutable) getEntities().get(code);
-			entityGroup.muteToGroup99(g);
-			entities.remove(code);
-			entityGroup.setDisplay2(display);
-			entityGroup.invalidateNow();
-			return entityGroup;
-		}
-		final EntityMutable entityGroup = (EntityMutable) createEntity(code, code, null, parent, hides);
-		entityGroup.muteToGroup99(g);
-		return entityGroup;
-	}
 
 }

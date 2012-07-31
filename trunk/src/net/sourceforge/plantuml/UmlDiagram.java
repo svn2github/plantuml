@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7754 $
+ * Revision $Revision: 8448 $
  *
  */
 package net.sourceforge.plantuml;
@@ -181,7 +181,7 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 		this.hideUnlinkedData = hideUnlinkedData;
 	}
 
-	final public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormatOption)
+	final public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormatOption)
 			throws IOException {
 		List<BufferedImage> flashcodes = null;
 		try {
@@ -237,7 +237,7 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 	private UmlDiagramInfo lastInfo;
 
-	private void exportDiagramInternalPdf(OutputStream os, StringBuilder cmap, int index, List<BufferedImage> flashcodes)
+	private void exportDiagramInternalPdf(OutputStream os, CMapData cmap, int index, List<BufferedImage> flashcodes)
 			throws IOException {
 		final File svg = FileUtils.createTempFile("pdf", ".svf");
 		final File pdfFile = FileUtils.createTempFile("pdf", ".pdf");
@@ -248,15 +248,16 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 		FileUtils.copyToStream(pdfFile, os);
 	}
 
-	protected abstract UmlDiagramInfo exportDiagramInternal(OutputStream os, StringBuilder cmap, int index,
+	protected abstract UmlDiagramInfo exportDiagramInternal(OutputStream os, CMapData cmap, int index,
 			FileFormatOption fileFormatOption, List<BufferedImage> flashcodes) throws IOException;
 
-	final protected void exportCmap(File suggestedFile, final StringBuilder cmap) throws FileNotFoundException {
-		final File cmapFile = new File(changeName(suggestedFile.getAbsolutePath()));
+	final protected void exportCmap(File suggestedFile, final CMapData cmapdata) throws FileNotFoundException {
+		String name = changeName(suggestedFile.getAbsolutePath());
+		final File cmapFile = new File(name);
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(cmapFile);
-			pw.print(cmap.toString());
+			pw.print(cmapdata.asString(cmapFile.getName().substring(0, cmapFile.getName().length() - 6)));
 			pw.close();
 		} finally {
 			if (pw != null) {
@@ -371,11 +372,10 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 		return null;
 	}
 
-//	public final Map<String, Sprite> getSprites() {
-//		return Collections.unmodifiableMap(sprites);
-//	}
-//	private final Map<String, Sprite> sprites = new HashMap<String, Sprite>();
-
+	// public final Map<String, Sprite> getSprites() {
+	// return Collections.unmodifiableMap(sprites);
+	// }
+	// private final Map<String, Sprite> sprites = new HashMap<String, Sprite>();
 
 	public void addSprite(String name, Sprite sprite) {
 		skinParam.addSprite(name, sprite);

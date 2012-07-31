@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8440 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -49,6 +49,7 @@ import net.sourceforge.plantuml.sequencediagram.Event;
 import net.sourceforge.plantuml.sequencediagram.GroupingLeaf;
 import net.sourceforge.plantuml.sequencediagram.GroupingStart;
 import net.sourceforge.plantuml.sequencediagram.GroupingType;
+import net.sourceforge.plantuml.sequencediagram.HSpace;
 import net.sourceforge.plantuml.sequencediagram.InGroupableList;
 import net.sourceforge.plantuml.sequencediagram.LifeEvent;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
@@ -198,6 +199,8 @@ class DrawableSetInitializer {
 				prepareNewpage(stringBounder, (Newpage) ev, range);
 			} else if (ev instanceof Divider) {
 				prepareDivider(stringBounder, (Divider) ev, range);
+			} else if (ev instanceof HSpace) {
+				prepareHSpace(stringBounder, (HSpace) ev, range);
 			} else if (ev instanceof Delay) {
 				prepareDelay(stringBounder, (Delay) ev, col, range);
 			} else if (ev instanceof Reference) {
@@ -382,6 +385,12 @@ class DrawableSetInitializer {
 		drawableSet.addEvent(divider, graphicalDivider);
 	}
 
+	private void prepareHSpace(StringBounder stringBounder, HSpace hspace, ParticipantRange range) {
+		final GraphicalHSpace graphicalHSpace = new GraphicalHSpace(freeY2.getFreeY(range), hspace.getPixel());
+		freeY2 = freeY2.add(graphicalHSpace.getPreferredHeight(stringBounder), range);
+		drawableSet.addEvent(hspace, graphicalHSpace);
+	}
+
 	private void prepareDelay(StringBounder stringBounder, Delay delay, List<ParticipantBox> participants,
 			ParticipantRange range) {
 		final Component compText = drawableSet.getSkin().createComponent(ComponentType.DELAY_TEXT, null,
@@ -405,7 +414,7 @@ class DrawableSetInitializer {
 		}
 		final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), m.getBackColorElement(),
 				m.getBackColorGeneral());
-		
+
 		final Component comp = drawableSet.getSkin().createComponent(ComponentType.GROUPING_SPACE, null, skinParam,
 				Arrays.asList(m.getComment()));
 		final double preferredHeight = comp.getPreferredHeight(stringBounder);

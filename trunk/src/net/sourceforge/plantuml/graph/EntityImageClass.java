@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -39,7 +39,7 @@ import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.graphic.CircledCharacter;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -63,7 +63,7 @@ class EntityImageClass extends AbstractEntityImage {
 
 	public EntityImageClass(IEntity entity) {
 		super(entity);
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.methods = new MethodsOrFieldsArea(entity.getMethodsToDisplay(), getFont14());
 		this.fields = new MethodsOrFieldsArea(entity.getFieldsToDisplay(), getFont14());
@@ -79,16 +79,16 @@ class EntityImageClass extends AbstractEntityImage {
 		// red, Color.BLACK);
 		// }
 		final double radius = 10;
-		if (entity.getEntityType() == EntityType.ABSTRACT_CLASS) {
+		if (entity.getEntityType() == LeafType.ABSTRACT_CLASS) {
 			return new CircledCharacter('A', radius, getFont17(), getBlue(), getRed(), HtmlColorUtils.BLACK);
 		}
-		if (entity.getEntityType() == EntityType.CLASS) {
+		if (entity.getEntityType() == LeafType.CLASS) {
 			return new CircledCharacter('C', radius, getFont17(), getGreen(), getRed(), HtmlColorUtils.BLACK);
 		}
-		if (entity.getEntityType() == EntityType.INTERFACE) {
+		if (entity.getEntityType() == LeafType.INTERFACE) {
 			return new CircledCharacter('I', radius, getFont17(), getViolet(), getRed(), HtmlColorUtils.BLACK);
 		}
-		if (entity.getEntityType() == EntityType.ENUM) {
+		if (entity.getEntityType() == LeafType.ENUM) {
 			return new CircledCharacter('E', radius, getFont17(), getRose(), getRed(), HtmlColorUtils.BLACK);
 		}
 		assert false;

@@ -81,7 +81,7 @@ public final class CucaDiagramTxtMaker {
 
 		final Map<IEntity, Block> blocks = new HashMap<IEntity, Block>();
 
-		for (IEntity ent : diagram.getEntities().values()) {
+		for (IEntity ent : diagram.getLeafs().values()) {
 			// printClass(ent);
 			// ug.translate(0, getHeight(ent) + 1);
 			final double width = getWidth(ent) * getXPixelPerChar();
@@ -104,7 +104,7 @@ public final class CucaDiagramTxtMaker {
 				ug.setTranslate(0, 0);
 				p.getDotPath().draw(ug.getCharArea(), getXPixelPerChar(), getYPixelPerChar());
 			}
-			for (IEntity ent : diagram.getEntities().values()) {
+			for (IEntity ent : diagram.getLeafs().values()) {
 				final Block b = blocks.get(ent);
 				final Point2D p = b.getPosition();
 				ug.setTranslate(p.getX() / getXPixelPerChar(), p.getY() / getYPixelPerChar());
@@ -122,7 +122,7 @@ public final class CucaDiagramTxtMaker {
 		final int w = getWidth(ent);
 		final int h = getHeight(ent);
 		ug.getCharArea().drawBoxSimple(0, 0, w, h);
-		ug.getCharArea().drawStringsLR(ent.getDisplay2(), 1, 1);
+		ug.getCharArea().drawStringsLR(ent.getDisplay(), 1, 1);
 		int y = 2;
 		ug.getCharArea().drawHLine('-', y, 1, w - 1);
 		y++;
@@ -150,7 +150,7 @@ public final class CucaDiagramTxtMaker {
 	}
 
 	private int getHeight(IEntity entity) {
-		int result = StringUtils.getHeight(entity.getDisplay2());
+		int result = StringUtils.getHeight(entity.getDisplay());
 		for (Member att : entity.getMethodsToDisplay()) {
 			result += StringUtils.getHeight(StringUtils.getWithNewlines(att.getDisplay(true)));
 		}
@@ -161,7 +161,7 @@ public final class CucaDiagramTxtMaker {
 	}
 
 	private int getWidth(IEntity entity) {
-		int result = StringUtils.getWidth(entity.getDisplay2());
+		int result = StringUtils.getWidth(entity.getDisplay());
 		for (Member att : entity.getMethodsToDisplay()) {
 			final int w = StringUtils.getWidth(StringUtils.getWithNewlines(att.getDisplay(true)));
 			if (w > result) {

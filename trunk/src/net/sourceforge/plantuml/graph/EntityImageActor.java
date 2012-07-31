@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -58,7 +58,7 @@ class EntityImageActor extends AbstractEntityImage {
 
 	public EntityImageActor(IEntity entity) {
 		super(entity);
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.stickman = new StickMan(getYellow(), getRed());
 	}
@@ -66,8 +66,8 @@ class EntityImageActor extends AbstractEntityImage {
 	@Override
 	public Dimension2D getDimension(StringBounder stringBounder) {
 		final Dimension2D nameDim = name.calculateDimension(stringBounder);
-		final double manWidth = stickman.getPreferredWidth(stringBounder);
-		final double manHeight = stickman.getPreferredHeight(stringBounder);
+		final double manWidth = stickman.getPreferredWidth();
+		final double manHeight = stickman.getPreferredHeight();
 		return new Dimension2DDouble(Math.max(manWidth, nameDim.getWidth()), manHeight + nameDim.getHeight());
 	}
 
@@ -76,8 +76,8 @@ class EntityImageActor extends AbstractEntityImage {
 		final Dimension2D dimTotal = getDimension(StringBounderUtils.asStringBounder(g2d));
 		final Dimension2D nameDim = name.calculateDimension(StringBounderUtils.asStringBounder(g2d));
 
-		final double manWidth = stickman.getPreferredWidth(StringBounderUtils.asStringBounder(g2d));
-		final double manHeight = stickman.getPreferredHeight(StringBounderUtils.asStringBounder(g2d));
+		final double manWidth = stickman.getPreferredWidth();
+		final double manHeight = stickman.getPreferredHeight();
 
 		final double manX = (dimTotal.getWidth() - manWidth) / 2;
 

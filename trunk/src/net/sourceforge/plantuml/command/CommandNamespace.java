@@ -35,9 +35,11 @@ package net.sourceforge.plantuml.command;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
@@ -49,11 +51,11 @@ public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
-		final IEntityMutable p = getSystem().getOrCreateGroup(code, code, code, GroupType.PACKAGE, currentPackage);
+		final IGroup currentPackage = getSystem().getCurrentGroup();
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), code, GroupType.PACKAGE, currentPackage);
 		final String color = arg.get(1);
 		if (color != null) {
-			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
+			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

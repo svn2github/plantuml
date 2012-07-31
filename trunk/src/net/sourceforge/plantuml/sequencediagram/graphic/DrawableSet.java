@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8033 $
+ * Revision $Revision: 8448 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.SkinParamBackcolored;
@@ -54,6 +55,7 @@ import net.sourceforge.plantuml.sequencediagram.Newpage;
 import net.sourceforge.plantuml.sequencediagram.Participant;
 import net.sourceforge.plantuml.sequencediagram.ParticipantEnglober;
 import net.sourceforge.plantuml.sequencediagram.ParticipantEngloberContexted;
+import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
 import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.skin.Component;
 import net.sourceforge.plantuml.skin.ComponentType;
@@ -335,8 +337,8 @@ class DrawableSet {
 			final Component comp = getEngloberComponent(englober.getParticipantEnglober());
 
 			final double width = x2 - x1;
-			final double preferedWidth = getEngloberPreferedWidth(ug.getStringBounder(), englober
-					.getParticipantEnglober());
+			final double preferedWidth = getEngloberPreferedWidth(ug.getStringBounder(),
+					englober.getParticipantEnglober());
 			if (preferedWidth > width) {
 				// if (englober.getFirst2() == englober.getLast2()) {
 				x1 -= (preferedWidth - width) / 2;
@@ -359,8 +361,8 @@ class DrawableSet {
 	}
 
 	private Component getEngloberComponent(ParticipantEnglober englober) {
-		final ISkinParam s = englober.getBoxColor() == null ? skinParam : new SkinParamBackcolored(skinParam, englober
-				.getBoxColor());
+		final ISkinParam s = englober.getBoxColor() == null ? skinParam : new SkinParamBackcolored(skinParam,
+				englober.getBoxColor());
 		return skin.createComponent(ComponentType.ENGLOBER, null, s, englober.getTitle());
 	}
 
@@ -396,8 +398,9 @@ class DrawableSet {
 		this.topStartingY = topStartingY;
 	}
 
-	public void appendCmap(StringBuilder cmap, int offsetX, int offsetY, StringBounder stringBounder) {
-		cmap.append("<map id=\"sequence\" name=\"sequence\">\n");
+	public void appendCmap(CMapData cmap, int offsetX, int offsetY, StringBounder stringBounder, SequenceDiagram diagram) {
+		// cmap.append("<map id=\"sequence\" name=\"sequence\">\n");
+		// cmap.appendHeader(diagram);
 		for (Map.Entry<Participant, LivingParticipantBox> entry : participants.entrySet()) {
 			final Participant p = entry.getKey();
 			final Url url = p.getUrl();
@@ -434,28 +437,28 @@ class DrawableSet {
 
 		}
 
-		cmap.append("</map>\n");
+		// cmap.appendString("</map>\n");
 	}
 
-	private void appendArea(StringBuilder cmap, final String id, final Url url, final double x1, final double x2,
+	private void appendArea(CMapData cmap, final String id, final Url url, final double x1, final double x2,
 			final double y2, final double y1) {
-		cmap.append("<area shape=\"rect\" id=\"");
-		cmap.append(id);
-		cmap.append("\" href=\"");
-		cmap.append(url.getUrl());
-		cmap.append("\" title=\"");
-		cmap.append(url.getTooltip());
-		cmap.append("\" coords=\"");
-		cmap.append(Math.round(x1));
-		cmap.append(",");
-		cmap.append(Math.round(y1));
-		cmap.append(",");
-		cmap.append(Math.round(x2));
-		cmap.append(",");
-		cmap.append(Math.round(y2));
-		cmap.append("\"/>\n");
+		cmap.appendString("<area shape=\"rect\" id=\"");
+		cmap.appendString(id);
+		cmap.appendString("\" href=\"");
+		cmap.appendString(url.getUrl());
+		cmap.appendString("\" title=\"");
+		cmap.appendString(url.getTooltip());
+		cmap.appendString("\" coords=\"");
+		cmap.appendLong(Math.round(x1));
+		cmap.appendString(",");
+		cmap.appendLong(Math.round(y1));
+		cmap.appendString(",");
+		cmap.appendLong(Math.round(x2));
+		cmap.appendString(",");
+		cmap.appendLong(Math.round(y2));
+		cmap.appendString("\"/>\n");
 	}
-	
+
 	Participant getFirst(Collection<Participant> someParticipants) {
 		final List<Participant> list = new ArrayList<Participant>(participants.keySet());
 		int min = -1;
@@ -481,7 +484,5 @@ class DrawableSet {
 		}
 		return list.get(max);
 	}
-
-
 
 }

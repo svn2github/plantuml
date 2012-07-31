@@ -48,11 +48,11 @@ public class Bodier {
 
 	private final List<String> rawBody = new ArrayList<String>();
 	private final Set<VisibilityModifier> hides;
-	private final EntityType type;
+	private final LeafType type;
 	private List<Member> methodsToDisplay;
 	private List<Member> fieldsToDisplay;
 
-	public Bodier(EntityType type, Set<VisibilityModifier> hides) {
+	public Bodier(LeafType type, Set<VisibilityModifier> hides) {
 		this.hides = hides;
 		this.type = type;
 	}
@@ -81,13 +81,13 @@ public class Bodier {
 		};
 	}
 
-	private EntityType getEntityType() {
+	private LeafType getEntityType() {
 		return type;
 	}
 
 	private boolean isMethod(String s) {
-		if (getEntityType() == EntityType.ABSTRACT_CLASS || getEntityType() == EntityType.CLASS
-				|| getEntityType() == EntityType.INTERFACE || getEntityType() == EntityType.ENUM) {
+		if (getEntityType() == LeafType.ABSTRACT_CLASS || getEntityType() == LeafType.CLASS
+				|| getEntityType() == LeafType.INTERFACE || getEntityType() == LeafType.ENUM) {
 			return StringUtils.isMethod(s);
 		}
 		return false;

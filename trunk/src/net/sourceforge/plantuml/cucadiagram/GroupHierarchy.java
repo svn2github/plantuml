@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7791 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -37,7 +37,7 @@ import java.util.Collection;
 
 public interface GroupHierarchy {
 
-	public Collection<? extends Group> getChildrenGroups(Group parent);
+	public Collection<IGroup> getChildrenGroups(IGroup parent);
 	
-	public boolean isEmpty(Group g);
+	public boolean isEmpty(IGroup g);
 }

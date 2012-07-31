@@ -38,7 +38,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 
@@ -60,7 +60,7 @@ public class CommandCreateActorInComponent extends SingleLineCommand<ComponentDi
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final EntityType type = EntityType.ACTOR;
+		final LeafType type = LeafType.ACTOR;
 		final String code;
 		final String display;
 		if (arg.get(1) == null) {
@@ -71,8 +71,8 @@ public class CommandCreateActorInComponent extends SingleLineCommand<ComponentDi
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
 		}
 		final String stereotype = arg.get(2);
-		final IEntity entity = getSystem().getOrCreateEntity(code, type);
-		entity.setDisplay2(display);
+		final IEntity entity = getSystem().getOrCreateLeaf(code, type);
+		entity.setDisplay(StringUtils.getWithNewlines(display));
 
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),

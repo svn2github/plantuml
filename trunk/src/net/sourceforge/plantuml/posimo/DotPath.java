@@ -49,6 +49,8 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.plantuml.asciiart.BasicCharArea;
 import net.sourceforge.plantuml.eps.EpsGraphics;
+import net.sourceforge.plantuml.svek.ClusterPosition;
+import net.sourceforge.plantuml.svek.PointDirected;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -135,14 +137,14 @@ public class DotPath implements UShape, Moveable {
 	public Point2D getStartPoint() {
 		return beziers.get(0).getP1();
 	}
-	
+
 	public void forceStartPoint(double x, double y) {
 		beziers.get(0).x1 = x;
 		beziers.get(0).y1 = y;
 		beziers.get(0).ctrlx1 = x;
 		beziers.get(0).ctrly1 = y;
 	}
-	
+
 	public Point2D getEndPoint() {
 		return beziers.get(beziers.size() - 1).getP2();
 	}
@@ -153,7 +155,6 @@ public class DotPath implements UShape, Moveable {
 		beziers.get(beziers.size() - 1).ctrlx2 = x;
 		beziers.get(beziers.size() - 1).ctrly2 = y;
 	}
-
 
 	public MinMax getMinMax() {
 		final MinMax result = new MinMax();
@@ -260,6 +261,16 @@ public class DotPath implements UShape, Moveable {
 			result.put(right.getP2(), BezierUtils.getEndingAngle(right));
 		}
 		return result;
+	}
+
+	public PointDirected getIntersection(ClusterPosition position) {
+		for (CubicCurve2D.Double bez : beziers) {
+			final PointDirected result = position.getIntersection(bez);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
 	}
 
 	// public void drawOld(Graphics2D g2d, double x, double y) {
@@ -409,9 +420,8 @@ public class DotPath implements UShape, Moveable {
 				area.drawHLine('-', (int) (bez.y1 / pixelYPerChar), (int) (bez.x1 / pixelXPerChar),
 						(int) (bez.x2 / pixelXPerChar));
 			} /*
-				 * else { throw new UnsupportedOperationException("bez=" +
-				 * toString(bez)); }
-				 */
+			 * else { throw new UnsupportedOperationException("bez=" + toString(bez)); }
+			 */
 		}
 	}
 

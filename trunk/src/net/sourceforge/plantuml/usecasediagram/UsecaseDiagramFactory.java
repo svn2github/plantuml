@@ -42,10 +42,9 @@ import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.usecasediagram.command.CommandCreateActor;
-import net.sourceforge.plantuml.usecasediagram.command.CommandCreateActor2;
+import net.sourceforge.plantuml.usecasediagram.command.CommandCreateBoundary;
 import net.sourceforge.plantuml.usecasediagram.command.CommandCreateUsecase;
-import net.sourceforge.plantuml.usecasediagram.command.CommandCreateUsecase2;
-import net.sourceforge.plantuml.usecasediagram.command.CommandLinkUsecase2;
+import net.sourceforge.plantuml.usecasediagram.command.CommandLinkUsecase;
 
 public class UsecaseDiagramFactory extends AbstractUmlSystemCommandFactory {
 
@@ -64,7 +63,7 @@ public class UsecaseDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommand(new CommandPage(system));
 		// addCommand(new CommandLinkUsecase(system));
-		addCommand(new CommandLinkUsecase2(system));
+		addCommand(new CommandLinkUsecase(system));
 
 		addCommand(new CommandPackage(system));
 		addCommand(new CommandEndPackage(system));
@@ -80,9 +79,8 @@ public class UsecaseDiagramFactory extends AbstractUmlSystemCommandFactory {
 		final FactoryNoteCommand factoryNoteCommand = new FactoryNoteCommand();
 		addCommand(factoryNoteCommand.createSingleLine(system));
 		addCommand(new CommandCreateActor(system));
-		addCommand(new CommandCreateActor2(system));
 		addCommand(new CommandCreateUsecase(system));
-		addCommand(new CommandCreateUsecase2(system));
+		addCommand(new CommandCreateBoundary(system));
 
 		addCommand(factoryNoteOnEntityCommand.createMultiLine(system));
 		addCommand(factoryNoteCommand.createMultiLine(system));

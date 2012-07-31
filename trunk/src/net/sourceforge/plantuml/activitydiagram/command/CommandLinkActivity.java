@@ -44,9 +44,10 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -171,9 +172,9 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		final String code = arg.get("CODE" + suf).get(0);
 		if (code != null) {
 			if (partition != null) {
-				system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, system.getRootGroup());
 			}
-			final IEntity result = system.getOrCreate(code, code, getTypeIfExisting(system, code));
+			final IEntity result = system.getOrCreate(code, StringUtils.getWithNewlines(code), getTypeIfExisting(system, code));
 			if (partition != null) {
 				system.endGroup();
 			}
@@ -181,15 +182,15 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		}
 		final String bar = arg.get("BAR" + suf).get(0);
 		if (bar != null) {
-			return system.getOrCreate(bar, bar, EntityType.SYNCHRO_BAR);
+			return system.getOrCreate(bar, StringUtils.getWithNewlines(bar), LeafType.SYNCHRO_BAR);
 		}
 		final RegexPartialMatch quoted = arg.get("QUOTED" + suf);
 		if (quoted.get(0) != null) {
 			final String quotedCode = quoted.get(1) == null ? quoted.get(0) : quoted.get(1);
 			if (partition != null) {
-				system.getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, system.getRootGroup());
 			}
-			final IEntity result = system.getOrCreate(quotedCode, quoted.get(0), getTypeIfExisting(system, quotedCode));
+			final IEntity result = system.getOrCreate(quotedCode, StringUtils.getWithNewlines(quoted.get(0)), getTypeIfExisting(system, quotedCode));
 			if (partition != null) {
 				system.endGroup();
 			}
@@ -202,25 +203,25 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		throw new UnsupportedOperationException();
 	}
 
-	static EntityType getTypeIfExisting(ActivityDiagram system, String code) {
-		if (system.entityExist(code)) {
-			final IEntity ent = system.getEntities().get(code);
-			if (ent.getEntityType() == EntityType.BRANCH) {
-				return EntityType.BRANCH;
+	static LeafType getTypeIfExisting(ActivityDiagram system, String code) {
+		if (system.leafExist(code)) {
+			final IEntity ent = system.getLeafs().get(code);
+			if (ent.getEntityType() == LeafType.BRANCH) {
+				return LeafType.BRANCH;
 			}
 		}
-		return EntityType.ACTIVITY;
+		return LeafType.ACTIVITY;
 	}
 
-	static EntityType getTypeFromString(String type, final EntityType circle) {
+	static LeafType getTypeFromString(String type, final LeafType circle) {
 		if (type == null) {
-			return EntityType.ACTIVITY;
+			return LeafType.ACTIVITY;
 		}
 		if (type.equals("*")) {
 			return circle;
 		}
 		if (type.startsWith("=")) {
-			return EntityType.SYNCHRO_BAR;
+			return LeafType.SYNCHRO_BAR;
 		}
 		throw new IllegalArgumentException();
 	}

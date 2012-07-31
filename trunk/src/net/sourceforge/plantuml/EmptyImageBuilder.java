@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8068 $
+ * Revision $Revision: 8310 $
  *
  */
 package net.sourceforge.plantuml;
@@ -38,6 +38,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+
+import net.sourceforge.plantuml.ugraphic.ColorMapperIdentity;
+import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
 
 public class EmptyImageBuilder {
 
@@ -73,6 +76,10 @@ public class EmptyImageBuilder {
 
 	public Graphics2D getGraphics2D() {
 		return g2d;
+	}
+
+	public UGraphicG2d getUGraphicG2d() {
+		return new UGraphicG2d(new ColorMapperIdentity(), g2d, im, 1.0);
 	}
 
 }

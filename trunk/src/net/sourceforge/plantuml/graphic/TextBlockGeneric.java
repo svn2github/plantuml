@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.graphic;
 
 import java.awt.geom.Dimension2D;
-import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.plantuml.Url;

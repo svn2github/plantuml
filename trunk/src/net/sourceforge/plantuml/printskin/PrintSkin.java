@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8441 $
  *
  */
 package net.sourceforge.plantuml.printskin;
@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FileFormatOption;
@@ -89,7 +90,7 @@ class PrintSkin extends AbstractPSystem {
 	//
 	// }
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		final BufferedImage im = createImage();
 		PngIO.write(im.getSubimage(0, 0, im.getWidth(), (int) maxYpos), os, 96);

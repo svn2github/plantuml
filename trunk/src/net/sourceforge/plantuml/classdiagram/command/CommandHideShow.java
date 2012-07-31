@@ -46,7 +46,8 @@ import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.EntityGender;
 import net.sourceforge.plantuml.cucadiagram.EntityGenderUtils;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
@@ -95,13 +96,13 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 		if (arg1 == null) {
 			gender = EntityGenderUtils.all();
 		} else if (arg1.equalsIgnoreCase("class")) {
-			gender = EntityGenderUtils.byEntityType(EntityType.CLASS);
+			gender = EntityGenderUtils.byEntityType(LeafType.CLASS);
 		} else if (arg1.equalsIgnoreCase("interface")) {
-			gender = EntityGenderUtils.byEntityType(EntityType.INTERFACE);
+			gender = EntityGenderUtils.byEntityType(LeafType.INTERFACE);
 		} else if (arg1.equalsIgnoreCase("enum")) {
-			gender = EntityGenderUtils.byEntityType(EntityType.ENUM);
+			gender = EntityGenderUtils.byEntityType(LeafType.ENUM);
 		} else if (arg1.equalsIgnoreCase("abstract")) {
-			gender = EntityGenderUtils.byEntityType(EntityType.ABSTRACT_CLASS);
+			gender = EntityGenderUtils.byEntityType(LeafType.ABSTRACT_CLASS);
 		} else if (arg1.startsWith("<<")) {
 			gender = EntityGenderUtils.byStereotype(arg1);
 		} else {
@@ -113,7 +114,7 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 			if (empty == true) {
 				gender = EntityGenderUtils.and(gender, emptyByGender(portion));
 			}
-			if (getSystem().getCurrentGroup() != null) {
+			if (EntityUtils.groupNull(getSystem().getCurrentGroup())==false) {
 				gender = EntityGenderUtils.and(gender, EntityGenderUtils.byPackage(getSystem().getCurrentGroup()));
 			}
 			getSystem().hideOrShow(gender, portion, arg.get("COMMAND").get(0).equalsIgnoreCase("show"));

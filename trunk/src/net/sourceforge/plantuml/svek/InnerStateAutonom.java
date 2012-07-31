@@ -73,9 +73,9 @@ public final class InnerStateAutonom implements IEntityImage {
 		final Dimension2D text = title.calculateDimension(ug.getStringBounder());
 		final Dimension2D attr = attribute.calculateDimension(ug.getStringBounder());
 		final Dimension2D total = getDimension(ug.getStringBounder());
-		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
+		final double marginForFields = attr.getHeight() > 0 ? IEntityImage.MARGIN : 0;
 
-		final double titreHeight = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
+		final double titreHeight = IEntityImage.MARGIN + text.getHeight() + IEntityImage.MARGIN_LINE;
 		final RoundedContainer r = new RoundedContainer(total, titreHeight, attr.getHeight() + marginForFields,
 				borderColor, backColor, im.getBackcolor());
 
@@ -84,12 +84,12 @@ public final class InnerStateAutonom implements IEntityImage {
 		}
 		
 		r.drawU(ug, x, y, shadowing);
-		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + EntityImageState.MARGIN);
-		attribute.drawU(ug, x + EntityImageState.MARGIN, y + EntityImageState.MARGIN + text.getHeight()
-				+ EntityImageState.MARGIN, total.getWidth());
+		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + IEntityImage.MARGIN);
+		attribute.drawU(ug, x + IEntityImage.MARGIN, y + IEntityImage.MARGIN + text.getHeight()
+				+ IEntityImage.MARGIN, total.getWidth());
 
 		final double spaceYforURL = getSpaceYforURL(ug.getStringBounder());
-		im.drawU(ug, x + EntityImageState.MARGIN, y + spaceYforURL);
+		im.drawU(ug, x + IEntityImage.MARGIN, y + spaceYforURL);
 		
 		if (url.size()>0) {
 			ug.closeAction();
@@ -99,10 +99,10 @@ public final class InnerStateAutonom implements IEntityImage {
 	private double getSpaceYforURL(StringBounder stringBounder) {
 		final Dimension2D text = title.calculateDimension(stringBounder);
 		final Dimension2D attr = attribute.calculateDimension(stringBounder);
-		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
-		final double titreHeight = EntityImageState.MARGIN + text.getHeight() + EntityImageState.MARGIN_LINE;
+		final double marginForFields = attr.getHeight() > 0 ? IEntityImage.MARGIN : 0;
+		final double titreHeight = IEntityImage.MARGIN + text.getHeight() + IEntityImage.MARGIN_LINE;
 		final double suppY = titreHeight + marginForFields + attr.getHeight();
-		return suppY + EntityImageState.MARGIN_LINE;
+		return suppY + IEntityImage.MARGIN_LINE;
 	}
 
 	public HtmlColor getBackcolor() {
@@ -115,10 +115,10 @@ public final class InnerStateAutonom implements IEntityImage {
 		final Dimension2D attr = attribute.calculateDimension(stringBounder);
 
 		final Dimension2D dim = Dimension2DDouble.mergeTB(text, attr, img);
-		final double marginForFields = attr.getHeight() > 0 ? EntityImageState.MARGIN : 0;
+		final double marginForFields = attr.getHeight() > 0 ? IEntityImage.MARGIN : 0;
 
-		final Dimension2D result = Dimension2DDouble.delta(dim, EntityImageState.MARGIN * 2 + 2
-				* EntityImageState.MARGIN_LINE + marginForFields);
+		final Dimension2D result = Dimension2DDouble.delta(dim, IEntityImage.MARGIN * 2 + 2
+				* IEntityImage.MARGIN_LINE + marginForFields);
 
 		return result;
 	}

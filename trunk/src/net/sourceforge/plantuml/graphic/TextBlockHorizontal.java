@@ -41,7 +41,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public class TextBlockHorizontal implements TextBlock {
+class TextBlockHorizontal implements TextBlock {
 
 	private final TextBlock b1;
 	private final TextBlock b2;

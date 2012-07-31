@@ -39,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 
@@ -64,7 +65,7 @@ public class PSystemDitaa extends AbstractPSystem {
 		return "(Ditaa)";
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormatOption)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormatOption)
 			throws IOException {
 
 		if (fileFormatOption.getFileFormat() == FileFormat.PNG) {

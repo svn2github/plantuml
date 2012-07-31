@@ -38,13 +38,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public class PSystemOregon extends AbstractPSystem {
-	
+
 	private Screen screen;
 
 	public PSystemOregon(Keyboard keyboard) {
@@ -52,14 +53,15 @@ public class PSystemOregon extends AbstractPSystem {
 		try {
 			game.run(keyboard);
 			this.screen = game.getScreen();
-//			this.screen = new Screen();
-//			screen.print("Game ended??");
+			// this.screen = new Screen();
+			// screen.print("Game ended??");
 		} catch (NoInputException e) {
 			this.screen = game.getScreen();
 		}
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat) throws IOException {
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
+			throws IOException {
 		getGraphicStrings().writeImage(os, fileFormat);
 	}
 

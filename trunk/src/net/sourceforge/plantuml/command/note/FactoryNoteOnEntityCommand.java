@@ -50,7 +50,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -95,7 +95,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 			@Override
 			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 				final String s = arg.get("NOTE").get(0);
-				return executeInternal(arg, system, null, s);
+				return executeInternal(arg, system, null, StringUtils.getWithNewlines(s));
 			}
 		};
 	}
@@ -115,20 +115,19 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0));
+					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0), true);
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());
 				}
 
-				final String s = StringUtils.getMergedLines(strings);
-				return executeInternal(line0, system, url, s);
+				return executeInternal(line0, system, url, strings);
 			}
 		};
 	}
 
 	private CommandExecutionResult executeInternal(Map<String, RegexPartialMatch> line0, AbstractEntityDiagram system,
-			Url url, String s) {
+			Url url, List<? extends CharSequence> s) {
 
 		final String pos = line0.get("POSITION").get(0);
 
@@ -143,7 +142,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 			cl1 = system.getOrCreateClass(code);
 		}
 
-		final IEntity note = system.createEntity("GMN" + UniqueSequence.getValue(), s, EntityType.NOTE);
+		final IEntity note = system.createLeaf("GMN" + UniqueSequence.getValue(), s, LeafType.NOTE);
 		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR").get(0)));
 		if (url != null) {
 			note.addUrl(url);

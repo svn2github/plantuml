@@ -33,23 +33,25 @@
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
 
+import net.sourceforge.plantuml.CMapData;
+
 public class CucaDiagramFileMakerResult {
 
-	private final String cmapResult;
+	private final CMapData cmapResult;
 	private final double width;
 	private final String warningOrError;
 
-	public CucaDiagramFileMakerResult(String cmapResult) {
+	public CucaDiagramFileMakerResult(CMapData cmapResult) {
 		this(cmapResult, 0, null);
 	}
 
-	public CucaDiagramFileMakerResult(String cmap, double width, String warningOrError) {
+	public CucaDiagramFileMakerResult(CMapData cmap, double width, String warningOrError) {
 		this.cmapResult = cmap;
 		this.width = width;
 		this.warningOrError = warningOrError;
 	}
 
-	public String getCmapResult() {
+	public CMapData getCmapResult() {
 		return cmapResult;
 	}
 

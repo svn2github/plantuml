@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8126 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
@@ -54,6 +54,10 @@ public class ULine extends AbstractShadowable {
 
 	public double getDY() {
 		return dy;
+	}
+
+	public double getLength() {
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 
 }

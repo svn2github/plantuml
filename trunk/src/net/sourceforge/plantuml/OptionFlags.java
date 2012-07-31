@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7927 $
+ * Revision $Revision: 8168 $
  *
  */
 package net.sourceforge.plantuml;
@@ -46,7 +46,8 @@ public class OptionFlags {
 	static public final boolean PBBACK = false;
 	static public final boolean GRAPHVIZCACHE = false;
 	static public final boolean TRACE_DOT = false;
-	static public final boolean NEW_DIAMOND = true;
+	static public final boolean NICE_ARROW = true;
+//	static public boolean PIC_LINE = false;
 	static public final boolean HORIZONTAL_LINE_BETWEEN_DIFFERENT_PACKAGE_ALLOWED = false;
 	static public boolean ALLOW_INCLUDE = true;
 	
@@ -69,6 +70,7 @@ public class OptionFlags {
 		useSuggestEngine = true;
 		failOnError = false;
 		encodesprite = false;
+//		PIC_LINE = false;
 	}
 
 	public boolean useJavaInsteadOfDot() {

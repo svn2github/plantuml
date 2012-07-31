@@ -67,8 +67,8 @@ public final class RoundedContainer {
 		ug.getParam().setColor(borderColor);
 		ug.getParam().setBackcolor(backColor);
 		ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
-		final URectangle rect = new URectangle(dim.getWidth(), dim.getHeight(), EntityImageState.CORNER,
-				EntityImageState.CORNER);
+		final URectangle rect = new URectangle(dim.getWidth(), dim.getHeight(), IEntityImage.CORNER,
+				IEntityImage.CORNER);
 		if (shadowing) {
 			rect.setDeltaShadow(3.0);
 		}
@@ -80,7 +80,7 @@ public final class RoundedContainer {
 		ug.getParam().setColor(imgBackcolor);
 		ug.getParam().setStroke(new UStroke());
 		final URectangle inner = new URectangle(dim.getWidth() - 4 * THICKNESS_BORDER, dim.getHeight() - titleHeight
-				- 4 * THICKNESS_BORDER - attributeHeight, EntityImageState.CORNER, EntityImageState.CORNER);
+				- 4 * THICKNESS_BORDER - attributeHeight, IEntityImage.CORNER, IEntityImage.CORNER);
 		ug.draw(x + 2 * THICKNESS_BORDER, yLine + 2 * THICKNESS_BORDER, inner);
 
 		if (titleHeight > 0) {

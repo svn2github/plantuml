@@ -53,6 +53,7 @@ import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.ugraphic.Shadowable;
+import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.URectangle;
@@ -60,28 +61,34 @@ import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class EntityImageState extends AbstractEntityImage {
 
-	public static final int CORNER = 25;
 	final private TextBlock desc;
 	final private TextBlock fields;
 	final private List<Url> url;
 
-	final public static int MARGIN = 5;
-	final public static int MARGIN_LINE = 5;
 	final private static int MIN_WIDTH = 50;
 	final private static int MIN_HEIGHT = 50;
+
+	final private boolean withSymbol;
+
+	final private double smallRadius = 3;
+	final private double smallLine = 3;
+	final private double smallMarginX = 7;
+	final private double smallMarginY = 4;
 
 	public EntityImageState(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
+		this.withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
 
-		this.desc = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(getFont(FontParam.STATE,
-				stereotype), getFontColor(FontParam.STATE, stereotype)), HorizontalAlignement.CENTER, skinParam);
+		this.desc = TextBlockUtils.create(entity.getDisplay(),
+				new FontConfiguration(getFont(FontParam.STATE, stereotype), getFontColor(FontParam.STATE, stereotype)),
+				HorizontalAlignement.CENTER, skinParam);
 
 		final List<String> list = new ArrayList<String>();
 		for (Member att : entity.getFieldsToDisplay()) {
 			list.addAll(StringUtils.getWithNewlines(att.getDisplay(true)));
 		}
-		
+
 		this.url = entity.getUrls();
 
 		this.fields = TextBlockUtils.create(list, new FontConfiguration(getFont(FontParam.STATE_ATTRIBUTE, stereotype),
@@ -91,14 +98,18 @@ public class EntityImageState extends AbstractEntityImage {
 
 	@Override
 	public Dimension2D getDimension(StringBounder stringBounder) {
-		final Dimension2D dim = Dimension2DDouble.mergeTB(desc.calculateDimension(stringBounder), fields
-				.calculateDimension(stringBounder));
-		final Dimension2D result = Dimension2DDouble.delta(dim, MARGIN * 2 + 2 * MARGIN_LINE);
+		final Dimension2D dim = Dimension2DDouble.mergeTB(desc.calculateDimension(stringBounder),
+				fields.calculateDimension(stringBounder));
+		double heightSymbol = 0;
+		if (withSymbol) {
+			heightSymbol += 2 * smallRadius + smallMarginY;
+		}
+		final Dimension2D result = Dimension2DDouble.delta(dim, MARGIN * 2 + 2 * MARGIN_LINE + heightSymbol);
 		return Dimension2DDouble.atLeast(result, MIN_WIDTH, MIN_HEIGHT);
 	}
 
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
-		if (url.size()>0) {
+		if (url.size() > 0) {
 			ug.startUrl(url.get(0));
 		}
 		final StringBounder stringBounder = ug.getStringBounder();
@@ -125,7 +136,18 @@ public class EntityImageState extends AbstractEntityImage {
 		final double yLine = yTheoricalPosition + MARGIN + dimDesc.getHeight() + MARGIN_LINE;
 		ug.draw(xTheoricalPosition, yLine, new ULine(widthTotal, 0));
 
+		ug.getParam().setStroke(new UStroke(1.3));
 		ug.getParam().setStroke(new UStroke());
+
+		if (withSymbol) {
+			final double xSymbol = xTheoricalPosition + dimTotal.getWidth() - 4 * smallRadius - smallLine
+					- smallMarginX;
+			final double ySymbol = yTheoricalPosition + dimTotal.getHeight() - 2 * smallRadius - smallMarginY;
+			final UEllipse small = new UEllipse(2 * smallRadius, 2 * smallRadius);
+			ug.draw(xSymbol, ySymbol, small);
+			ug.draw(xSymbol + smallLine + 2 * smallRadius, ySymbol, small);
+			ug.draw(xSymbol + 2 * smallRadius, ySymbol + smallLine, new ULine(smallLine, 0));
+		}
 
 		final double xDesc = (widthTotal - dimDesc.getWidth()) / 2;
 		final double yDesc = yTheoricalPosition + MARGIN;
@@ -134,8 +156,8 @@ public class EntityImageState extends AbstractEntityImage {
 		final double xFields = xTheoricalPosition + MARGIN;
 		final double yFields = yLine + MARGIN_LINE;
 		fields.drawU(ug, xFields, yFields);
-		
-		if (url.size()>0) {
+
+		if (url.size() > 0) {
 			ug.closeAction();
 		}
 	}

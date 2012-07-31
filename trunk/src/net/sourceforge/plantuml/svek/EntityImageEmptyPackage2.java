@@ -63,7 +63,7 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 		this.specificBackColor = entity.getSpecificBackColor();
 		this.stereotype = entity.getStereotype();
 		this.desc = TextBlockUtils.create(
-				entity.getDisplay2(),
+				entity.getDisplay(),
 				new FontConfiguration(getFont(FontParam.PACKAGE, stereotype), getFontColor(FontParam.PACKAGE,
 						stereotype)), HorizontalAlignement.CENTER, skinParam);
 	}

@@ -40,8 +40,10 @@ import java.util.List;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
+import net.sourceforge.plantuml.cucadiagram.EntityImpl;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.svek.GroupPngMakerState;
 import net.sourceforge.plantuml.svek.IEntityImage;
 
@@ -55,15 +57,15 @@ public final class CucaDiagramSimplifierState {
 		boolean changed;
 		do {
 			changed = false;
-			final Collection<IEntityMutable> groups = new ArrayList<IEntityMutable>(diagram.getGroups(false));
-			for (IEntityMutable g : groups) {
+			final Collection<IGroup> groups = new ArrayList<IGroup>(diagram.getGroups(false));
+			for (IGroup g : groups) {
 				if (diagram.isAutarkic(g)) {
 					final IEntityImage img = computeImage(g);
 					final List<Url> urls = new ArrayList<Url>(g.getUrls());
-					for (IEntity ent : g.zentities()) {
+					for (IEntity ent : g.getLeafsDirect()) {
 						urls.addAll(ent.getUrls());
 					}
-					g.overideImage42(img, urls);
+					((EntityImpl)g).overideImage42(img, urls, LeafType.STATE);
 
 					changed = true;
 				}
@@ -77,7 +79,7 @@ public final class CucaDiagramSimplifierState {
 //		proxy.setSvekImage(maker.getImage());
 //	}
 
-	private IEntityImage computeImage(IEntityMutable g) throws IOException, InterruptedException {
+	private IEntityImage computeImage(IGroup g) throws IOException, InterruptedException {
 		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);
 		return maker.getImage();
 	}

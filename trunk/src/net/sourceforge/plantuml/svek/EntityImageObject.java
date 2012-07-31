@@ -71,7 +71,7 @@ public class EntityImageObject extends AbstractEntityImage {
 	public EntityImageObject(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
-		this.name = TextBlockUtils.withMargin(TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.withMargin(TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont(FontParam.OBJECT, stereotype), getFontColor(FontParam.OBJECT, stereotype)),
 				HorizontalAlignement.CENTER, skinParam), 2, 2);
 		if (stereotype == null || stereotype.getLabel() == null) {

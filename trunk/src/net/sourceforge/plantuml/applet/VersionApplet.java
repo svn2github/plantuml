@@ -50,6 +50,6 @@ public class VersionApplet extends Applet {
 
 	@Override
 	public void paint(Graphics g) {
-		g.drawString("" + Version.version(), 0, 10);
+		g.drawString(Version.versionString(), 0, 10);
 	}
 }

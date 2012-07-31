@@ -28,18 +28,22 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
 
+import java.util.Arrays;
+
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class StateDiagram extends AbstractEntityDiagram {
 
@@ -51,70 +55,70 @@ public class StateDiagram extends AbstractEntityDiagram {
 		if (isGroup(code)) {
 			return getGroup(code);
 		}
-		final IEntity result = getOrCreateEntity(code, EntityType.STATE);
+		final IEntity result = getOrCreateLeaf(code, LeafType.STATE);
 		return result;
 	}
 
 	public IEntity getStart() {
-		final IEntityMutable g = getCurrentGroup();
-		if (g == null) {
-			return getOrCreateEntity("*start", EntityType.CIRCLE_START);
+		final IGroup g = getCurrentGroup();
+		if (EntityUtils.groupNull(g)) {
+			return getOrCreateLeaf("*start", LeafType.CIRCLE_START);
 		}
-		return getOrCreateEntity("*start*" + g.zgetGroupCode(), EntityType.CIRCLE_START);
+		return getOrCreateLeaf("*start*" + g.getCode(), LeafType.CIRCLE_START);
 	}
 
 	public IEntity getEnd() {
-		final IEntityMutable p = getCurrentGroup();
-		if (p == null) {
-			return getOrCreateEntity("*end", EntityType.CIRCLE_END);
+		final IGroup p = getCurrentGroup();
+		if (EntityUtils.groupNull(p)) {
+			return getOrCreateLeaf("*end", LeafType.CIRCLE_END);
 		}
-		return getOrCreateEntity("*end*" + p.zgetGroupCode(), EntityType.CIRCLE_END);
+		return getOrCreateLeaf("*end*" + p.getCode(), LeafType.CIRCLE_END);
 	}
 
 	public IEntity getHistorical() {
-		final IEntityMutable g = getCurrentGroup();
-		if (g == null) {
-			return getOrCreateEntity("*historical", EntityType.PSEUDO_STATE);
+		final IGroup g = getCurrentGroup();
+		if (EntityUtils.groupNull(g)) {
+			return getOrCreateLeaf("*historical", LeafType.PSEUDO_STATE);
 		}
-		return getOrCreateEntity("*historical*" + g.zgetGroupCode(), EntityType.PSEUDO_STATE);
+		return getOrCreateLeaf("*historical*" + g.getCode(), LeafType.PSEUDO_STATE);
 	}
 
 	public IEntity getHistorical(String codeGroup) {
-		final IEntityMutable g = getOrCreateGroup(codeGroup, codeGroup, null, GroupType.STATE, null);
-		final IEntity result = getOrCreateEntity("*historical*" + g.zgetGroupCode(), EntityType.PSEUDO_STATE);
+		final IEntity g = getOrCreateGroup(codeGroup, StringUtils.getWithNewlines(codeGroup), null, GroupType.STATE, getRootGroup());
+		final IEntity result = getOrCreateLeaf("*historical*" + g.getCode(), LeafType.PSEUDO_STATE);
 		endGroup();
 		return result;
 	}
 
 	public boolean concurrentState() {
-		final IEntityMutable cur = getCurrentGroup();
-//		printlink("BEFORE");
-		if (cur != null && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
+		final IGroup cur = getCurrentGroup();
+		// printlink("BEFORE");
+		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
-		final IEntityMutable conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null, GroupType.CONCURRENT_STATE,
-				getCurrentGroup());
-		if (cur != null && cur.zgetGroupType() == GroupType.STATE) {
+		final IGroup conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), Arrays.asList(""), null,
+				GroupType.CONCURRENT_STATE, getCurrentGroup());
+		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.STATE) {
 			cur.zmoveEntitiesTo(conc1);
 			super.endGroup();
-			final IEntityMutable conc2 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), "", null,
+			final IEntity conc2 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), Arrays.asList(""), null,
 					GroupType.CONCURRENT_STATE, getCurrentGroup());
 		}
-//		printlink("AFTER");
+		// printlink("AFTER");
 		return true;
 	}
 
-//	private void printlink(String comment) {
-// Log.println("COMMENT="+comment);
-//		for (Link l : getLinks()) {
-// Log.println(l);
-//		}
-//	}
+	// private void printlink(String comment) {
+	// Log.println("COMMENT="+comment);
+	// for (Link l : getLinks()) {
+	// Log.println(l);
+	// }
+	// }
 
 	@Override
 	public void endGroup() {
-		final IEntityMutable cur = getCurrentGroup();
-		if (cur != null && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
+		final IGroup cur = getCurrentGroup();
+		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
 		super.endGroup();
@@ -135,11 +139,52 @@ public class StateDiagram extends AbstractEntityDiagram {
 		return hideEmptyDescription;
 	}
 
-	// @Override
-	// final protected List<String> getDotStrings() {
-	// return Arrays.asList("nodesep=1.95;", "ranksep=1.8;", "edge
-	// [fontsize=11,labelfontsize=11];",
-	// "node [fontsize=11,height=.35,width=.55];");
-	// }
+//	public Link isEntryPoint(IEntity ent) {
+//		final Stereotype stereotype = ent.getStereotype();
+//		if (stereotype == null) {
+//			return null;
+//		}
+//		final String label = stereotype.getLabel();
+//		if ("<<entrypoint>>".equalsIgnoreCase(label) == false) {
+//			return null;
+//		}
+//		Link inLink = null;
+//		Link outLink = null;
+//		for (Link link : getLinks()) {
+//			if (link.getEntity1() == ent) {
+//				if (outLink != null) {
+//					return null;
+//				}
+//				outLink = link;
+//			}
+//			if (link.getEntity2() == ent) {
+//				if (inLink != null) {
+//					return null;
+//				}
+//				inLink = link;
+//			}
+//		}
+//		if (inLink == null || outLink == null) {
+//			return null;
+//		}
+//		final Link result = Link.mergeForEntryPoint(inLink, outLink);
+//		result.setEntryPoint(ent.getContainer());
+//		return result;
+//	}
+//
+//	public void manageExitAndEntryPoints() {
+//		for (IEntity ent : getEntities().values()) {
+//			final Link entryPointLink = isEntryPoint(ent);
+//			if (entryPointLink != null) {
+//				addLink(entryPointLink);
+//				for (Link link : new ArrayList<Link>(getLinks())) {
+//					if (link.contains(ent)) {
+//						removeLink(link);
+//					}
+//				}
+//			}
+//		}
+//
+//	}
 
 }

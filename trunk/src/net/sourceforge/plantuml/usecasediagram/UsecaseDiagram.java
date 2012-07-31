@@ -34,8 +34,8 @@ package net.sourceforge.plantuml.usecasediagram;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Rankdir;
 
 public class UsecaseDiagram extends AbstractEntityDiagram {
@@ -45,14 +45,14 @@ public class UsecaseDiagram extends AbstractEntityDiagram {
 	}
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
+	public ILeaf getOrCreateClass(String code) {
 		if (code.startsWith("(") && code.endsWith(")")) {
-			return getOrCreateEntity(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), EntityType.USECASE);
+			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.USECASE);
 		}
 		if (code.startsWith(":") && code.endsWith(":")) {
-			return getOrCreateEntity(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), EntityType.ACTOR);
+			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
 		}
-		return getOrCreateEntity(code, EntityType.ACTOR);
+		return getOrCreateLeaf(code, LeafType.ACTOR);
 	}
 	
 	@Override

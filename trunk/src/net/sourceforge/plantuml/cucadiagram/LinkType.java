@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class LinkType {
@@ -111,46 +110,9 @@ public class LinkType {
 	public LinkType getInversed() {
 		return new LinkType(decor2, style, decor1);
 	}
-	
+
 	public LinkType getInvisible() {
 		return new LinkType(decor1, LinkStyle.INVISIBLE, decor2);
-	}
-
-
-
-	public String getSpecificDecoration() {
-		final StringBuilder sb = new StringBuilder();
-
-		if (decor1 == LinkDecor.NONE && decor2 != LinkDecor.NONE) {
-			sb.append("dir=back,");
-		}
-		if (decor1 != LinkDecor.NONE && decor2 != LinkDecor.NONE) {
-			sb.append("dir=both,");
-		}
-
-		sb.append("arrowtail=");
-		sb.append(decor2.getArrowDot());
-		sb.append(",arrowhead=");
-		sb.append(decor1.getArrowDot());
-
-		if (decor1 == LinkDecor.EXTENDS || decor2 == LinkDecor.EXTENDS) {
-			sb.append(",arrowsize=2");
-		}
-		if (decor1 == LinkDecor.PLUS || decor2 == LinkDecor.PLUS) {
-			sb.append(",arrowsize=1.5");
-		}
-
-		if (style == LinkStyle.DASHED) {
-			sb.append(",style=dashed");
-		}
-		if (style == LinkStyle.DOTTED) {
-			sb.append(",style=dotted,");
-		}
-		if (style == LinkStyle.BOLD) {
-			sb.append(",style=bold,");
-		}
-
-		return sb.toString();
 	}
 
 	public String getSpecificDecorationSvek() {
@@ -167,22 +129,11 @@ public class LinkType {
 		sb.append(decor2.getArrowDotSvek());
 		sb.append(",arrowhead=");
 		sb.append(decor1.getArrowDotSvek());
-
-		if (decor1 == LinkDecor.EXTENDS || decor2 == LinkDecor.EXTENDS) {
-			sb.append(",arrowsize=2");
+		
+		final double arrowsize = Math.max(decor1.getArrowSize(), decor2.getArrowSize());
+		if (arrowsize > 0) {
+			sb.append(",arrowsize=" + arrowsize);
 		}
-		if (decor1 == LinkDecor.PLUS || decor2 == LinkDecor.PLUS) {
-			sb.append(",arrowsize=1.5");
-		}
-		if (OptionFlags.NEW_DIAMOND) {
-			if (decor1 == LinkDecor.COMPOSITION || decor2 == LinkDecor.COMPOSITION) {
-				sb.append(",arrowsize=1.2");
-			}
-			if (decor1 == LinkDecor.AGREGATION || decor2 == LinkDecor.AGREGATION) {
-				sb.append(",arrowsize=1.2");
-			}
-		}
-
 		return sb.toString();
 	}
 

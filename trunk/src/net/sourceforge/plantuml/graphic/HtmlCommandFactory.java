@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8100 $
+ * Revision $Revision: 8465 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -122,7 +122,7 @@ class HtmlCommandFactory {
 		}
 
 		if (s.matches(Splitter.linkPattern)) {
-			final Url url = StringUtils.extractUrl(null, s);
+			final Url url = StringUtils.extractUrl(null, s, true);
 			url.setMember(true);
 			return new TextLink(url);
 		}

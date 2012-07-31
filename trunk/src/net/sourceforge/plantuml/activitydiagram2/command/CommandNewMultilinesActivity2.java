@@ -54,7 +54,7 @@ public class CommandNewMultilinesActivity2 extends CommandMultilines<ActivityDia
 
 
 	public final CommandExecutionResult execute(List<String> lines) {
-		if (getSystem().getEntities().size() == 0) {
+		if (getSystem().getLeafs().size() == 0) {
 			return CommandExecutionResult.error("Missing start keyword");
 		}
 

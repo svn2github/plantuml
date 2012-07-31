@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 8135 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
+import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
@@ -116,6 +117,9 @@ public class ComponentRoseSelfArrow extends AbstractComponentRoseArrow {
 			polygon.addPoint(getArrowDeltaX(), textAndArrowHeight - getArrowDeltaY());
 			polygon.addPoint(0, textAndArrowHeight);
 			polygon.addPoint(getArrowDeltaX(), textAndArrowHeight + getArrowDeltaY());
+			if (OptionFlags.NICE_ARROW) {
+				polygon.addPoint(getArrowDeltaX() - 4, textAndArrowHeight);
+			}
 		}
 		return polygon;
 	}

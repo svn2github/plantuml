@@ -42,7 +42,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntityMutable;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
@@ -80,15 +81,15 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 			display = name;
 			code = arg.get("AS").get(0);
 		}
-		final IEntityMutable currentPackage = getSystem().getCurrentGroup();
-		final IEntityMutable p = getSystem().getOrCreateGroup(code, display, null, GroupType.PACKAGE, currentPackage);
+		final IGroup currentPackage = getSystem().getCurrentGroup();
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);
 		final String stereotype = arg.get("STEREOTYPE").get(0);
 		if (stereotype != null) {
-			p.zsetStereotype(new Stereotype(stereotype));
+			p.setStereotype(new Stereotype(stereotype));
 		}
 		final String color = arg.get("COLOR").get(0);
 		if (color != null) {
-			p.zsetBackColor(HtmlColorUtils.getColorIfValid(color));
+			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}
 		return CommandExecutionResult.ok();
 	}

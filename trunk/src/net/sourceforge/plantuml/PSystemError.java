@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7723 $
+ * Revision $Revision: 8441 $
  */
 package net.sourceforge.plantuml;
 
@@ -76,7 +76,7 @@ public class PSystemError extends AbstractPSystem {
 		this(source, Collections.singletonList(singleError));
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		getPngError().writeImage(os, getMetadata(), fileFormat);
 	}

@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -105,7 +105,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		final String desc0 = line0.get("DESC").get(0);
 		Url url = null;
 		if (StringUtils.isNotEmpty(desc0)) {
-			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0);
+			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0, true);
 			if (url == null) {
 				sb.append(desc0);
 				sb.append("\\n");
@@ -113,7 +113,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		}
 		for (int i = 1; i < lines.size() - 1; i++) {
 			if (i == 1 && url == null) {
-				url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i));
+				url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i), true);
 				if (url != null) {
 					continue;
 				}
@@ -142,9 +142,9 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
 		if (partition != null) {
-			getSystem().getOrCreateGroup(partition, partition, null, GroupType.PACKAGE, null);
+			getSystem().getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, null);
 		}
-		final IEntity entity2 = getSystem().createEntity(code, display, EntityType.ACTIVITY);
+		final IEntity entity2 = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), LeafType.ACTIVITY);
 		if (partition != null) {
 			getSystem().endGroup();
 		}

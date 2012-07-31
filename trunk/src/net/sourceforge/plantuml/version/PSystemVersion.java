@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.AbstractPSystem;
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.cucadiagram.dot.GraphvizUtils;
@@ -74,14 +75,14 @@ public class PSystemVersion extends AbstractPSystem {
 		}
 	}
 
-	public void exportDiagram(OutputStream os, StringBuilder cmap, int index, FileFormatOption fileFormat)
+	public void exportDiagram(OutputStream os, CMapData cmap, int index, FileFormatOption fileFormat)
 			throws IOException {
 		getGraphicStrings().writeImage(os, fileFormat);
 	}
 
 	public static PSystemVersion createShowVersion() throws IOException {
 		final List<String> strings = new ArrayList<String>();
-		strings.add("<b>PlantUML version " + Version.version() + "</b> (" + new Date(Version.compileTime()) + ")");
+		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
 		strings.add(" ");
 
 		strings.addAll(GraphvizUtils.getTestDotStrings(true));
@@ -98,7 +99,7 @@ public class PSystemVersion extends AbstractPSystem {
 	public static PSystemVersion createShowAuthors() throws IOException {
 		// Duplicate in OptionPrint
 		final List<String> strings = new ArrayList<String>();
-		strings.add("<b>PlantUML version " + Version.version() + "</b> (" + new Date(Version.compileTime()) + ")");
+		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
 		strings.add(" ");
 		strings.add("<u>Original idea</u>: Arnaud Roques");
 		strings.add("<u>Word Macro</u>: Alain Bertucat & Matthieu Sabatier");
@@ -115,7 +116,7 @@ public class PSystemVersion extends AbstractPSystem {
 
 	public static PSystemVersion createCheckVersions(String host, String port) throws IOException {
 		final List<String> strings = new ArrayList<String>();
-		strings.add("<b>PlantUML version " + Version.version() + "</b> (" + new Date(Version.compileTime()) + ")");
+		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
 
 		final int lastversion = extractDownloadableVersion(host, port);
 

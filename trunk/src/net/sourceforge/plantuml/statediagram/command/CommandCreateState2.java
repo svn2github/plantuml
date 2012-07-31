@@ -33,9 +33,9 @@
  */
 package net.sourceforge.plantuml.statediagram.command;
 
-import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
@@ -71,7 +71,7 @@ public class CommandCreateState2 extends SingleLineCommand2<StateDiagram> {
 		final String code = arg2.get("CODE").get(0);
 		final String display = arg2.get("DISPLAY").get(0);
 		final IEntity ent = getSystem().getOrCreateClass(code);
-		ent.setDisplay2(display);
+		ent.setDisplay(StringUtils.getWithNewlines(display));
 
 		final String stereotype = arg2.get("STEREOTYPE").get(0);
 		if (stereotype != null) {

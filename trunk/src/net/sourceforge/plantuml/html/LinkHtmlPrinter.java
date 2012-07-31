@@ -36,7 +36,7 @@ package net.sourceforge.plantuml.html;
 import java.io.PrintWriter;
 
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.cucadiagram.EntityType;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -174,7 +174,7 @@ public final class LinkHtmlPrinter {
 	}
 
 	static String urlOf(IEntity ent) {
-		if (ent.getEntityType() == EntityType.NOTE) {
+		if (ent.getEntityType() == LeafType.NOTE) {
 			throw new IllegalArgumentException();
 		}
 		if (ent.getCode().matches("[-\\w_ .]+")) {

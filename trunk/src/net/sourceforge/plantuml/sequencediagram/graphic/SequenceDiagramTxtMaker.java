@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import net.sourceforge.plantuml.CMapData;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.UmlDiagramInfo;
 import net.sourceforge.plantuml.asciiart.TextSkin;
@@ -127,7 +128,7 @@ public class SequenceDiagramTxtMaker implements FileMaker {
 		return 1;
 	}
 
-	public void appendCmap(StringBuilder cmap) {
+	public void appendCmap(CMapData cmap) {
 	}
 
 }

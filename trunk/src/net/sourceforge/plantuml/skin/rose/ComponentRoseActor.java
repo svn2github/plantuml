@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8065 $
+ * Revision $Revision: 8151 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -67,10 +67,10 @@ public class ComponentRoseActor extends AbstractTextualComponent {
 		ug.getParam().setColor(getFontColor());
 		final TextBlock textBlock = getTextBlock();
 		final StringBounder stringBounder = ug.getStringBounder();
-		final double delta = (getPreferredWidth(stringBounder) - stickman.getPreferredWidth(stringBounder)) / 2;
+		final double delta = (getPreferredWidth(stringBounder) - stickman.getPreferredWidth()) / 2;
 
 		if (head) {
-			textBlock.drawU(ug, getTextMiddlePostion(stringBounder), stickman.getPreferredHeight(stringBounder));
+			textBlock.drawU(ug, getTextMiddlePostion(stringBounder), stickman.getPreferredHeight());
 			ug.translate(delta, 0);
 		} else {
 			textBlock.drawU(ug, getTextMiddlePostion(stringBounder), 0);
@@ -85,12 +85,12 @@ public class ComponentRoseActor extends AbstractTextualComponent {
 
 	@Override
 	public double getPreferredHeight(StringBounder stringBounder) {
-		return stickman.getPreferredHeight(stringBounder) + getTextHeight(stringBounder);
+		return stickman.getPreferredHeight() + getTextHeight(stringBounder);
 	}
 
 	@Override
 	public double getPreferredWidth(StringBounder stringBounder) {
-		return Math.max(stickman.getPreferredWidth(stringBounder), getTextWidth(stringBounder));
+		return Math.max(stickman.getPreferredWidth(), getTextWidth(stringBounder));
 	}
 
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8475 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -55,7 +55,7 @@ class EntityImageCircleInterface extends AbstractEntityImage {
 
 	public EntityImageCircleInterface(IEntity entity) {
 		super(entity);
-		this.name = TextBlockUtils.create(entity.getDisplay2(), new FontConfiguration(
+		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
 				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
 		this.circleInterface = new CircleInterface(getYellow(), getRed());
 	}

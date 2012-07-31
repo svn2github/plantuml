@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8137 $
  *
  */
 package net.sourceforge.plantuml;
@@ -53,7 +53,7 @@ public abstract class AbstractPSystem implements PSystem {
 	private String getVersion() {
 		final StringBuilder toAppend = new StringBuilder();
 		toAppend.append("PlantUML version ");
-		toAppend.append(Version.version());
+		toAppend.append(Version.versionString());
 		toAppend.append("(" + new Date(Version.compileTime()) + ")\n");
 		final Properties p = System.getProperties();
 		toAppend.append(p.getProperty("java.runtime.name"));
