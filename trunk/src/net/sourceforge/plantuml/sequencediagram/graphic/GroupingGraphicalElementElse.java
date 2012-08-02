@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7895 $
+ * Revision $Revision: 8497 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.sequencediagram.graphic;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.cucadiagram.dot.Lazy2;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.InGroupableList;
 import net.sourceforge.plantuml.skin.Area;
@@ -47,11 +46,11 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 class GroupingGraphicalElementElse extends GroupingGraphicalElement {
 
 	private final Component compElse;
-	private final Lazy2<Double> afterY;
+	private final Lazy afterY;
 	private final boolean parallel;
 
 	public GroupingGraphicalElementElse(double startingY, Component compElse, InGroupableList inGroupableList, boolean parallel,
-			Lazy2<Double> afterY) {
+			Lazy afterY) {
 		super(startingY, inGroupableList);
 		this.parallel = parallel;
 		this.compElse = compElse;

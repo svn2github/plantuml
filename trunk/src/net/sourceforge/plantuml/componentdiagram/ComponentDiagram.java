@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8532 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
@@ -40,7 +40,6 @@ import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -68,10 +67,10 @@ public class ComponentDiagram extends AbstractEntityDiagram {
 	@Override
 	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
 		code = getFullyQualifiedCode(code);
-		if (super.leafExist(code)) {
+//		if (super.leafExist(code)) {
 			return super.getOrCreateLeaf(code, defaultType);
-		}
-		return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
+//		}
+//		return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
 	}
 	
 	@Override

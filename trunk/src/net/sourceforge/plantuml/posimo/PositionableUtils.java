@@ -140,8 +140,8 @@ public class PositionableUtils {
 		// return new PositionableImpl(pt.getX() + 20, pt.getY(),
 		// toMove.getSize());
 
-		final double deltaX = (centerToMove.getX() - centerFixe.getX());
-		final double deltaY = (centerToMove.getY() - centerFixe.getY());
+		final double deltaX = centerToMove.getX() - centerFixe.getX();
+		final double deltaY = centerToMove.getY() - centerFixe.getY();
 
 		double min = 0.0;
 		if (doesIntersectWithThisCoef(fixe, toMove, deltaX, deltaY, min) == false) {

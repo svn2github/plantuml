@@ -120,7 +120,7 @@ public class Day implements TimeElement {
 	}
 
 	public int compareTo(TimeElement other2) {
-		Day other = (Day) other2;
+		final Day other = (Day) other2;
 		if (year > other.year) {
 			return 1;
 		}

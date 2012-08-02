@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8513 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -136,7 +136,6 @@ public class GraphicStrings implements IEntityImage {
 
 	private BufferedImage createImage() {
 		EmptyImageBuilder builder = new EmptyImageBuilder(10, 10, colorMapper.getMappedColor(background));
-		// BufferedImage im = builder.getBufferedImage();
 		Graphics2D g2d = builder.getGraphics2D();
 
 		final Dimension2D size = drawU(new UGraphicG2d(colorMapper, g2d, null, 1.0));

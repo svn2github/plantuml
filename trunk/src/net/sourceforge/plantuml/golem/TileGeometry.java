@@ -38,8 +38,6 @@ public enum TileGeometry {
 
 	public TileGeometry opposite() {
 		switch (this) {
-		case CENTER:
-			throw new UnsupportedOperationException();
 		case NORTH:
 			return SOUTH;
 		case SOUTH:
@@ -48,8 +46,26 @@ public enum TileGeometry {
 			return WEST;
 		case WEST:
 			return EAST;
+		case CENTER:
+		default:
+			throw new UnsupportedOperationException();
 		}
-		throw new UnsupportedOperationException();
+	}
+
+	public static TileGeometry fromString(String s) {
+		final char c = Character.toUpperCase(s.charAt(0));
+		switch (c) {
+		case 'N':
+			return NORTH;
+		case 'S':
+			return SOUTH;
+		case 'E':
+			return EAST;
+		case 'W':
+			return WEST;
+		default:
+			throw new IllegalArgumentException();
+		}
 	}
 
 }

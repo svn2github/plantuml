@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8519 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -411,9 +411,8 @@ public class Graph3 {
 	}
 
 	public Dimension2D getDimension() {
-		final double width = spaceWidth * maxCol;// + boxWidth * (maxCol +
-		// 1);
-		final int height = spaceWidth * maxRow;// + boxHeight * (maxRow + 1);
+		final double width = spaceWidth * maxCol;
+		final int height = spaceWidth * maxRow; // + boxHeight * (maxRow + 1);
 		return new Dimension2DDouble(width + 2 * margin + addedWidth, height + 2 * margin + addedHeight);
 
 	}
@@ -453,9 +452,7 @@ public class Graph3 {
 				continue;
 			}
 			for (LineSegmentInt seg : p.segments()) {
-				g2d
-						.drawLine(seg.getP1().getXint(), seg.getP1().getYint(), seg.getP2().getXint(), seg.getP2()
-								.getYint());
+				g2d.drawLine(seg.getP1().getXint(), seg.getP1().getYint(), seg.getP2().getXint(), seg.getP2().getYint());
 			}
 		}
 

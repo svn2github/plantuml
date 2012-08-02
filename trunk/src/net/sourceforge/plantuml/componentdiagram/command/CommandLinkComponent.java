@@ -45,7 +45,6 @@ import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -58,18 +57,19 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 	}
 
 	static RegexConcat getRegex() {
-		return new RegexConcat(new RegexLeaf("^"), //
-				getRegexGroup("G1"),//
-				new RegexLeaf("\\s*"),//
+		return new RegexConcat(
+				new RegexLeaf("^"), //
+				getRegexGroup("G1"), //
+				new RegexLeaf("\\s*"), //
 				new RegexOr(
-				//
+						//
 						new RegexLeaf("AR_TO_RIGHT",
 								"(([-=.]+)(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?([-=.]*)([\\]>^]|\\|[>\\]])?)"),
 						new RegexLeaf("AR_TO_LEFT",
 								"(([\\[<^]|[<\\[]\\|)?([-=.]*)(left|right|up|down|le?|ri?|up?|do?)?([-=.]+))")),
-				new RegexLeaf("\\s*"),//
-				getRegexGroup("G2"),//
-				new RegexLeaf("\\s*"),//
+				new RegexLeaf("\\s*"), //
+				getRegexGroup("G2"), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("END", "(?::\\s*([^\"]+))?$"));
 	}
 
@@ -102,12 +102,12 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 
 		final LinkType linkType;
 		String queue;
-		if (arg.get("AR_TO_RIGHT").get(0) != null) {
-			queue = arg.get("AR_TO_RIGHT").get(1) + arg.get("AR_TO_RIGHT").get(3);
-			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_RIGHT").get(4));
-		} else {
+		if (arg.get("AR_TO_RIGHT").get(0) == null) {
 			queue = arg.get("AR_TO_LEFT").get(2) + arg.get("AR_TO_LEFT").get(4);
 			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_LEFT").get(1)).getInversed();
+		} else {
+			queue = arg.get("AR_TO_RIGHT").get(1) + arg.get("AR_TO_RIGHT").get(3);
+			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_RIGHT").get(4));
 		}
 		final Direction dir = getDirection(arg);
 
@@ -144,17 +144,15 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 
 		final LinkType linkType;
 		final String queue;
-		if (arg.get("AR_TO_RIGHT").get(0) != null) {
-			queue = arg.get("AR_TO_RIGHT").get(1) + arg.get("AR_TO_RIGHT").get(3);
-			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_RIGHT").get(4));
-		} else {
+		if (arg.get("AR_TO_RIGHT").get(0) == null) {
 			queue = arg.get("AR_TO_LEFT").get(2) + arg.get("AR_TO_LEFT").get(4);
 			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_LEFT").get(1)).getInversed();
-
+		} else {
+			queue = arg.get("AR_TO_RIGHT").get(1) + arg.get("AR_TO_RIGHT").get(3);
+			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_RIGHT").get(4));
 		}
 
-		final Link link = new Link(cl1, cl2, linkType, arg.get("END").get(0),
-				queue.length());
+		final Link link = new Link(cl1, cl2, linkType, arg.get("END").get(0), queue.length());
 		getSystem().addLink(link);
 		return CommandExecutionResult.ok();
 	}

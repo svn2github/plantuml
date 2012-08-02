@@ -58,7 +58,7 @@ public class DriverPathSvg extends DriverShadowedG2d implements UDriver<SvgGraph
 				.getColor()));
 		final HtmlColor back = param.getBackcolor();
 		if (back instanceof HtmlColorGradient) {
-			HtmlColorGradient gr = (HtmlColorGradient) back;
+			final HtmlColorGradient gr = (HtmlColorGradient) back;
 			final String id = svg.createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
 					StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())), gr.getPolicy());
 			svg.setFillColor("url(#" + id + ")");

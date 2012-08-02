@@ -52,8 +52,8 @@ public class CommandUrl extends SingleLineCommand<SequenceDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final String code = arg.get(0);
-		String urlString = arg.get(1);
-		final String title = arg.get(2);
+		final String urlString = arg.get(1);
+		// final String title = arg.get(2);
 		final Participant p = getSystem().getOrCreateParticipant(code);
 		final Url url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), urlString, true);
 		p.setUrl(url);

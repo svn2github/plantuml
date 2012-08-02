@@ -35,8 +35,8 @@ package net.sourceforge.plantuml.compositediagram;
 
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class CompositeDiagram extends AbstractEntityDiagram {
 

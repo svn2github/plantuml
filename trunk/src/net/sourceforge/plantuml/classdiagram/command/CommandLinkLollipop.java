@@ -46,8 +46,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -99,15 +99,15 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 		final IEntity normalEntity;
 
 		final String suffix = "lol" + UniqueSequence.getValue();
-		if (arg.get("LOL_THEN_ENT").get(0) != null) {
-			cl2 = getSystem().getOrCreateClass(ent2);
-			cl1 = getSystem().createLeaf(cl2.getCode() + suffix, StringUtils.getWithNewlines(ent1), LeafType.LOLLIPOP);
-			normalEntity = cl2;
-		} else {
+		if (arg.get("LOL_THEN_ENT").get(0) == null) {
 			assert arg.get("ENT_THEN_LOL").get(0) != null;
 			cl1 = getSystem().getOrCreateClass(ent1);
 			cl2 = getSystem().createLeaf(cl1.getCode() + suffix, StringUtils.getWithNewlines(ent2), LeafType.LOLLIPOP);
 			normalEntity = cl1;
+		} else {
+			cl2 = getSystem().getOrCreateClass(ent2);
+			cl1 = getSystem().createLeaf(cl2.getCode() + suffix, StringUtils.getWithNewlines(ent1), LeafType.LOLLIPOP);
+			normalEntity = cl2;
 		}
 
 		final LinkType linkType = getLinkType(arg);
@@ -187,7 +187,7 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 	private void addLink(Link link, String weight) {
 		getSystem().addLink(link);
 		if (weight == null) {
-			final LinkType type = link.getType();
+			// final LinkType type = link.getType();
 			// --|> highest
 			// --*, -->, --o normal
 			// ..*, ..>, ..o lowest

@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
 
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
@@ -113,9 +112,9 @@ public class DriverPathG2d extends DriverShadowedG2d implements UDriver<Graphics
 
 		final HtmlColor back = param.getBackcolor();
 		if (back instanceof HtmlColorGradient) {
-			final HtmlColorGradient gr = (HtmlColorGradient) back;
-			final char policy = gr.getPolicy();
-			final GradientPaint paint;
+//			final HtmlColorGradient gr = (HtmlColorGradient) back;
+//			final char policy = gr.getPolicy();
+//			final GradientPaint paint;
 //			if (policy == '|') {
 //				paint = new GradientPaint((float) x, (float) (y + shape.getHeight()) / 2, mapper.getMappedColor(gr
 //						.getColor1()), (float) (x + shape.getWidth()), (float) (y + shape.getHeight()) / 2,

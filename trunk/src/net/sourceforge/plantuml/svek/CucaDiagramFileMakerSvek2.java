@@ -42,11 +42,10 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.plantuml.ColorParam;
-import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.cucadiagram.EntityImpl;
+import net.sourceforge.plantuml.cucadiagram.EntityPosition;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -56,7 +55,9 @@ import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
+import net.sourceforge.plantuml.cucadiagram.entity.EntityFactory;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.GraphicStrings;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -68,13 +69,36 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
+import net.sourceforge.plantuml.skin.StickMan;
 import net.sourceforge.plantuml.skin.rose.Rose;
+import net.sourceforge.plantuml.svek.image.EntityImageActivity;
+import net.sourceforge.plantuml.svek.image.EntityImageActor2;
+import net.sourceforge.plantuml.svek.image.EntityImageArcCircle;
+import net.sourceforge.plantuml.svek.image.EntityImageAssociation;
+import net.sourceforge.plantuml.svek.image.EntityImageAssociationPoint;
+import net.sourceforge.plantuml.svek.image.EntityImageBranch;
+import net.sourceforge.plantuml.svek.image.EntityImageCircleEnd;
+import net.sourceforge.plantuml.svek.image.EntityImageCircleInterface;
+import net.sourceforge.plantuml.svek.image.EntityImageCircleStart;
+import net.sourceforge.plantuml.svek.image.EntityImageClass;
+import net.sourceforge.plantuml.svek.image.EntityImageComponent;
+import net.sourceforge.plantuml.svek.image.EntityImageEmptyPackage2;
+import net.sourceforge.plantuml.svek.image.EntityImageGroup;
+import net.sourceforge.plantuml.svek.image.EntityImageLollipopInterface;
+import net.sourceforge.plantuml.svek.image.EntityImageNote;
+import net.sourceforge.plantuml.svek.image.EntityImageObject;
+import net.sourceforge.plantuml.svek.image.EntityImagePseudoState;
+import net.sourceforge.plantuml.svek.image.EntityImageState;
+import net.sourceforge.plantuml.svek.image.EntityImageStateBorder;
+import net.sourceforge.plantuml.svek.image.EntityImageSynchroBar;
+import net.sourceforge.plantuml.svek.image.EntityImageUseCase;
 
 public final class CucaDiagramFileMakerSvek2 {
 
 	private final ColorSequence colorSequence = new ColorSequence();
 
 	private final DotData dotData;
+	private final EntityFactory entityFactory;
 
 	static private final StringBounder stringBounder;
 
@@ -83,8 +107,9 @@ public final class CucaDiagramFileMakerSvek2 {
 		stringBounder = StringBounderUtils.asStringBounder(builder.getGraphics2D());
 	}
 
-	public CucaDiagramFileMakerSvek2(DotData dotData) {
+	public CucaDiagramFileMakerSvek2(DotData dotData, EntityFactory entityFactory) {
 		this.dotData = dotData;
+		this.entityFactory = entityFactory;
 	}
 
 	private DotStringFactory dotStringFactory;
@@ -97,13 +122,13 @@ public final class CucaDiagramFileMakerSvek2 {
 
 		dotStringFactory = new DotStringFactory(colorSequence, stringBounder, dotData);
 
-		printGroups(dotData.getEntityFactory().getRootGroup());
+		printGroups(dotData.getRootGroup());
 		printEntities(getUnpackagedEntities());
 
 		for (Link link : dotData.getLinks()) {
 			try {
-				final String shapeUid1 = getBibliotekon().getShapeUid(link.getEntity1());
-				final String shapeUid2 = getBibliotekon().getShapeUid(link.getEntity2());
+				final String shapeUid1 = getBibliotekon().getShapeUid((ILeaf) link.getEntity1());
+				final String shapeUid2 = getBibliotekon().getShapeUid((ILeaf) link.getEntity2());
 
 				String ltail = null;
 				if (shapeUid1.startsWith(Cluster.CENTER_ID)) {
@@ -155,25 +180,43 @@ public final class CucaDiagramFileMakerSvek2 {
 			return error(dotStringFactory.getDotExe());
 		}
 
-		final Dimension2D dim = Dimension2DDouble.delta(dotStringFactory.solve(dotStrings), 10);
+		final ClusterPosition position = dotStringFactory.solve(dotStrings).delta(10, 10);
+		final double minY = position.getMinY();
+		final double minX = position.getMinX();
+		if (minX > 0 || minY > 0) {
+			throw new IllegalStateException();
+		}
 		final HtmlColor border;
 		if (dotData.getUmlDiagramType() == UmlDiagramType.STATE) {
 			border = getColor(ColorParam.stateBorder, null);
 		} else {
 			border = getColor(ColorParam.packageBorder, null);
 		}
-		final SvekResult result = new SvekResult(dim, dotData, dotStringFactory, border);
-		result.moveSvek(6, 0);
+		final SvekResult result = new SvekResult(position, dotData, dotStringFactory, border);
+		result.moveSvek(6 - minX, -minY);
 		return result;
 
 	}
 
 	private boolean onlyOneLink(IEntity ent) {
-		return Link.onlyOneLink(ent, dotData.getLinks());
+		int nb = 0;
+		for (Link link : dotData.getLinks()) {
+			if (link.isInvis()) {
+				continue;
+			}
+			if (link.contains(ent)) {
+				nb++;
+			}
+			if (nb > 1) {
+				return false;
+			}
+		}
+		return nb == 1;
 	}
 
-	protected final HtmlColor getColor(ColorParam colorParam, String stereo) {
-		return new Rose().getHtmlColor(dotData.getSkinParam(), colorParam, stereo);
+	private HtmlColor getColor(ColorParam colorParam, Stereotype stereo) {
+		final String s = stereo == null ? null : stereo.getLabel();
+		return new Rose().getHtmlColor(dotData.getSkinParam(), colorParam, s);
 	}
 
 	private Cluster getCluster(IEntity g) {
@@ -229,7 +272,7 @@ public final class CucaDiagramFileMakerSvek2 {
 	}
 
 	private void printEntity(ILeaf ent) {
-		final IEntityImage image = Shape.printEntity(ent, dotData);
+		final IEntityImage image = printEntity(ent, dotData);
 		final Dimension2D dim = image.getDimension(stringBounder);
 		final Shape shape = new Shape(image, image.getShapeType(), dim.getWidth(), dim.getHeight(), colorSequence,
 				ent.isTop(), image.getShield(), ent.getUrls(), ent.getEntityPosition());
@@ -237,10 +280,111 @@ public final class CucaDiagramFileMakerSvek2 {
 		getBibliotekon().putShape(ent, shape);
 	}
 
+	private IEntityImage printEntity(ILeaf ent, DotData dotData) {
+		if (ent.getSvekImage() == null) {
+			return createEntityImageBlock(dotData, ent);
+		}
+		return ent.getSvekImage();
+	}
+
+	private IEntityImage createEntityImageBlock(DotData dotData, ILeaf leaf) {
+		if (leaf.getEntityType() == LeafType.CLASS || leaf.getEntityType() == LeafType.ABSTRACT_CLASS
+				|| leaf.getEntityType() == LeafType.INTERFACE || leaf.getEntityType() == LeafType.ENUM) {
+			return new EntityImageClass((ILeaf) leaf, dotData.getSkinParam(), dotData);
+		}
+		if (leaf.getEntityType() == LeafType.NOTE) {
+			return new EntityImageNote(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.ACTIVITY) {
+			return new EntityImageActivity(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.STATE) {
+			if (leaf.getEntityPosition() != EntityPosition.NORMAL) {
+				final Cluster stateParent = getBibliotekon().getCluster(leaf.getParentContainer());
+				return new EntityImageStateBorder(leaf, dotData.getSkinParam(), stateParent);
+			}
+			return new EntityImageState(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.CIRCLE_START) {
+			return new EntityImageCircleStart(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.CIRCLE_END) {
+			return new EntityImageCircleEnd(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.USECASE) {
+			return new EntityImageUseCase(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.BRANCH) {
+			return new EntityImageBranch(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.LOLLIPOP) {
+			return new EntityImageLollipopInterface(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.ACTOR) {
+			final TextBlock stickman = new StickMan(getColor(ColorParam.usecaseActorBackground, leaf.getStereotype()),
+					getColor(ColorParam.usecaseActorBorder, leaf.getStereotype()),
+					dotData.getSkinParam().shadowing() ? 4.0 : 0.0);
+			return new EntityImageActor2(leaf, dotData.getSkinParam(), FontParam.USECASE_ACTOR_STEREOTYPE,
+					FontParam.USECASE_ACTOR, stickman);
+		}
+		if (leaf.getEntityType() == LeafType.BOUNDARY) {
+			final TextBlock stickman = new Boundary(getColor(ColorParam.usecaseActorBackground, leaf.getStereotype()),
+					getColor(ColorParam.usecaseActorBorder, leaf.getStereotype()),
+					dotData.getSkinParam().shadowing() ? 4.0 : 0.0);
+			return new EntityImageActor2(leaf, dotData.getSkinParam(), FontParam.USECASE_ACTOR_STEREOTYPE,
+					FontParam.USECASE_ACTOR, stickman);
+		}
+		if (leaf.getEntityType() == LeafType.CONTROL) {
+			final TextBlock stickman = new Control(getColor(ColorParam.usecaseActorBackground, leaf.getStereotype()),
+					getColor(ColorParam.usecaseActorBorder, leaf.getStereotype()),
+					dotData.getSkinParam().shadowing() ? 4.0 : 0.0);
+			return new EntityImageActor2(leaf, dotData.getSkinParam(), FontParam.USECASE_ACTOR_STEREOTYPE,
+					FontParam.USECASE_ACTOR, stickman);
+		}
+		if (leaf.getEntityType() == LeafType.ENTITY_DOMAIN) {
+			final TextBlock stickman = new EntityDomain(getColor(ColorParam.usecaseActorBackground,
+					leaf.getStereotype()), getColor(ColorParam.usecaseActorBorder, leaf.getStereotype()), dotData
+					.getSkinParam().shadowing() ? 4.0 : 0.0);
+			return new EntityImageActor2(leaf, dotData.getSkinParam(), FontParam.USECASE_ACTOR_STEREOTYPE,
+					FontParam.USECASE_ACTOR, stickman);
+		}
+		if (leaf.getEntityType() == LeafType.COMPONENT) {
+			return new EntityImageComponent(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.OBJECT) {
+			return new EntityImageObject(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.SYNCHRO_BAR) {
+			return new EntityImageSynchroBar(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.CIRCLE_INTERFACE) {
+			return new EntityImageCircleInterface(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.ARC_CIRCLE) {
+			return new EntityImageArcCircle(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.POINT_FOR_ASSOCIATION) {
+			return new EntityImageAssociationPoint(leaf, dotData.getSkinParam());
+		}
+		if (leaf.isGroup()) {
+			return new EntityImageGroup(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.EMPTY_PACKAGE) {
+			return new EntityImageEmptyPackage2(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.ASSOCIATION) {
+			return new EntityImageAssociation(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.PSEUDO_STATE) {
+			return new EntityImagePseudoState(leaf, dotData.getSkinParam());
+		}
+		throw new UnsupportedOperationException(leaf.getEntityType().toString());
+	}
+
 	private Collection<ILeaf> getUnpackagedEntities() {
 		final List<ILeaf> result = new ArrayList<ILeaf>();
 		for (ILeaf ent : dotData.getLeafs()) {
-			if (((EntityImpl) ent).getContainerOrEquivalentThenEqualsLeaf(dotData.getTopParent())) {
+			if (dotData.getTopParent() == ent.getParentContainer()) {
 				result.add(ent);
 			}
 		}
@@ -250,8 +394,8 @@ public final class CucaDiagramFileMakerSvek2 {
 	private void printGroups(IGroup parent) throws IOException {
 		for (IGroup g : dotData.getGroupHierarchy().getChildrenGroups(parent)) {
 			if (dotData.isEmpty(g) && g.zgetGroupType() == GroupType.PACKAGE) {
-				final ILeaf folder = EntityImpl.createEntity_A1_leaf(dotData.getEntityFactory(), g.getCode(),
-						g.getDisplay(), LeafType.EMPTY_PACKAGE, g.getParentContainer(), null);
+				final ILeaf folder = entityFactory.createLeaf(g.getCode(), g.getDisplay(),
+						LeafType.EMPTY_PACKAGE, g.getParentContainer(), null);
 				folder.setSpecificBackcolor(g.getSpecificBackColor());
 				printEntity(folder);
 			} else {
@@ -299,45 +443,7 @@ public final class CucaDiagramFileMakerSvek2 {
 		dotStringFactory.openCluster(g, titleWidth, titleHeight, title);
 		this.printEntities(g.getLeafsDirect());
 
-		// sb.append("subgraph " + g.getUid() + " {");
-		//
-		// final UFont font =
-		// getData().getSkinParam().getFont(getFontParamForGroup(), stereo);
-		// sb.append("fontsize=\"" + font.getSize() + "\";");
-		// final String fontFamily = font.getFamily(null);
-		// if (fontFamily != null) {
-		// sb.append("fontname=\"" + fontFamily + "\";");
-		// }
-		//
-		// if (g.getDisplay() != null) {
-		// sb.append("label=<" + manageHtmlIB(g.getDisplay(),
-		// getFontParamForGroup(), stereo) + ">;");
-		// }
-		// final String fontColor =
-		// getAsHtml(getData().getSkinParam().getFontHtmlColor(getFontParamForGroup(),
-		// stereo));
-		// sb.append("fontcolor=\"" + fontColor + "\";");
-		//
-		// if (getGroupBackColor(g) != null) {
-		// sb.append("fillcolor=\"" + getAsHtml(getGroupBackColor(g)) + "\";");
-		// }
-		//
-		// if (g.getType() == GroupType.STATE) {
-		// sb.append("color=" + getColorString(ColorParam.stateBorder, stereo) +
-		// ";");
-		// } else {
-		// sb.append("color=" + getColorString(ColorParam.packageBorder, stereo)
-		// + ";");
-		// }
-		// sb.append("style=\"" + getStyle(g) + "\";");
-		//
 		printGroups(g);
-		//
-		// this.printEntities(sb, g.entities().values());
-		// for (Link link : getData().getLinks()) {
-		// eventuallySameRank(sb, g, link);
-		// }
-		// sb.append("}");
 
 		dotStringFactory.closeCluster();
 	}

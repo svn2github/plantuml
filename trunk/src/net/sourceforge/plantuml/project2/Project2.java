@@ -61,7 +61,7 @@ public class Project2 implements TaskContainer {
 	}
 
 	public boolean affectation(String var, Value exp) {
-		int idx = var.indexOf('$');
+		final int idx = var.indexOf('$');
 		if (idx != -1) {
 			return affectationTask(var.substring(0, idx), var.substring(idx + 1), exp);
 		}
@@ -73,7 +73,7 @@ public class Project2 implements TaskContainer {
 	}
 
 	private boolean affectationJalon(String taskCode, Value exp) {
-		TaskImpl result = new TaskImpl(timeline, taskCode);
+		final TaskImpl result = new TaskImpl(timeline, taskCode);
 		result.setStart(((ValueTime) exp).getValue());
 		result.setDuration(0);
 		tasks.add(result);

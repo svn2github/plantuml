@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityImpl;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.svek.GroupPngMakerActivity;
@@ -68,7 +67,7 @@ public final class CucaDiagramSimplifierActivity {
 //					}
 					
 					final IEntityImage img = computeImage(g);
-					((EntityImpl)g).overideImage42(img, g.getUrls(), LeafType.ACTIVITY);
+					g.overideImage(img, g.getUrls(), LeafType.ACTIVITY);
 					
 					changed = true;
 				}

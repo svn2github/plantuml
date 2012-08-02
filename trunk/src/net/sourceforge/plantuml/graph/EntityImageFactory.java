@@ -28,13 +28,13 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8512 $
  *
  */
 package net.sourceforge.plantuml.graph;
 
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class EntityImageFactory {
 

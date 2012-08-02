@@ -59,9 +59,9 @@ class AcceptTelnetClient extends Thread {
 	}
 
 	public String runInternal() throws IOException {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		while (true) {
-			String s = br.readLine();
+			final String s = br.readLine();
 			if (s == null) {
 				return sb.toString();
 			}
@@ -78,7 +78,7 @@ class AcceptTelnetClient extends Thread {
 		try {
 			final String uml = runInternal();
 			Log.println("UML=" + uml);
-			SourceStringReader s = new SourceStringReader(uml);
+			final SourceStringReader s = new SourceStringReader(uml);
 			s.generateImage(os, new FileFormatOption(FileFormat.ATXT));
 			os.close();
 			br.close();

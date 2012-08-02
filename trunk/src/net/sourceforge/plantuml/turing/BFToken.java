@@ -66,7 +66,8 @@ public enum BFToken {
 			return BRACKET_LEFT;
 		case ']':
 			return BRACKET_RIGHT;
+		default:
+			return null;
 		}
-		return null;
 	}
 }

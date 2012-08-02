@@ -46,7 +46,7 @@ public class ValueInt implements Value {
 	}
 
 	public Value plus(Value other) {
-		ValueInt other2 = (ValueInt) other;
+		final ValueInt other2 = (ValueInt) other;
 		return new ValueInt(value + other2.value);
 	}
 

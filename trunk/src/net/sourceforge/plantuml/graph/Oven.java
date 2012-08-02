@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8519 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -63,7 +63,7 @@ public class Oven {
 	public double tic(Board board, Random rnd) {
 		// Log.println("Oven::tic");
 		final double costBefore = costComputer.getCost(board);
-		final Move move = null;// board.getRandomMove(rnd);
+		final Move move = null; // board.getRandomMove(rnd);
 		board.applyMove(move);
 		final double costAfter = costComputer.getCost(board);
 		final double delta = costAfter - costBefore;

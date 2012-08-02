@@ -36,5 +36,5 @@ package net.sourceforge.plantuml.cucadiagram;
 
 public interface PortionShower {
 
-	boolean showPortion(EntityPortion portion, IEntity entity);
+	boolean showPortion(EntityPortion portion, ILeaf entity);
 }

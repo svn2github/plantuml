@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8440 $
+ * Revision $Revision: 8497 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -41,7 +41,6 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.SkinParamBackcolored;
 import net.sourceforge.plantuml.SkinParamBackcoloredReference;
-import net.sourceforge.plantuml.cucadiagram.dot.Lazy2;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.sequencediagram.Delay;
 import net.sourceforge.plantuml.sequencediagram.Divider;
@@ -447,8 +446,8 @@ class DrawableSetInitializer {
 			}
 			final Component compElse = drawableSet.getSkin().createComponent(ComponentType.GROUPING_ELSE, null,
 					skinParam, Arrays.asList(m.getComment()));
-			Lazy2<Double> lazy = new Lazy2<Double>() {
-				public Double getNow() {
+			final Lazy lazy = new Lazy() {
+				public double getNow() {
 					final GraphicalElement after = drawableSet.getEvent(m.getJustAfter());
 					return after.getStartingY();
 				}

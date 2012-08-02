@@ -40,7 +40,6 @@ import java.util.List;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.EntityImpl;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -65,7 +64,7 @@ public final class CucaDiagramSimplifierState {
 					for (IEntity ent : g.getLeafsDirect()) {
 						urls.addAll(ent.getUrls());
 					}
-					((EntityImpl)g).overideImage42(img, urls, LeafType.STATE);
+					g.overideImage(img, urls, LeafType.STATE);
 
 					changed = true;
 				}

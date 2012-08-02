@@ -53,7 +53,7 @@ public class ParentItem implements Item {
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder(code + " {");
-		for (Iterator<Item> it = children.iterator(); it.hasNext();) {
+		for (final Iterator<Item> it = children.iterator(); it.hasNext();) {
 			final Item child = it.next();
 			sb.append(child.getCode());
 			if (it.hasNext()) {

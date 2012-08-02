@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8539 $
  *
  */
 package net.sourceforge.plantuml.geom.kinetic;
@@ -93,7 +93,7 @@ public class World implements MoveObserver {
 			return new VectorForce(0, 0);
 		}
 		final VectorForce result = new VectorForce(byThis.getX() - onThis.getX(), byThis.getY() - onThis.getY());
-		double v = 100.0 * onThis.getCharge() * byThis.getCharge() / dist / dist;
+		final double v = 100.0 * onThis.getCharge() * byThis.getCharge() / dist / dist;
 		return result.normaliseTo(v);
 	}
 

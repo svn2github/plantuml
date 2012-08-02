@@ -41,7 +41,6 @@ import java.util.List;
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
-import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
@@ -87,12 +86,12 @@ public class MethodsOrFieldsArea implements TextBlockWidth {
 	}
 
 	public Dimension2D calculateDimension(StringBounder stringBounder) {
-		double x = 0;
-		double y = 0;
 		double smallIcon = 0;
 		if (hasSmallIcon()) {
 			smallIcon = skinParam.getCircledCharacterRadius() + 3;
 		}
+		double x = 0;
+		double y = 0;
 		for (Member m : members) {
 			final TextBlock bloc = createTextBlock(m);
 			final Dimension2D dim = bloc.calculateDimension(stringBounder);

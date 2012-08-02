@@ -42,8 +42,8 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.note.CommandNote;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -66,7 +66,7 @@ public class CommandMultilinesNoteActivity2 extends CommandMultilines<ActivityDi
 		final List<String> line0 = StringUtils.getSplit(getStartingPattern(), lines.get(0).trim());
 		final String pos = line0.get(0);
 
-		IEntity activity = getSystem().getLastEntityConsulted();
+		final IEntity activity = getSystem().getLastEntityConsulted();
 		if (activity == null) {
 			// activity = getSystem().getStart();
 			return CommandExecutionResult.error("No activity defined");

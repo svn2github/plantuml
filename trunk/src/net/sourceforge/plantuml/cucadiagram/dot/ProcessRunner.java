@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8540 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -73,7 +73,8 @@ public class ProcessRunner {
 		outStream.join(10000L);
 		this.out = outStream.sb.toString();
 		this.error = errorStream.sb.toString();
-		Log.info("RUN nb = " + (++cpt));
+		cpt++;
+		Log.info("RUN nb = " + cpt);
 	}
 
 	static class ThreadStream extends Thread {

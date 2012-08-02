@@ -57,6 +57,7 @@ import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -65,6 +66,7 @@ import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.skin.rose.Rose;
+import net.sourceforge.plantuml.svek.image.EntityImageState;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.URectangle;
@@ -233,8 +235,8 @@ public class Cluster implements Moveable {
 		return Collections.unmodifiableList(children);
 	}
 
-	public Cluster createChild(IGroup g, int titleWidth, int titleHeight, TextBlock title,
-			ColorSequence colorSequence, ISkinParam skinParam) {
+	public Cluster createChild(IGroup g, int titleWidth, int titleHeight, TextBlock title, ColorSequence colorSequence,
+			ISkinParam skinParam) {
 		final Cluster child = new Cluster(this, g, colorSequence, skinParam);
 		child.titleWidth = titleWidth;
 		child.titleHeight = titleHeight;
@@ -243,7 +245,7 @@ public class Cluster implements Moveable {
 		return child;
 	}
 
-	public final IEntity getGroup() {
+	public final IGroup getGroup() {
 		return group;
 	}
 
@@ -323,6 +325,9 @@ public class Cluster implements Moveable {
 			insides.add(in.getClusterPosition());
 		}
 		final FrontierCalculator frontierCalculator = new FrontierCalculator(getClusterPosition(), insides, points);
+		if (titleHeight > 0 && titleWidth > 0) {
+			frontierCalculator.ensureMinWidth(titleWidth + 10);
+		}
 		final ClusterPosition forced = frontierCalculator.getSuggestedPosition();
 		xTitle += ((forced.getMinX() - minX) + (forced.getMaxX() - maxX)) / 2;
 		yTitle += forced.getMinY() - minY;
@@ -347,7 +352,7 @@ public class Cluster implements Moveable {
 		return new Rose().getHtmlColor(dotData.getSkinParam(), colorParam, stereo);
 	}
 
-	private void drawUState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
+	private void drawUState(UGraphic ug, final double x, final double y, HtmlColor borderColor, DotData dotData) {
 		final Dimension2D total = new Dimension2DDouble(maxX - minX, maxY - minY);
 		final double suppY;
 		if (title == null) {
@@ -356,6 +361,7 @@ public class Cluster implements Moveable {
 			suppY = title.calculateDimension(ug.getStringBounder()).getHeight() + IEntityImage.MARGIN
 					+ IEntityImage.MARGIN_LINE;
 		}
+
 		HtmlColor stateBack = getBackColor();
 		if (stateBack == null) {
 			stateBack = getColor(dotData, ColorParam.stateBackground, group.getStereotype() == null ? null : group
@@ -383,6 +389,14 @@ public class Cluster implements Moveable {
 					total.getWidth());
 		}
 
+		final Stereotype stereotype = group.getStereotype();
+		final boolean withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
+		if (withSymbol) {
+			ug.getParam().setColor(borderColor);
+			EntityImageState.drawSymbol(ug, x + maxX, y + maxY);
+
+		}
+
 	}
 
 	public void setPosition(double minX, double minY, double maxX, double maxY) {
@@ -393,9 +407,9 @@ public class Cluster implements Moveable {
 
 	}
 
-	private boolean isSpecial(Collection<Line> lines) {
+	private boolean isThereALinkFromOrToGroup(Collection<Line> lines) {
 		for (Line line : lines) {
-			if (line.isSpecial(group)) {
+			if (line.isLinkFromOrToGroup(group)) {
 				return true;
 			}
 		}
@@ -539,10 +553,25 @@ public class Cluster implements Moveable {
 	}
 
 	private void printInternal(StringBuilder sb, Collection<Line> lines) {
-		if (isSpecial(lines)) {
+		final boolean thereALinkFromOrToGroup = isThereALinkFromOrToGroup(lines);
+		if (thereALinkFromOrToGroup) {
 			subgraphCluster(sb, "a");
 		}
-		if (protection0()) {
+		final boolean hasEntryOrExitPoint = hasEntryOrExitPoint();
+		if (hasEntryOrExitPoint) {
+			for (Line line : lines) {
+				if (line.isLinkFromOrToGroup(group)) {
+					line.setProjectionCluster(this);
+				}
+			}
+		}
+		boolean protection0 = protection0();
+		boolean protection1 = protection1();
+		if (hasEntryOrExitPoint) {
+			protection0 = false;
+			protection1 = false;
+		}
+		if (protection0) {
 			subgraphCluster(sb, "p0");
 		}
 		sb.append("subgraph " + getClusterId() + " {");
@@ -558,11 +587,15 @@ public class Cluster implements Moveable {
 		}
 		SvekUtils.println(sb);
 
-		if (isSpecial(lines)) {
+		if (hasEntryOrExitPoint) {
+			printClusterEntryExit(sb);
+			subgraphCluster(sb, "ee");
+		}
+		if (thereALinkFromOrToGroup) {
 			sb.append(getSpecialPointId(group) + " [shape=point,width=.01,label=\"\"];");
 			subgraphCluster(sb, "i");
 		}
-		if (protection1()) {
+		if (protection1) {
 			subgraphCluster(sb, "p1");
 		}
 		if (skinParam.useSwimlanes()) {
@@ -579,28 +612,21 @@ public class Cluster implements Moveable {
 			sb.append(getSinkInPoint() + "->" + getMaxPoint() + "  [weight=999];");
 			SvekUtils.println(sb);
 		}
-		if (hasEntryOrExitPoint()) {
-			printClusterEntryExit(sb);
-			subgraphCluster(sb, "ee");
-		}
 		SvekUtils.println(sb);
 		printCluster1(sb, lines);
 		printCluster2(sb, lines);
-		if (protection1()) {
-			sb.append("}");
-		}
-		if (isSpecial(lines)) {
-			sb.append("}");
-		}
 		sb.append("}");
-		if (hasEntryOrExitPoint()) {
+		if (protection1) {
 			sb.append("}");
 		}
-		if (protection0()) {
+		if (thereALinkFromOrToGroup) {
+			sb.append("}");
 			sb.append("}");
 		}
-		if (this.isSpecial(lines)) {
-			// a
+		if (hasEntryOrExitPoint) {
+			sb.append("}");
+		}
+		if (protection0) {
 			sb.append("}");
 		}
 		SvekUtils.println(sb);
@@ -642,7 +668,7 @@ public class Cluster implements Moveable {
 		return group == ent;
 	}
 
-	static HtmlColor getStateBackColor(HtmlColor stateBack, ISkinParam skinParam, String stereotype) {
+	public static HtmlColor getStateBackColor(HtmlColor stateBack, ISkinParam skinParam, String stereotype) {
 		if (stateBack == null) {
 			stateBack = skinParam.getHtmlColor(ColorParam.packageBackground, stereotype);
 		}

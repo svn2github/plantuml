@@ -34,7 +34,10 @@
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.Collection;
+import java.util.List;
 
+import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
 
 public interface IGroup extends IEntity {
@@ -62,4 +65,6 @@ public interface IGroup extends IEntity {
 	public void zsetRankdir(Rankdir rankdir);
 
 	public PackageStyle zgetPackageStyle();
+
+	public void overideImage(IEntityImage img, List<Url> urls, LeafType state);
 }

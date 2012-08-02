@@ -48,6 +48,6 @@ public class ColorMapperIdentity implements ColorMapper {
 		if (color instanceof HtmlColorTransparent) {
 			return null;
 		}
-		return ((HtmlColorSimple)color).getColor999();
+		return ((HtmlColorSimple) color).getColor999();
 	}
 }

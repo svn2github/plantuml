@@ -48,8 +48,8 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -97,7 +97,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		final Direction direction = Direction.DOWN;
 		if (bars.containsKey(bar)) {
 			final IEntity existingBar = bars.get(bar);
-			for (Iterator<IEntity> it = waitings.iterator(); it.hasNext();) {
+			for (final Iterator<IEntity> it = waitings.iterator(); it.hasNext();) {
 				final IEntity w = it.next();
 				if (w.getEntityType() == LeafType.SYNCHRO_BAR) {
 					it.remove();

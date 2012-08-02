@@ -217,9 +217,9 @@ public class HtmlColorUtils {
 	public static final HtmlColor TRANSPARENT = new HtmlColorTransparent();
 
 	private static HtmlColor build(String s) {
-		final Color color;
 
 		s = removeFirstDieseAndToLowercase(s);
+		final Color color;
 		if (s.equalsIgnoreCase("transparent")) {
 			return TRANSPARENT;
 		} else if (s.matches("[0-9A-Fa-f]{6}")) {
@@ -260,9 +260,9 @@ public class HtmlColorUtils {
 		final Matcher m = Pattern.compile("[-\\\\|/]").matcher(s);
 		if (m.find()) {
 			final char sep = m.group(0).charAt(0);
-			int idx = s.indexOf(sep);
-			String s1 = s.substring(0, idx);
-			String s2 = s.substring(idx + 1);
+			final int idx = s.indexOf(sep);
+			final String s1 = s.substring(0, idx);
+			final String s2 = s.substring(idx + 1);
 			if (isValid(s1, false) == false || isValid(s2, false) == false) {
 				return null;
 			}

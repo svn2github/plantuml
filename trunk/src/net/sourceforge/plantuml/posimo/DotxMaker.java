@@ -110,10 +110,10 @@ public class DotxMaker {
 
 		if (p.getLength() <= 1) {
 			final boolean samePackage = p.getStart().getParent() == p.getEnd().getParent();
-			if (samePackage == false) {
-				Log.println("!!!!!!!!!!!!!!!!!TURNING ARROUND DOT BUG!!!!!!!!!!!!!!!!!!");
-			} else {
+			if (samePackage) {
 				sb.append("{rank=same; b" + p.getStart().getUid() + "; b" + p.getEnd().getUid() + "}");
+			} else {
+				Log.println("!!!!!!!!!!!!!!!!!TURNING ARROUND DOT BUG!!!!!!!!!!!!!!!!!!");
 			}
 		}
 

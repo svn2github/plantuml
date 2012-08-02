@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7900 $
+ * Revision $Revision: 8539 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -169,17 +169,15 @@ public class GraphvizUtils {
 				final int v = GraphvizUtils.getDotVersion();
 				if (v == -1) {
 					result.add("Warning : cannot determine dot version");
+				} else if (v < DOT_VERSION_LIMIT) {
+					result.add(bold + "Warning : Your dot installation seems old");
+					result.add(bold + "Some diagrams may have issues");
 				} else {
-					if (v < DOT_VERSION_LIMIT) {
-						result.add(bold + "Warning : Your dot installation seems old");
-						result.add(bold + "Some diagrams may have issues");
+					final String err = getTestCreateSimpleFile();
+					if (err == null) {
+						result.add(bold + "Installation seems OK. PNG generation OK");
 					} else {
-						String err = getTestCreateSimpleFile();
-						if (err == null) {
-							result.add(bold + "Installation seems OK. PNG generation OK");
-						} else {
-							result.add(red + err);
-						}
+						result.add(red + err);
 					}
 				}
 			} catch (Exception e) {

@@ -34,8 +34,8 @@
 package net.sourceforge.plantuml.activitydiagram;
 
 import net.sourceforge.plantuml.Direction;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class ConditionalContext {
 

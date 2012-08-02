@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8539 $
  *
  */
 package net.sourceforge.plantuml.preproc;
@@ -68,7 +68,7 @@ class IfManagerNegatif extends IfManager {
 		if (s == null) {
 			return null;
 		}
-		Matcher m = endifPattern.matcher(s);
+		final Matcher m = endifPattern.matcher(s);
 		if (m.find()) {
 			return null;
 		}

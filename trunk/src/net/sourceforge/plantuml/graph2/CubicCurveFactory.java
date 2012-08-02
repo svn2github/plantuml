@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8536 $
  *
  */
 package net.sourceforge.plantuml.graph2;
@@ -71,7 +71,7 @@ public class CubicCurveFactory {
 				all.addAll(MagicPointsFactory.get(rect));
 			}
 // Log.println("s1 " + all.size());
-			final long t1 = System.currentTimeMillis();
+//			final long t1 = System.currentTimeMillis();
 			double min = Double.MAX_VALUE;
 			for (Point2D.Double p1 : all) {
 				for (Point2D.Double p2 : all) {
@@ -84,7 +84,7 @@ public class CubicCurveFactory {
 					}
 				}
 			}
-			final long t2 = System.currentTimeMillis() - t1;
+//			final long t2 = System.currentTimeMillis() - t1;
 // Log.println("s2 = " + t2);
 // Log.println("TPS1 = " + RectanglesCollection.TPS1);
 // Log.println("TPS2 = " + RectanglesCollection.TPS2);

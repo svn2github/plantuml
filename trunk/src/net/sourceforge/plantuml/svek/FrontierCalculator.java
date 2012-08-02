@@ -39,9 +39,11 @@ import java.util.Collection;
 public class FrontierCalculator {
 
 	private ClusterPosition core;
+	private final ClusterPosition initial;
 
-	public FrontierCalculator(final ClusterPosition cluster, Collection<ClusterPosition> insides,
+	public FrontierCalculator(final ClusterPosition initial, Collection<ClusterPosition> insides,
 			Collection<Point2D> points) {
+		this.initial = initial;
 		for (ClusterPosition in : insides) {
 			if (core == null) {
 				core = in;
@@ -50,7 +52,7 @@ public class FrontierCalculator {
 			}
 		}
 		if (core == null) {
-			final Point2D center = cluster.getPointCenter();
+			final Point2D center = initial.getPointCenter();
 			core = new ClusterPosition(center.getX() - 1, center.getY() - 1, center.getX() + 1, center.getY() + 1);
 		}
 		for (Point2D p : points) {
@@ -75,21 +77,36 @@ public class FrontierCalculator {
 			}
 		}
 		if (touchMinX == false) {
-			core = core.withMinX(cluster.getMinX());
+			core = core.withMinX(initial.getMinX());
 		}
 		if (touchMaxX == false) {
-			core = core.withMaxX(cluster.getMaxX());
+			core = core.withMaxX(initial.getMaxX());
 		}
 		if (touchMinY == false) {
-			core = core.withMinY(cluster.getMinY());
+			core = core.withMinY(initial.getMinY());
 		}
 		if (touchMaxY == false) {
-			core = core.withMaxY(cluster.getMaxY());
+			core = core.withMaxY(initial.getMaxY());
 		}
 	}
 
 	public ClusterPosition getSuggestedPosition() {
 		return core;
+	}
+
+	public void ensureMinWidth(double minWidth) {
+		final double delta = core.getMaxX() - core.getMinX() - minWidth;
+		if (delta < 0) {
+			double newMinX = core.getMinX() + delta / 2;
+			double newMaxX = core.getMaxX() - delta / 2;
+			final double error = newMinX - initial.getMinX();
+			if (error < 0) {
+				newMinX -= error;
+				newMaxX -= error;
+			}
+			core = core.withMinX(newMinX);
+			core = core.withMaxX(newMaxX);
+		}
 	}
 
 }

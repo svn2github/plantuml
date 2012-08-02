@@ -102,7 +102,7 @@ public class SpriteWindow extends JFrame {
 	}
 
 	private void encode() {
-		BufferedImage img = getClipboard();
+		final BufferedImage img = getClipboard();
 		if (img == null) {
 			return;
 		}
@@ -119,7 +119,7 @@ public class SpriteWindow extends JFrame {
 	private void encodeCompressed(BufferedImage img, SpriteGrayLevel level, StringBuilder sb) {
 		sb.append("\n");
 		sb.append(SpriteUtils.encodeCompressed(img, "demo", level));
-		
+
 	}
 
 	private void encode(BufferedImage img, SpriteGrayLevel level, StringBuilder sb) {
@@ -141,11 +141,14 @@ public class SpriteWindow extends JFrame {
 
 		try {
 			if (t != null && t.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-				BufferedImage text = (BufferedImage) t.getTransferData(DataFlavor.imageFlavor);
+				final BufferedImage text = (BufferedImage) t.getTransferData(DataFlavor.imageFlavor);
 				return text;
 			}
+
 		} catch (UnsupportedFlavorException e) {
+			Log.error(e.toString());
 		} catch (IOException e) {
+			Log.error(e.toString());
 		}
 		return null;
 	}

@@ -45,10 +45,14 @@ public final class InnerActivity implements IEntityImage {
 
 	private final IEntityImage im;
 	private final HtmlColor borderColor;
+	private final boolean shadowing;
+	private final HtmlColor backColor;
 
-	public InnerActivity(final IEntityImage im, HtmlColor borderColor) {
+	public InnerActivity(final IEntityImage im, HtmlColor borderColor, HtmlColor backColor, boolean shadowing) {
 		this.im = im;
+		this.backColor = backColor;
 		this.borderColor = borderColor;
+		this.shadowing = shadowing;
 	}
 
 	public final static double THICKNESS_BORDER = 1.5;
@@ -57,10 +61,14 @@ public final class InnerActivity implements IEntityImage {
 		final Dimension2D total = getDimension(ug.getStringBounder());
 
 		ug.getParam().setColor(borderColor);
-		ug.getParam().setBackcolor(null);
+		ug.getParam().setBackcolor(backColor);
 		ug.getParam().setStroke(new UStroke(THICKNESS_BORDER));
-		ug.draw(x, y, new URectangle(total.getWidth(), total.getHeight(), IEntityImage.CORNER,
-				IEntityImage.CORNER));
+		final URectangle rect = new URectangle(total.getWidth(), total.getHeight(), IEntityImage.CORNER,
+				IEntityImage.CORNER);
+		if (shadowing) {
+			rect.setDeltaShadow(4);
+		}
+		ug.draw(x, y, rect);
 		ug.getParam().setStroke(new UStroke());
 		im.drawU(ug, x, y);
 	}
@@ -77,7 +85,7 @@ public final class InnerActivity implements IEntityImage {
 	public ShapeType getShapeType() {
 		return ShapeType.ROUND_RECTANGLE;
 	}
-	
+
 	public int getShield() {
 		return 0;
 	}

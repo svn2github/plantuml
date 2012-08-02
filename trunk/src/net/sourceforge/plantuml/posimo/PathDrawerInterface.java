@@ -153,33 +153,34 @@ public class PathDrawerInterface implements PathDrawer {
 	}
 
 	private Point2D drawSymbol(UGraphic ug, double theta, final Point2D position, LinkDecor decor) {
-		if (1==1) {
-			return null;
-		}
-		Point2D middle1 = null;
-		// final double theta = Math.atan2(
-		// -direction.getX() + position.getX(), direction.getY()
-		// - position.getY());
-		if (decor == LinkDecor.SQUARRE) {
-			middle1 = drawSquare(ug, position.getX(), position.getY());
-		} else if (decor == LinkDecor.EXTENDS) {
-			middle1 = drawExtends(ug, position.getX(), position.getY(), theta);
-		} else if (decor == LinkDecor.AGREGATION) {
-			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.background));
-			ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
-			middle1 = drawDiamond(ug, position.getX(), position.getY(), theta);
-		} else if (decor == LinkDecor.COMPOSITION) {
-			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.classBorder));
-			ug.getParam().setColor(null);
-			middle1 = drawDiamond(ug, position.getX(), position.getY(), theta);
-		} else if (decor == LinkDecor.NONE) {
-			middle1 = position;
-		} else if (decor == LinkDecor.ARROW) {
-			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.classBorder));
-			ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
-			middle1 = drawArrow(ug, position.getX(), position.getY(), theta);
-		}
-		return middle1;
+//		if (1==1) {
+//			return null;
+//		}
+//		Point2D middle1 = null;
+//		// final double theta = Math.atan2(
+//		// -direction.getX() + position.getX(), direction.getY()
+//		// - position.getY());
+//		if (decor == LinkDecor.SQUARRE) {
+//			middle1 = drawSquare(ug, position.getX(), position.getY());
+//		} else if (decor == LinkDecor.EXTENDS) {
+//			middle1 = drawExtends(ug, position.getX(), position.getY(), theta);
+//		} else if (decor == LinkDecor.AGREGATION) {
+//			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.background));
+//			ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
+//			middle1 = drawDiamond(ug, position.getX(), position.getY(), theta);
+//		} else if (decor == LinkDecor.COMPOSITION) {
+//			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.classBorder));
+//			ug.getParam().setColor(null);
+//			middle1 = drawDiamond(ug, position.getX(), position.getY(), theta);
+//		} else if (decor == LinkDecor.NONE) {
+//			middle1 = position;
+//		} else if (decor == LinkDecor.ARROW) {
+//			ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.classBorder));
+//			ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
+//			middle1 = drawArrow(ug, position.getX(), position.getY(), theta);
+//		}
+//		return middle1;
+		throw new UnsupportedOperationException();
 	}
 
 	private CubicCurve2D.Double getLine(final Point2D p1, Point2D p2) {
@@ -221,14 +222,14 @@ public class PathDrawerInterface implements PathDrawer {
 		ug.getParam().setBackcolor(rose.getHtmlColor(param, ColorParam.background));
 		ug.getParam().setColor(rose.getHtmlColor(param, ColorParam.classBorder));
 
-		final double width = 18;
-		final double height = 26;
 
 		// final double theta = Math.atan2(-pathPoint.getX() + x,
 		// pathPoint.getY() - y);
 
 		final UPolygon triangle = new UPolygon();
 		triangle.addPoint(0, 1);
+		final double width = 18;
+		final double height = 26;
 		triangle.addPoint(-width / 2, height);
 		triangle.addPoint(width / 2, height);
 		triangle.rotate(theta);
@@ -240,14 +241,14 @@ public class PathDrawerInterface implements PathDrawer {
 	}
 
 	private Point2D drawDiamond(UGraphic ug, double x, double y, double theta) {
-		final double width = 10;
-		final double height = 14;
 
 		// final double theta = Math.atan2(-pathPoint.getX() + x,
 		// pathPoint.getY() - y);
 
 		final UPolygon triangle = new UPolygon();
 		triangle.addPoint(0, 0);
+		final double width = 10;
+		final double height = 14;
 		triangle.addPoint(-width / 2, height / 2);
 		triangle.addPoint(0, height);
 		triangle.addPoint(width / 2, height / 2);
@@ -261,16 +262,16 @@ public class PathDrawerInterface implements PathDrawer {
 	}
 
 	private Point2D drawArrow(UGraphic ug, double x, double y, double theta) {
-		final double width = 12;
-		final double height = 10;
-		final double height2 = 4;
 
 		// final double theta = Math.atan2(-pathPoint.getX() + x,
 		// pathPoint.getY() - y);
 
 		final UPolygon triangle = new UPolygon();
 		triangle.addPoint(0, 0);
+		final double width = 12;
+		final double height = 10;
 		triangle.addPoint(-width / 2, height);
+		final double height2 = 4;
 		triangle.addPoint(0, height2);
 		triangle.addPoint(width / 2, height);
 		triangle.rotate(theta);

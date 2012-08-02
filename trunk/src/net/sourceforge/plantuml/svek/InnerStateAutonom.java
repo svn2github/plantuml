@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
+import net.sourceforge.plantuml.svek.image.EntityImageState;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
 public final class InnerStateAutonom implements IEntityImage {
@@ -54,10 +55,13 @@ public final class InnerStateAutonom implements IEntityImage {
 	private final boolean shadowing;
 	private final List<Url> url;
 	private final List<Url> suburl;
+	private final boolean withSymbol;
 
 	public InnerStateAutonom(final IEntityImage im, final TextBlock title, TextBlockWidth attribute,
-			HtmlColor borderColor, HtmlColor backColor, boolean shadowing, List<Url> suburl, List<Url> url) {
+			HtmlColor borderColor, HtmlColor backColor, boolean shadowing, List<Url> suburl, List<Url> url,
+			boolean withSymbol) {
 		this.im = im;
+		this.withSymbol = withSymbol;
 		this.title = title;
 		this.borderColor = borderColor;
 		this.backColor = backColor;
@@ -79,19 +83,25 @@ public final class InnerStateAutonom implements IEntityImage {
 		final RoundedContainer r = new RoundedContainer(total, titreHeight, attr.getHeight() + marginForFields,
 				borderColor, backColor, im.getBackcolor());
 
-		if (url.size()>0) {
+		if (url.size() > 0) {
 			ug.startUrl(url.get(0));
 		}
-		
+
 		r.drawU(ug, x, y, shadowing);
 		title.drawU(ug, x + (total.getWidth() - text.getWidth()) / 2, y + IEntityImage.MARGIN);
-		attribute.drawU(ug, x + IEntityImage.MARGIN, y + IEntityImage.MARGIN + text.getHeight()
-				+ IEntityImage.MARGIN, total.getWidth());
+		attribute.drawU(ug, x + IEntityImage.MARGIN, y + IEntityImage.MARGIN + text.getHeight() + IEntityImage.MARGIN,
+				total.getWidth());
 
 		final double spaceYforURL = getSpaceYforURL(ug.getStringBounder());
 		im.drawU(ug, x + IEntityImage.MARGIN, y + spaceYforURL);
-		
-		if (url.size()>0) {
+
+		if (withSymbol) {
+			ug.getParam().setColor(borderColor);
+			EntityImageState.drawSymbol(ug, x + total.getWidth(), y + total.getHeight());
+
+		}
+
+		if (url.size() > 0) {
 			ug.closeAction();
 		}
 	}
@@ -117,8 +127,8 @@ public final class InnerStateAutonom implements IEntityImage {
 		final Dimension2D dim = Dimension2DDouble.mergeTB(text, attr, img);
 		final double marginForFields = attr.getHeight() > 0 ? IEntityImage.MARGIN : 0;
 
-		final Dimension2D result = Dimension2DDouble.delta(dim, IEntityImage.MARGIN * 2 + 2
-				* IEntityImage.MARGIN_LINE + marginForFields);
+		final Dimension2D result = Dimension2DDouble.delta(dim, IEntityImage.MARGIN * 2 + 2 * IEntityImage.MARGIN_LINE
+				+ marginForFields);
 
 		return result;
 	}

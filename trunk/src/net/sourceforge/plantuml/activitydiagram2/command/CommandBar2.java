@@ -52,7 +52,7 @@ public class CommandBar2 extends SingleLineCommand2<ActivityDiagram2> {
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("==+"), //
 				new RegexLeaf("BAR", "\\s*(.*?)\\s*"), //
-				new RegexLeaf("==+"),//
+				new RegexLeaf("==+"), //
 				new RegexLeaf("$"));
 	}
 

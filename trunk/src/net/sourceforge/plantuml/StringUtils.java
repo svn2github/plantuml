@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8466 $
+ * Revision $Revision: 8515 $
  *
  */
 package net.sourceforge.plantuml;
@@ -413,7 +413,7 @@ public class StringUtils {
 				final List<String> other = new ArrayList<String>();
 				other.add("@startuml");
 				while (it.hasNext()) {
-					String s2 = it.next();
+					final String s2 = it.next();
 					if (s2.equals("}}")) {
 						break;
 					}

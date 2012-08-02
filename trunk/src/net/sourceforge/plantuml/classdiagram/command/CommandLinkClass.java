@@ -47,10 +47,9 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -227,7 +226,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	private void addLink(Link link, String weight) {
 		getSystem().addLink(link);
 		if (weight == null) {
-			final LinkType type = link.getType();
+			// final LinkType type = link.getType();
 			// --|> highest
 			// --*, -->, --o normal
 			// ..*, ..>, ..o lowest
@@ -290,8 +289,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 
 		final LinkType linkType = getLinkType(arg);
 		final String label = arg.get("LABEL_LINK").get(0);
-		final int length = getQueueLength(arg);
-		final String weight = arg.get("HEADER").get(0);
+		// final int length = getQueueLength(arg);
+		// final String weight = arg.get("HEADER").get(0);
 
 		final boolean result = getSystem().associationClass(1, clName1, clName2, cl2, linkType, label);
 		if (result == false) {
@@ -316,8 +315,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 
 		final LinkType linkType = getLinkType(arg);
 		final String label = arg.get("LABEL_LINK").get(0);
-		final int length = getQueueLength(arg);
-		final String weight = arg.get("HEADER").get(0);
+		// final int length = getQueueLength(arg);
+		// final String weight = arg.get("HEADER").get(0);
 
 		final boolean result = getSystem().associationClass(2, clName1, clName2, cl1, linkType, label);
 		if (result == false) {

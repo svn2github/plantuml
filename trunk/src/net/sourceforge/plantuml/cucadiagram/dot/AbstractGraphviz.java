@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8063 $
+ * Revision $Revision: 8512 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -36,16 +36,12 @@ package net.sourceforge.plantuml.cucadiagram.dot;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.plantuml.FileFormat;
-import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.graphic.GraphicStrings;
 
 abstract class AbstractGraphviz implements Graphviz {
 

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7863 $
+ * Revision $Revision: 8536 $
  *
  */
 package net.sourceforge.plantuml.png;
@@ -52,10 +52,10 @@ public class PngSplitter {
 	private final List<File> files = new ArrayList<File>();
 	
 	public static void main(String[] args) throws IOException {
-		File f = new File(args[0]);
-		int x = Integer.parseInt(args[1]);
-		int y = Integer.parseInt(args[2]);
-		File cp = new File(f.getParent(), f.getName().replaceAll("\\.png$", "_000.png"));
+		final File f = new File(args[0]);
+		final int x = Integer.parseInt(args[1]);
+		final int y = Integer.parseInt(args[2]);
+		final File cp = new File(f.getParent(), f.getName().replaceAll("\\.png$", "_000.png"));
 		FileUtils.copyToFile(f, cp);
 		new PngSplitter(cp, x, y, "", 96);
 		

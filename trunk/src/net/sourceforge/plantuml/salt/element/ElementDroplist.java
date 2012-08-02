@@ -58,7 +58,7 @@ public class ElementDroplist extends AbstractElementText implements Element {
 
 	public ElementDroplist(String text, UFont font, SpriteContainer spriteContainer) {
 		super(extract(text), font, true, spriteContainer);
-		StringTokenizer st = new StringTokenizer(text, "^");
+		final StringTokenizer st = new StringTokenizer(text, "^");
 		final List<String> drop = new ArrayList<String>();
 		while (st.hasMoreTokens()) {
 			drop.add(st.nextToken());

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8033 $
+ * Revision $Revision: 8512 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.plantuml.EnsureVisible;
-import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;

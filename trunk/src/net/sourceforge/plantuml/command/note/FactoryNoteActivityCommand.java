@@ -48,8 +48,8 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -58,17 +58,17 @@ import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 public final class FactoryNoteActivityCommand implements SingleMultiFactoryCommand<ActivityDiagram> {
 
 	private RegexConcat getRegexConcatMultiLine() {
-		return new RegexConcat(new RegexLeaf("^note\\s+"),//
-				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"),//
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*"),//
+		return new RegexConcat(new RegexLeaf("^note\\s+"), //
+				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+)?\\s*"), //
 				new RegexLeaf("$"));
 	}
 
 	private RegexConcat getRegexConcatSingleLine() {
-		return new RegexConcat(new RegexLeaf("^note\\s+"),//
-				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"),//
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"),//
-				new RegexLeaf("NOTE", "(.*)"),//
+		return new RegexConcat(new RegexLeaf("^note\\s+"), //
+				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}
 
@@ -93,7 +93,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 					strings = strings.subList(1, strings.size());
 				}
 
-//				final String s = StringUtils.getMergedLines(strings);
+				// final String s = StringUtils.getMergedLines(strings);
 
 				final IEntity note = getSystem().createLeaf("GMN" + UniqueSequence.getValue(), strings, LeafType.NOTE);
 				if (url != null) {
@@ -109,7 +109,8 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 			@Override
 			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(), StringUtils.getWithNewlines(arg.get("NOTE").get(0)));
+				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(),
+						StringUtils.getWithNewlines(arg.get("NOTE").get(0)));
 				return executeInternal(getSystem(), arg, note);
 			}
 		};

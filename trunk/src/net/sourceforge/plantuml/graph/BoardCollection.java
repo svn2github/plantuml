@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8019 $
+ * Revision $Revision: 8540 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -45,10 +45,10 @@ public class BoardCollection {
 
 		public Entry(Board b, CostComputer costComputer) {
 			this.board = b;
-			if (costComputer != null) {
-				this.cost = costComputer.getCost(b);
-			} else {
+			if (costComputer == null) {
 				this.cost = 0;
+			} else {
+				this.cost = costComputer.getCost(b);
 			}
 		}
 

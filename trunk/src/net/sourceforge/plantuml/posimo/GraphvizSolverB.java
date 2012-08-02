@@ -56,6 +56,7 @@ import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.dot.Graphviz;
 import net.sourceforge.plantuml.cucadiagram.dot.GraphvizUtils;
+import net.sourceforge.plantuml.svek.MinFinder;
 
 public class GraphvizSolverB {
 
@@ -94,7 +95,7 @@ public class GraphvizSolverB {
 			traceDotString(dotString);
 		}
 
-		final MinMax minMax = new MinMax();
+		final MinFinder minMax = new MinFinder();
 
 		// Log.println("dotString=" + dotString);
 

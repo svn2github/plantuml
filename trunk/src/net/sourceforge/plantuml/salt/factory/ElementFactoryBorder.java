@@ -38,7 +38,6 @@ import net.sourceforge.plantuml.salt.Dictionary;
 import net.sourceforge.plantuml.salt.Terminated;
 import net.sourceforge.plantuml.salt.element.Element;
 import net.sourceforge.plantuml.salt.element.ElementBorder;
-import net.sourceforge.plantuml.salt.element.TableStrategy;
 
 public class ElementFactoryBorder extends AbstractElementFactoryComplex {
 
@@ -53,10 +52,10 @@ public class ElementFactoryBorder extends AbstractElementFactoryComplex {
 		final String header = getDataSource().next().getElement();
 		assert header.startsWith("{");
 
-		TableStrategy strategy = TableStrategy.DRAW_NONE;
-		if (header.length() == 2) {
-			strategy = TableStrategy.fromChar(header.charAt(1));
-		}
+//		TableStrategy strategy = TableStrategy.DRAW_NONE;
+//		if (header.length() == 2) {
+//			strategy = TableStrategy.fromChar(header.charAt(1));
+//		}
 
 		final ElementBorder result = new ElementBorder();
 

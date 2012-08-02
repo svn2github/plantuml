@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.ColorParam;
-import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -50,11 +49,11 @@ public final class SvekResult implements IEntityImage, Moveable {
 	private final Rose rose = new Rose();
 
 	private final HtmlColor clusterBorder;
-	private Dimension2D dim;
+	private ClusterPosition dim;
 	private final DotData dotData;
 	private final DotStringFactory dotStringFactory;
 
-	public SvekResult(Dimension2D dim, DotData dotData, DotStringFactory dotStringFactory, HtmlColor clusterBorder) {
+	public SvekResult(ClusterPosition dim, DotData dotData, DotStringFactory dotStringFactory, HtmlColor clusterBorder) {
 		this.dim = dim;
 		this.dotData = dotData;
 		this.dotStringFactory = dotStringFactory;
@@ -106,7 +105,7 @@ public final class SvekResult implements IEntityImage, Moveable {
 	}
 
 	public Dimension2D getDimension(StringBounder stringBounder) {
-		return dim;
+		return dim.getDimension();
 	}
 
 	public ShapeType getShapeType() {
@@ -119,7 +118,7 @@ public final class SvekResult implements IEntityImage, Moveable {
 
 	public void moveSvek(double deltaX, double deltaY) {
 		dotStringFactory.moveSvek(deltaX, deltaY);
-		dim = Dimension2DDouble.delta(dim, deltaX > 0 ? deltaX : 0, deltaY > 0 ? deltaY : 0);
+		dim = dim.delta(deltaX > 0 ? deltaX : 0, deltaY > 0 ? deltaY : 0);
 	}
 
 }

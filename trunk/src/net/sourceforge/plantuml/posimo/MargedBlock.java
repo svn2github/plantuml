@@ -75,7 +75,7 @@ public class MargedBlock {
 			}
 
 			public Point2D getPosition() {
-				Point2D pos = block.getPosition();
+				final Point2D pos = block.getPosition();
 				return new Point2D.Double(pos.getX() + marginDecorator, pos.getY() + marginDecorator);
 			}
 

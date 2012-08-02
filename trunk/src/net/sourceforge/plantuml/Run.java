@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8515 $
  *
  */
 package net.sourceforge.plantuml;
@@ -44,7 +44,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -140,7 +139,7 @@ public class Run {
 			f = new File(result.get(0));
 		}
 		final BufferedImage im = ImageIO.read(f);
-		String name = getSpriteName(f);
+		final String name = getSpriteName(f);
 		final String s = compressed ? SpriteUtils.encodeCompressed(im, name, level) : SpriteUtils.encode(im, name,
 				level);
 		System.out.println(s);
@@ -250,7 +249,7 @@ public class Run {
 				Log.error("InterruptedException " + e);
 			}
 		} else if (option.isPipe()) {
-			final String result = sourceStringReader.generateImage(ps, 0, option.getFileFormatOption());
+			sourceStringReader.generateImage(ps, 0, option.getFileFormatOption());
 		}
 	}
 
@@ -308,7 +307,7 @@ public class Run {
 		for (String s : option.getResult()) {
 			final FileGroup group = new FileGroup(s, option.getExcludes(), option);
 			for (final File f : group.getFiles()) {
-				final Future<?> future = executor.submit(new Runnable() {
+				executor.submit(new Runnable() {
 					public void run() {
 						if (errors.get()) {
 							return;

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8516 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -39,8 +39,8 @@ import java.awt.geom.Dimension2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.graphic.CircledCharacter;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -142,7 +142,7 @@ class EntityImageClass extends AbstractEntityImage {
 		g2d.drawLine(0, (int) line1, width, (int) line1);
 		g2d.drawLine(0, (int) line2, width, (int) line2);
 
-		final double circledWidth = getCircledWidth(StringBounderUtils.asStringBounder(g2d));
+//		final double circledWidth = getCircledWidth(StringBounderUtils.asStringBounder(g2d));
 		g2d.setColor(Color.BLACK);
 //		name.drawTOBEREMOVED(colorMapper, g2d, xMargin + circledWidth, yMargin);
 //		fields.drawTOBEREMOVED(colorMapper, g2d, xMargin, line1 + yMargin);

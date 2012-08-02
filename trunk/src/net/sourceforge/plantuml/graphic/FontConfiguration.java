@@ -28,12 +28,13 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8096 $
+ * Revision $Revision: 8487 $
  *
  */
 package net.sourceforge.plantuml.graphic;
 
 import java.util.EnumSet;
+import java.util.Map;
 
 import net.sourceforge.plantuml.ugraphic.UFont;
 
@@ -46,9 +47,10 @@ public class FontConfiguration {
 	private final HtmlColor currentColor;
 	private final HtmlColor extendedColor;
 	private final FontPosition fontPosition;
+	private final SvgAttributes svgAttributes;
 
 	public FontConfiguration(UFont font, HtmlColor color) {
-		this(getStyles(font), font, color, font, color, null, FontPosition.NORMAL);
+		this(getStyles(font), font, color, font, color, null, FontPosition.NORMAL, new SvgAttributes());
 	}
 
 	private static EnumSet<FontStyle> getStyles(UFont font) {
@@ -72,7 +74,7 @@ public class FontConfiguration {
 	}
 
 	private FontConfiguration(EnumSet<FontStyle> styles, UFont motherFont, HtmlColor motherColor, UFont currentFont,
-			HtmlColor currentColor, HtmlColor extendedColor, FontPosition fontPosition) {
+			HtmlColor currentColor, HtmlColor extendedColor, FontPosition fontPosition, SvgAttributes svgAttributes) {
 		this.styles = styles;
 		this.currentFont = currentFont;
 		this.motherFont = motherFont;
@@ -80,39 +82,49 @@ public class FontConfiguration {
 		this.motherColor = motherColor;
 		this.extendedColor = extendedColor;
 		this.fontPosition = fontPosition;
+		this.svgAttributes = svgAttributes;
+	}
+
+	FontConfiguration changeAttributes(SvgAttributes toBeAdded) {
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, extendedColor,
+				fontPosition, svgAttributes.add(toBeAdded));
 	}
 
 	FontConfiguration changeColor(HtmlColor htmlColor) {
-		return new FontConfiguration(styles, motherFont, motherColor, currentFont, htmlColor, extendedColor, fontPosition);
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, htmlColor, extendedColor,
+				fontPosition, svgAttributes);
 	}
 
 	FontConfiguration changeExtendedColor(HtmlColor newExtendedColor) {
-		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, newExtendedColor, fontPosition);
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, newExtendedColor,
+				fontPosition, svgAttributes);
 	}
 
 	FontConfiguration changeSize(float size) {
 		return new FontConfiguration(styles, motherFont, motherColor, currentFont.deriveSize(size), currentColor,
-				extendedColor, fontPosition);
+				extendedColor, fontPosition, svgAttributes);
 	}
 
 	FontConfiguration changeFontPosition(FontPosition fontPosition) {
-		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor,
-				extendedColor, fontPosition);
+		return new FontConfiguration(styles, motherFont, motherColor, currentFont, currentColor, extendedColor,
+				fontPosition, svgAttributes);
 	}
 
 	FontConfiguration changeFamily(String family) {
 		return new FontConfiguration(styles, motherFont, motherColor, new UFont(family, currentFont.getStyle(),
-				currentFont.getSize()), currentColor, extendedColor, fontPosition);
+				currentFont.getSize()), currentColor, extendedColor, fontPosition, svgAttributes);
 	}
 
 	public FontConfiguration resetFont() {
-		return new FontConfiguration(styles, motherFont, motherColor, motherFont, motherColor, null, FontPosition.NORMAL);
+		return new FontConfiguration(styles, motherFont, motherColor, motherFont, motherColor, null,
+				FontPosition.NORMAL, new SvgAttributes());
 	}
 
 	FontConfiguration add(FontStyle style) {
 		final EnumSet<FontStyle> r = styles.clone();
 		r.add(style);
-		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor, fontPosition);
+		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor,
+				fontPosition, svgAttributes);
 	}
 
 	public FontConfiguration italic() {
@@ -126,7 +138,8 @@ public class FontConfiguration {
 	FontConfiguration remove(FontStyle style) {
 		final EnumSet<FontStyle> r = styles.clone();
 		r.remove(style);
-		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor, fontPosition);
+		return new FontConfiguration(r, motherFont, motherColor, currentFont, currentColor, extendedColor,
+				fontPosition, svgAttributes);
 	}
 
 	public UFont getFont() {
@@ -151,6 +164,10 @@ public class FontConfiguration {
 
 	public int getSpace() {
 		return fontPosition.getSpace();
+	}
+
+	public Map<String, String> getAttributes() {
+		return svgAttributes.attributes();
 	}
 
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8095 $
+ * Revision $Revision: 8539 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.StringUtils;
 
 public class Splitter {
 
-	static final String endFontPattern = "\\</font\\>|\\</color\\>|\\</size\\>";
+	static final String endFontPattern = "\\</font\\>|\\</color\\>|\\</size\\>|\\</text\\>";
 	static final String endSupSub = "\\</sup\\>|\\</sub\\>";
 	static final String fontPattern = "\\<font(\\s+size\\s*=\\s*\"?\\d+\"?|\\s+color\\s*=\\s*\"?(#[0-9a-fA-F]{6}|\\w+)\"?)+\\s*\\>";
 	static final String fontColorPattern2 = "\\<color[\\s:]+(#[0-9a-fA-F]{6}|#?\\w+)\\s*\\>";
@@ -55,6 +55,7 @@ public class Splitter {
 	static final String imgPattern = "\\<img\\s+(src\\s*=\\s*['\"]?[^\\s\">]+['\"]?\\s*|vspace\\s*=\\s*['\"]?\\d+['\"]?\\s*|valign\\s*=\\s*['\"]?(top|middle|bottom)['\"]?\\s*)+\\>";
 	static final String imgPattern2 = "\\<img[\\s:]+([^>]+)/?\\>";
 	static final String fontFamilyPattern = "\\<font[\\s:]+([^>]+)/?\\>";
+	static final String svgAttributePattern = "\\<text[\\s:]+([^>]+)/?\\>";
 	static final String spritePattern = "\\<\\$[\\p{L}0-9_]+\\>";
 	static final String htmlTag;
 
@@ -97,6 +98,8 @@ public class Splitter {
 		sb.append(spritePattern);
 		sb.append('|');
 		sb.append(linkPattern);
+		sb.append('|');
+		sb.append(svgAttributePattern);
 
 		htmlTag = sb.toString();
 		tagOrText = Pattern.compile(htmlTag + "|.+?(?=" + htmlTag + ")|.+$", Pattern.CASE_INSENSITIVE);
@@ -135,7 +138,7 @@ public class Splitter {
 		String s = cmd.getText();
 		final Collection<Text> result = new ArrayList<Text>();
 		while (true) {
-			int x = s.indexOf(Text.NEWLINE.getText());
+			final int x = s.indexOf(Text.NEWLINE.getText());
 			if (x == -1) {
 				result.add(new Text(s));
 				return result;

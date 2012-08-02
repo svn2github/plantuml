@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8541 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -61,6 +61,7 @@ import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramPngMaker3;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramTxtMaker;
+import net.sourceforge.plantuml.cucadiagram.entity.EntityFactory;
 import net.sourceforge.plantuml.html.CucaDiagramHtmlMaker;
 import net.sourceforge.plantuml.png.PngSplitter;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
@@ -109,7 +110,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		if (display == null) {
 			display = StringUtils.getWithNewlines(code);
 		}
-		final ILeaf leaf = EntityImpl.createEntity_A1_leaf(entityFactory, code, display, type, group, getHides());
+		final ILeaf leaf = entityFactory.createLeaf(code, display, type, group, getHides());
 		entityFactory.addLeaf(leaf);
 		return leaf;
 	}
@@ -137,20 +138,18 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	protected final IGroup getOrCreateGroupInternal(String code, List<? extends CharSequence> display,
 			String namespace, GroupType type, IGroup parent) {
-		IEntity gg = entityFactory.getGroups().get(code);
-		if (gg != null) {
-			return (IGroup) gg;
+		IGroup result = entityFactory.getGroups().get(code);
+		if (result != null) {
+			return result;
 		}
 		if (entityFactory.getLeafs().containsKey(code)) {
-			gg = entityFactory.getLeafs().get(code);
-			((EntityImpl) gg).muteToGroup99(namespace, type, parent);
-			entityFactory.removeLeaf(code);
-			gg.setDisplay(display);
+			result = entityFactory.muteToGroup(code, namespace, type, parent);
+			result.setDisplay(display);
 		} else {
-			gg = EntityImpl.createEntity_A2_group(entityFactory, code, display, namespace, type, parent, getHides());
+			result = entityFactory.createGroup(code, display, namespace, type, parent, getHides());
 		}
-		entityFactory.addGroup((IGroup) gg);
-		return (IGroup) gg;
+		entityFactory.addGroup(result);
+		return result;
 	}
 
 	public final IGroup getCurrentGroup() {
@@ -377,6 +376,11 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 				return false;
 			}
 		}
+		for (ILeaf leaf : g.getLeafsDirect()) {
+			if (leaf.getEntityPosition() != EntityPosition.NORMAL) {
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -443,7 +447,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		this.visibilityModifierPresent = visibilityModifierPresent;
 	}
 
-	public final boolean showPortion(EntityPortion portion, IEntity entity) {
+	public final boolean showPortion(EntityPortion portion, ILeaf entity) {
 		boolean result = true;
 		for (HideOrShow cmd : hideOrShows) {
 			if (cmd.portion == portion && cmd.gender.contains(entity)) {

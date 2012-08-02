@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8059 $
+ * Revision $Revision: 8486 $
  *
  */
 package net.sourceforge.plantuml.svg;
@@ -180,7 +180,7 @@ public class SvgGraphics {
 	private Map<List<Object>, String> gradients = new HashMap<List<Object>, String>();
 
 	public String createSvgGradient(String color1, String color2, char policy) {
-		final List<Object> key = Arrays.asList((Object)color1, color2, policy);
+		final List<Object> key = Arrays.asList((Object) color1, color2, policy);
 		String id = gradients.get(key);
 		if (id == null) {
 			final Element elt = (Element) document.createElement("linearGradient");
@@ -194,7 +194,7 @@ public class SvgGraphics {
 				elt.setAttribute("y1", "100%");
 				elt.setAttribute("x2", "100%");
 				elt.setAttribute("y2", "0%");
-			} else  if (policy == '-') {
+			} else if (policy == '-') {
 				elt.setAttribute("x1", "50%");
 				elt.setAttribute("y1", "0%");
 				elt.setAttribute("x2", "50%");
@@ -257,7 +257,6 @@ public class SvgGraphics {
 			pendingLink2.get(0).setAttribute("xlink:title", title);
 		}
 	}
-
 
 	public final Element getG() {
 		if (pendingLink2.size() == 0) {
@@ -341,7 +340,7 @@ public class SvgGraphics {
 	}
 
 	public void text(String text, double x, double y, String fontFamily, int fontSize, String fontWeight,
-			String fontStyle, String textDecoration, double textLength) {
+			String fontStyle, String textDecoration, double textLength, Map<String, String> attributes) {
 		final Element elt = (Element) document.createElement("text");
 		elt.setAttribute("x", format(x));
 		elt.setAttribute("y", format(y));
@@ -361,6 +360,9 @@ public class SvgGraphics {
 		}
 		if (fontFamily != null) {
 			elt.setAttribute("font-family", fontFamily);
+		}
+		for (Map.Entry<String, String> ent : attributes.entrySet()) {
+			elt.setAttribute(ent.getKey(), ent.getValue());
 		}
 		elt.setTextContent(text);
 		getG().appendChild(elt);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8056 $
+ * Revision $Revision: 8512 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -38,7 +38,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 
 import net.sourceforge.plantuml.EnsureVisible;
 import net.sourceforge.plantuml.graphic.HtmlColor;

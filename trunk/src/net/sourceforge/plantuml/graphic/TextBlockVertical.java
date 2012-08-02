@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.graphic;
 
 import java.awt.geom.Dimension2D;
-import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;

@@ -135,7 +135,7 @@ abstract class Step1Abstract {
 	}
 
 	private boolean lifelineAfterDestroy() {
-		final String v = drawingSet.getSkinParam().getValue("lifelineafterdestroy");
+		// final String v = drawingSet.getSkinParam().getValue("lifelineafterdestroy");
 		return false;
 	}
 

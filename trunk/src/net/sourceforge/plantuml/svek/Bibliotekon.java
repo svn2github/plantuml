@@ -41,22 +41,24 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 
 public class Bibliotekon {
 
 	private final List<Cluster> allCluster = new ArrayList<Cluster>();
 
-	private final Map<IEntity, Shape> shapeMap = new LinkedHashMap<IEntity, Shape>();;
+	private final Map<ILeaf, Shape> shapeMap = new LinkedHashMap<ILeaf, Shape>();;
 
 	private final List<Line> lines0 = new ArrayList<Line>();
 	private final List<Line> lines1 = new ArrayList<Line>();
 	private final List<Line> allLines = new ArrayList<Line>();
 
-	public void putShape(IEntity ent, Shape shape) {
+	public void putShape(ILeaf ent, Shape shape) {
 		shapeMap.put(ent, shape);
 	}
 
-	public Cluster getCluster(IEntity ent) {
+	public Cluster getCluster(IGroup ent) {
 		for (Cluster cl : allCluster) {
 			if (cl.getGroup() == ent) {
 				return cl;
@@ -90,7 +92,7 @@ public class Bibliotekon {
 		return shapeMap.get(ent);
 	}
 
-	public String getShapeUid(IEntity ent) {
+	public String getShapeUid(ILeaf ent) {
 		final Shape result = getShape(ent);
 		if (result != null) {
 			String uid = result.getUid();
@@ -113,7 +115,7 @@ public class Bibliotekon {
 
 	public String getWarningOrError(int warningOrError) {
 		final StringBuilder sb = new StringBuilder();
-		for (Map.Entry<IEntity, Shape> ent : shapeMap.entrySet()) {
+		for (Map.Entry<ILeaf, Shape> ent : shapeMap.entrySet()) {
 			final Shape sh = ent.getValue();
 			final double maxX = sh.getMinX() + sh.getWidth();
 			if (maxX > warningOrError) {

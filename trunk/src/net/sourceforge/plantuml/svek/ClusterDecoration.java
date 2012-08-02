@@ -88,7 +88,7 @@ public class ClusterDecoration {
 
 	// Cloud
 	private void drawWithTitleCloud(UGraphic ug, double x, double y, HtmlColor borderColor, boolean shadowing) {
-		final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+		// final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
 		final double width = maxX - minX;
 		final double height = maxY - minY;
 		final UPath shape = getSpecificFrontierForCloud(width, height);
@@ -110,8 +110,8 @@ public class ClusterDecoration {
 		path.moveTo(0, 10);
 		double x = 0;
 		for (int i = 0; i < width - 9; i += 10) {
-			path.cubicTo(0 + i, -3+10, 2 + i, -5+10, 5 + i, -5+10);
-			path.cubicTo(8 + i, -5+10, 10 + i, -3+10, 10 + i, 0+10);
+			path.cubicTo(0 + i, -3 + 10, 2 + i, -5 + 10, 5 + i, -5 + 10);
+			path.cubicTo(8 + i, -5 + 10, 10 + i, -3 + 10, 10 + i, 0 + 10);
 			x = i + 10;
 		}
 		double y = 0;
@@ -133,7 +133,7 @@ public class ClusterDecoration {
 
 	// Database
 	private void drawWithTitleDatabase(UGraphic ug, double x, double y, HtmlColor borderColor, boolean shadowing) {
-		final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+		// final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
 		final double width = maxX - minX;
 		final double height = maxY - minY;
 		final UPath shape = new UPath();

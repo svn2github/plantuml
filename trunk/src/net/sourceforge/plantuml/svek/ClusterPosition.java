@@ -34,8 +34,10 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.posimo.BezierUtils;
 
 public class ClusterPosition {
@@ -134,6 +136,32 @@ public class ClusterPosition {
 
 	public ClusterPosition withMaxY(double d) {
 		return new ClusterPosition(minX, minY, maxX, d);
+	}
+
+	public Point2D getProjectionOnFrontier(Point2D pt) {
+		final double x = pt.getX();
+		final double y = pt.getY();
+		if (x > maxX && y >= minY && y <= maxY) {
+			return new Point2D.Double(maxX - 1, y);
+		}
+		if (x < minX && y >= minY && y <= maxY) {
+			return new Point2D.Double(minX + 1, y);
+		}
+		if (y > maxY && x >= minX && x <= maxX) {
+			return new Point2D.Double(x, maxY - 1);
+		}
+		if (y < minY && x >= minX && x <= maxX) {
+			return new Point2D.Double(x, minY + 1);
+		}
+		return new Point2D.Double(x, y);
+	}
+
+	public ClusterPosition delta(double m1, double m2) {
+		return new ClusterPosition(minX, minY, maxX + m1, maxY + m2);
+	}
+
+	public Dimension2D getDimension() {
+		return new Dimension2DDouble(maxX - minX, maxY - minY);
 	}
 
 }

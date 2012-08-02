@@ -28,67 +28,58 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8538 $
  *
  */
 package net.sourceforge.plantuml.graph;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Rectangle2D;
 
-import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.SpriteContainerEmpty;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.graphic.FontConfiguration;
-import net.sourceforge.plantuml.graphic.HorizontalAlignement;
-import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.graphic.StringBounderUtils;
-import net.sourceforge.plantuml.graphic.TextBlock;
-import net.sourceforge.plantuml.graphic.TextBlockUtils;
-import net.sourceforge.plantuml.skin.StickMan;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 
 class EntityImageActor extends AbstractEntityImage {
 
-	final private TextBlock name;
-	final private StickMan stickman;
-
+//	final private TextBlock name;
+//	final private StickMan stickman;
+//
 	public EntityImageActor(IEntity entity) {
 		super(entity);
-		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
-				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
-		this.stickman = new StickMan(getYellow(), getRed());
+//		this.name = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
+//				getFont14(), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, new SpriteContainerEmpty());
+//		this.stickman = new StickMan(getYellow(), getRed());
 	}
-
+//
 	@Override
 	public Dimension2D getDimension(StringBounder stringBounder) {
-		final Dimension2D nameDim = name.calculateDimension(stringBounder);
-		final double manWidth = stickman.getPreferredWidth();
-		final double manHeight = stickman.getPreferredHeight();
-		return new Dimension2DDouble(Math.max(manWidth, nameDim.getWidth()), manHeight + nameDim.getHeight());
+//		final Dimension2D nameDim = name.calculateDimension(stringBounder);
+//		final double manWidth = stickman.getPreferredWidth();
+//		final double manHeight = stickman.getPreferredHeight();
+//		return new Dimension2DDouble(Math.max(manWidth, nameDim.getWidth()), manHeight + nameDim.getHeight());
+		throw new UnsupportedOperationException();
 	}
-
+//
 	@Override
 	public void draw(ColorMapper colorMapper, Graphics2D g2d) {
-		final Dimension2D dimTotal = getDimension(StringBounderUtils.asStringBounder(g2d));
-		final Dimension2D nameDim = name.calculateDimension(StringBounderUtils.asStringBounder(g2d));
-
-		final double manWidth = stickman.getPreferredWidth();
-		final double manHeight = stickman.getPreferredHeight();
-
-		final double manX = (dimTotal.getWidth() - manWidth) / 2;
-
-		g2d.setColor(Color.WHITE);
-		g2d.fill(new Rectangle2D.Double(0, 0, dimTotal.getWidth(), dimTotal.getHeight()));
-
-		g2d.translate(manX, 0);
-		// stickman.draw(g2d);
-		g2d.translate(-manX, 0);
-
-		g2d.setColor(Color.BLACK);
-//		name.drawTOBEREMOVED(colorMapper, g2d, (dimTotal.getWidth() - nameDim.getWidth()) / 2, manHeight);
+//		final Dimension2D dimTotal = getDimension(StringBounderUtils.asStringBounder(g2d));
+//		final Dimension2D nameDim = name.calculateDimension(StringBounderUtils.asStringBounder(g2d));
+//
+//		final double manWidth = stickman.getPreferredWidth();
+//		final double manHeight = stickman.getPreferredHeight();
+//
+//		final double manX = (dimTotal.getWidth() - manWidth) / 2;
+//
+//		g2d.setColor(Color.WHITE);
+//		g2d.fill(new Rectangle2D.Double(0, 0, dimTotal.getWidth(), dimTotal.getHeight()));
+//
+//		g2d.translate(manX, 0);
+//		// stickman.draw(g2d);
+//		g2d.translate(-manX, 0);
+//
+//		g2d.setColor(Color.BLACK);
+////		name.drawTOBEREMOVED(colorMapper, g2d, (dimTotal.getWidth() - nameDim.getWidth()) / 2, manHeight);
+		throw new UnsupportedOperationException();
 	}
 }

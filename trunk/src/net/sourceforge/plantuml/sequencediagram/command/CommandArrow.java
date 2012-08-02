@@ -219,14 +219,13 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 			default:
 				break;
 			}
-		} else if (getSystem().isAutoactivate()) {
-			if (config.getHead() == ArrowHead.NORMAL) {
-				if (config.isDotted()) {
-					getSystem().activate(p1, LifeEventType.DEACTIVATE, null);
-				} else {
-					getSystem().activate(p2, LifeEventType.ACTIVATE, activationColor);
-				}
+		} else if (getSystem().isAutoactivate() && config.getHead() == ArrowHead.NORMAL) {
+			if (config.isDotted()) {
+				getSystem().activate(p1, LifeEventType.DEACTIVATE, null);
+			} else {
+				getSystem().activate(p2, LifeEventType.ACTIVATE, activationColor);
 			}
+
 		}
 		return CommandExecutionResult.ok();
 	}

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8448 $
+ * Revision $Revision: 8515 $
  *
  */
 package net.sourceforge.plantuml;
@@ -217,8 +217,8 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 	private void exportDiagramInternalMjpeg(OutputStream os) throws IOException {
 		final File f = new File("c:/test.avi");
-		int nb = 150;
-		double framerate = 30;
+		final int nb = 150;
+		final double framerate = 30;
 		final MJPEGGenerator m = new MJPEGGenerator(f, 640, 480, framerate, nb);
 
 		for (int i = 0; i < nb; i++) {
@@ -252,7 +252,7 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 			FileFormatOption fileFormatOption, List<BufferedImage> flashcodes) throws IOException;
 
 	final protected void exportCmap(File suggestedFile, final CMapData cmapdata) throws FileNotFoundException {
-		String name = changeName(suggestedFile.getAbsolutePath());
+		final String name = changeName(suggestedFile.getAbsolutePath());
 		final File cmapFile = new File(name);
 		PrintWriter pw = null;
 		try {
@@ -272,9 +272,9 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 	private List<BufferedImage> exportFlashcodeSimple(String s) throws IOException, WriterException {
 		final QRCodeWriter writer = new QRCodeWriter();
-		final int multiple = 1;
 		final Hashtable hints = new Hashtable();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+		final int multiple = 1;
 		final BitMatrix bit = writer.encode(s, BarcodeFormat.QR_CODE, multiple);
 		final BufferedImage im = MatrixToImageWriter.toBufferedImage(bit);
 		return Arrays.asList(im);
@@ -282,7 +282,6 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 	private List<BufferedImage> exportFlashcodeCompress(String s) throws IOException, WriterException {
 		final QRCodeWriter writer = new QRCodeWriter();
-		final int multiple = 1;
 		final Hashtable hints = new Hashtable();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
 
@@ -290,6 +289,7 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 		final byte data[] = comp.compress(s.getBytes("UTF-8"));
 
 		// Encoder.DEFAULT_BYTE_MODE_ENCODING
+		final int multiple = 1;
 		final BitMatrix bit = writer.encode(new String(data, "ISO-8859-1"), BarcodeFormat.QR_CODE, multiple);
 		final BufferedImage im = MatrixToImageWriter.toBufferedImage(bit);
 		return Arrays.asList(im);
@@ -297,7 +297,6 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 	private List<BufferedImage> exportSplitCompress(String s) throws IOException, WriterException {
 		final QRCodeWriter writer = new QRCodeWriter();
-		final int multiple = 1;
 		final Hashtable hints = new Hashtable();
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
 
@@ -313,6 +312,7 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
 		blocs.add(xor(blocs));
 
+		final int multiple = 1;
 		for (byte d[] : blocs) {
 			// Encoder.DEFAULT_BYTE_MODE_ENCODING
 			final BitMatrix bit = writer.encode(new String(d, "ISO-8859-1"), BarcodeFormat.QR_CODE, multiple);

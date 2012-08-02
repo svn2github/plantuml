@@ -28,18 +28,16 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8538 $
  *
  */
 package net.sourceforge.plantuml.graph;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.QuadCurve2D;
-import java.awt.geom.Rectangle2D;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.SpriteContainerEmpty;
@@ -95,10 +93,10 @@ class EntityImageUsecase extends AbstractEntityImage {
 		g2d.setColor(colorMapper.getMappedColor(getRed()));
 		g2d.draw(ellipse);
 
-		final Dimension2D nameDim = name.calculateDimension(StringBounderUtils.asStringBounder(g2d));
-		final double posx = (w - nameDim.getWidth()) / 2;
-		final double posy = (h - nameDim.getHeight()) / 2;
-		final Shape rect = new Rectangle2D.Double(posx, posy, nameDim.getWidth(), nameDim.getHeight());
+//		final Dimension2D nameDim = name.calculateDimension(StringBounderUtils.asStringBounder(g2d));
+//		final double posx = (w - nameDim.getWidth()) / 2;
+//		final double posy = (h - nameDim.getHeight()) / 2;
+		// final Shape rect = new Rectangle2D.Double(posx, posy, nameDim.getWidth(), nameDim.getHeight());
 		// g2d.draw(rect);
 
 		g2d.setColor(Color.BLACK);

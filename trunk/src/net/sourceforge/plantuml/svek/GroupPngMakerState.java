@@ -64,6 +64,7 @@ import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.skin.rose.Rose;
+import net.sourceforge.plantuml.svek.image.EntityImageState;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public final class GroupPngMakerState {
@@ -104,14 +105,13 @@ public final class GroupPngMakerState {
 		return result;
 	}
 
-
 	public IEntityImage getImage() throws IOException, InterruptedException {
 		final List<? extends CharSequence> display = group.getDisplay();
 		final TextBlock title = TextBlockUtils.create(display, new FontConfiguration(getFont(FontParam.STATE),
 				HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.zsize() == 0) {
-			return new EntityImageState((IEntity) group, diagram.getSkinParam());
+			return new EntityImageState(group, diagram.getSkinParam());
 		}
 		final List<Link> links = getPureInnerLinks();
 		ISkinParam skinParam = diagram.getSkinParam();
@@ -122,14 +122,15 @@ public final class GroupPngMakerState {
 				skinParam, group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(),
 				diagram.getEntityFactory());
 
-		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
+		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory());
 
 		if (group.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			return new InnerStateConcurrent(svek2.createFile());
 		} else if (group.zgetGroupType() == GroupType.STATE) {
 			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
+			final Stereotype stereo = group.getStereotype();
 			final HtmlColor backColor = group.getSpecificBackColor() == null ? getColor(ColorParam.stateBackground,
-					null) : group.getSpecificBackColor();
+					stereo) : group.getSpecificBackColor();
 			final List<Member> members = ((IEntity) group).getFieldsToDisplay();
 			final TextBlockWidth attribute;
 			if (members.size() == 0) {
@@ -141,8 +142,11 @@ public final class GroupPngMakerState {
 			for (IEntity ent : group.getLeafsDirect()) {
 				subUrls.addAll(ent.getUrls());
 			}
+			final Stereotype stereotype = group.getStereotype();
+			final boolean withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
+
 			return new InnerStateAutonom(svek2.createFile(), title, attribute, borderColor, backColor,
-					skinParam.shadowing(), subUrls, ((IEntity) group).getUrls());
+					skinParam.shadowing(), subUrls, group.getUrls(), withSymbol);
 		}
 
 		throw new UnsupportedOperationException(group.zgetGroupType().toString());

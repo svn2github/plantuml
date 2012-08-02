@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8095 $
+ * Revision $Revision: 8540 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -95,7 +95,7 @@ class TileText implements TextBlock {
 				} else {
 					final UText utext = new UText(s, fontConfiguration);
 					final Dimension2D dim = ug.getStringBounder().calculateDimension(fontConfiguration.getFont(), s);
-					int space = fontConfiguration.getSpace();
+					final int space = fontConfiguration.getSpace();
 					final double ypos;
 					if (space < 0) {
 						ypos = y +space /*- getFontSize2D() - space*/;

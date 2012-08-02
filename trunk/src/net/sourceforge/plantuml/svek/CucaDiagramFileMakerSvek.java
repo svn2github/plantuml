@@ -113,15 +113,13 @@ public final class CucaDiagramFileMakerSvek {
 			new CucaDiagramSimplifierState(diagram, dotStrings);
 		}
 
-		double deltaX = 0;
-		double deltaY = 0;
 
-		final DotData dotData = new DotData(diagram.getEntityFactory().getRootGroup(), diagram.getLinks(), diagram.getLeafs().values(),
-				diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(), diagram, diagram,
-				diagram.getColorMapper(), diagram.getEntityFactory());
-		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
+		final DotData dotData = new DotData(diagram.getEntityFactory().getRootGroup(), diagram.getLinks(), diagram
+				.getLeafs().values(), diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(),
+				diagram, diagram, diagram.getColorMapper(), diagram.getEntityFactory());
+		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory());
 
-		IEntityImage result = svek2.createFile(((CucaDiagram) diagram).getDotStringSkek());
+		IEntityImage result = svek2.createFile(diagram.getDotStringSkek());
 		result = addTitle(result);
 		result = addHeaderAndFooter(result);
 
@@ -140,6 +138,8 @@ public final class CucaDiagramFileMakerSvek {
 			throw new UnsupportedOperationException(fileFormat.toString());
 		}
 
+		double deltaX = 0;
+		double deltaY = 0;
 		if (result instanceof DecorateEntityImage) {
 			deltaX += ((DecorateEntityImage) result).getDeltaX();
 			deltaY += ((DecorateEntityImage) result).getDeltaY();
@@ -171,10 +171,10 @@ public final class CucaDiagramFileMakerSvek {
 	private CMapData cmapString(CucaDiagramFileMakerSvek2 svek2) {
 		final CMapData cmapdata = new CMapData();
 		int seq = 1;
-//		sb.append("<map id=\"unix\" name=\"unix\">\n");
-//		cmapdata.appendHeader(diagram);
+		// sb.append("<map id=\"unix\" name=\"unix\">\n");
+		// cmapdata.appendHeader(diagram);
 		for (IEntity ent : diagram.getLeafs().values()) {
-			List<Url> rev = new ArrayList<Url>(ent.getUrls());
+			final List<Url> rev = new ArrayList<Url>(ent.getUrls());
 			// For zlevel order
 			Collections.reverse(rev);
 			for (Url url : rev) {
@@ -191,7 +191,7 @@ public final class CucaDiagramFileMakerSvek {
 				cmapdata.appendString("\n");
 			}
 		}
-//		cmapdata.appendString("</map>\n");
+		// cmapdata.appendString("</map>\n");
 		return cmapdata;
 	}
 

@@ -28,14 +28,13 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8512 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
 
 import java.awt.geom.Dimension2D;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.plantuml.SpriteContainer;
@@ -115,10 +114,10 @@ public class Link {
 		this.labelangle = labelangle;
 		this.specificColor = specificColor;
 		if (qualifier1 != null) {
-			((ILeaf)cl1).setNearDecoration(true);
+			((ILeaf) cl1).setNearDecoration(true);
 		}
 		if (qualifier2 != null) {
-			((ILeaf)cl2).setNearDecoration(true);
+			((ILeaf) cl2).setNearDecoration(true);
 		}
 	}
 
@@ -255,19 +254,6 @@ public class Link {
 		this.noteColor = noteColor;
 	}
 
-	public boolean isAutolink(IEntity g) {
-		if (getEntity1().isGroup() == false) {
-			return false;
-		}
-		if (getEntity2().isGroup() == false) {
-			return false;
-		}
-		if (EntityUtils.equals(g, getEntity1()) && EntityUtils.equals(g, getEntity1())) {
-			return true;
-		}
-		return false;
-	}
-
 	public boolean isAutoLinkOfAGroup() {
 		if (getEntity1().isGroup() == false) {
 			return false;
@@ -276,38 +262,6 @@ public class Link {
 			return false;
 		}
 		if (getEntity1() == getEntity2()) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean isToEdgeLink(IEntity g) {
-		if (((EntityImpl) getEntity1()).getContainerOrEquivalentThenEqualsLeaf(g) == false
-				|| ((EntityImpl) getEntity2()).getContainerOrEquivalentThenEqualsLeaf(g) == false) {
-			return false;
-		}
-		if (isAutolink(g)) {
-			return false;
-		}
-
-		if (getEntity2().isGroup()) {
-			assert getEntity1().isGroup() == false;
-			return true;
-		}
-		return false;
-	}
-
-	public boolean isFromEdgeLink(IEntity g) {
-		if (((EntityImpl) getEntity1()).getContainerOrEquivalentThenEqualsLeaf(g) == false
-				|| ((EntityImpl) getEntity2()).getContainerOrEquivalentThenEqualsLeaf(g) == false) {
-			return false;
-		}
-		if (isAutolink(g)) {
-			return false;
-		}
-
-		if (getEntity1().isGroup()) {
-			assert getEntity2().isGroup() == false;
 			return true;
 		}
 		return false;
@@ -380,22 +334,6 @@ public class Link {
 		this.opale = opale;
 	}
 
-	static public boolean onlyOneLink(IEntity ent, Collection<Link> links) {
-		int nb = 0;
-		for (Link link : links) {
-			if (link.isInvis()) {
-				continue;
-			}
-			if (link.contains(ent)) {
-				nb++;
-			}
-			if (nb > 1) {
-				return false;
-			}
-		}
-		return nb == 1;
-	}
-
 	public final void setHorizontalSolitary(boolean horizontalSolitary) {
 		this.horizontalSolitary = horizontalSolitary;
 	}
@@ -420,14 +358,14 @@ public class Link {
 	}
 
 	public boolean hasEntryPoint() {
-		return (getEntity1().isGroup() == false && ((ILeaf)getEntity1()).getEntityPosition() != EntityPosition.NORMAL)
-				|| (getEntity2().isGroup() == false && ((ILeaf)getEntity2()).getEntityPosition() != EntityPosition.NORMAL);
+		return (getEntity1().isGroup() == false && ((ILeaf) getEntity1()).getEntityPosition() != EntityPosition.NORMAL)
+				|| (getEntity2().isGroup() == false && ((ILeaf) getEntity2()).getEntityPosition() != EntityPosition.NORMAL);
 	}
 
 	public boolean hasTwoEntryPointsSameContainer() {
 		return getEntity1().isGroup() == false && getEntity2().isGroup() == false
-				&& ((ILeaf)getEntity1()).getEntityPosition() != EntityPosition.NORMAL
-				&& ((ILeaf)getEntity2()).getEntityPosition() != EntityPosition.NORMAL
+				&& ((ILeaf) getEntity1()).getEntityPosition() != EntityPosition.NORMAL
+				&& ((ILeaf) getEntity2()).getEntityPosition() != EntityPosition.NORMAL
 				&& getEntity1().getParentContainer() == getEntity2().getParentContainer();
 	}
 

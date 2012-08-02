@@ -41,7 +41,7 @@ public class TelnetServer {
 		final ServerSocket server = new ServerSocket(4242);
 		while (true) {
 			final Socket socket = server.accept();
-			final AcceptTelnetClient ob = new AcceptTelnetClient(socket);
+			new AcceptTelnetClient(socket);
 		}
 	}
 

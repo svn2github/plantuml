@@ -54,8 +54,8 @@ public class ComponentTextSelfArrow implements Component {
 	private final FileFormat fileFormat;
 	private final ArrowConfiguration config;
 
-	public ComponentTextSelfArrow(ComponentType type, ArrowConfiguration config, List<? extends CharSequence> stringsToDisplay,
-			FileFormat fileFormat) {
+	public ComponentTextSelfArrow(ComponentType type, ArrowConfiguration config,
+			List<? extends CharSequence> stringsToDisplay, FileFormat fileFormat) {
 		this.type = type;
 		this.stringsToDisplay = stringsToDisplay;
 		this.fileFormat = fileFormat;
@@ -80,16 +80,14 @@ public class ComponentTextSelfArrow implements Component {
 				charArea.drawStringLR("\u2502", 4, 1);
 				charArea.drawStringLR("<\u2500\u2500\u2500\u2518", 0, 2);
 			}
+		} else if (config.isDotted()) {
+			charArea.drawStringLR("- - .", 0, 0);
+			charArea.drawStringLR("|", 4, 1);
+			charArea.drawStringLR("< - '", 0, 2);
 		} else {
-			if (config.isDotted()) {
-				charArea.drawStringLR("- - .", 0, 0);
-				charArea.drawStringLR("|", 4, 1);
-				charArea.drawStringLR("< - '", 0, 2);
-			} else {
-				charArea.drawStringLR("----.", 0, 0);
-				charArea.drawStringLR("|", 4, 1);
-				charArea.drawStringLR("<---'", 0, 2);
-			}
+			charArea.drawStringLR("----.", 0, 0);
+			charArea.drawStringLR("|", 4, 1);
+			charArea.drawStringLR("<---'", 0, 2);
 		}
 
 		charArea.drawStringsLR(stringsToDisplay, 6, 1);

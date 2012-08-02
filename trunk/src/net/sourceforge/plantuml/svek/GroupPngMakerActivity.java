@@ -43,25 +43,18 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.SkinParamBackcolored;
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
-import net.sourceforge.plantuml.graphic.FontConfiguration;
-import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
-import net.sourceforge.plantuml.graphic.HtmlColorUtils;
-import net.sourceforge.plantuml.graphic.TextBlock;
-import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.skin.rose.Rose;
+import net.sourceforge.plantuml.svek.image.EntityImageState;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
 public final class GroupPngMakerActivity {
@@ -94,8 +87,8 @@ public final class GroupPngMakerActivity {
 		for (Link link : diagram.getLinks()) {
 			final IEntity e1 = (IEntity) link.getEntity1();
 			final IEntity e2 = (IEntity) link.getEntity2();
-			if (EntityUtils.equals(e1.getParentContainer(), group) && e1.isGroup()==false && EntityUtils.equals(e2.getParentContainer(), group)
-					&& e2.isGroup()==false) {
+			if (EntityUtils.equals(e1.getParentContainer(), group) && e1.isGroup() == false
+					&& EntityUtils.equals(e2.getParentContainer(), group) && e2.isGroup() == false) {
 				result.add(link);
 			}
 		}
@@ -103,26 +96,30 @@ public final class GroupPngMakerActivity {
 	}
 
 	public IEntityImage getImage() throws IOException, InterruptedException {
-		final List<? extends CharSequence> display = group.getDisplay();
-		final TextBlock title = TextBlockUtils.create(display, new FontConfiguration(
-				getFont(FontParam.STATE), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
+		// final List<? extends CharSequence> display = group.getDisplay();
+		// final TextBlock title = TextBlockUtils.create(display, new FontConfiguration(
+		// getFont(FontParam.STATE), HtmlColorUtils.BLACK), HorizontalAlignement.CENTER, diagram.getSkinParam());
 
 		if (group.zsize() == 0) {
-			return new EntityImageState((IEntity)group, diagram.getSkinParam());
+			return new EntityImageState(group, diagram.getSkinParam());
 		}
 		final List<Link> links = getPureInnerLinks();
 		ISkinParam skinParam = diagram.getSkinParam();
 		if (OptionFlags.PBBACK && group.getSpecificBackColor() != null) {
 			skinParam = new SkinParamBackcolored(skinParam, null, group.getSpecificBackColor());
 		}
-		final DotData dotData = new DotData(group, links, group.getLeafsDirect(), diagram.getUmlDiagramType(), skinParam,
-				group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(), diagram.getEntityFactory());
+		final DotData dotData = new DotData(group, links, group.getLeafsDirect(), diagram.getUmlDiagramType(),
+				skinParam, group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(),
+				diagram.getEntityFactory());
 
-		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData);
+		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory());
 
 		if (group.zgetGroupType() == GroupType.INNER_ACTIVITY) {
-			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
-			return new InnerActivity(svek2.createFile(), borderColor);
+			final Stereotype stereo = group.getStereotype();
+			final HtmlColor borderColor = getColor(ColorParam.activityBorder, stereo);
+			final HtmlColor backColor = group.getSpecificBackColor() == null ? getColor(ColorParam.background, stereo)
+					: group.getSpecificBackColor();
+			return new InnerActivity(svek2.createFile(), borderColor, backColor, skinParam.shadowing());
 		}
 
 		throw new UnsupportedOperationException(group.zgetGroupType().toString());

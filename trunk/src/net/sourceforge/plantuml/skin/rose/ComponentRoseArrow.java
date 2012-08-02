@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8439 $
+ * Revision $Revision: 8540 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -118,6 +118,7 @@ public class ComponentRoseArrow extends AbstractComponentRoseArrow {
 				arrowHeadPosition += diamCircle / 2 + thinCircle;
 			}
 			break;
+		default:
 		}
 		if (decorationEnd != ArrowDecoration.CROSSX && getArrowConfiguration().getHead() == ArrowHead.NORMAL
 				&& getArrowConfiguration().getPart() == ArrowPart.FULL) {

@@ -45,7 +45,7 @@ import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-abstract class AbstractEntityImage implements IEntityImage {
+public abstract class AbstractEntityImage implements IEntityImage {
 
 	private final IEntity entity;
 	private final ISkinParam skinParam;

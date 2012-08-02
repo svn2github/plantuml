@@ -76,8 +76,9 @@ public class Position {
 			return new Position(xmin - sizeMove, ymin, xmax - sizeMove, ymax);
 		case EAST:
 			return new Position(xmin + sizeMove, ymin, xmax + sizeMove, ymax);
+		default:
+			throw new IllegalStateException();
 		}
-		throw new IllegalStateException();
 	}
 
 	public int getXmin() {
@@ -94,5 +95,19 @@ public class Position {
 
 	public int getYmax() {
 		return ymax;
+	}
+
+	public int getCenterX() {
+		if ((xmin + xmax + 1) % 2 != 0) {
+			throw new IllegalStateException();
+		}
+		return (xmin + xmax + 1) / 2;
+	}
+
+	public int getCenterY() {
+		if ((ymin + ymax + 1) % 2 != 0) {
+			throw new IllegalStateException();
+		}
+		return (ymin + ymax + 1) / 2;
 	}
 }

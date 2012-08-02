@@ -48,7 +48,7 @@ public class PlacementStrategyX1X2 extends AbstractPlacementStrategy {
 	}
 
 	public Map<TextBlock, Point2D> getPositions(double width, double height) {
-		double usedWidth = getSumWidth();
+		final double usedWidth = getSumWidth();
 		//double maxHeight = getMaxHeight();
 
 		final double space = (width - usedWidth) / (getDimensions().size() + 1);

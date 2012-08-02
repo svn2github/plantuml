@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8541 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -191,8 +191,8 @@ public class Graph4 {
 			alreadyCurve.add(line);
 			line.draw(g2d);
 		}
-		final long TPS5 = System.currentTimeMillis() - start;
-		Log.println("TPS5 = " + TPS5);
+		final long tps5 = System.currentTimeMillis() - start;
+		Log.println("TPS5 = " + tps5);
 
 		g2d.setColor(Color.GREEN);
 		for (ANodePoint nodePoint : nodePoints.values()) {

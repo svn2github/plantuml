@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
 
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +98,7 @@ public final class CucaDiagramTxtMaker {
 				final Block b2 = blocks.get(link.getEntity2());
 				paths.add(new Path(b1, b2, null, link.getLength()));
 			}
-			final Dimension2D dim = solver.solve(root, paths);
+			solver.solve(root, paths);
 			for (Path p : paths) {
 				ug.setTranslate(0, 0);
 				p.getDotPath().draw(ug.getCharArea(), getXPixelPerChar(), getYPixelPerChar());

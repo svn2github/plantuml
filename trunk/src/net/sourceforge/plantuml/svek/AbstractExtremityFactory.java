@@ -35,7 +35,9 @@ package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Point2D;
 
-abstract class AbstractExtremityFactory implements ExtremityFactory {
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactory;
+
+public abstract class AbstractExtremityFactory implements ExtremityFactory {
 
 	protected double atan2(Point2D p1, Point2D p0) {
 		double a = Math.atan2(p1.getY() - p0.getY(), p1.getX() - p0.getX());

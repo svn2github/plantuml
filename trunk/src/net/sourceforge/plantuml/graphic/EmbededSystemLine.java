@@ -56,7 +56,7 @@ import net.sourceforge.plantuml.ugraphic.UShape;
 
 class EmbededSystemLine implements Line {
 
-	final List<String> lines;
+	final private List<String> lines;
 
 	public EmbededSystemLine(EmbededDiagram sys) {
 		this.lines = sys.getLines();

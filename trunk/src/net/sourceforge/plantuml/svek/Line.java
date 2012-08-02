@@ -43,8 +43,8 @@ import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Position;
-import net.sourceforge.plantuml.cucadiagram.EntityPosition;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -62,6 +62,8 @@ import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.posimo.PositionableUtils;
 import net.sourceforge.plantuml.svek.SvekUtils.PointListIterator;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactory;
+import net.sourceforge.plantuml.svek.image.EntityImageNoteLink;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.UShape;
@@ -72,8 +74,6 @@ public class Line implements Moveable {
 	private final String ltail;
 	private final String lhead;
 	private final Link link;
-
-	private DotPath dotPath;
 
 	private final String startUid;
 	private final String endUid;
@@ -87,6 +87,11 @@ public class Line implements Moveable {
 	private final int startTailColor;
 	private final int endHeadColor;
 
+	private final StringBounder stringBounder;
+	private final Bibliotekon bibliotekon;
+
+	private DotPath dotPath;
+
 	private Positionable startTailLabelXY;
 	private Positionable endHeadLabelXY;
 	private Positionable noteLabelXY;
@@ -94,8 +99,11 @@ public class Line implements Moveable {
 	private UDrawable endHead;
 	private UDrawable startTail;
 
-	private final StringBounder stringBounder;
-	private final Bibliotekon bibliotekon;
+	private double dx;
+	private double dy;
+
+	private boolean opale;
+	private Cluster projectionCluster;
 
 	class DirectionalTextBlock implements TextBlock {
 
@@ -120,8 +128,7 @@ public class Line implements Moveable {
 		}
 
 		public List<Url> getUrls() {
-			boolean isDirect = isDirect();
-			if (isDirect) {
+			if (isDirect()) {
 				return direct.getUrls();
 			}
 			return reverse.getUrls();
@@ -142,9 +149,9 @@ public class Line implements Moveable {
 
 	}
 
-	private boolean projectionStart() {
-		return startUid.startsWith(Cluster.CENTER_ID);
-	}
+	// private boolean projectionStart() {
+	// return startUid.startsWith(Cluster.CENTER_ID);
+	// }
 
 	public Line(String startUid, String endUid, Link link, ColorSequence colorSequence, String ltail, String lhead,
 			ISkinParam skinParam, StringBounder stringBounder, FontConfiguration labelFont, Bibliotekon bibliotekon) {
@@ -364,7 +371,7 @@ public class Line implements Moveable {
 
 	}
 
-	public void solveLine(final String svg, final int fullHeight) {
+	public void solveLine(final String svg, final int fullHeight, MinFinder corner1) {
 		if (this.link.isInvis()) {
 			return;
 		}
@@ -384,18 +391,21 @@ public class Line implements Moveable {
 		this.startTail = getExtremity(link.getType().getDecor1(), pointListIterator);
 
 		if (this.noteLabelText != null) {
-			this.noteLabelXY = TextBlockUtils.asPositionable(noteLabelText, stringBounder,
-					getXY(svg, this.noteLabelColor, fullHeight));
+			final Point2D pos = getXY(svg, this.noteLabelColor, fullHeight);
+			corner1.manage(pos);
+			this.noteLabelXY = TextBlockUtils.asPositionable(noteLabelText, stringBounder, pos);
 		}
 
 		if (this.startTailText != null) {
-			this.startTailLabelXY = TextBlockUtils.asPositionable(startTailText, stringBounder,
-					getXY(svg, this.startTailColor, fullHeight));
+			final Point2D pos = getXY(svg, this.startTailColor, fullHeight);
+			corner1.manage(pos);
+			this.startTailLabelXY = TextBlockUtils.asPositionable(startTailText, stringBounder, pos);
 		}
 
 		if (this.endHeadText != null) {
-			this.endHeadLabelXY = TextBlockUtils.asPositionable(endHeadText, stringBounder,
-					getXY(svg, this.endHeadColor, fullHeight));
+			final Point2D pos = getXY(svg, this.endHeadColor, fullHeight);
+			corner1.manage(pos);
+			this.endHeadLabelXY = TextBlockUtils.asPositionable(endHeadText, stringBounder, pos);
 		}
 
 		if (isOpalisable() == false) {
@@ -428,15 +438,15 @@ public class Line implements Moveable {
 
 	}
 
-	public void drawU(UGraphic ug, double x, double y, HtmlColor color/* , Map<Group, Cluster> groups */) {
+	public void drawU(UGraphic ug, double x, double y, HtmlColor color) {
 		if (opale) {
 			return;
 		}
 
 		if (link.isAutoLinkOfAGroup()) {
-			final Cluster cl = bibliotekon.getCluster(link.getEntity1());
+			final Cluster cl = bibliotekon.getCluster((IGroup) link.getEntity1());
 			x += cl.getWidth();
-			x -= (dotPath.getStartPoint().getX() - cl.getMinX());
+			x -= dotPath.getStartPoint().getX() - cl.getMinX();
 		}
 
 		x += dx;
@@ -452,14 +462,29 @@ public class Line implements Moveable {
 		ug.getParam().setColor(color);
 		ug.getParam().setBackcolor(null);
 		ug.getParam().setStroke(link.getType().getStroke());
-		// if (projectionStart()) {
-		// DotPath copy = new DotPath(dotPath);
-		// final Point2D start = copy.getStartPoint();
-		// copy.forceStartPoint(start.getX() + 3, start.getY() + 3);
-		// ug.draw(x, y, copy);
-		// } else {
-		ug.draw(x, y, dotPath);
-		// }
+		double moveStartX = 0;
+		double moveStartY = 0;
+		double moveEndX = 0;
+		double moveEndY = 0;
+		if (projectionCluster != null && link.getEntity1() == projectionCluster.getGroup()) {
+			final DotPath copy = new DotPath(dotPath);
+			final Point2D start = copy.getStartPoint();
+			final Point2D proj = projectionCluster.getClusterPosition().getProjectionOnFrontier(start);
+			moveStartX = proj.getX() - start.getX();
+			moveStartY = proj.getY() - start.getY();
+			copy.forceStartPoint(proj.getX(), proj.getY());
+			ug.draw(x, y, copy);
+		} else if (projectionCluster != null && link.getEntity2() == projectionCluster.getGroup()) {
+			final DotPath copy = new DotPath(dotPath);
+			final Point2D end = copy.getEndPoint();
+			final Point2D proj = projectionCluster.getClusterPosition().getProjectionOnFrontier(end);
+			moveEndX = proj.getX() - end.getX();
+			moveEndY = proj.getY() - end.getY();
+			copy.forceEndPoint(proj.getX(), proj.getY());
+			ug.draw(x, y, copy);
+		} else {
+			ug.draw(x, y, dotPath);
+		}
 
 		// if (picLine1 != null) {
 		// final ClusterPosition clusterPosition = picLine1.getClusterPosition();
@@ -482,7 +507,7 @@ public class Line implements Moveable {
 			} else {
 				ug.getParam().setBackcolor(null);
 			}
-			this.startTail.drawU(ug, x, y);
+			this.startTail.drawU(ug, x + moveEndX, y + moveEndY);
 		}
 		if (this.endHead != null) {
 			ug.getParam().setColor(color);
@@ -491,7 +516,7 @@ public class Line implements Moveable {
 			} else {
 				ug.getParam().setBackcolor(null);
 			}
-			this.endHead.drawU(ug, x, y);
+			this.endHead.drawU(ug, x + moveStartX, y + moveStartY);
 		}
 		if (this.noteLabelText != null) {
 			this.noteLabelText.drawU(ug, x + this.noteLabelXY.getPosition().getX(), y
@@ -615,9 +640,6 @@ public class Line implements Moveable {
 		return dist < (dim.getWidth() / 2 + 2) || dist < (dim.getHeight() / 2 + 2);
 	}
 
-	private double dx;
-	private double dy;
-
 	public void moveSvek(double deltaX, double deltaY) {
 		this.dx += deltaX;
 		this.dy += deltaY;
@@ -633,8 +655,6 @@ public class Line implements Moveable {
 		return link.getLength();
 	}
 
-	private boolean opale;
-
 	public void setOpale(boolean opale) {
 		this.link.setOpale(opale);
 		this.opale = opale;
@@ -649,12 +669,17 @@ public class Line implements Moveable {
 		return link.isHorizontalSolitary();
 	}
 
-	public boolean isSpecial(IEntity group) {
+	public boolean isLinkFromOrToGroup(IEntity group) {
 		return link.getEntity1() == group || link.getEntity2() == group;
 	}
 
 	public boolean hasEntryPoint() {
 		return link.hasEntryPoint();
+	}
+
+	public void setProjectionCluster(Cluster cluster) {
+		this.projectionCluster = cluster;
+
 	}
 
 	// private Cluster picLine1 = null;

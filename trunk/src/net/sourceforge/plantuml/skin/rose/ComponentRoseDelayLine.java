@@ -41,7 +41,6 @@ import net.sourceforge.plantuml.skin.AbstractComponent;
 import net.sourceforge.plantuml.skin.Area;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
-import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class ComponentRoseDelayLine extends AbstractComponent {
 
@@ -61,14 +60,14 @@ public class ComponentRoseDelayLine extends AbstractComponent {
 		ug.setAntiAliasing(false);
 		ug.draw(x, 0, new ULine(0, dimensionToUse.getHeight()));
 		ug.setAntiAliasing(true);
-		final double dx = 5;
-		final double dy = 1.5;
-		final double space = 1.5;
-		final double middle = dimensionToUse.getHeight() / 2;
-		ug.getParam().setStroke(new UStroke(1));
+//		final double dx = 5;
+//		final double dy = 1.5;
+//		final double space = 1.5;
+//		final double middle = dimensionToUse.getHeight() / 2;
+//		ug.getParam().setStroke(new UStroke(1));
 //		ug.draw(x - dx, middle + dy - space, new ULine(2 * dx, -2 * dy));
 //		ug.draw(x - dx, middle + dy + space, new ULine(2 * dx, -2 * dy));
-		ug.getParam().setStroke(new UStroke());
+//		ug.getParam().setStroke(new UStroke());
 	}
 
 	@Override

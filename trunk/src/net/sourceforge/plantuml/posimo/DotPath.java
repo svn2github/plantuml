@@ -50,6 +50,7 @@ import java.util.StringTokenizer;
 import net.sourceforge.plantuml.asciiart.BasicCharArea;
 import net.sourceforge.plantuml.eps.EpsGraphics;
 import net.sourceforge.plantuml.svek.ClusterPosition;
+import net.sourceforge.plantuml.svek.MinFinder;
 import net.sourceforge.plantuml.svek.PointDirected;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
@@ -156,8 +157,8 @@ public class DotPath implements UShape, Moveable {
 		beziers.get(beziers.size() - 1).ctrly2 = y;
 	}
 
-	public MinMax getMinMax() {
-		final MinMax result = new MinMax();
+	public MinFinder getMinMax() {
+		final MinFinder result = new MinFinder();
 		for (CubicCurve2D.Double c : beziers) {
 			result.manage(c.x1, c.y1);
 			result.manage(c.x2, c.y2);
@@ -293,7 +294,7 @@ public class DotPath implements UShape, Moveable {
 	}
 
 	public void drawOk(EpsGraphics eps, double x, double y) {
-		boolean first = true;
+//		boolean first = true;
 		for (CubicCurve2D.Double bez : beziers) {
 			bez = new CubicCurve2D.Double(x + bez.x1, y + bez.y1, x + bez.ctrlx1, y + bez.ctrly1, x + bez.ctrlx2, y
 					+ bez.ctrly2, x + bez.x2, y + bez.y2);
@@ -302,8 +303,8 @@ public class DotPath implements UShape, Moveable {
 	}
 
 	public void draw(EpsGraphics eps, double x, double y) {
-		final boolean dashed = false;
 		eps.newpathDot();
+		final boolean dashed = false;
 		boolean first = true;
 		for (CubicCurve2D.Double bez : beziers) {
 			bez = new CubicCurve2D.Double(x + bez.x1, y + bez.y1, x + bez.ctrlx1, y + bez.ctrly1, x + bez.ctrlx2, y

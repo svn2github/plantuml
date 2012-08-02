@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 8519 $
  *
  */
 package net.sourceforge.plantuml.graph;
@@ -268,12 +268,13 @@ public class Elastane {
 
 			final String label = l.getLabel();
 			if (label != null) {
-				final Point2DInt center = polyline.getFirst().getCenter();
+				// polyline.getFirst().getCenter();
 				final TextBlock textBlock = TextBlockUtils.create(Arrays.asList(label),
-						new FontConfiguration(UFont.getCurrentFont(g2d), HtmlColorUtils.BLACK), HorizontalAlignement.LEFT, new SpriteContainerEmpty());
-				final Dimension2D dim = textBlock.calculateDimension(StringBounderUtils.asStringBounder(g2d));
-//				textBlock.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, center.getXint() - dim.getWidth() / 2,
-//						center.getYint() - dim.getHeight() / 2);
+						new FontConfiguration(UFont.getCurrentFont(g2d), HtmlColorUtils.BLACK),
+						HorizontalAlignement.LEFT, new SpriteContainerEmpty());
+				textBlock.calculateDimension(StringBounderUtils.asStringBounder(g2d));
+				// textBlock.drawTOBEREMOVED(new ColorMapperIdentity(), g2d, center.getXint() - dim.getWidth() / 2,
+				// center.getYint() - dim.getHeight() / 2);
 			}
 
 			g2d.setColor(red);
@@ -353,7 +354,7 @@ public class Elastane {
 		if (n == null) {
 			return null;
 		}
-		return new EntityImageFactory().createEntityImage((IEntity)n.getUserData());
+		return new EntityImageFactory().createEntityImage((IEntity) n.getUserData());
 	}
 
 	public Dimension2D getDimension() {

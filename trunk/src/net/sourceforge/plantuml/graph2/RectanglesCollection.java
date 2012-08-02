@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8541 $
  *
  */
 package net.sourceforge.plantuml.graph2;
@@ -107,8 +107,8 @@ public class RectanglesCollection implements Iterable<Rectangle2D.Double> {
 		return intersectSeveral(other, this);
 	}
 
-	static public long TPS1;
-	static public long TPS2;
+	static private long TPS1;
+	static private long TPS2;
 
 	private static boolean intersectSeveral(RectanglesCollection large, RectanglesCollection compact) {
 		assert large.size() >= compact.size();

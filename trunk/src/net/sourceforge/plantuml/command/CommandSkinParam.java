@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8515 $
  *
  */
 package net.sourceforge.plantuml.command;
@@ -45,7 +45,7 @@ public class CommandSkinParam extends SingleLineCommand<UmlDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		boolean locked = arg.get(0).endsWith("locked");
+		arg.get(0).endsWith("locked");
 		getSystem().setParam(arg.get(1), arg.get(2));
 		return CommandExecutionResult.ok();
 	}

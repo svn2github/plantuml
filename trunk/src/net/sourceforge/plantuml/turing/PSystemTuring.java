@@ -50,8 +50,8 @@ public class PSystemTuring extends AbstractPSystem {
 	private final List<String> strings = new ArrayList<String>();
 
 	PSystemTuring(String program, String input) {
-		BFMachine machine = new BFMachine(program, input);
-		final boolean ok = machine.run();
+		final BFMachine machine = new BFMachine(program, input);
+		/* final boolean ok = */machine.run();
 		final String output = machine.getOutput();
 		for (String s : output.split("\n")) {
 			strings.add(s);

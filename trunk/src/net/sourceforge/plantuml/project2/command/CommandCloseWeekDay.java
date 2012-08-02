@@ -37,7 +37,6 @@ import java.util.List;
 
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.project.WeekDay;
 import net.sourceforge.plantuml.project2.PSystemProject2;
 
 public class CommandCloseWeekDay extends SingleLineCommand<PSystemProject2> {
@@ -48,7 +47,7 @@ public class CommandCloseWeekDay extends SingleLineCommand<PSystemProject2> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final WeekDay weekDay = WeekDay.valueOf(arg.get(0).substring(0, 3).toUpperCase());
+		// final WeekDay weekDay = WeekDay.valueOf(arg.get(0).substring(0, 3).toUpperCase());
 //		getSystem().getProject().closeWeekDay(weekDay);
 		return CommandExecutionResult.ok();
 	}

@@ -39,7 +39,7 @@ class OSLinux extends OS {
 
 	@Override
 	File getExecutable(GraphvizLayoutStrategy strategy) {
-		File result = strategy.getSystemForcedExecutable();
+		final File result = strategy.getSystemForcedExecutable();
 		if (result != null) {
 			return result;
 		}

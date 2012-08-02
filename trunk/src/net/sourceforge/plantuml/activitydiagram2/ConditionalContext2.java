@@ -39,8 +39,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import net.sourceforge.plantuml.Direction;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class ConditionalContext2 {
 

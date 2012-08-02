@@ -80,8 +80,8 @@ class Control implements TextBlock {
 		polygon.addPoint(0, 0);
 		final int xAile = 6;
 		final int yOuverture = 5;
-		final int xContact = 4;
 		polygon.addPoint(xAile, -yOuverture);
+		final int xContact = 4;
 		polygon.addPoint(xContact, 0);
 		polygon.addPoint(xAile, yOuverture);
 		polygon.addPoint(0, 0);

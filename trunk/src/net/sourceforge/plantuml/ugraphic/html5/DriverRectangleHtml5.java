@@ -34,7 +34,6 @@ package net.sourceforge.plantuml.ugraphic.html5;
 import java.awt.geom.Rectangle2D;
 
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.eps.EpsGraphics;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.ugraphic.ClipContainer;

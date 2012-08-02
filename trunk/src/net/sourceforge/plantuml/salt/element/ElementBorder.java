@@ -78,8 +78,8 @@ public class ElementBorder implements Element {
 		final Point2D pA = new Point2D.Double(dimWest.getWidth(), dimNorth.getHeight());
 		final Point2D pB = new Point2D.Double(dimToUse.getWidth() - dimEast.getWidth(), dimNorth.getHeight());
 		final Point2D pC = new Point2D.Double(dimWest.getWidth(), dimToUse.getHeight() - dimSouth.getHeight());
-		final Point2D pD = new Point2D.Double(dimToUse.getWidth() - dimEast.getWidth(), dimToUse.getHeight()
-				- dimSouth.getHeight());
+//		final Point2D pD = new Point2D.Double(dimToUse.getWidth() - dimEast.getWidth(), dimToUse.getHeight()
+//				- dimSouth.getHeight());
 
 		north.drawU(ug, x, y, zIndex, dimToUse);
 		south.drawU(ug, x, y + pC.getY(), zIndex, dimToUse);

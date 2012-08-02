@@ -53,16 +53,16 @@ import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand<CucaDiagram> {
 
 	private RegexConcat getRegexConcatSingleLine() {
-		return new RegexConcat(new RegexLeaf("^note\\s+"),//
-				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"),//
+		return new RegexConcat(new RegexLeaf("^note\\s+"), //
+				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"), //
 				new RegexLeaf("COLOR", "\\s*(#\\w+)?\\s*:\\s*"), //
-				new RegexLeaf("NOTE", "(.*)"),//
+				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}
 
 	private RegexConcat getRegexConcatMultiLine() {
-		return new RegexConcat(new RegexLeaf("^note\\s+"),//
-				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"),//
+		return new RegexConcat(new RegexLeaf("^note\\s+"), //
+				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"), //
 				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
 				new RegexLeaf("$"));
 	}

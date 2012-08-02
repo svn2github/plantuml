@@ -66,10 +66,71 @@ public class TilesField implements TextBlock {
 
 	public Tile createTile(Tile start, TileGeometry position) {
 		final Tile result = new Tile(size++);
-		Position p = getFreePosition(start, position);
+		final Position p = getFreePosition(start, position);
 		positions.put(result, p);
-		paths.add(new Path(start.getArea(position), result.getArea(position.opposite())));
+		paths.add(buildPath(start.getArea(position), result.getArea(position.opposite())));
 		return result;
+	}
+
+	public void addPath(Tile start, Tile dest, TileGeometry startDirection) {
+		paths.add(buildPath(start.getArea(startDirection), dest.getArea(startDirection.opposite())));
+	}
+
+	private Path buildPath(TileArea tileArea1, TileArea tileArea2) {
+		if (isAdjoining(tileArea1, tileArea2)) {
+			return Path.build(tileArea1, tileArea2);
+		}
+		final Tile tile1 = tileArea1.getTile();
+		final Tile tile2 = tileArea2.getTile();
+		final Position pos1 = getPosition(tile1);
+		final Position pos2 = getPosition(tile2);
+		final TileGeometry geom1 = tileArea1.getGeometry();
+		final TileGeometry geom2 = tileArea2.getGeometry();
+		if (pos1.getYmin() == pos2.getYmin() && pos1.getYmax() == pos2.getYmax() && geom1 == TileGeometry.WEST
+				&& geom2 == TileGeometry.EAST) {
+			return Path.build(tileArea1, tileArea2);
+
+		}
+		throw new IllegalArgumentException();
+	}
+
+	private boolean isAdjoining(TileArea tileArea1, TileArea tileArea2) {
+		final Tile tile1 = tileArea1.getTile();
+		final Tile tile2 = tileArea2.getTile();
+		final Position pos1 = getPosition(tile1);
+		final Position pos2 = getPosition(tile2);
+		final TileGeometry geom1 = tileArea1.getGeometry();
+		final TileGeometry geom2 = tileArea2.getGeometry();
+		if (pos1.equals(pos2)) {
+			assert tile1 == tile2;
+			if (geom1 == geom2) {
+				throw new IllegalArgumentException();
+			}
+			return true;
+		}
+		if (geom1.equals(geom2.opposite()) == false) {
+			return false;
+		}
+		switch (geom1) {
+		case EAST:
+			return pos1.getYmin() == pos2.getYmin() && pos1.getYmax() == pos2.getYmax()
+					&& pos1.getXmax() + 1 == pos2.getXmin();
+		case WEST:
+			return pos1.getYmin() == pos2.getYmin() && pos1.getYmax() == pos2.getYmax()
+					&& pos1.getXmin() == pos2.getXmax() + 1;
+		case SOUTH:
+			return pos1.getXmin() == pos2.getXmin() && pos1.getXmax() == pos2.getXmax()
+					&& pos1.getYmax() + 1 == pos2.getYmin();
+		case NORTH:
+			return pos1.getXmin() == pos2.getXmin() && pos1.getXmax() == pos2.getXmax()
+					&& pos1.getYmin() == pos2.getYmax() + 1;
+		case CENTER:
+			return false;
+
+		default:
+			throw new IllegalStateException();
+		}
+
 	}
 
 	private Tile getTileAt(Position p) {
@@ -168,6 +229,11 @@ public class TilesField implements TextBlock {
 		return result;
 	}
 
+	public List<Path> getPaths() {
+		return Collections.unmodifiableList(paths);
+	}
+
+	// -----------
 	public void drawU(UGraphic ug, double x, double y) {
 		final int xmin = getXmin();
 		final int ymin = getYmin();
@@ -199,7 +265,7 @@ public class TilesField implements TextBlock {
 		xt += dimSingle.getWidth() / 2;
 		yt += dimSingle.getHeight() / 2;
 		final double coef = 0.33;
-		switch (area.getPosition()) {
+		switch (area.getGeometry()) {
 		case NORTH:
 			yt -= dimSingle.getHeight() * coef;
 			break;
@@ -212,6 +278,8 @@ public class TilesField implements TextBlock {
 		case WEST:
 			xt -= dimSingle.getWidth() * coef;
 			break;
+		default:
+			throw new IllegalStateException();
 		}
 		return new Point2D.Double(xt, yt);
 	}
@@ -230,4 +298,5 @@ public class TilesField implements TextBlock {
 	public List<Url> getUrls() {
 		return Collections.emptyList();
 	}
+
 }

@@ -51,8 +51,8 @@ public class PlacementStrategyX1Y2Y3 extends AbstractPlacementStrategy {
 	public Map<TextBlock, Point2D> getPositions(double width, double height) {
 		final Dimension2D first = getDimensions().values().iterator().next();
 
-		double maxWidthButFirst = getMaxWidth(butFirst());
-		double sumHeightButFirst = getSumHeight(butFirst());
+		final double maxWidthButFirst = getMaxWidth(butFirst());
+		final double sumHeightButFirst = getSumHeight(butFirst());
 
 		final double space = (width - first.getWidth() - maxWidthButFirst) / 3;
 

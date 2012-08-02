@@ -94,6 +94,7 @@ public class DriverTextSvg implements UDriver<SvgGraphics> {
 		}
 		text = text.trim();
 		final Dimension2D dim = stringBounder.calculateDimension(font, text);
-		svg.text(text, x, y, font.getFamily(UFontContext.SVG), font.getSize(), fontWeight, fontStyle, textDecoration, dim.getWidth());
+		svg.text(text, x, y, font.getFamily(UFontContext.SVG), font.getSize(), fontWeight, fontStyle, textDecoration,
+				dim.getWidth(), fontConfiguration.getAttributes());
 	}
 }

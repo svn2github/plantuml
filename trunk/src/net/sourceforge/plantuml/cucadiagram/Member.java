@@ -38,14 +38,14 @@ import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public interface Member {
 
-	public String getDisplay(boolean withVisibilityChar) ;
+	public String getDisplay(boolean withVisibilityChar);
 
-	public  boolean isStatic() ;
+	public boolean isStatic();
 
-	public  boolean isAbstract() ;
-	
-	public  VisibilityModifier getVisibilityModifier() ;
-	
+	public boolean isAbstract();
+
+	public VisibilityModifier getVisibilityModifier();
+
 	public Url getUrl();
 
 }

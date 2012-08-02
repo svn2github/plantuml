@@ -43,8 +43,8 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -62,7 +62,7 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		return new RegexConcat(new RegexLeaf("^"), //
 				getStatePattern("ENT1"), //
 				new RegexLeaf("\\s*"), //
-				new RegexConcat( //
+				new RegexConcat(//
 						new RegexLeaf("ARROW_CROSS_START", "(x)?"), //
 						new RegexLeaf("ARROW_BODY1", "(-+)"), //
 						new RegexLeaf("ARROW_DIRECTION", "(left|right|up|down|le?|ri?|up?|do?)?"), //
@@ -162,7 +162,7 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		if (code.endsWith("[H]")) {
 			return getSystem().getHistorical(code.substring(0, code.length() - 3));
 		}
-		if (code.startsWith("=") && code.startsWith("=")) {
+		if (code.startsWith("=") && code.endsWith("=")) {
 			code = removeEquals(code);
 			return getSystem().getOrCreateLeaf(code, LeafType.SYNCHRO_BAR);
 		}
@@ -186,7 +186,7 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		if (code.endsWith("[H]")) {
 			return getSystem().getHistorical(code.substring(0, code.length() - 3));
 		}
-		if (code.startsWith("=") && code.startsWith("=")) {
+		if (code.startsWith("=") && code.endsWith("=")) {
 			code = removeEquals(code);
 			return getSystem().getOrCreateLeaf(code, LeafType.SYNCHRO_BAR);
 		}

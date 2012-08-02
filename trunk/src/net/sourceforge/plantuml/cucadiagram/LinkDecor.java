@@ -33,12 +33,12 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.svek.ExtremityFactory;
-import net.sourceforge.plantuml.svek.ExtremityFactoryArrow;
-import net.sourceforge.plantuml.svek.ExtremityFactoryArrowAndCircle;
-import net.sourceforge.plantuml.svek.ExtremityFactoryCircleCross;
-import net.sourceforge.plantuml.svek.ExtremityFactoryDiamond;
-import net.sourceforge.plantuml.svek.ExtremityFactoryPlus;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactory;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryArrow;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryArrowAndCircle;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryCircleCross;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryDiamond;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryPlus;
 
 public enum LinkDecor {
 

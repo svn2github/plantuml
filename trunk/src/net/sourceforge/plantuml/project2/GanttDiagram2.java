@@ -70,7 +70,7 @@ public class GanttDiagram2 {
 		final double deltaY = timeHeader.calculateDimension(ug.getStringBounder()).getHeight();
 
 		headers.drawU(ug, x, y + deltaY);
-		TextBlock tbRow = row.asTextBloc(project.getTimeConverter(dayWith));
+		final TextBlock tbRow = row.asTextBloc(project.getTimeConverter(dayWith));
 		tbRow.drawU(ug, x + deltaX, y + deltaY);
 
 		timeHeader.drawU(ug, x + deltaX, y);

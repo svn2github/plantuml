@@ -50,8 +50,8 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
@@ -68,7 +68,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 	private RegexConcat getRegexConcatSingleLine(IRegex partialPattern) {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)"), //
-				new RegexOr( //
+				new RegexOr(//
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
 				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?\\s*:\\s*"), //
@@ -80,7 +80,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 	private RegexConcat getRegexConcatMultiLine(IRegex partialPattern) {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)"), //
-				new RegexOr( //
+				new RegexOr(//
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
 				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //

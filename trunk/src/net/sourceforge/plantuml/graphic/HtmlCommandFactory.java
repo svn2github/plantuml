@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8465 $
+ * Revision $Revision: 8486 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -125,6 +125,10 @@ class HtmlCommandFactory {
 			final Url url = StringUtils.extractUrl(null, s, true);
 			url.setMember(true);
 			return new TextLink(url);
+		}
+
+		if (s.matches(Splitter.svgAttributePattern)) {
+			return new SvgAttributesChange(s);
 		}
 
 		return null;

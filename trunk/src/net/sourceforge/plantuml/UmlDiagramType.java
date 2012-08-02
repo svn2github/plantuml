@@ -28,11 +28,11 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8511 $
  *
  */
 package net.sourceforge.plantuml;
 
 public enum UmlDiagramType {
-	SEQUENCE, STATE, CLASS, OBJECT, ACTIVITY, USECASE, COMPONENT, COMPOSITE
+	SEQUENCE, STATE, CLASS, OBJECT, ACTIVITY, USECASE, COMPONENT, COMPOSITE, FLOW
 }

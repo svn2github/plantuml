@@ -60,7 +60,7 @@ public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
 	private static RegexConcat getRegexConcat() {
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("mouseover\\s+"), //
-				new RegexOr( //
+				new RegexOr(//
 						new RegexLeaf("NAME1", "(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*)"), //
 						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
 				new RegexLeaf("\\s*\\{\\s*$"));
