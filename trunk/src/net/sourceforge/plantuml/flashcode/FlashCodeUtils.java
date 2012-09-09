@@ -27,31 +27,22 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
- * 
- * Revision $Revision: 8797 $
+ *
+ * Revision $Revision: 8515 $
  *
  */
-package net.sourceforge.plantuml.version;
+package net.sourceforge.plantuml.flashcode;
 
-public class Version {
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
 
-	public static int version() {
-		return 7934;
-	}
+public interface FlashCodeUtils {
 
-	public static String versionString() {
-		if (beta()) {
-			return "" + (version() + 1) + "beta";
-		}
-		return "" + version();
-	}
+	public List<BufferedImage> exportFlashcodeSimple(String s) throws IOException;
 
-	public static boolean beta() {
-		return false;
-	}
+	public List<BufferedImage> exportFlashcodeCompress(String s) throws IOException;
 
-	public static long compileTime() {
-		return 1347217419292L;
-	}
+	public List<BufferedImage> exportSplitCompress(String s) throws IOException;
 
 }

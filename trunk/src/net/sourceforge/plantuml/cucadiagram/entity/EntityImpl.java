@@ -197,7 +197,7 @@ class EntityImpl implements ILeaf, IGroup {
 
 	@Override
 	public String toString() {
-		return display + "(" + leafType + ") " + xposition + " " + getUid();
+		return code + " " + display + "(" + leafType + ") " + xposition + " " + getUid();
 	}
 
 	public HtmlColor getSpecificBackColor() {
@@ -421,8 +421,17 @@ class EntityImpl implements ILeaf, IGroup {
 			((EntityImpl) ent).parentContainer = dest;
 		}
 		for (IGroup g : dest.zgetChildren()) {
+			// ((EntityImpl) g).parentContainer = dest;
+			throw new IllegalStateException();
+		}
+
+		for (IGroup g : zgetChildren()) {
+			if (g == dest) {
+				continue;
+			}
 			((EntityImpl) g).parentContainer = dest;
 		}
+
 	}
 
 	public int zsize() {

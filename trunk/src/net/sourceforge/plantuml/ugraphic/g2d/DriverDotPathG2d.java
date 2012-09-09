@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.ugraphic.g2d;
 
 import java.awt.Graphics2D;
 
+import net.sourceforge.plantuml.EnsureVisible;
 import net.sourceforge.plantuml.posimo.DotPath;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UDriver;
@@ -43,6 +44,12 @@ import net.sourceforge.plantuml.ugraphic.UShape;
 
 public class DriverDotPathG2d implements UDriver<Graphics2D> {
 
+	private final EnsureVisible visible;
+
+	public DriverDotPathG2d(EnsureVisible visible) {
+		this.visible = visible;
+	}
+
 	public void draw(UShape ushape, double x, double y, ColorMapper mapper, UParam param, Graphics2D g2d) {
 		final DotPath shape = (DotPath) ushape;
 		DriverLineG2d.manageStroke(param, g2d);
@@ -50,6 +57,7 @@ public class DriverDotPathG2d implements UDriver<Graphics2D> {
 		if (param.getColor() != null) {
 			g2d.setColor(mapper.getMappedColor(param.getColor()));
 			shape.draw(g2d, x, y);
+			shape.manageEnsureVisible(x, y, visible);
 		}
 	}
 }

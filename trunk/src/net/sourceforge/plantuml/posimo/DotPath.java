@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import net.sourceforge.plantuml.EnsureVisible;
 import net.sourceforge.plantuml.asciiart.BasicCharArea;
 import net.sourceforge.plantuml.eps.EpsGraphics;
 import net.sourceforge.plantuml.svek.ClusterPosition;
@@ -292,6 +293,16 @@ public class DotPath implements UShape, Moveable {
 		}
 		g2d.draw(p);
 	}
+	
+	public void manageEnsureVisible(double x, double y, EnsureVisible visible) {
+		for (CubicCurve2D.Double bez : beziers) {
+			visible.ensureVisible(x + bez.x1, y + bez.y1);
+			visible.ensureVisible(x + bez.x2, y + bez.y2);
+		}
+		
+	}
+
+
 
 	public void drawOk(EpsGraphics eps, double x, double y) {
 //		boolean first = true;

@@ -119,8 +119,7 @@ public class GroupRoot implements IGroup {
 	}
 
 	public String getCode() {
-		throw new UnsupportedOperationException();
-
+		return "__ROOT__";
 	}
 
 
@@ -163,8 +162,13 @@ public class GroupRoot implements IGroup {
 	}
 
 	public Collection<IGroup> zgetChildren() {
-		throw new UnsupportedOperationException();
-
+		final List<IGroup> result = new ArrayList<IGroup>();
+		for (IGroup ent : entityFactory.getGroups().values()) {
+			if (EntityUtils.equals(ent.getParentContainer(), this)) {
+				result.add(ent);
+			}
+		}
+		return Collections.unmodifiableCollection(result);
 	}
 
 	public void zmoveEntitiesTo(IGroup dest) {

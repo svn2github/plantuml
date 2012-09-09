@@ -394,8 +394,8 @@ public final class CucaDiagramFileMakerSvek2 {
 	private void printGroups(IGroup parent) throws IOException {
 		for (IGroup g : dotData.getGroupHierarchy().getChildrenGroups(parent)) {
 			if (dotData.isEmpty(g) && g.zgetGroupType() == GroupType.PACKAGE) {
-				final ILeaf folder = entityFactory.createLeaf(g.getCode(), g.getDisplay(),
-						LeafType.EMPTY_PACKAGE, g.getParentContainer(), null);
+				final ILeaf folder = entityFactory.createLeaf(g.getCode(), g.getDisplay(), LeafType.EMPTY_PACKAGE,
+						g.getParentContainer(), null);
 				folder.setSpecificBackcolor(g.getSpecificBackColor());
 				printEntity(folder);
 			} else {
@@ -410,8 +410,8 @@ public final class CucaDiagramFileMakerSvek2 {
 		}
 		// final String stereo = g.getStereotype();
 
-		int titleWidth = 0;
-		int titleHeight = 0;
+		int titleAndAttributeWidth = 0;
+		int titleAndAttributeHeight = 0;
 
 		final List<? extends CharSequence> label = g.getDisplay();
 		TextBlock title = null;
@@ -433,14 +433,16 @@ public final class CucaDiagramFileMakerSvek2 {
 			} else {
 				attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, dotData.getSkinParam());
 			}
-			final double attributeHeight = attribute.calculateDimension(stringBounder).getHeight();
+			final Dimension2D dimAttribute = attribute.calculateDimension(stringBounder);
+			final double attributeHeight = dimAttribute.getHeight();
+			final double attributeWidth = dimAttribute.getWidth();
 			final double marginForFields = attributeHeight > 0 ? IEntityImage.MARGIN : 0;
 
-			titleWidth = (int) dimLabel.getWidth();
-			titleHeight = (int) (dimLabel.getHeight() + attributeHeight + marginForFields);
+			titleAndAttributeWidth = (int) Math.max(dimLabel.getWidth(), attributeWidth);
+			titleAndAttributeHeight = (int) (dimLabel.getHeight() + attributeHeight + marginForFields);
 		}
 
-		dotStringFactory.openCluster(g, titleWidth, titleHeight, title);
+		dotStringFactory.openCluster(g, titleAndAttributeWidth, titleAndAttributeHeight, title);
 		this.printEntities(g.getLeafsDirect());
 
 		printGroups(g);

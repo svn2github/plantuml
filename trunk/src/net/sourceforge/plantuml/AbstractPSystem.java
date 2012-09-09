@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8137 $
+ * Revision $Revision: 8606 $
  *
  */
 package net.sourceforge.plantuml;
@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.plantuml.version.License;
 import net.sourceforge.plantuml.version.Version;
 
 public abstract class AbstractPSystem implements PSystem {
@@ -55,6 +56,9 @@ public abstract class AbstractPSystem implements PSystem {
 		toAppend.append("PlantUML version ");
 		toAppend.append(Version.versionString());
 		toAppend.append("(" + new Date(Version.compileTime()) + ")\n");
+		if (License.isCloseSource()) {
+			toAppend.append("(Close source distribution)\n");
+		}
 		final Properties p = System.getProperties();
 		toAppend.append(p.getProperty("java.runtime.name"));
 		toAppend.append('\n');
@@ -109,7 +113,7 @@ public abstract class AbstractPSystem implements PSystem {
 		}
 		return source.getTitle();
 	}
-	
+
 	public String getWarningOrError() {
 		return null;
 	}

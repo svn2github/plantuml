@@ -56,6 +56,7 @@ import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramFileMakerResult;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierActivity;
 import net.sourceforge.plantuml.cucadiagram.dot.CucaDiagramSimplifierState;
@@ -112,7 +113,6 @@ public final class CucaDiagramFileMakerSvek {
 		} else if (diagram.getUmlDiagramType() == UmlDiagramType.STATE) {
 			new CucaDiagramSimplifierState(diagram, dotStrings);
 		}
-
 
 		final DotData dotData = new DotData(diagram.getEntityFactory().getRootGroup(), diagram.getLinks(), diagram
 				.getLeafs().values(), diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(),
@@ -171,28 +171,38 @@ public final class CucaDiagramFileMakerSvek {
 	private CMapData cmapString(CucaDiagramFileMakerSvek2 svek2) {
 		final CMapData cmapdata = new CMapData();
 		int seq = 1;
-		// sb.append("<map id=\"unix\" name=\"unix\">\n");
-		// cmapdata.appendHeader(diagram);
 		for (IEntity ent : diagram.getLeafs().values()) {
 			final List<Url> rev = new ArrayList<Url>(ent.getUrls());
 			// For zlevel order
 			Collections.reverse(rev);
 			for (Url url : rev) {
-				cmapdata.appendString("<area shape=\"rect\" id=\"id");
-				cmapdata.appendLong(seq++);
-				cmapdata.appendString("\" href=\"");
-				cmapdata.appendString(url.getUrl());
-				cmapdata.appendString("\" title=\"");
-				cmapdata.appendString(url.getTooltip());
-				cmapdata.appendString("\" alt=\"\" coords=\"");
-				cmapdata.appendString(url.getCoords());
-				cmapdata.appendString("\"/>");
-
-				cmapdata.appendString("\n");
+				appendUrl(cmapdata, seq, url);
+				seq++;
 			}
 		}
-		// cmapdata.appendString("</map>\n");
+		for (Link link : diagram.getLinks()) {
+			final Url url = link.getUrl();
+			if (url == null) {
+				continue;
+			}
+			appendUrl(cmapdata, seq, url);
+			seq++;
+		}
 		return cmapdata;
+	}
+
+	private void appendUrl(final CMapData cmapdata, int seq, Url url) {
+		cmapdata.appendString("<area shape=\"rect\" id=\"id");
+		cmapdata.appendLong(seq);
+		cmapdata.appendString("\" href=\"");
+		cmapdata.appendString(url.getUrl());
+		cmapdata.appendString("\" title=\"");
+		cmapdata.appendString(url.getTooltip());
+		cmapdata.appendString("\" alt=\"\" coords=\"");
+		cmapdata.appendString(url.getCoords());
+		cmapdata.appendString("\"/>");
+
+		cmapdata.appendString("\n");
 	}
 
 	private IEntityImage addHeaderAndFooter(IEntityImage original) {

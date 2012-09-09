@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7920 $
+ * Revision $Revision: 8763 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram;
@@ -60,7 +60,6 @@ public class ActivityDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommonCommands(system);
 		addCommand(new CommandRankDir(system));
 
-		addCommand(new CommandLinkActivity(system));
 		addCommand(new CommandPartition(system));
 		addCommand(new CommandEndPartition(system));
 		addCommand(new CommandLinkLongActivity(system));
@@ -76,6 +75,8 @@ public class ActivityDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(new CommandIf(system));
 		addCommand(new CommandElse(system));
 		addCommand(new CommandEndif(system));
+		
+		addCommand(new CommandLinkActivity(system));
 		// addCommand(new CommandInnerConcurrent(system));
 	}
 

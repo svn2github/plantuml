@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8180 $
+ * Revision $Revision: 8600 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -52,11 +52,17 @@ public class TextBlockUtils {
 
 	public static TextBlock create(List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
 			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
-		if (texts.size() > 0 && texts.get(0) instanceof Stereotype) {
-			return createStereotype(texts, fontConfiguration, horizontalAlignement, spriteContainer);
-		}
-		if (texts.size() > 0 && texts.get(0) instanceof MessageNumber) {
-			return createMessageNumber(texts, fontConfiguration, horizontalAlignement, spriteContainer);
+		if (texts.size() > 0) {
+			if (texts.get(0) instanceof Stereotype) {
+				return createStereotype(texts, fontConfiguration, horizontalAlignement, spriteContainer, 0);
+			}
+			if (texts.get(texts.size() - 1) instanceof Stereotype) {
+				return createStereotype(texts, fontConfiguration, horizontalAlignement, spriteContainer,
+						texts.size() - 1);
+			}
+			if (texts.get(0) instanceof MessageNumber) {
+				return createMessageNumber(texts, fontConfiguration, horizontalAlignement, spriteContainer);
+			}
 		}
 		return new TextBlockSimple(texts, fontConfiguration, horizontalAlignement, spriteContainer);
 	}
@@ -71,8 +77,8 @@ public class TextBlockUtils {
 	}
 
 	private static TextBlock createStereotype(List<? extends CharSequence> texts, FontConfiguration fontConfiguration,
-			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer) {
-		final Stereotype stereotype = (Stereotype) texts.get(0);
+			HorizontalAlignement horizontalAlignement, SpriteContainer spriteContainer, int position) {
+		final Stereotype stereotype = (Stereotype) texts.get(position);
 		if (stereotype.isSpotted()) {
 			final CircledCharacter circledCharacter = new CircledCharacter(stereotype.getCharacter(),
 					stereotype.getRadius(), stereotype.getCircledFont(), stereotype.getHtmlColor(), null,

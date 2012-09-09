@@ -40,6 +40,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
+import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -56,7 +57,7 @@ public final class CucaDiagramSimplifierState {
 		boolean changed;
 		do {
 			changed = false;
-			final Collection<IGroup> groups = new ArrayList<IGroup>(diagram.getGroups(false));
+			final Collection<IGroup> groups = putConcurrentStateAtEnd(diagram.getGroups(false));
 			for (IGroup g : groups) {
 				if (diagram.isAutarkic(g)) {
 					final IEntityImage img = computeImage(g);
@@ -72,11 +73,19 @@ public final class CucaDiagramSimplifierState {
 		} while (changed);
 	}
 
-//	private void computeImageGroup(EntityMutable g, EntityMutable proxy, List<String> dotStrings) throws IOException,
-//			InterruptedException {
-//		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);
-//		proxy.setSvekImage(maker.getImage());
-//	}
+	private Collection<IGroup> putConcurrentStateAtEnd(Collection<IGroup> groups) {
+		final List<IGroup> result = new ArrayList<IGroup>();
+		final List<IGroup> end = new ArrayList<IGroup>();
+		for (IGroup g : groups) {
+			if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
+				end.add(g);
+			} else {
+				result.add(g);
+			}
+		}
+		result.addAll(end);
+		return result;
+	}
 
 	private IEntityImage computeImage(IGroup g) throws IOException, InterruptedException {
 		final GroupPngMakerState maker = new GroupPngMakerState(diagram, g);

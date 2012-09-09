@@ -106,6 +106,12 @@ public class FileUtils {
 		fis.close();
 	}
 
+	static public void copyToFile(byte[] src, File dest) throws IOException {
+		final OutputStream fos = new BufferedOutputStream(new FileOutputStream(dest));
+		fos.write(src);
+		fos.close();
+	}
+
 	static public void copyToStream(File src, OutputStream os) throws IOException {
 		final InputStream fis = new BufferedInputStream(new FileInputStream(src));
 		final OutputStream fos = new BufferedOutputStream(os);

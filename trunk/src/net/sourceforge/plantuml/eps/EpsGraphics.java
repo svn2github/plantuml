@@ -73,7 +73,11 @@ public class EpsGraphics {
 
 	public EpsGraphics() {
 		header.append("%!PS-Adobe-3.0 EPSF-3.0\n");
-		header.append("%%Creator: PlantUML v" + Version.versionString() + "\n");
+		String v = Version.versionString();
+		if (v.endsWith("beta") == false) {
+			v += "    ";
+		}
+		header.append("%%Creator: PlantUML v" + v + "\n");
 		header.append("%%Title: noTitle\n");
 		header.append("%%CreationDate: " + new Date() + "\n");
 		setcolorgradient.add(new PostScriptCommandRaw("3 index 7 index sub 1 index mul 7 index add", true));
@@ -375,8 +379,8 @@ public class EpsGraphics {
 		append("/ANN pdfmark", true);
 	}
 
-	public void epsRectangle(double x, double y, double width, double height, double rx, double ry, HtmlColorGradient gr,
-			ColorMapper mapper) {
+	public void epsRectangle(double x, double y, double width, double height, double rx, double ry,
+			HtmlColorGradient gr, ColorMapper mapper) {
 		checkCloseDone();
 		ensureVisible(x, y);
 		ensureVisible(x + width, y + height);

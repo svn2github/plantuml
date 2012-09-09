@@ -79,6 +79,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), //
 				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + StringUtils.URL_PATTERN + ")?"), //
 				new RegexLeaf("ARROW", "([-=.]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
@@ -103,18 +104,18 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		final StringBuilder sb = new StringBuilder();
 
 		final String desc0 = line0.get("DESC").get(0);
-		Url url = null;
+		Url urlActivity = null;
 		if (StringUtils.isNotEmpty(desc0)) {
-			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0, true);
-			if (url == null) {
+			urlActivity = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0, true);
+			if (urlActivity == null) {
 				sb.append(desc0);
 				sb.append("\\n");
 			}
 		}
 		for (int i = 1; i < lines.size() - 1; i++) {
-			if (i == 1 && url == null) {
-				url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i), true);
-				if (url != null) {
+			if (i == 1 && urlActivity == null) {
+				urlActivity = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i), true);
+				if (urlActivity != null) {
 					continue;
 				}
 			}
@@ -142,14 +143,15 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
 		if (partition != null) {
-			getSystem().getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, null);
+			getSystem().getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+					null);
 		}
 		final IEntity entity2 = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), LeafType.ACTIVITY);
 		if (partition != null) {
 			getSystem().endGroup();
 		}
-		if (url != null) {
-			entity2.addUrl(url);
+		if (urlActivity != null) {
+			entity2.addUrl(urlActivity);
 		}
 
 		if (lineLast.get(2) != null) {
@@ -176,6 +178,12 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		final Direction direction = StringUtils.getArrowDirection(line0.get("ARROW").get(0));
 		if (direction == Direction.LEFT || direction == Direction.UP) {
 			link = link.getInv();
+		}
+
+		if (line0.get("URL").get(0) != null) {
+			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), line0.get("URL")
+					.get(0), true);
+			link.setUrl(urlLink);
 		}
 
 		getSystem().addLink(link);

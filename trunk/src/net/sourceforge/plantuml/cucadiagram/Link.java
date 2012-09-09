@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8512 $
+ * Revision $Revision: 8667 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -40,6 +40,7 @@ import java.util.List;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
@@ -79,6 +80,8 @@ public class Link {
 
 	private boolean opale;
 	private boolean horizontalSolitary;
+	
+	private Url url;
 
 	public Link(IEntity cl1, IEntity cl2, LinkType type, String label, int length) {
 		this(cl1, cl2, type, label, length, null, null, null, null, null);
@@ -367,6 +370,14 @@ public class Link {
 				&& ((ILeaf) getEntity1()).getEntityPosition() != EntityPosition.NORMAL
 				&& ((ILeaf) getEntity2()).getEntityPosition() != EntityPosition.NORMAL
 				&& getEntity1().getParentContainer() == getEntity2().getParentContainer();
+	}
+
+	public Url getUrl() {
+		return url;
+	}
+
+	public void setUrl(Url url) {
+		this.url = url;
 	}
 
 	// private Group containerEntryPoint;

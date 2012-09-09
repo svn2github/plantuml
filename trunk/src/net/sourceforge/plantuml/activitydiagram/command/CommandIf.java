@@ -56,26 +56,37 @@ public class CommandIf extends SingleLineCommand2<ActivityDiagram> {
 	}
 
 	static RegexConcat getRegexConcat() {
-		return new RegexConcat(new RegexLeaf("^"),
-					new RegexOr("FIRST", true,
-							new RegexLeaf("STAR", "(\\(\\*(top)?\\))"),
-							new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"),
-							new RegexLeaf("BAR", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"),
-							new RegexLeaf("QUOTED", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")),
-					new RegexLeaf("\\s*"),
-					new RegexLeaf("ARROW", "([=-]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?[=-]*\\>)?"),
-					new RegexLeaf("\\s*"),
-					new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"),
-					new RegexLeaf("\\s*"),
-					new RegexLeaf("IF", "if\\s*\"([^\"]*)\"\\s*(?:as\\s+([\\p{L}0-9_.]+)\\s+)?(?:then)?$"));
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexOr("FIRST", true, //
+						new RegexLeaf("STAR", "(\\(\\*(top)?\\))"), //
+						new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"), //
+						new RegexLeaf("BAR", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), //
+						new RegexLeaf("QUOTED", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("ARROW", "([=-]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?[=-]*\\>)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexOr(//
+						new RegexLeaf("IF1", "if\\s*\"([^\"]*)\"\\s*(?:as\\s+([\\p{L}0-9_.]+)\\s+)?"), //
+						new RegexLeaf("IF2", "if\\s+(.+?)\\s*")), //
+				new RegexLeaf("(?:then)?$"));
 	}
-
 
 	@Override
 	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
 		final IEntity entity1 = CommandLinkActivity.getEntity(getSystem(), arg, true);
 
-		getSystem().startIf(arg.get("IF").get(1));
+		final String ifCode;
+		final String ifLabel;
+		if (arg.get("IF2").get(0) == null) {
+			ifCode = arg.get("IF1").get(1);
+			ifLabel = arg.get("IF1").get(0);
+		} else {
+			ifCode = null;
+			ifLabel = arg.get("IF2").get(0);
+		}
+		getSystem().startIf(ifCode);
 
 		int lenght = 2;
 
@@ -87,7 +98,7 @@ public class CommandIf extends SingleLineCommand2<ActivityDiagram> {
 		final IEntity branch = getSystem().getCurrentContext().getBranch();
 
 		Link link = new Link(entity1, branch, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), arg.get("BRACKET").get(0),
-				lenght, null, arg.get("IF").get(0), getSystem().getLabeldistance(), getSystem().getLabelangle());
+				lenght, null, ifLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
 		if (arg.get("ARROW").get(0) != null) {
 			final Direction direction = StringUtils.getArrowDirection(arg.get("ARROW").get(0));
 			if (direction == Direction.LEFT || direction == Direction.UP) {

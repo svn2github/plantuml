@@ -27,31 +27,26 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
- * 
- * Revision $Revision: 8797 $
+ *
+ * Revision $Revision: 8515 $
  *
  */
-package net.sourceforge.plantuml.version;
+package net.sourceforge.plantuml.flashcode;
 
-public class Version {
+public class FlashCodeFactory {
 
-	public static int version() {
-		return 7934;
-	}
-
-	public static String versionString() {
-		if (beta()) {
-			return "" + (version() + 1) + "beta";
+	public static FlashCodeUtils getFlashCodeUtils() {
+		final String name = "net.sourceforge.plantuml.flashcode.FlashCodeUtilsZxing";
+		try {
+			final Class cl = Class.forName(name);
+			return (FlashCodeUtils) cl.newInstance();
+		} catch (ClassNotFoundException e) {
+			return new FlashCodeUtilsNone();
+		} catch (InstantiationException e) {
+			return new FlashCodeUtilsNone();
+		} catch (IllegalAccessException e) {
+			return new FlashCodeUtilsNone();
 		}
-		return "" + version();
-	}
-
-	public static boolean beta() {
-		return false;
-	}
-
-	public static long compileTime() {
-		return 1347217419292L;
 	}
 
 }

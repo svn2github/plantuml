@@ -37,6 +37,7 @@ import java.util.Map;
 
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
@@ -60,35 +61,36 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 	}
 
 	static RegexConcat getRegexConcat() {
-		return new RegexConcat(
-				new RegexLeaf("^"), // 
-				new RegexOr("FIRST", true, // 
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexOr("FIRST", true, //
 						new RegexLeaf("STAR", "(\\(\\*(top)?\\))"), //
-						new RegexLeaf("CODE", "([\\p{L}0-9][\\p{L}0-9_.]*)"), // 
+						new RegexLeaf("CODE", "([\\p{L}0-9][\\p{L}0-9_.]*)"), //
 						new RegexLeaf("BAR", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), //
 						new RegexLeaf("QUOTED", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9_.]+))?")), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
-//				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), // 
+				// new RegexLeaf("BACKCOLOR", "(#\\w+)?"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
-				new RegexLeaf("\\s*"), // 
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + StringUtils.URL_PATTERN + ")?"), //
 				new RegexLeaf("ARROW", "([-=.]+(?:\\*|left|right|up|down|le?|ri?|up?|do?)?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), // 
+				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexOr("FIRST2", // 
-						new RegexLeaf("STAR2", "(\\(\\*(top)?\\))"), // 
-						new RegexLeaf("OPENBRACKET2", "(\\{)"), // 
-						new RegexLeaf("CODE2", "([\\p{L}0-9][\\p{L}0-9_.]*)"), // 
-						new RegexLeaf("BAR2", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), // 
-						new RegexLeaf("QUOTED2", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9][\\p{L}0-9_.]*))?")),
-				new RegexLeaf("\\s*"), // 
+				new RegexOr("FIRST2", //
+						new RegexLeaf("STAR2", "(\\(\\*(top)?\\))"), //
+						new RegexLeaf("OPENBRACKET2", "(\\{)"), //
+						new RegexLeaf("CODE2", "([\\p{L}0-9][\\p{L}0-9_.]*)"), //
+						new RegexLeaf("BAR2", "(?:==+)\\s*([\\p{L}0-9_.]+)\\s*(?:==+)"), //
+						new RegexLeaf("QUOTED2", "\"([^\"]+)\"(?:\\s+as\\s+([\\p{L}0-9][\\p{L}0-9_.]*))?"), //
+						new RegexLeaf("QUOTED_INVISIBLE2", "(\\w.*?)")), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE2", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("PARTITION2", "(?:in\\s+(\"[^\"]+\"|\\S+))?"), //
 				new RegexLeaf("\\s*"), //
-//				new RegexLeaf("BACKCOLOR2", "(#\\w+)?"), //
+				// new RegexLeaf("BACKCOLOR2", "(#\\w+)?"), //
 				new RegexLeaf("BACKCOLOR2", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
@@ -129,7 +131,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (arg2.get("ARROW").get(0).contains(".")) {
 			type = type.getDotted();
 		}
-		
+
 		Link link = new Link(entity1, entity2, type, linkLabel, lenght);
 		if (arg2.get("ARROW").get(0).contains("*")) {
 			link.setConstraint(false);
@@ -137,6 +139,11 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		final Direction direction = StringUtils.getArrowDirection(arg2.get("ARROW").get(0));
 		if (direction == Direction.LEFT || direction == Direction.UP) {
 			link = link.getInv();
+		}
+		if (arg2.get("URL").get(0) != null) {
+			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), arg2.get("URL")
+					.get(0), true);
+			link.setUrl(urlLink);
 		}
 
 		getSystem().addLink(link);
@@ -171,9 +178,11 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		final String code = arg.get("CODE" + suf).get(0);
 		if (code != null) {
 			if (partition != null) {
-				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, system.getRootGroup());
+				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+						system.getRootGroup());
 			}
-			final IEntity result = system.getOrCreate(code, StringUtils.getWithNewlines(code), getTypeIfExisting(system, code));
+			final IEntity result = system.getOrCreate(code, StringUtils.getWithNewlines(code),
+					getTypeIfExisting(system, code));
 			if (partition != null) {
 				system.endGroup();
 			}
@@ -187,9 +196,24 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (quoted.get(0) != null) {
 			final String quotedCode = quoted.get(1) == null ? quoted.get(0) : quoted.get(1);
 			if (partition != null) {
-				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE, system.getRootGroup());
+				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+						system.getRootGroup());
 			}
-			final IEntity result = system.getOrCreate(quotedCode, StringUtils.getWithNewlines(quoted.get(0)), getTypeIfExisting(system, quotedCode));
+			final IEntity result = system.getOrCreate(quotedCode, StringUtils.getWithNewlines(quoted.get(0)),
+					getTypeIfExisting(system, quotedCode));
+			if (partition != null) {
+				system.endGroup();
+			}
+			return result;
+		}
+		final RegexPartialMatch quotedInvisible = arg.get("QUOTED_INVISIBLE" + suf);
+		if (quotedInvisible != null && quotedInvisible.get(0) != null) {
+			final String s = quotedInvisible.get(0);
+			if (partition != null) {
+				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+						system.getRootGroup());
+			}
+			final IEntity result = system.getOrCreate(s, StringUtils.getWithNewlines(s), LeafType.ACTIVITY);
 			if (partition != null) {
 				system.endGroup();
 			}
@@ -199,7 +223,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (first == null) {
 			return system.getLastEntityConsulted();
 		}
-		throw new UnsupportedOperationException();
+
+		return null;
 	}
 
 	static LeafType getTypeIfExisting(ActivityDiagram system, String code) {

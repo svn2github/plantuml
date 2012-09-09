@@ -83,6 +83,9 @@ public class PSystemVersion extends AbstractPSystem {
 	public static PSystemVersion createShowVersion() throws IOException {
 		final List<String> strings = new ArrayList<String>();
 		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
+		if (License.isCloseSource()) {
+			strings.add("(Close source distribution)");
+		}
 		strings.add(" ");
 
 		strings.addAll(GraphvizUtils.getTestDotStrings(true));
@@ -100,6 +103,9 @@ public class PSystemVersion extends AbstractPSystem {
 		// Duplicate in OptionPrint
 		final List<String> strings = new ArrayList<String>();
 		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
+		if (License.isCloseSource()) {
+			strings.add("(Close source distribution)");
+		}
 		strings.add(" ");
 		strings.add("<u>Original idea</u>: Arnaud Roques");
 		strings.add("<u>Word Macro</u>: Alain Bertucat & Matthieu Sabatier");

@@ -59,7 +59,8 @@ public class SourceStringReader {
 			final BlockUmlBuilder builder = new BlockUmlBuilder(config, defines, new StringReader(source), null);
 			this.blocks = builder.getBlockUmls();
 		} catch (IOException e) {
-			throw new IllegalStateException();
+			Log.error("error "+e);
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -95,9 +96,9 @@ public class SourceStringReader {
 				if (numImage < nbInSystem) {
 					final CMapData cmap = new CMapData();
 					system.exportDiagram(os, cmap, numImage, fileFormatOption);
-//					if (cmap.containsData()) {
-//						return system.getDescription() + "\n" + cmap.asString();
-//					}
+					if (cmap.containsData()) {
+						return system.getDescription() + "\n" + cmap.asString("plantuml");
+					}
 					return system.getDescription();
 				}
 				numImage -= nbInSystem;

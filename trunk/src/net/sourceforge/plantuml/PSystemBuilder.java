@@ -66,6 +66,7 @@ import net.sourceforge.plantuml.statediagram.StateDiagramFactory;
 import net.sourceforge.plantuml.sudoku.PSystemSudokuFactory;
 import net.sourceforge.plantuml.turing.PSystemTuringFactory;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagramFactory;
+import net.sourceforge.plantuml.version.License;
 import net.sourceforge.plantuml.version.PSystemLicenseFactory;
 import net.sourceforge.plantuml.version.PSystemVersionFactory;
 
@@ -118,20 +119,24 @@ public class PSystemBuilder {
 		factories.add(new PSystemSaltFactory(DiagramType.UML));
 		factories.add(new PSystemDotFactory(DiagramType.DOT));
 		factories.add(new PSystemDotFactory(DiagramType.UML));
-		factories.add(new PSystemDitaaFactory(DiagramType.DITAA));
-		factories.add(new PSystemDitaaFactory(DiagramType.UML));
-		factories.add(new PSystemJcckitFactory(DiagramType.JCCKIT));
-		factories.add(new PSystemJcckitFactory(DiagramType.UML));
-		factories.add(new PSystemLogoFactory());
-		factories.add(new PSystemSudokuFactory());
-		factories.add(new PSystemTuringFactory());
+		if (License.isCloseSource() == false) {
+			factories.add(new PSystemDitaaFactory(DiagramType.DITAA));
+			factories.add(new PSystemDitaaFactory(DiagramType.UML));
+			factories.add(new PSystemJcckitFactory(DiagramType.JCCKIT));
+			factories.add(new PSystemJcckitFactory(DiagramType.UML));
+			factories.add(new PSystemLogoFactory());
+			factories.add(new PSystemSudokuFactory());
+			factories.add(new PSystemTuringFactory());
+		}
 		factories.add(new PSystemEggFactory());
 		factories.add(new PSystemAppleTwoFactory());
 		factories.add(new PSystemRIPFactory());
 		factories.add(new PSystemLostFactory());
 		factories.add(new PSystemPathFactory());
 		factories.add(new PSystemOregonFactory());
-		factories.add(new PSystemXearthFactory());
+		if (License.isCloseSource() == false) {
+			factories.add(new PSystemXearthFactory());
+		}
 		factories.add(new PSystemProjectFactory2());
 		factories.add(new FlowDiagramFactory());
 		return factories;

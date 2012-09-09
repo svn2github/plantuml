@@ -443,6 +443,11 @@ public class Line implements Moveable {
 			return;
 		}
 
+		final Url url = link.getUrl();
+		if (url != null) {
+			ug.startUrl(url);
+		}
+
 		if (link.isAutoLinkOfAGroup()) {
 			final Cluster cl = bibliotekon.getCluster((IGroup) link.getEntity1());
 			x += cl.getWidth();
@@ -529,6 +534,10 @@ public class Line implements Moveable {
 		if (this.endHeadText != null) {
 			this.endHeadText.drawU(ug, x + this.endHeadLabelXY.getPosition().getX(), y
 					+ this.endHeadLabelXY.getPosition().getY());
+		}
+
+		if (url != null) {
+			ug.closeAction();
 		}
 	}
 

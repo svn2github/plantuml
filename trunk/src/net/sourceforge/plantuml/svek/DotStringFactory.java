@@ -314,7 +314,7 @@ public class DotStringFactory implements Moveable {
 			cluster.setPosition(minX, minY, maxX, maxY);
 			corner1.manage(minX, minY);
 
-			if (cluster.getTitleWidth() == 0 || cluster.getTitleHeight() == 0) {
+			if (cluster.getTitleAndAttributeWidth() == 0 || cluster.getTitleAndAttributeHeight() == 0) {
 				continue;
 			}
 			idx = getClusterIndex(svg, cluster.getTitleColor());
@@ -350,8 +350,8 @@ public class DotStringFactory implements Moveable {
 		return idx;
 	}
 
-	public void openCluster(IGroup g, int titleWidth, int titleHeight, TextBlock title) {
-		this.current = current.createChild(g, titleWidth, titleHeight, title, colorSequence, dotData.getSkinParam());
+	public void openCluster(IGroup g, int titleAndAttributeWidth, int titleAndAttributeHeight, TextBlock title) {
+		this.current = current.createChild(g, titleAndAttributeWidth, titleAndAttributeHeight, title, colorSequence, dotData.getSkinParam());
 		bibliotekon.addCluster(this.current);
 	}
 

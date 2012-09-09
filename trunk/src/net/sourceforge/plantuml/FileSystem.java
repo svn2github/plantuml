@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 8672 $
  *
  */
 package net.sourceforge.plantuml;
@@ -64,10 +64,16 @@ public class FileSystem {
 
 	public File getFile(String nameOrPath) throws IOException {
 		final File dir = currentDir.get();
-		if (dir == null) {
+		if (dir == null || isAbsolute(nameOrPath)) {
 			return new File(nameOrPath).getCanonicalFile();
 		}
-		return new File(dir.getAbsoluteFile(), nameOrPath).getCanonicalFile();
+		final File file = new File(dir.getAbsoluteFile(), nameOrPath);
+		return file.getCanonicalFile();
+	}
+
+	private boolean isAbsolute(String nameOrPath) {
+		final File f = new File(nameOrPath);
+		return f.isAbsolute();
 	}
 
 	public void reset() {

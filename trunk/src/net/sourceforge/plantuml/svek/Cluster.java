@@ -61,6 +61,7 @@ import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
+import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockEmpty;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
@@ -82,8 +83,8 @@ public class Cluster implements Moveable {
 	private final int colorTitle;
 	private final ISkinParam skinParam;
 
-	private int titleWidth;
-	private int titleHeight;
+	private int titleAndAttributeWidth;
+	private int titleAndAttributeHeight;
 	private TextBlock title;
 
 	private double xTitle;
@@ -235,11 +236,11 @@ public class Cluster implements Moveable {
 		return Collections.unmodifiableList(children);
 	}
 
-	public Cluster createChild(IGroup g, int titleWidth, int titleHeight, TextBlock title, ColorSequence colorSequence,
-			ISkinParam skinParam) {
+	public Cluster createChild(IGroup g, int titleAndAttributeWidth, int titleAndAttributeHeight, TextBlock title,
+			ColorSequence colorSequence, ISkinParam skinParam) {
 		final Cluster child = new Cluster(this, g, colorSequence, skinParam);
-		child.titleWidth = titleWidth;
-		child.titleHeight = titleHeight;
+		child.titleAndAttributeWidth = titleAndAttributeWidth;
+		child.titleAndAttributeHeight = titleAndAttributeHeight;
 		child.title = title;
 		this.children.add(child);
 		return child;
@@ -249,12 +250,12 @@ public class Cluster implements Moveable {
 		return group;
 	}
 
-	public final int getTitleWidth() {
-		return titleWidth;
+	public final int getTitleAndAttributeWidth() {
+		return titleAndAttributeWidth;
 	}
 
-	public final int getTitleHeight() {
-		return titleHeight;
+	public final int getTitleAndAttributeHeight() {
+		return titleAndAttributeHeight;
 	}
 
 	public double getWidth() {
@@ -276,7 +277,7 @@ public class Cluster implements Moveable {
 
 	public void drawU(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
 		if (hasEntryOrExitPoint()) {
-			manageEntryExitPoint();
+			manageEntryExitPoint(dotData, ug.getStringBounder());
 		}
 		if (skinParam.useSwimlanes()) {
 			drawSwinLinesState(ug, x, y, borderColor, dotData);
@@ -311,7 +312,7 @@ public class Cluster implements Moveable {
 		ug.getParam().setStroke(new UStroke());
 	}
 
-	private void manageEntryExitPoint() {
+	private void manageEntryExitPoint(DotData dotData, StringBounder stringBounder) {
 		final Collection<ClusterPosition> insides = new ArrayList<ClusterPosition>();
 		final List<Point2D> points = new ArrayList<Point2D>();
 		for (Shape sh : shapes) {
@@ -325,16 +326,18 @@ public class Cluster implements Moveable {
 			insides.add(in.getClusterPosition());
 		}
 		final FrontierCalculator frontierCalculator = new FrontierCalculator(getClusterPosition(), insides, points);
-		if (titleHeight > 0 && titleWidth > 0) {
-			frontierCalculator.ensureMinWidth(titleWidth + 10);
+		if (titleAndAttributeHeight > 0 && titleAndAttributeWidth > 0) {
+			frontierCalculator.ensureMinWidth(titleAndAttributeWidth + 10);
 		}
 		final ClusterPosition forced = frontierCalculator.getSuggestedPosition();
 		xTitle += ((forced.getMinX() - minX) + (forced.getMaxX() - maxX)) / 2;
-		yTitle += forced.getMinY() - minY;
 		minX = forced.getMinX();
 		minY = forced.getMinY();
 		maxX = forced.getMaxX();
 		maxY = forced.getMaxY();
+		yTitle = minY + IEntityImage.MARGIN;
+		final double widthTitle = title.calculateDimension(stringBounder).getWidth();
+		xTitle = minX + ((maxX - minX - widthTitle) / 2);
 	}
 
 	private void drawSwinLinesState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
@@ -368,13 +371,7 @@ public class Cluster implements Moveable {
 					.getStereotype().getLabel());
 		}
 		final HtmlColor background = getColor(dotData, ColorParam.background, null);
-		final List<Member> members = ((IEntity) group).getFieldsToDisplay();
-		final TextBlockWidth attribute;
-		if (members.size() == 0) {
-			attribute = new TextBlockEmpty();
-		} else {
-			attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, dotData.getSkinParam());
-		}
+		final TextBlockWidth attribute = getTextBlockAttribute(dotData);
 		final double attributeHeight = attribute.calculateDimension(ug.getStringBounder()).getHeight();
 		final RoundedContainer r = new RoundedContainer(total, suppY, attributeHeight
 				+ (attributeHeight > 0 ? IEntityImage.MARGIN : 0), borderColor, stateBack, background);
@@ -397,6 +394,17 @@ public class Cluster implements Moveable {
 
 		}
 
+	}
+
+	private TextBlockWidth getTextBlockAttribute(DotData dotData) {
+		final TextBlockWidth attribute;
+		final List<Member> members = group.getFieldsToDisplay();
+		if (members.size() == 0) {
+			attribute = new TextBlockEmpty();
+		} else {
+			attribute = new MethodsOrFieldsArea(members, FontParam.STATE_ATTRIBUTE, dotData.getSkinParam());
+		}
+		return attribute;
 	}
 
 	public void setPosition(double minX, double minY, double maxX, double maxY) {
@@ -447,7 +455,7 @@ public class Cluster implements Moveable {
 		}
 	}
 
-	public void printCluster2(StringBuilder sb, Collection<Line> lines) {
+	public boolean printCluster2(StringBuilder sb, Collection<Line> lines) {
 		// Log.println("Cluster::printCluster " + this);
 
 		final Set<String> rankSame = new HashSet<String>();
@@ -465,8 +473,10 @@ public class Cluster implements Moveable {
 			}
 		}
 
+		boolean added = false;
 		for (Shape sh : getShapesOrderedWithoutTop(lines)) {
 			sh.appendShape(sb);
+			added = true;
 		}
 
 		for (String same : rankSame) {
@@ -477,6 +487,8 @@ public class Cluster implements Moveable {
 		for (Cluster child : getChildren()) {
 			child.printInternal(sb, lines);
 		}
+
+		return added;
 	}
 
 	public void fillRankMin(Set<String> rankMin) {
@@ -578,19 +590,30 @@ public class Cluster implements Moveable {
 		sb.append("style=solid;");
 		sb.append("color=\"" + StringUtils.getAsHtml(color) + "\";");
 
-		final int titleWidth = getTitleWidth();
-		final int titleHeight = getTitleHeight();
-		if (titleHeight > 0 && titleWidth > 0) {
-			sb.append("label=<");
-			Line.appendTable(sb, titleWidth, titleHeight - 5, colorTitle);
-			sb.append(">;");
+		final boolean isLabel = getTitleAndAttributeHeight() > 0 && getTitleAndAttributeWidth() > 0;
+		final String label;
+		if (isLabel) {
+			final StringBuilder sblabel = new StringBuilder("<");
+			Line.appendTable(sblabel, getTitleAndAttributeWidth(), getTitleAndAttributeHeight() - 5, colorTitle);
+			sblabel.append(">");
+			label = sblabel.toString();
+		} else {
+			label = "\"\"";
 		}
-		SvekUtils.println(sb);
 
 		if (hasEntryOrExitPoint) {
 			printClusterEntryExit(sb);
-			subgraphCluster(sb, "ee");
+			subgraphCluster(sb, "ee", label);
+		} else {
+			sb.append("label=" + label + ";");
+			SvekUtils.println(sb);
 		}
+
+		// if (hasEntryOrExitPoint) {
+		// printClusterEntryExit(sb);
+		// subgraphCluster(sb, "ee");
+		// }
+
 		if (thereALinkFromOrToGroup) {
 			sb.append(getSpecialPointId(group) + " [shape=point,width=.01,label=\"\"];");
 			subgraphCluster(sb, "i");
@@ -614,7 +637,11 @@ public class Cluster implements Moveable {
 		}
 		SvekUtils.println(sb);
 		printCluster1(sb, lines);
-		printCluster2(sb, lines);
+		final boolean added = printCluster2(sb, lines);
+		if (hasEntryOrExitPoint && added == false) {
+			final String empty = "empty" + color;
+			sb.append(empty + " [shape=point,width=.01,label=\"\"];");
+		}
 		sb.append("}");
 		if (protection1) {
 			sb.append("}");
@@ -633,10 +660,13 @@ public class Cluster implements Moveable {
 	}
 
 	private void subgraphCluster(StringBuilder sb, String id) {
+		subgraphCluster(sb, id, "\"\"");
+	}
+
+	private void subgraphCluster(StringBuilder sb, String id, String label) {
 		final String uid = getClusterId() + id;
 		sb.append("subgraph " + uid + " {");
-		// sb.append("style=invis;");
-		sb.append("label=\"\";");
+		sb.append("label=" + label + ";");
 	}
 
 	public int getColor() {
