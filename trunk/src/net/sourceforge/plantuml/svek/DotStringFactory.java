@@ -165,7 +165,7 @@ public class DotStringFactory implements Moveable {
 			line.appendLine(sb);
 		}
 		root.fillRankMin(rankMin);
-		root.printCluster2(sb, bibliotekon.allLines());
+		root.printCluster2(sb, bibliotekon.allLines(), stringBounder);
 		printMinRanking(sb);
 
 		for (Line line : bibliotekon.lines1()) {

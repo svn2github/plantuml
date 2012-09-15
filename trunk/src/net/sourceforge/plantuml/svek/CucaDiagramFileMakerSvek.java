@@ -117,7 +117,7 @@ public final class CucaDiagramFileMakerSvek {
 		final DotData dotData = new DotData(diagram.getEntityFactory().getRootGroup(), diagram.getLinks(), diagram
 				.getLeafs().values(), diagram.getUmlDiagramType(), diagram.getSkinParam(), diagram.getRankdir(),
 				diagram, diagram, diagram.getColorMapper(), diagram.getEntityFactory());
-		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory());
+		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory(), false);
 
 		IEntityImage result = svek2.createFile(diagram.getDotStringSkek());
 		result = addTitle(result);

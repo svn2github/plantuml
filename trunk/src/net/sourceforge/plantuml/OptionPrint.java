@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8643 $
+ * Revision $Revision: 8820 $
  *
  */
 package net.sourceforge.plantuml;
@@ -68,6 +68,7 @@ public class OptionPrint {
 		System.out.println();
 		System.out.println("where options include:");
 		System.out.println("    -gui\t\tTo run the graphical user interface");
+		System.out.println("    -tpng\t\tTo generate images using PNG format (default)");
 		System.out.println("    -tsvg\t\tTo generate images using SVG format");
 		System.out.println("    -teps\t\tTo generate images using EPS format");
 		System.out.println("    -txmi\t\tTo generate XMI file for class diagram");

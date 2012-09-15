@@ -34,15 +34,24 @@
 package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.sourceforge.plantuml.ColorParam;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.dot.DotData;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.posimo.Moveable;
 import net.sourceforge.plantuml.skin.rose.Rose;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
+import net.sourceforge.plantuml.ugraphic.ULine;
+import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public final class SvekResult implements IEntityImage, Moveable {
 
@@ -52,12 +61,15 @@ public final class SvekResult implements IEntityImage, Moveable {
 	private ClusterPosition dim;
 	private final DotData dotData;
 	private final DotStringFactory dotStringFactory;
+	private final boolean hasVerticalLine;
 
-	public SvekResult(ClusterPosition dim, DotData dotData, DotStringFactory dotStringFactory, HtmlColor clusterBorder) {
+	public SvekResult(ClusterPosition dim, DotData dotData, DotStringFactory dotStringFactory, HtmlColor clusterBorder,
+			boolean hasVerticalLine) {
 		this.dim = dim;
 		this.dotData = dotData;
 		this.dotStringFactory = dotStringFactory;
 		this.clusterBorder = clusterBorder;
+		this.hasVerticalLine = hasVerticalLine;
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
@@ -69,10 +81,17 @@ public final class SvekResult implements IEntityImage, Moveable {
 		}
 		// assert groups.size() == dotStringFactory.getAllSubCluster().size();
 
+		final Set<Double> xdots = new TreeSet<Double>();
+
 		for (Shape shape : dotStringFactory.getBibliotekon().allShapes()) {
 			final double minX = shape.getMinX();
 			final double minY = shape.getMinY();
 			shape.getImage().drawU(ug, x + minX, y + minY);
+			if (hasVerticalLine) {
+				final double xv = x + minX;
+				xdots.add(xv);
+				xdots.add(xv + shape.getWidth());
+			}
 		}
 
 		for (Line line : dotStringFactory.getBibliotekon().allLines()) {
@@ -81,6 +100,36 @@ public final class SvekResult implements IEntityImage, Moveable {
 			line.drawU(ug, x, y, color);
 		}
 
+		final double THICKNESS_BORDER = 1.5;
+		final int DASH = 8;
+
+		if (xdots.size() > 0) {
+			final double height = getDimension(ug.getStringBounder()).getHeight();
+			ug.getParam().setColor(clusterBorder);
+			ug.getParam().setStroke(new UStroke(DASH, 10, THICKNESS_BORDER));
+			for (Double xv : middeling(xdots)) {
+				ug.draw(xv, y, new ULine(0, height));
+			}
+			ug.getParam().setStroke(new UStroke());
+		}
+
+	}
+
+	private Collection<Double> middeling(Set<Double> xdots) {
+		final List<Double> result = new ArrayList<Double>();
+		final Iterator<Double> it = xdots.iterator();
+		it.next();
+		while (true) {
+			if (it.hasNext() == false) {
+				return result;
+			}
+			final double v1 = it.next();
+			if (it.hasNext() == false) {
+				return result;
+			}
+			final double v2 = it.next();
+			result.add((v1 + v2) / 2);
+		}
 	}
 
 	private ColorParam getArrowColorParam() {

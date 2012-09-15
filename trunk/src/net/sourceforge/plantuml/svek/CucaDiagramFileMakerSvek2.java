@@ -99,6 +99,7 @@ public final class CucaDiagramFileMakerSvek2 {
 
 	private final DotData dotData;
 	private final EntityFactory entityFactory;
+	private final boolean hasVerticalLine;
 
 	static private final StringBounder stringBounder;
 
@@ -107,9 +108,10 @@ public final class CucaDiagramFileMakerSvek2 {
 		stringBounder = StringBounderUtils.asStringBounder(builder.getGraphics2D());
 	}
 
-	public CucaDiagramFileMakerSvek2(DotData dotData, EntityFactory entityFactory) {
+	public CucaDiagramFileMakerSvek2(DotData dotData, EntityFactory entityFactory, boolean hasVerticalLine) {
 		this.dotData = dotData;
 		this.entityFactory = entityFactory;
+		this.hasVerticalLine = hasVerticalLine;
 	}
 
 	private DotStringFactory dotStringFactory;
@@ -192,7 +194,7 @@ public final class CucaDiagramFileMakerSvek2 {
 		} else {
 			border = getColor(ColorParam.packageBorder, null);
 		}
-		final SvekResult result = new SvekResult(position, dotData, dotStringFactory, border);
+		final SvekResult result = new SvekResult(position, dotData, dotStringFactory, border, hasVerticalLine);
 		result.moveSvek(6 - minX, -minY);
 		return result;
 

@@ -130,6 +130,22 @@ public class ClusterPosition {
 		return new ClusterPosition(minX, minY, d, maxY);
 	}
 
+	public ClusterPosition addMaxX(double d) {
+		return new ClusterPosition(minX, minY, maxX + d, maxY);
+	}
+
+	public ClusterPosition addMaxY(double d) {
+		return new ClusterPosition(minX, minY, maxX, maxY + d);
+	}
+
+	public ClusterPosition addMinX(double d) {
+		return new ClusterPosition(minX + d, minY, maxX, maxY);
+	}
+
+	public ClusterPosition addMinY(double d) {
+		return new ClusterPosition(minX, minY + d, maxX, maxY);
+	}
+
 	public ClusterPosition withMinY(double d) {
 		return new ClusterPosition(minX, d, maxX, maxY);
 	}

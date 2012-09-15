@@ -27,31 +27,33 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
- * 
- * Revision $Revision: 8829 $
  *
+ * Revision $Revision: 4236 $
+ * 
  */
-package net.sourceforge.plantuml.version;
+package net.sourceforge.plantuml.svek;
 
-public class Version {
+public class ShapePseudoImpl implements IShapePseudo {
 
-	public static int version() {
-		return 7935;
+	private final String uid;
+	private final double width;
+	private final double height;
+
+	public ShapePseudoImpl(String uid, double width, double height) {
+		this.uid = uid;
+		this.width = width;
+		this.height = height;
 	}
 
-	public static String versionString() {
-		if (beta()) {
-			return "" + (version() + 1) + "beta";
-		}
-		return "" + version();
+	public String getUid() {
+		return uid;
 	}
 
-	public static boolean beta() {
-		return false;
-	}
-
-	public static long compileTime() {
-		return 1347730861294L;
+	public void appendShape(StringBuilder sb) {
+		sb.append(uid + " [shape=rect,label=\"\"");
+		sb.append(",width=" + SvekUtils.pixelToInches(width));
+		sb.append(",height=" + SvekUtils.pixelToInches(height));
+		sb.append("];");
 	}
 
 }

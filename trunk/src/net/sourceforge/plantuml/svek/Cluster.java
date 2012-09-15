@@ -51,6 +51,7 @@ import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
+import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.EntityPosition;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -430,15 +431,49 @@ public class Cluster implements Moveable {
 		}
 	}
 
-	public void printClusterEntryExit(StringBuilder sb) {
-		final List<Shape> entries = getShapesEntryExit(EntityPosition.ENTRY_POINT);
+	private List<IShapePseudo> addProtection(List<Shape> entries, double width) {
+		final List<IShapePseudo> result = new ArrayList<IShapePseudo>();
+		result.add(entries.get(0));
+		for (int i = 1; i < entries.size(); i++) {
+			result.add(new ShapePseudoImpl("psd" + UniqueSequence.getValue(), width, 5));
+			result.add(entries.get(i));
+		}
+		return result;
+	}
+
+	private double getMaxWidthFromLabelForEntryExit(List<Shape> entries, StringBounder stringBounder) {
+		double result = -Double.MAX_VALUE;
+		for (Shape shape : entries) {
+			final double w = getMaxWidthFromLabelForEntryExit(shape, stringBounder);
+			if (w > result) {
+				result = w;
+			}
+		}
+		return result;
+	}
+
+	private double getMaxWidthFromLabelForEntryExit(Shape shape, StringBounder stringBounder) {
+		return shape.getMaxWidthFromLabelForEntryExit(stringBounder);
+	}
+
+	public void printClusterEntryExit(StringBuilder sb, StringBounder stringBounder) {
+		// final List<? extends IShapePseudo> entries = getShapesEntryExit(EntityPosition.ENTRY_POINT);
+		final List<Shape> shapesEntryExitList = getShapesEntryExit(EntityPosition.ENTRY_POINT);
+		final double maxWith = getMaxWidthFromLabelForEntryExit(shapesEntryExitList, stringBounder);
+		final double naturalSpace = 70;
+		final List<? extends IShapePseudo> entries;
+		if (maxWith > naturalSpace) {
+			entries = addProtection(shapesEntryExitList, maxWith - naturalSpace);
+		} else {
+			entries = shapesEntryExitList;
+		}
 		if (entries.size() > 0) {
 			sb.append("{rank=source;");
-			for (Shape sh : entries) {
+			for (IShapePseudo sh : entries) {
 				sb.append(sh.getUid() + ";");
 			}
 			sb.append("}");
-			for (Shape sh : entries) {
+			for (IShapePseudo sh : entries) {
 				sh.appendShape(sb);
 			}
 		}
@@ -455,7 +490,7 @@ public class Cluster implements Moveable {
 		}
 	}
 
-	public boolean printCluster2(StringBuilder sb, Collection<Line> lines) {
+	public boolean printCluster2(StringBuilder sb, Collection<Line> lines, StringBounder stringBounder) {
 		// Log.println("Cluster::printCluster " + this);
 
 		final Set<String> rankSame = new HashSet<String>();
@@ -485,7 +520,7 @@ public class Cluster implements Moveable {
 		}
 
 		for (Cluster child : getChildren()) {
-			child.printInternal(sb, lines);
+			child.printInternal(sb, lines, stringBounder);
 		}
 
 		return added;
@@ -564,7 +599,7 @@ public class Cluster implements Moveable {
 		return null;
 	}
 
-	private void printInternal(StringBuilder sb, Collection<Line> lines) {
+	private void printInternal(StringBuilder sb, Collection<Line> lines, StringBounder stringBounder) {
 		final boolean thereALinkFromOrToGroup = isThereALinkFromOrToGroup(lines);
 		if (thereALinkFromOrToGroup) {
 			subgraphCluster(sb, "a");
@@ -602,7 +637,7 @@ public class Cluster implements Moveable {
 		}
 
 		if (hasEntryOrExitPoint) {
-			printClusterEntryExit(sb);
+			printClusterEntryExit(sb, stringBounder);
 			subgraphCluster(sb, "ee", label);
 		} else {
 			sb.append("label=" + label + ";");
@@ -637,7 +672,7 @@ public class Cluster implements Moveable {
 		}
 		SvekUtils.println(sb);
 		printCluster1(sb, lines);
-		final boolean added = printCluster2(sb, lines);
+		final boolean added = printCluster2(sb, lines, stringBounder);
 		if (hasEntryOrExitPoint && added == false) {
 			final String empty = "empty" + color;
 			sb.append(empty + " [shape=point,width=.01,label=\"\"];");

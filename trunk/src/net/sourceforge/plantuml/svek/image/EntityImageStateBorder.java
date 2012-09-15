@@ -60,7 +60,7 @@ import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class EntityImageStateBorder extends AbstractEntityImage {
 
-	private static final double RADIUS = 6;
+	public static final double RADIUS = 6;
 	private final TextBlock desc;
 	private final Cluster stateParent;
 	private final EntityPosition entityPosition;
@@ -88,6 +88,11 @@ public class EntityImageStateBorder extends AbstractEntityImage {
 	@Override
 	public Dimension2D getDimension(StringBounder stringBounder) {
 		return new Dimension2DDouble(RADIUS * 2, RADIUS * 2);
+	}
+
+	public double getMaxWidthFromLabelForEntryExit(StringBounder stringBounder) {
+		final Dimension2D dimDesc = desc.calculateDimension(stringBounder);
+		return dimDesc.getWidth();
 	}
 
 	public void drawU(UGraphic ug, final double xTheoricalPosition, final double yTheoricalPosition) {

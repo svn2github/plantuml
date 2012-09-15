@@ -65,7 +65,9 @@ public final class CucaDiagramSimplifierState {
 					for (IEntity ent : g.getLeafsDirect()) {
 						urls.addAll(ent.getUrls());
 					}
-					g.overideImage(img, urls, LeafType.STATE);
+					g.overideImage(img, urls,
+							g.zgetGroupType() == GroupType.CONCURRENT_STATE ? LeafType.STATE_CONCURRENT
+									: LeafType.STATE);
 
 					changed = true;
 				}

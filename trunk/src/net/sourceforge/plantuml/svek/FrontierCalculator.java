@@ -36,8 +36,11 @@ package net.sourceforge.plantuml.svek;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 
+import net.sourceforge.plantuml.svek.image.EntityImageStateBorder;
+
 public class FrontierCalculator {
 
+	private static final double DELTA = 3 * EntityImageStateBorder.RADIUS;
 	private ClusterPosition core;
 	private final ClusterPosition initial;
 
@@ -87,6 +90,54 @@ public class FrontierCalculator {
 		}
 		if (touchMaxY == false) {
 			core = core.withMaxY(initial.getMaxY());
+		}
+		boolean pushMinX = false;
+		boolean pushMaxX = false;
+		boolean pushMinY = false;
+		boolean pushMaxY = false;
+		for (Point2D p : points) {
+			if (p.getY() == core.getMinY() || p.getY() == core.getMaxY()) {
+				if (Math.abs(p.getX() - core.getMaxX()) < DELTA) {
+					pushMaxX = true;
+				}
+				if (Math.abs(p.getX() - core.getMinX()) < DELTA) {
+					pushMinX = true;
+				}
+			}
+			if (p.getX() == core.getMinX() || p.getX() == core.getMaxX()) {
+				if (Math.abs(p.getY() - core.getMaxY()) < DELTA) {
+					pushMaxY = true;
+				}
+				if (Math.abs(p.getY() - core.getMinY()) < DELTA) {
+					pushMinY = true;
+				}
+			}
+		}
+		for (Point2D p : points) {
+//			if (p.getX() == core.getMinX() && (p.getY() == core.getMinY() || p.getY() == core.getMaxY())) {
+//				pushMinX = false;
+//			}
+//			if (p.getX() == core.getMaxX() && (p.getY() == core.getMinY() || p.getY() == core.getMaxY())) {
+//				pushMaxX = false;
+//			}
+			if (p.getY() == core.getMinY() && (p.getX() == core.getMinX() || p.getX() == core.getMaxX())) {
+				pushMinY = false;
+			}
+			if (p.getY() == core.getMaxY() && (p.getX() == core.getMinX() || p.getX() == core.getMaxX())) {
+				pushMaxY = false;
+			}
+		}
+		if (pushMaxX) {
+			core = core.addMaxX(DELTA);
+		}
+		if (pushMinX) {
+			core = core.addMinX(-DELTA);
+		}
+		if (pushMaxY) {
+			core = core.addMaxY(DELTA);
+		}
+		if (pushMinY) {
+			core = core.addMinY(-DELTA);
 		}
 	}
 

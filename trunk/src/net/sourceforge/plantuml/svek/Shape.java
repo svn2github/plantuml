@@ -42,9 +42,11 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.EntityPosition;
+import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.posimo.Positionable;
+import net.sourceforge.plantuml.svek.image.EntityImageStateBorder;
 
-public class Shape implements Positionable {
+public class Shape implements Positionable, IShapePseudo {
 
 	private final ShapeType type;
 	private final double width;
@@ -110,10 +112,6 @@ public class Shape implements Positionable {
 			appendHtml(sb);
 			return;
 		}
-		// if (type == ShapeType.CIRCLE_IN_RECT) {
-		// sb.append("subgraph clusterlol" + uid + " {");
-		// DotStringFactory.println(sb);
-		// }
 		sb.append(uid);
 		sb.append(" [");
 		appendShapeInternal(sb);
@@ -127,11 +125,6 @@ public class Shape implements Positionable {
 		sb.append("color=\"" + StringUtils.getAsHtml(color) + "\"");
 		sb.append("];");
 		SvekUtils.println(sb);
-		// if (type == ShapeType.CIRCLE_IN_RECT) {
-		// sb.append("}");
-		// DotStringFactory.println(sb);
-		// }
-
 	}
 
 	private void appendHtml(StringBuilder sb) {
@@ -246,6 +239,11 @@ public class Shape implements Positionable {
 	public void moveSvek(double deltaX, double deltaY) {
 		this.minX += deltaX;
 		this.minY += deltaY;
+	}
+
+	public double getMaxWidthFromLabelForEntryExit(StringBounder stringBounder) {
+		final EntityImageStateBorder im = (EntityImageStateBorder) image;
+		return im.getMaxWidthFromLabelForEntryExit(stringBounder);
 	}
 
 }

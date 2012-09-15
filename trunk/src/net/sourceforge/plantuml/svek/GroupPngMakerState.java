@@ -50,6 +50,8 @@ import net.sourceforge.plantuml.cucadiagram.GroupHierarchy;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.Member;
 import net.sourceforge.plantuml.cucadiagram.MethodsOrFieldsArea;
@@ -122,10 +124,18 @@ public final class GroupPngMakerState {
 				skinParam, group.zgetRankdir(), new InnerGroupHierarchy(), diagram.getColorMapper(),
 				diagram.getEntityFactory());
 
-		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory());
+		boolean hasVerticalLine = false;
+		for (ILeaf leaf : group.getLeafsDirect()) {
+			if (leaf.getEntityType() == LeafType.STATE_CONCURRENT) {
+				hasVerticalLine = true;
+			}
+		}
+		final CucaDiagramFileMakerSvek2 svek2 = new CucaDiagramFileMakerSvek2(dotData, diagram.getEntityFactory(),
+				hasVerticalLine);
 
 		if (group.zgetGroupType() == GroupType.CONCURRENT_STATE) {
-			return new InnerStateConcurrent(svek2.createFile());
+			// return new InnerStateConcurrent(svek2.createFile());
+			return svek2.createFile();
 		} else if (group.zgetGroupType() == GroupType.STATE) {
 			final HtmlColor borderColor = getColor(ColorParam.stateBorder, null);
 			final Stereotype stereo = group.getStereotype();

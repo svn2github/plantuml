@@ -494,6 +494,7 @@ class EntityImpl implements ILeaf, IGroup {
 
 	public void overideImage(IEntityImage img, List<Url> url, LeafType leafType) {
 		checkGroup();
+		// this.svekImage = new InnerStateConcurrent(img);
 		this.svekImage = img;
 		this.urls.clear();
 		this.urls.addAll(url);
