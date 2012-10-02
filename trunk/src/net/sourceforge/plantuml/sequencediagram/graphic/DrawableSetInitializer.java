@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8497 $
+ * Revision $Revision: 8891 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -568,33 +568,35 @@ class DrawableSetInitializer {
 	}
 
 	private void prepareParticipant(StringBounder stringBounder, Participant p) {
-		final ParticipantBox box;
-
+		final ComponentType headType;
+		final ComponentType tailType;
 		if (p.getType() == ParticipantType.PARTICIPANT) {
-			final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), p.getSpecificBackColor());
-			final Component head = drawableSet.getSkin().createComponent(ComponentType.PARTICIPANT_HEAD, null,
-					skinParam, p.getDisplay());
-			final Component tail = drawableSet.getSkin().createComponent(ComponentType.PARTICIPANT_TAIL, null,
-					skinParam, p.getDisplay());
-			final Component line = drawableSet.getSkin().createComponent(this.defaultLineType, null,
-					drawableSet.getSkinParam(), p.getDisplay());
-			final Component delayLine = drawableSet.getSkin().createComponent(ComponentType.DELAY_LINE, null,
-					drawableSet.getSkinParam(), p.getDisplay());
-			box = new ParticipantBox(head, line, tail, delayLine, this.freeX, drawableSet.getSkinParam().shadowing());
+			headType = ComponentType.PARTICIPANT_HEAD;
+			tailType = ComponentType.PARTICIPANT_TAIL;
 		} else if (p.getType() == ParticipantType.ACTOR) {
-			final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), p.getSpecificBackColor());
-			final Component head = drawableSet.getSkin().createComponent(ComponentType.ACTOR_HEAD, null, skinParam,
-					p.getDisplay());
-			final Component tail = drawableSet.getSkin().createComponent(ComponentType.ACTOR_TAIL, null, skinParam,
-					p.getDisplay());
-			final Component line = drawableSet.getSkin().createComponent(this.defaultLineType, null,
-					drawableSet.getSkinParam(), p.getDisplay());
-			final Component delayLine = drawableSet.getSkin().createComponent(ComponentType.DELAY_LINE, null,
-					drawableSet.getSkinParam(), p.getDisplay());
-			box = new ParticipantBox(head, line, tail, delayLine, this.freeX, drawableSet.getSkinParam().shadowing());
+			headType = ComponentType.ACTOR_HEAD;
+			tailType = ComponentType.ACTOR_TAIL;
+		} else if (p.getType() == ParticipantType.BOUNDARY) {
+			headType = ComponentType.BOUNDARY_HEAD;
+			tailType = ComponentType.BOUNDARY_TAIL;
+		} else if (p.getType() == ParticipantType.CONTROL) {
+			headType = ComponentType.CONTROL_HEAD;
+			tailType = ComponentType.CONTROL_TAIL;
+		} else if (p.getType() == ParticipantType.ENTITY) {
+			headType = ComponentType.ENTITY_HEAD;
+			tailType = ComponentType.ENTITY_TAIL;
 		} else {
 			throw new IllegalArgumentException();
 		}
+		final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), p.getSpecificBackColor());
+		final Component head = drawableSet.getSkin().createComponent(headType, null, skinParam, p.getDisplay());
+		final Component tail = drawableSet.getSkin().createComponent(tailType, null, skinParam, p.getDisplay());
+		final Component line = drawableSet.getSkin().createComponent(this.defaultLineType, null,
+				drawableSet.getSkinParam(), p.getDisplay());
+		final Component delayLine = drawableSet.getSkin().createComponent(ComponentType.DELAY_LINE, null,
+				drawableSet.getSkinParam(), p.getDisplay());
+		final ParticipantBox box = new ParticipantBox(head, line, tail, delayLine, this.freeX, drawableSet
+				.getSkinParam().shadowing());
 
 		final Component comp = drawableSet.getSkin().createComponent(ComponentType.ALIVE_BOX_CLOSE_CLOSE, null,
 				drawableSet.getSkinParam(), null);

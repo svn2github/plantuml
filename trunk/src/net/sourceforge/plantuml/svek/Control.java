@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
-class Control implements TextBlock {
+public class Control implements TextBlock {
 
 	private final double margin = 4;
 

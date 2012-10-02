@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8426 $
+ * Revision $Revision: 8886 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -40,9 +40,9 @@ public enum LeafType {
 	EMPTY_PACKAGE,
 
 	ABSTRACT_CLASS, CLASS, INTERFACE, LOLLIPOP, ENUM, ACTOR, USECASE, COMPONENT, CIRCLE_INTERFACE, NOTE, OBJECT, ASSOCIATION,
-	
+
 	BOUNDARY, CONTROL, ENTITY_DOMAIN,
-	
+
 	ARC_CIRCLE,
 
 	ACTIVITY, BRANCH, SYNCHRO_BAR, CIRCLE_START, CIRCLE_END, POINT_FOR_ASSOCIATION, ACTIVITY_CONCURRENT,
@@ -57,6 +57,11 @@ public enum LeafType {
 			return LeafType.ABSTRACT_CLASS;
 		}
 		return LeafType.valueOf(arg0);
+	}
+
+	public boolean isLikeClass() {
+		return this == LeafType.ABSTRACT_CLASS || this == LeafType.CLASS || this == LeafType.INTERFACE
+				|| this == LeafType.ENUM;
 	}
 
 	public String toHtml() {

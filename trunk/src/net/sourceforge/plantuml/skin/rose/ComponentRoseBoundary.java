@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8893 $
+ * Revision $Revision: 8151 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -43,21 +43,21 @@ import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.skin.AbstractTextualComponent;
 import net.sourceforge.plantuml.skin.Area;
-import net.sourceforge.plantuml.skin.StickMan;
+import net.sourceforge.plantuml.svek.Boundary;
 import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public class ComponentRoseActor extends AbstractTextualComponent {
+public class ComponentRoseBoundary extends AbstractTextualComponent {
 
 	private final TextBlock stickman;
 	private final boolean head;
 
-	public ComponentRoseActor(HtmlColor yellow, HtmlColor red, HtmlColor fontColor, UFont font,
+	public ComponentRoseBoundary(HtmlColor yellow, HtmlColor red, HtmlColor fontColor, UFont font,
 			List<? extends CharSequence> stringsToDisplay, boolean head, SpriteContainer spriteContainer,
 			double deltaShadow) {
 		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 3, 3, 0, spriteContainer);
 		this.head = head;
-		this.stickman = new StickMan(yellow, red, deltaShadow);
+		this.stickman = new Boundary(yellow, red, deltaShadow);
 	}
 
 	@Override
@@ -93,4 +93,5 @@ public class ComponentRoseActor extends AbstractTextualComponent {
 		final Dimension2D dimStickman = stickman.calculateDimension(stringBounder);
 		return Math.max(dimStickman.getWidth(), getTextWidth(stringBounder));
 	}
+
 }

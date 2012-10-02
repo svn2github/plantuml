@@ -274,14 +274,12 @@ class EntityImpl implements ILeaf, IGroup {
 
 	public BlockMember getBody(final PortionShower portionShower) {
 		checkNotGroup();
-		if (getEntityType() == LeafType.CLASS && bodier.isBodyEnhanced()) {
+		if (getEntityType().isLikeClass() && bodier.isBodyEnhanced()) {
 			return bodier.getBodyEnhanced();
 		}
 		return new BlockMember() {
 			public TextBlockWidth asTextBlock(FontParam fontParam, ISkinParam skinParam) {
-				if (getEntityType() == LeafType.ABSTRACT_CLASS || getEntityType() == LeafType.CLASS
-						|| getEntityType() == LeafType.INTERFACE || getEntityType() == LeafType.ENUM) {
-
+				if (getEntityType().isLikeClass()) {
 					final boolean showMethods = portionShower.showPortion(EntityPortion.METHOD, EntityImpl.this);
 					final boolean showFields = portionShower.showPortion(EntityPortion.FIELD, EntityImpl.this);
 

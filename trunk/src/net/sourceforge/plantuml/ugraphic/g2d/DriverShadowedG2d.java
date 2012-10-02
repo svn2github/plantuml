@@ -72,8 +72,12 @@ public class DriverShadowedG2d {
 		// dpiFactor = 1;
 		// Shadow
 		final Rectangle2D bounds = shape.getBounds2D();
-		final double w = (bounds.getMaxX() + deltaShadow * 2 + 6) * dpiFactor;
-		final double h = (bounds.getMaxY() + deltaShadow * 2 + 6) * dpiFactor;
+		final double ww = bounds.getMaxX() - bounds.getMinX();
+		final double hh = bounds.getMaxY() - bounds.getMinY();
+//		final double ww = bounds.getMaxX();
+//		final double hh = bounds.getMaxY();
+		final double w = (ww + deltaShadow * 2 + 6) * dpiFactor;
+		final double h = (hh + deltaShadow * 2 + 6) * dpiFactor;
 		BufferedImage destination = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D gg = destination.createGraphics();
 		gg.scale(dpiFactor, dpiFactor);

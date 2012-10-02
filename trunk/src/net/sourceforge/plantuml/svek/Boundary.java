@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
-class Boundary implements TextBlock {
+public class Boundary implements TextBlock {
 
 	private final double margin = 4;
 

@@ -47,7 +47,7 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
-class EntityDomain implements TextBlock {
+public class EntityDomain implements TextBlock {
 
 	private final double margin = 4;
 

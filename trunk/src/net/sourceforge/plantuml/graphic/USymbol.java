@@ -28,40 +28,17 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8870 $
+ * Revision $Revision: 8066 $
  *
  */
-package net.sourceforge.plantuml.preproc;
+package net.sourceforge.plantuml.graphic;
 
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
+public interface USymbol {
 
-import net.sourceforge.plantuml.Pragma;
+	public static USymbol NODE = new USymbolNode();
 
-public class Defines extends Pragma {
+	TextBlock asSmall(TextBlock label, SymbolContext symbolContext);
 
-	public String applyDefines(String line) {
-		for (Map.Entry<String, String> ent : this.entrySet()) {
-			final String key = ent.getKey();
-			if (ent.getValue() == null) {
-				continue;
-			}
-			final String value = Matcher.quoteReplacement(ent.getValue());
-			if (key.contains("(")) {
-				final StringTokenizer st = new StringTokenizer(key, "(),");
-				final String fctName = st.nextToken();
-				final String var1 = st.nextToken();
-				final String regex = "\\b" + fctName + "\\(([^)]*)\\)";
-				// final String newValue = value.replaceAll("\\b" + Matcher.quoteReplacement(var1) + "\\b", "\\$1");
-				final String newValue = value.replaceAll("\\b" + var1 + "\\b", "\\$1");
-				line = line.replaceAll(regex, newValue);
-			} else {
-				final String regex = "\\b" + key + "\\b";
-				line = line.replaceAll(regex, value);
-			}
-		}
-		return line;
-	}
+	TextBlock asBig(TextBlock label, double width, double height, SymbolContext symbolContext);
 
 }

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8168 $
+ * Revision $Revision: 8895 $
  *
  */
 package net.sourceforge.plantuml;
@@ -47,10 +47,9 @@ public class OptionFlags {
 	static public final boolean GRAPHVIZCACHE = false;
 	static public final boolean TRACE_DOT = false;
 	static public final boolean NICE_ARROW = true;
-//	static public boolean PIC_LINE = false;
+	static public final boolean DESCRIPTION_DIAGRAM = false;
 	static public final boolean HORIZONTAL_LINE_BETWEEN_DIFFERENT_PACKAGE_ALLOWED = false;
 	static public boolean ALLOW_INCLUDE = true;
-	
 
 	void reset() {
 		reset(false);
@@ -70,7 +69,7 @@ public class OptionFlags {
 		useSuggestEngine = true;
 		failOnError = false;
 		encodesprite = false;
-//		PIC_LINE = false;
+		// PIC_LINE = false;
 	}
 
 	public boolean useJavaInsteadOfDot() {
@@ -212,16 +211,16 @@ public class OptionFlags {
 		}
 	}
 
-//	public static void logErrorFile(final PSystemError systemError, PrintStream ps) {
-//		ps.println(systemError.getDescription());
-//		for (CharSequence t : systemError.getTitle()) {
-//			ps.println(t);
-//		}
-//		systemError.print(ps);
-//		for (String s : systemError.getSuggest()) {
-//			ps.println(s);
-//		}
-//	}
+	// public static void logErrorFile(final PSystemError systemError, PrintStream ps) {
+	// ps.println(systemError.getDescription());
+	// for (CharSequence t : systemError.getTitle()) {
+	// ps.println(t);
+	// }
+	// systemError.print(ps);
+	// for (String s : systemError.getSuggest()) {
+	// ps.println(s);
+	// }
+	// }
 
 	public final void setLogData(File logData) {
 		this.logData = logData;

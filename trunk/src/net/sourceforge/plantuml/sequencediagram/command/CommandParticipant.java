@@ -41,7 +41,10 @@ import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
+import net.sourceforge.plantuml.command.regex.IRegex;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -57,6 +60,11 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 		super(sequenceDiagram, pattern);
 	}
 
+	static IRegex getRegexType() {
+		return new RegexOr(new RegexLeaf("TYPE", "(participant|actor|create|boundary|control|entity)"), //
+				new RegexLeaf("CREATE", "create (participant|actor|boundary|control|entity)"));
+	}
+
 	@Override
 	final protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
 		final String code = arg2.get("CODE").get(0);
@@ -70,14 +78,18 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 			strings = StringUtils.getWithNewlines(arg2.get("FULL").get(0));
 		}
 
-		final String typeString = arg2.get("TYPE").get(0).toUpperCase();
+		final String typeString1 = arg2.get("TYPE").get(0);
+		final String typeCreate1 = arg2.get("CREATE").get(0);
 		final ParticipantType type;
 		final boolean create;
-		if (typeString.equals("CREATE")) {
+		if (typeCreate1 != null) {
+			type = ParticipantType.valueOf(typeCreate1.toUpperCase());
+			create = true;
+		} else if (typeString1.equalsIgnoreCase("CREATE")) {
 			type = ParticipantType.PARTICIPANT;
 			create = true;
 		} else {
-			type = ParticipantType.valueOf(typeString);
+			type = ParticipantType.valueOf(typeString1.toUpperCase());
 			create = false;
 		}
 		final Participant participant = getSystem().createNewParticipant(type, code, strings);

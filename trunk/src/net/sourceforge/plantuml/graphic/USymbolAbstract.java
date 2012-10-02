@@ -28,40 +28,49 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8870 $
+ * Revision $Revision: 8066 $
  *
  */
-package net.sourceforge.plantuml.preproc;
+package net.sourceforge.plantuml.graphic;
 
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
+import java.awt.geom.Dimension2D;
 
-import net.sourceforge.plantuml.Pragma;
+import net.sourceforge.plantuml.Dimension2DDouble;
 
-public class Defines extends Pragma {
+abstract class USymbolAbstract implements USymbol {
 
-	public String applyDefines(String line) {
-		for (Map.Entry<String, String> ent : this.entrySet()) {
-			final String key = ent.getKey();
-			if (ent.getValue() == null) {
-				continue;
-			}
-			final String value = Matcher.quoteReplacement(ent.getValue());
-			if (key.contains("(")) {
-				final StringTokenizer st = new StringTokenizer(key, "(),");
-				final String fctName = st.nextToken();
-				final String var1 = st.nextToken();
-				final String regex = "\\b" + fctName + "\\(([^)]*)\\)";
-				// final String newValue = value.replaceAll("\\b" + Matcher.quoteReplacement(var1) + "\\b", "\\$1");
-				final String newValue = value.replaceAll("\\b" + var1 + "\\b", "\\$1");
-				line = line.replaceAll(regex, newValue);
-			} else {
-				final String regex = "\\b" + key + "\\b";
-				line = line.replaceAll(regex, value);
-			}
+	static class Margin {
+		private final double x1;
+		private final double x2;
+		private final double y1;
+		private final double y2;
+
+		Margin(double x1, double x2, double y1, double y2) {
+			this.x1 = x1;
+			this.x2 = x2;
+			this.y1 = y1;
+			this.y2 = y2;
 		}
-		return line;
+
+		double getWidth() {
+			return x1 + x2;
+		}
+
+		double getHeight() {
+			return y1 + y2;
+		}
+
+		public Dimension2D addDimension(Dimension2D dim) {
+			return new Dimension2DDouble(dim.getWidth() + x1 + x2, dim.getHeight() + y1 + y2);
+		}
+
+		public double getX1() {
+			return x1;
+		}
+
+		public double getY1() {
+			return y1;
+		}
 	}
 
 }
