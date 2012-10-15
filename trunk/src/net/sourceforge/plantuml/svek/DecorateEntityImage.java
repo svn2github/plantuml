@@ -144,4 +144,8 @@ public class DecorateEntityImage implements IEntityImage {
 		return deltaY;
 	}
 
+	public boolean isHidden() {
+		return original.isHidden();
+	}
+
 }

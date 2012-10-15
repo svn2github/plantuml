@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
@@ -43,7 +42,7 @@ import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
@@ -68,10 +67,10 @@ public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
 
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, false);
-		final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
-		String code = line0.get("NAME1").get(0);
+		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
+		String code = line0.get("NAME1", 0);
 		if (code == null) {
-			code = line0.get("NAME3").get(0);
+			code = line0.get("NAME3", 0);
 		}
 		if (getSystem().leafExist(code) == false) {
 			return CommandExecutionResult.error("No such entity");

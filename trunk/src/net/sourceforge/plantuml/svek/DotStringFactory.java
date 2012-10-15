@@ -125,11 +125,17 @@ public class DotStringFactory implements Moveable {
 		if (nodesep < getMinNodeSep()) {
 			nodesep = getMinNodeSep();
 		}
+		if (dotData.getSkinParam().getNodesep() != 0) {
+			nodesep = dotData.getSkinParam().getNodesep();
+		}
 		final String nodesepInches = SvekUtils.pixelToInches(nodesep);
 		// Log.println("nodesep=" + nodesepInches);
 		double ranksep = getVerticalDzeta();
 		if (ranksep < getMinRankSep()) {
 			ranksep = getMinRankSep();
+		}
+		if (dotData.getSkinParam().getRanksep() != 0) {
+			ranksep = dotData.getSkinParam().getRanksep();
 		}
 		final String ranksepInches = SvekUtils.pixelToInches(ranksep);
 		// Log.println("ranksep=" + ranksepInches);
@@ -351,7 +357,8 @@ public class DotStringFactory implements Moveable {
 	}
 
 	public void openCluster(IGroup g, int titleAndAttributeWidth, int titleAndAttributeHeight, TextBlock title) {
-		this.current = current.createChild(g, titleAndAttributeWidth, titleAndAttributeHeight, title, colorSequence, dotData.getSkinParam());
+		this.current = current.createChild(g, titleAndAttributeWidth, titleAndAttributeHeight, title, colorSequence,
+				dotData.getSkinParam());
 		bibliotekon.addCluster(this.current);
 	}
 

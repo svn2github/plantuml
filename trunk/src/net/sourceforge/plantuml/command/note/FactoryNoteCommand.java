@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
@@ -44,7 +43,7 @@ import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -73,8 +72,8 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 		return new SingleLineCommand2<AbstractEntityDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final String display = arg.get("DISPLAY").get(0);
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				final String display = arg.get("DISPLAY", 0);
 				return executeInternal(getSystem(), arg, StringUtils.getWithNewlines(display));
 			}
 
@@ -91,7 +90,7 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 
 			public CommandExecutionResult execute(List<String> lines) {
 				StringUtils.trim(lines, false);
-				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 
@@ -100,12 +99,12 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 		};
 	}
 	
-	private CommandExecutionResult executeInternal(AbstractEntityDiagram system, Map<String, RegexPartialMatch> arg,
+	private CommandExecutionResult executeInternal(AbstractEntityDiagram system, RegexResult arg,
 			final List<? extends CharSequence> display) {
-		final String code = arg.get("CODE").get(0);
+		final String code = arg.get("CODE", 0);
 		final IEntity entity = system.createLeaf(code, display, LeafType.NOTE);
 		assert entity != null;
-		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		return CommandExecutionResult.ok();
 	}
 

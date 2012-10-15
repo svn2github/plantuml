@@ -33,13 +33,11 @@
  */
 package net.sourceforge.plantuml.flowdiagram;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.golem.TileGeometry;
 
 public class CommandLink extends SingleLineCommand2<FlowDiagram> {
@@ -56,9 +54,9 @@ public class CommandLink extends SingleLineCommand2<FlowDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String idDest = arg.get("ID_DEST").get(0);
-		final String orientationString = arg.get("ORIENTATION").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String idDest = arg.get("ID_DEST", 0);
+		final String orientationString = arg.get("ORIENTATION", 0);
 		TileGeometry orientation = TileGeometry.SOUTH;
 		if (orientationString != null) {
 			orientation = TileGeometry.fromString(orientationString);

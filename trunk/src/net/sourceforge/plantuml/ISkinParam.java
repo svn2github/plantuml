@@ -80,5 +80,9 @@ public interface ISkinParam extends SpriteContainer {
 	public boolean stereotypePositionTop();
 	
 	public boolean useSwimlanes();
+	
+	public double getNodesep();
+	
+	public double getRanksep();
 
 }

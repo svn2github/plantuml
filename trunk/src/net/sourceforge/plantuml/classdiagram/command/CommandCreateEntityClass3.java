@@ -33,8 +33,6 @@
  */
 package net.sourceforge.plantuml.classdiagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
@@ -43,7 +41,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -79,22 +77,22 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final LeafType type = LeafType.getLeafType(arg.get("TYPE").get(0).toUpperCase());
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
 		final String code;
 		final String display;
-		if (arg.get("NAME1").get(1) != null) {
-			code = arg.get("NAME1").get(1);
-			display = arg.get("NAME1").get(0);
-		} else if (arg.get("NAME3").get(0) != null) {
-			code = arg.get("NAME3").get(0);
-			display = arg.get("NAME3").get(0);
+		if (arg.get("NAME1", 1) != null) {
+			code = arg.get("NAME1", 1);
+			display = arg.get("NAME1", 0);
+		} else if (arg.get("NAME3", 0) != null) {
+			code = arg.get("NAME3", 0);
+			display = arg.get("NAME3", 0);
 		} else {
-			code = arg.get("NAME2").get(0);
-			display = arg.get("NAME2").get(1);
+			code = arg.get("NAME2", 0);
+			display = arg.get("NAME2", 1);
 		}
-		final String stereotype = arg.get("STEREO").get(0);
-		final String generic = arg.get("GENERIC").get(0);
+		final String stereotype = arg.get("STEREO", 0);
+		final String generic = arg.get("GENERIC", 0);
 		final ILeaf entity;
 		if (getSystem().leafExist(code)) {
 			entity = getSystem().getOrCreateLeaf(code, type);
@@ -110,16 +108,16 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 			entity.setGeneric(generic);
 		}
 		
-		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		manageExtends(getSystem(), arg, entity);
 
 		return CommandExecutionResult.ok();
 	}
 
-	public static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final IEntity entity) {
-		if (arg.get("EXTENDS").get(1) != null) {
-			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
-			final String other = arg.get("EXTENDS").get(2);
+	public static void manageExtends(ClassDiagram system, RegexResult arg, final IEntity entity) {
+		if (arg.get("EXTENDS", 1) != null) {
+			final Mode mode = arg.get("EXTENDS", 1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
+			final String other = arg.get("EXTENDS", 2);
 			LeafType type2 = LeafType.CLASS;
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = LeafType.INTERFACE;
@@ -138,28 +136,5 @@ public class CommandCreateEntityClass3 extends SingleLineCommand2<ClassDiagram> 
 		}
 	}
 
-	// @Override
-	// protected CommandExecutionResult executeArg(List<String> arg) {
-	// final String arg0 = arg.get(0).toUpperCase();
-	// final EntityType type = EntityType.getEntityType(arg0);
-	// final String code = arg.get(2);
-	// final String display = arg.get(1);
-	// final String stereotype = arg.get(3);
-	// final Entity entity;
-	// if (getSystem().entityExist(code)) {
-	// // return CommandExecutionResult.error("Class already exists : "
-	// // + code);
-	// entity = (Entity) getSystem().getOrCreateEntity(code, type);
-	// entity.muteToType(type);
-	// } else {
-	// entity = getSystem().createEntity(code, display, type);
-	// }
-	// if (stereotype != null) {
-	// entity.setStereotype(new Stereotype(stereotype,
-	// getSystem().getSkinParam().getCircledCharacterRadius(),
-	// getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER)));
-	// }
-	// return CommandExecutionResult.ok();
-	// }
 
 }

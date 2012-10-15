@@ -105,12 +105,9 @@ public class PSystemBuilder {
 		factories.add(new ClassDiagramFactory());
 		factories.add(new ActivityDiagramFactory());
 		factories.add(new ActivityDiagramFactory2());
-		if (OptionFlags.DESCRIPTION_DIAGRAM) {
-			factories.add(new DescriptionDiagramFactory());
-		} else {
-			factories.add(new UsecaseDiagramFactory());
-			factories.add(new ComponentDiagramFactory());
-		}
+		factories.add(new DescriptionDiagramFactory(DiagramType.UML2));
+		factories.add(new UsecaseDiagramFactory());
+		factories.add(new ComponentDiagramFactory());
 		factories.add(new StateDiagramFactory());
 		factories.add(new ActivityDiagramFactory2());
 		factories.add(new CompositeDiagramFactory());

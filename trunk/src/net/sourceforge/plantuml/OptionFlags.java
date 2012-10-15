@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8895 $
+ * Revision $Revision: 8923 $
  *
  */
 package net.sourceforge.plantuml;
@@ -47,7 +47,7 @@ public class OptionFlags {
 	static public final boolean GRAPHVIZCACHE = false;
 	static public final boolean TRACE_DOT = false;
 	static public final boolean NICE_ARROW = true;
-	static public final boolean DESCRIPTION_DIAGRAM = false;
+	// static public final boolean DESCRIPTION_DIAGRAM = false;
 	static public final boolean HORIZONTAL_LINE_BETWEEN_DIFFERENT_PACKAGE_ALLOWED = false;
 	static public boolean ALLOW_INCLUDE = true;
 

@@ -145,4 +145,12 @@ public class SkinParamBackcolored implements ISkinParam {
 		return skinParam.useSwimlanes();
 	}
 
+	public double getNodesep() {
+		return skinParam.getNodesep();
+	}
+
+	public double getRanksep() {
+		return skinParam.getRanksep();
+	}
+
 }

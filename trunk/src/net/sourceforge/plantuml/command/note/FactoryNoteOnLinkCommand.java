@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -79,7 +78,7 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				if (strings.size() > 0) {
 					final List<CharSequence> note = StringUtils.manageEmbededDiagrams(strings);
-					final Map<String, RegexPartialMatch> arg = getStartingPattern().matcher(lines.get(0));
+					final RegexResult arg = getStartingPattern().matcher(lines.get(0));
 					return executeInternal(getSystem(), note, arg);
 				}
 				return CommandExecutionResult.error("No note defined");
@@ -92,22 +91,22 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 		return new SingleLineCommand2<CucaDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final List<String> note = StringUtils.getWithNewlines(arg.get("NOTE").get(0));
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				final List<String> note = StringUtils.getWithNewlines(arg.get("NOTE", 0));
 				return executeInternal(getSystem(), note, arg);
 			}
 		};
 	}
 
 	private CommandExecutionResult executeInternal(CucaDiagram system, List<? extends CharSequence> note,
-			final Map<String, RegexPartialMatch> arg) {
+			final RegexResult arg) {
 		final Link link = system.getLastLink();
 		if (link == null) {
 			return CommandExecutionResult.error("No link defined");
 		}
 		Position position = Position.BOTTOM;
-		if (arg.get("POSITION").get(0) != null) {
-			position = Position.valueOf(arg.get("POSITION").get(0).toUpperCase());
+		if (arg.get("POSITION", 0) != null) {
+			position = Position.valueOf(arg.get("POSITION", 0).toUpperCase());
 		}
 		Url url = null;
 		if (note.size() > 0) {
@@ -116,7 +115,7 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 		if (url != null) {
 			note = note.subList(1, note.size());
 		}
-		link.addNote(note, position, HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+		link.addNote(note, position, HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		return CommandExecutionResult.ok();
 	}
 

@@ -136,7 +136,7 @@ public class ClusterDecoration {
 		final double height = maxY - minY;
 		final SymbolContext ctx = new SymbolContext(stateBack, borderColor).withStroke(new UStroke(2)).withShadow(
 				shadowing);
-		USymbol.NODE.asBig(title, width + 10, height, ctx).drawU(ug, x + minX, y + minY);
+		USymbol.NODE.asBig(title, null, width + 10, height, ctx).drawU(ug, x + minX, y + minY);
 		ug.getParam().setStroke(new UStroke());
 	}
 

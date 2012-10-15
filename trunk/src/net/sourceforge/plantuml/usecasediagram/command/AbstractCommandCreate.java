@@ -31,14 +31,12 @@
  */
 package net.sourceforge.plantuml.usecasediagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -58,11 +56,11 @@ abstract class AbstractCommandCreate extends SingleLineCommand2<UsecaseDiagram> 
 		return false;
 	}
 
-	final protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg, LeafType type) {
+	final protected CommandExecutionResult executeArg(RegexResult arg, LeafType type) {
 		final String code;
 		final String display;
-		final String string1 = arg.get("STRING1").get(0);
-		final String string2 = arg.get("STRING2").get(0);
+		final String string1 = arg.get("STRING1", 0);
+		final String string2 = arg.get("STRING2", 0);
 		if (string2 == null) {
 			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1);
 			display = code;
@@ -76,7 +74,7 @@ abstract class AbstractCommandCreate extends SingleLineCommand2<UsecaseDiagram> 
 
 		final IEntity entity = getSystem().getOrCreateLeaf(code, type);
 		entity.setDisplay(StringUtils.getWithNewlines(display));
-		final String stereotype = arg.get("STEREO").get(0);
+		final String stereotype = arg.get("STEREO", 0);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));

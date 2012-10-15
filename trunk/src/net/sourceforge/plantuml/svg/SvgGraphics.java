@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8486 $
+ * Revision $Revision: 8916 $
  *
  */
 package net.sourceforge.plantuml.svg;
@@ -163,17 +163,19 @@ public class SvgGraphics {
 
 	public void svgEllipse(double x, double y, double xRadius, double yRadius, double deltaShadow) {
 		manageShadow(deltaShadow);
-		final Element elt = (Element) document.createElement("ellipse");
-		elt.setAttribute("cx", format(x));
-		elt.setAttribute("cy", format(y));
-		elt.setAttribute("rx", format(xRadius));
-		elt.setAttribute("ry", format(yRadius));
-		elt.setAttribute("fill", fill);
-		elt.setAttribute("style", getStyle());
-		if (deltaShadow > 0) {
-			elt.setAttribute("filter", "url(#f1)");
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("ellipse");
+			elt.setAttribute("cx", format(x));
+			elt.setAttribute("cy", format(y));
+			elt.setAttribute("rx", format(xRadius));
+			elt.setAttribute("ry", format(yRadius));
+			elt.setAttribute("fill", fill);
+			elt.setAttribute("style", getStyle());
+			if (deltaShadow > 0) {
+				elt.setAttribute("filter", "url(#f1)");
+			}
+			getG().appendChild(elt);
 		}
-		getG().appendChild(elt);
 		ensureVisible(x + xRadius + deltaShadow * 2, y + yRadius + deltaShadow * 2);
 	}
 
@@ -267,38 +269,41 @@ public class SvgGraphics {
 
 	public void svgRectangle(double x, double y, double width, double height, double rx, double ry, double deltaShadow) {
 		manageShadow(deltaShadow);
-		final Element elt = (Element) document.createElement("rect");
-		elt.setAttribute("x", format(x));
-		elt.setAttribute("y", format(y));
-		elt.setAttribute("width", format(width));
-		elt.setAttribute("height", format(height));
-		elt.setAttribute("fill", fill);
-		elt.setAttribute("style", getStyle());
-		if (deltaShadow > 0) {
-			elt.setAttribute("filter", "url(#f1)");
-		}
-		if (rx > 0 && ry > 0) {
-			elt.setAttribute("rx", format(rx));
-			elt.setAttribute("ry", format(ry));
-		}
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("rect");
+			elt.setAttribute("x", format(x));
+			elt.setAttribute("y", format(y));
+			elt.setAttribute("width", format(width));
+			elt.setAttribute("height", format(height));
+			elt.setAttribute("fill", fill);
+			elt.setAttribute("style", getStyle());
+			if (deltaShadow > 0) {
+				elt.setAttribute("filter", "url(#f1)");
+			}
+			if (rx > 0 && ry > 0) {
+				elt.setAttribute("rx", format(rx));
+				elt.setAttribute("ry", format(ry));
+			}
 
-		getG().appendChild(elt);
-
+			getG().appendChild(elt);
+		}
 		ensureVisible(x + width + 2 * deltaShadow, y + height + 2 * deltaShadow);
 	}
 
 	public void svgLine(double x1, double y1, double x2, double y2, double deltaShadow) {
 		manageShadow(deltaShadow);
-		final Element elt = (Element) document.createElement("line");
-		elt.setAttribute("x1", format(x1));
-		elt.setAttribute("y1", format(y1));
-		elt.setAttribute("x2", format(x2));
-		elt.setAttribute("y2", format(y2));
-		elt.setAttribute("style", getStyle());
-		if (deltaShadow > 0) {
-			elt.setAttribute("filter", "url(#f1)");
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("line");
+			elt.setAttribute("x1", format(x1));
+			elt.setAttribute("y1", format(y1));
+			elt.setAttribute("x2", format(x2));
+			elt.setAttribute("y2", format(y2));
+			elt.setAttribute("style", getStyle());
+			if (deltaShadow > 0) {
+				elt.setAttribute("filter", "url(#f1)");
+			}
+			getG().appendChild(elt);
 		}
-		getG().appendChild(elt);
 		ensureVisible(x1 + 2 * deltaShadow, y1 + 2 * deltaShadow);
 		ensureVisible(x2 + 2 * deltaShadow, y2 + 2 * deltaShadow);
 	}
@@ -317,21 +322,23 @@ public class SvgGraphics {
 
 	public void svgPolygon(double deltaShadow, double... points) {
 		manageShadow(deltaShadow);
-		final Element elt = (Element) document.createElement("polygon");
-		final StringBuilder sb = new StringBuilder();
-		for (double coord : points) {
-			if (sb.length() > 0) {
-				sb.append(",");
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("polygon");
+			final StringBuilder sb = new StringBuilder();
+			for (double coord : points) {
+				if (sb.length() > 0) {
+					sb.append(",");
+				}
+				sb.append(format(coord));
 			}
-			sb.append(format(coord));
+			elt.setAttribute("points", sb.toString());
+			elt.setAttribute("fill", fill);
+			elt.setAttribute("style", getStyle());
+			if (deltaShadow > 0) {
+				elt.setAttribute("filter", "url(#f1)");
+			}
+			getG().appendChild(elt);
 		}
-		elt.setAttribute("points", sb.toString());
-		elt.setAttribute("fill", fill);
-		elt.setAttribute("style", getStyle());
-		if (deltaShadow > 0) {
-			elt.setAttribute("filter", "url(#f1)");
-		}
-		getG().appendChild(elt);
 
 		for (int i = 0; i < points.length; i += 2) {
 			ensureVisible(points[i] + 2 * deltaShadow, points[i + 1] + 2 * deltaShadow);
@@ -341,31 +348,33 @@ public class SvgGraphics {
 
 	public void text(String text, double x, double y, String fontFamily, int fontSize, String fontWeight,
 			String fontStyle, String textDecoration, double textLength, Map<String, String> attributes) {
-		final Element elt = (Element) document.createElement("text");
-		elt.setAttribute("x", format(x));
-		elt.setAttribute("y", format(y));
-		elt.setAttribute("fill", fill);
-		elt.setAttribute("font-size", format(fontSize));
-		// elt.setAttribute("text-anchor", "middle");
-		elt.setAttribute("lengthAdjust", "spacingAndGlyphs");
-		elt.setAttribute("textLength", format(textLength));
-		if (fontWeight != null) {
-			elt.setAttribute("font-weight", fontWeight);
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("text");
+			elt.setAttribute("x", format(x));
+			elt.setAttribute("y", format(y));
+			elt.setAttribute("fill", fill);
+			elt.setAttribute("font-size", format(fontSize));
+			// elt.setAttribute("text-anchor", "middle");
+			elt.setAttribute("lengthAdjust", "spacingAndGlyphs");
+			elt.setAttribute("textLength", format(textLength));
+			if (fontWeight != null) {
+				elt.setAttribute("font-weight", fontWeight);
+			}
+			if (fontStyle != null) {
+				elt.setAttribute("font-style", fontStyle);
+			}
+			if (textDecoration != null) {
+				elt.setAttribute("text-decoration", textDecoration);
+			}
+			if (fontFamily != null) {
+				elt.setAttribute("font-family", fontFamily);
+			}
+			for (Map.Entry<String, String> ent : attributes.entrySet()) {
+				elt.setAttribute(ent.getKey(), ent.getValue());
+			}
+			elt.setTextContent(text);
+			getG().appendChild(elt);
 		}
-		if (fontStyle != null) {
-			elt.setAttribute("font-style", fontStyle);
-		}
-		if (textDecoration != null) {
-			elt.setAttribute("text-decoration", textDecoration);
-		}
-		if (fontFamily != null) {
-			elt.setAttribute("font-family", fontFamily);
-		}
-		for (Map.Entry<String, String> ent : attributes.entrySet()) {
-			elt.setAttribute(ent.getKey(), ent.getValue());
-		}
-		elt.setTextContent(text);
-		getG().appendChild(elt);
 		ensureVisible(x, y);
 		ensureVisible(x + textLength, y);
 	}
@@ -430,19 +439,10 @@ public class SvgGraphics {
 		getTransformer().transform(source, scrResult);
 	}
 
-	// String getGElement() throws TransformerException, IOException {
-	// final ByteArrayOutputStream os = new ByteArrayOutputStream();
-	// final StreamResult sr = new StreamResult(os);
-	// getTransformer().transform(new DOMSource(gRoot), sr);
-	// os.close();
-	// final String s = new String(os.toByteArray(), "UTF-8");
-	// return s.replaceFirst("^\\<\\?xml.*?\\?\\>", "");
-	// }
-
 	public void svgPath(double x, double y, UPath path, double deltaShadow) {
 		manageShadow(deltaShadow);
-		final StringBuilder sb = new StringBuilder();
 		ensureVisible(x, y);
+		final StringBuilder sb = new StringBuilder();
 		for (USegment seg : path) {
 			final USegmentType type = seg.getSegmentType();
 			final double coord[] = seg.getCoord();
@@ -470,14 +470,16 @@ public class SvgGraphics {
 			}
 
 		}
-		final Element elt = (Element) document.createElement("path");
-		elt.setAttribute("d", sb.toString());
-		elt.setAttribute("style", getStyle());
-		elt.setAttribute("fill", fill);
-		if (deltaShadow > 0) {
-			elt.setAttribute("filter", "url(#f1)");
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("path");
+			elt.setAttribute("d", sb.toString());
+			elt.setAttribute("style", getStyle());
+			elt.setAttribute("fill", fill);
+			if (deltaShadow > 0) {
+				elt.setAttribute("filter", "url(#f1)");
+			}
+			getG().appendChild(elt);
 		}
-		getG().appendChild(elt);
 	}
 
 	private StringBuilder currentPath = null;
@@ -522,23 +524,27 @@ public class SvgGraphics {
 	}
 
 	public void fill(int windingRule) {
-		final Element elt = (Element) document.createElement("path");
-		elt.setAttribute("d", currentPath.toString());
-		// elt elt.setAttribute("style", getStyle());
-		getG().appendChild(elt);
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("path");
+			elt.setAttribute("d", currentPath.toString());
+			// elt elt.setAttribute("style", getStyle());
+			getG().appendChild(elt);
+		}
 		currentPath = null;
 
 	}
 
 	public void svgImage(BufferedImage image, double x, double y) throws IOException {
-		final Element elt = (Element) document.createElement("image");
-		elt.setAttribute("width", format(image.getWidth()));
-		elt.setAttribute("height", format(image.getHeight()));
-		elt.setAttribute("x", format(x));
-		elt.setAttribute("y", format(y));
-		final String s = toBase64(image);
-		elt.setAttribute("xlink:href", "data:image/png;base64," + s);
-		getG().appendChild(elt);
+		if (hidden == false) {
+			final Element elt = (Element) document.createElement("image");
+			elt.setAttribute("width", format(image.getWidth()));
+			elt.setAttribute("height", format(image.getHeight()));
+			elt.setAttribute("x", format(x));
+			elt.setAttribute("y", format(y));
+			final String s = toBase64(image);
+			elt.setAttribute("xlink:href", "data:image/png;base64," + s);
+			getG().appendChild(elt);
+		}
 		ensureVisible(x, y);
 		ensureVisible(x + image.getWidth(), y + image.getHeight());
 
@@ -583,6 +589,12 @@ public class SvgGraphics {
 			elt.setAttribute(data[i], data[i + 1]);
 		}
 		filter.appendChild(elt);
+	}
+
+	private boolean hidden;
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 }

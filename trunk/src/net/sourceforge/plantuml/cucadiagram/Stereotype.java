@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7947 $
+ * Revision $Revision: 8900 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -40,13 +40,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public class Stereotype implements CharSequence {
+public class Stereotype implements CharSequence, Hideable {
 
 	private final static Pattern circleChar = Pattern
 			.compile("\\<\\<\\s*\\(?(\\S)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
@@ -181,6 +182,10 @@ public class Stereotype implements CharSequence {
 			}
 		}
 		return null;
+	}
+
+	public boolean isHidden() {
+		return "<<hidden>>".equalsIgnoreCase(label);
 	}
 
 }

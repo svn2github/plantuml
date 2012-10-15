@@ -33,15 +33,13 @@
  */
 package net.sourceforge.plantuml.statediagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -75,15 +73,15 @@ public class CommandCreatePackageState extends SingleLineCommand2<StateDiagram> 
 				new RegexLeaf("(?:\\s*\\{|\\s+begin)$"));
 	}
 
-	private String getNotNull(Map<String, RegexPartialMatch> arg, String v1, String v2) {
-		if (arg.get(v1).get(0) == null) {
-			return arg.get(v2).get(0);
+	private String getNotNull(RegexResult arg, String v1, String v2) {
+		if (arg.get(v1, 0) == null) {
+			return arg.get(v2, 0);
 		}
-		return arg.get(v1).get(0);
+		return arg.get(v1, 0);
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		final String code = getNotNull(arg, "CODE1", "CODE2");
 		String display = getNotNull(arg, "DISPLAY1", "DISPLAY2");
@@ -91,11 +89,11 @@ public class CommandCreatePackageState extends SingleLineCommand2<StateDiagram> 
 			display = code;
 		}
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.STATE, currentPackage);
-		final String stereotype = arg.get("STEREOTYPE").get(0);
+		final String stereotype = arg.get("STEREOTYPE", 0);
 		if (stereotype != null) {
 			p.setStereotype(new Stereotype(stereotype));
 		}
-		final String color = arg.get("COLOR").get(0);
+		final String color = arg.get("COLOR", 0);
 		if (HtmlColorUtils.getColorIfValid(color) != null) {
 			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}

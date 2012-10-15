@@ -33,8 +33,6 @@
  */
 package net.sourceforge.plantuml.activitydiagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
@@ -43,7 +41,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -74,33 +72,33 @@ public class CommandIf extends SingleLineCommand2<ActivityDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final IEntity entity1 = CommandLinkActivity.getEntity(getSystem(), arg, true);
 
 		final String ifCode;
 		final String ifLabel;
-		if (arg.get("IF2").get(0) == null) {
-			ifCode = arg.get("IF1").get(1);
-			ifLabel = arg.get("IF1").get(0);
+		if (arg.get("IF2", 0) == null) {
+			ifCode = arg.get("IF1", 1);
+			ifLabel = arg.get("IF1", 0);
 		} else {
 			ifCode = null;
-			ifLabel = arg.get("IF2").get(0);
+			ifLabel = arg.get("IF2", 0);
 		}
 		getSystem().startIf(ifCode);
 
 		int lenght = 2;
 
-		if (arg.get("ARROW").get(0) != null) {
-			final String arrow = StringUtils.manageArrowForCuca(arg.get("ARROW").get(0));
+		if (arg.get("ARROW", 0) != null) {
+			final String arrow = StringUtils.manageArrowForCuca(arg.get("ARROW", 0));
 			lenght = arrow.length() - 1;
 		}
 
 		final IEntity branch = getSystem().getCurrentContext().getBranch();
 
-		Link link = new Link(entity1, branch, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), arg.get("BRACKET").get(0),
+		Link link = new Link(entity1, branch, new LinkType(LinkDecor.ARROW, LinkDecor.NONE), arg.get("BRACKET", 0),
 				lenght, null, ifLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
-		if (arg.get("ARROW").get(0) != null) {
-			final Direction direction = StringUtils.getArrowDirection(arg.get("ARROW").get(0));
+		if (arg.get("ARROW", 0) != null) {
+			final Direction direction = StringUtils.getArrowDirection(arg.get("ARROW", 0));
 			if (direction == Direction.LEFT || direction == Direction.UP) {
 				link = link.getInv();
 			}

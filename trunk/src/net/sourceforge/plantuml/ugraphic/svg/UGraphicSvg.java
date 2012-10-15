@@ -76,6 +76,21 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 		this(colorMapper, new SvgGraphics(), textAsPath);
 	}
 
+	@Override
+	protected boolean manageHiddenAutomatically() {
+		return false;
+	}
+
+	@Override
+	protected void beforeDraw() {
+		getGraphicObject().setHidden(getParam().isHidden());
+	}
+
+	@Override
+	protected void afterDraw() {
+		getGraphicObject().setHidden(false);
+	}
+
 	private UGraphicSvg(ColorMapper colorMapper, SvgGraphics svg, boolean textAsPath) {
 		super(colorMapper, svg);
 		stringBounder = StringBounderUtils.asStringBounder(imDummy);
@@ -118,14 +133,6 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 		return clip;
 	}
 
-	// public void centerCharOld(double x, double y, char c, Font font) {
-	// final UText uText = new UText("" + c, new FontConfiguration(font,
-	// getParam().getColor()));
-	// final UnusedSpace unusedSpace = UnusedSpace.getUnusedSpace(font, c);
-	// draw(x - unusedSpace.getCenterX() + getTranslateX(), y -
-	// unusedSpace.getCenterY() + getTranslateY(), uText);
-	// }
-
 	public void centerChar(double x, double y, char c, UFont font) {
 		final UnusedSpace unusedSpace = UnusedSpace.getUnusedSpace(font, c);
 
@@ -149,7 +156,7 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 	public void closeAction() {
 		getGraphicObject().closeLink();
 	}
-	
+
 	class SvgGroup implements UGroup {
 		public void draw(double x, double y, UShape shape) {
 		}
@@ -160,22 +167,22 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 		public void centerChar(double x, double y, char c, UFont font) {
 		}
 	}
-	
+
 	@Override
 	public UGroup createGroup() {
 		return new SvgGroup();
 	}
 
-//	@Override
-//	public String startHiddenGroup() {
-//		getGraphicObject().startHiddenGroup();
-//		return null;
-//	}
-//
-//	@Override
-//	public String closeHiddenGroup() {
-//		getGraphicObject().closeHiddenGroup();
-//		return null;
-//	}
+	// @Override
+	// public String startHiddenGroup() {
+	// getGraphicObject().startHiddenGroup();
+	// return null;
+	// }
+	//
+	// @Override
+	// public String closeHiddenGroup() {
+	// getGraphicObject().closeHiddenGroup();
+	// return null;
+	// }
 
 }

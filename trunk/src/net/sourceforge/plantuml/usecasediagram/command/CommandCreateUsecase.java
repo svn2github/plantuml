@@ -31,12 +31,10 @@
  */
 package net.sourceforge.plantuml.usecasediagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagram;
 
@@ -61,7 +59,7 @@ public class CommandCreateUsecase extends AbstractCommandCreate {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 		return executeArg(arg, LeafType.USECASE);
 	}
 

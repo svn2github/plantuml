@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
@@ -47,7 +46,7 @@ import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -82,7 +81,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 			public final CommandExecutionResult execute(List<String> lines) {
 				// StringUtils.trim(lines, true);
-				final Map<String, RegexPartialMatch> arg = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult arg = getStartingPattern().matcher(lines.get(0).trim());
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 
 				Url url = null;
@@ -108,18 +107,18 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 		return new SingleLineCommand2<ActivityDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+			protected CommandExecutionResult executeArg(RegexResult arg) {
 				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(),
-						StringUtils.getWithNewlines(arg.get("NOTE").get(0)));
+						StringUtils.getWithNewlines(arg.get("NOTE", 0)));
 				return executeInternal(getSystem(), arg, note);
 			}
 		};
 	}
 
-	private CommandExecutionResult executeInternal(ActivityDiagram system, Map<String, RegexPartialMatch> arg,
+	private CommandExecutionResult executeInternal(ActivityDiagram system, RegexResult arg,
 			IEntity note) {
 
-		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 
 		IEntity activity = system.getLastEntityConsulted();
 		if (activity == null) {
@@ -128,7 +127,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 		final Link link;
 
-		final Position position = Position.valueOf(arg.get("POSITION").get(0).toUpperCase()).withRankdir(
+		final Position position = Position.valueOf(arg.get("POSITION", 0).toUpperCase()).withRankdir(
 				system.getRankdir());
 
 		final LinkType type = new LinkType(LinkDecor.NONE, LinkDecor.NONE).getDashed();

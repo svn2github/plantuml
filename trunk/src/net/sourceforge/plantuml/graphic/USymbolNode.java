@@ -73,7 +73,7 @@ class USymbolNode extends USymbolAbstract {
 		return new Margin(10 + 5, 20 + 5, 15 + 5, 5 + 5);
 	}
 
-	public TextBlock asSmall(final TextBlock label, final SymbolContext symbolContext) {
+	public TextBlock asSmall(final TextBlock label, TextBlock stereotype, final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {
@@ -96,8 +96,8 @@ class USymbolNode extends USymbolAbstract {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, final double width, final double height,
-			final SymbolContext symbolContext) {
+	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width,
+			final double height, final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {

@@ -38,6 +38,7 @@ import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
 
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.ISkinParam;
 import net.sourceforge.plantuml.OptionFlags;
 import net.sourceforge.plantuml.StringUtils;
@@ -69,7 +70,7 @@ import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.UShape;
 import net.sourceforge.plantuml.ugraphic.UStroke;
 
-public class Line implements Moveable {
+public class Line implements Moveable, Hideable {
 
 	private final String ltail;
 	private final String lhead;
@@ -689,6 +690,10 @@ public class Line implements Moveable {
 	public void setProjectionCluster(Cluster cluster) {
 		this.projectionCluster = cluster;
 
+	}
+
+	public boolean isHidden() {
+		return link.isHidden();
 	}
 
 	// private Cluster picLine1 = null;

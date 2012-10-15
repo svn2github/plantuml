@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.activitydiagram2.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.activitydiagram2.ActivityDiagram2;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 
 public class CommandIf2 extends SingleLineCommand2<ActivityDiagram2> {
 
@@ -60,9 +58,9 @@ public class CommandIf2 extends SingleLineCommand2<ActivityDiagram2> {
 
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 //
-		getSystem().startIf(arg.get("TEST").get(0), arg.get("WHEN").get(0));
+		getSystem().startIf(arg.get("TEST", 0), arg.get("WHEN", 0));
 //
 //		int lenght = 2;
 //

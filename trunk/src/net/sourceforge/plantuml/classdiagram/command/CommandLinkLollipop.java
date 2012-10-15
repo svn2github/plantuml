@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.classdiagram.command;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -89,18 +88,18 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 
-		final String ent1 = arg.get("ENT1").get(1);
-		final String ent2 = arg.get("ENT2").get(1);
+		final String ent1 = arg.get("ENT1", 1);
+		final String ent2 = arg.get("ENT2", 1);
 
 		final IEntity cl1;
 		final IEntity cl2;
 		final IEntity normalEntity;
 
 		final String suffix = "lol" + UniqueSequence.getValue();
-		if (arg.get("LOL_THEN_ENT").get(0) == null) {
-			assert arg.get("ENT_THEN_LOL").get(0) != null;
+		if (arg.get("LOL_THEN_ENT", 0) == null) {
+			assert arg.get("ENT_THEN_LOL", 0) != null;
 			cl1 = getSystem().getOrCreateClass(ent1);
 			cl2 = getSystem().createLeaf(cl1.getCode() + suffix, StringUtils.getWithNewlines(ent2), LeafType.LOLLIPOP);
 			normalEntity = cl1;
@@ -118,13 +117,13 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 			length++;
 		}
 
-		String firstLabel = arg.get("FIRST_LABEL").get(0);
-		String secondLabel = arg.get("SECOND_LABEL").get(0);
+		String firstLabel = arg.get("FIRST_LABEL", 0);
+		String secondLabel = arg.get("SECOND_LABEL", 0);
 
 		String labelLink = null;
 
-		if (arg.get("LABEL_LINK").get(0) != null) {
-			labelLink = arg.get("LABEL_LINK").get(0);
+		if (arg.get("LABEL_LINK", 0) != null) {
+			labelLink = arg.get("LABEL_LINK", 0);
 			if (firstLabel == null && secondLabel == null) {
 				final Pattern p1 = Pattern.compile("^\"([^\"]+)\"([^\"]+)\"([^\"]+)\"$");
 				final Matcher m1 = p1.matcher(labelLink);
@@ -164,7 +163,7 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 		final Link link = new Link(cl1, cl2, linkType, labelLink, length, firstLabel, secondLabel, getSystem()
 				.getLabeldistance(), getSystem().getLabelangle());
 		getSystem().resetPragmaLabel();
-		addLink(link, arg.get("HEADER").get(0));
+		addLink(link, arg.get("HEADER", 0));
 
 		return CommandExecutionResult.ok();
 	}
@@ -206,16 +205,16 @@ final public class CommandLinkLollipop extends SingleLineCommand2<AbstractClassO
 		}
 	}
 
-	private LinkType getLinkType(Map<String, RegexPartialMatch> arg) {
+	private LinkType getLinkType(RegexResult arg) {
 		return new LinkType(LinkDecor.NONE, LinkDecor.NONE);
 	}
 
-	private String getQueue(Map<String, RegexPartialMatch> arg) {
-		if (arg.get("LOL_THEN_ENT").get(0) != null) {
-			return arg.get("LOL_THEN_ENT").get(0).trim();
+	private String getQueue(RegexResult arg) {
+		if (arg.get("LOL_THEN_ENT", 0) != null) {
+			return arg.get("LOL_THEN_ENT", 0).trim();
 		}
-		if (arg.get("ENT_THEN_LOL").get(0) != null) {
-			return arg.get("ENT_THEN_LOL").get(0).trim();
+		if (arg.get("ENT_THEN_LOL", 0) != null) {
+			return arg.get("ENT_THEN_LOL", 0).trim();
 		}
 		throw new IllegalArgumentException();
 	}

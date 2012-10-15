@@ -86,4 +86,8 @@ public class EntityImageNoteLink implements IEntityImage {
 		return 0;
 	}
 
+	public boolean isHidden() {
+		return false;
+	}
+
 }

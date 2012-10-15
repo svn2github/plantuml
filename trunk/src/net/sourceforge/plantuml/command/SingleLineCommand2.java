@@ -34,11 +34,10 @@
 package net.sourceforge.plantuml.command;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.PSystem;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 
 public abstract class SingleLineCommand2<S extends PSystem> implements Command {
 
@@ -99,7 +98,7 @@ public abstract class SingleLineCommand2<S extends PSystem> implements Command {
 			return CommandExecutionResult.error("Forbidden line " + line);
 		}
 
-		final Map<String, RegexPartialMatch> arg = pattern.matcher(line);
+		final RegexResult arg = pattern.matcher(line);
 		if (arg == null) {
 			return CommandExecutionResult.error("Cannot parse line " + line);
 		}
@@ -110,7 +109,7 @@ public abstract class SingleLineCommand2<S extends PSystem> implements Command {
 		return false;
 	}
 
-	protected abstract CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg);
+	protected abstract CommandExecutionResult executeArg(RegexResult arg);
 
 	final public boolean isDeprecated(List<String> lines) {
 		if (lines.size() != 1) {

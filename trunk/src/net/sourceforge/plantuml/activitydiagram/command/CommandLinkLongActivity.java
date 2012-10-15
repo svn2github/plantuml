@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.activitydiagram.command;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.plantuml.Direction;
@@ -46,7 +45,7 @@ import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -91,19 +90,19 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, false);
-		final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
 		final IEntity entity1 = CommandLinkActivity.getEntity(getSystem(), line0, true);
 
-		if (line0.get("STEREOTYPE").get(0) != null) {
-			entity1.setStereotype(new Stereotype(line0.get("STEREOTYPE").get(0)));
+		if (line0.get("STEREOTYPE", 0) != null) {
+			entity1.setStereotype(new Stereotype(line0.get("STEREOTYPE", 0)));
 		}
-		if (line0.get("BACKCOLOR").get(0) != null) {
-			entity1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("BACKCOLOR").get(0)));
+		if (line0.get("BACKCOLOR", 0) != null) {
+			entity1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("BACKCOLOR", 0)));
 		}
 		final StringBuilder sb = new StringBuilder();
 
-		final String desc0 = line0.get("DESC").get(0);
+		final String desc0 = line0.get("DESC", 0);
 		Url urlActivity = null;
 		if (StringUtils.isNotEmpty(desc0)) {
 			urlActivity = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0, true);
@@ -165,24 +164,23 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			return CommandExecutionResult.error("No such entity");
 		}
 
-		final String arrow = StringUtils.manageArrowForCuca(line0.get("ARROW").get(0));
+		final String arrow = StringUtils.manageArrowForCuca(line0.get("ARROW", 0));
 		final int lenght = arrow.length() - 1;
 
-		final String linkLabel = line0.get("BRACKET").get(0);
+		final String linkLabel = line0.get("BRACKET", 0);
 
 		LinkType type = new LinkType(LinkDecor.ARROW, LinkDecor.NONE);
-		if (line0.get("ARROW").get(0).contains(".")) {
+		if (line0.get("ARROW", 0).contains(".")) {
 			type = type.getDotted();
 		}
 		Link link = new Link(entity1, entity2, type, linkLabel, lenght);
-		final Direction direction = StringUtils.getArrowDirection(line0.get("ARROW").get(0));
+		final Direction direction = StringUtils.getArrowDirection(line0.get("ARROW", 0));
 		if (direction == Direction.LEFT || direction == Direction.UP) {
 			link = link.getInv();
 		}
 
-		if (line0.get("URL").get(0) != null) {
-			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), line0.get("URL")
-					.get(0), true);
+		if (line0.get("URL", 0) != null) {
+			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), line0.get("URL", 0), true);
 			link.setUrl(urlLink);
 		}
 

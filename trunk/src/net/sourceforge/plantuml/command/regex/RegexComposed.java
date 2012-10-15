@@ -75,14 +75,14 @@ public abstract class RegexComposed implements IRegex {
 		return 0;
 	}
 
-	public Map<String, RegexPartialMatch> matcher(String s) {
+	public RegexResult matcher(String s) {
 		final Matcher matcher = getFull().matcher(s);
 		if (matcher.find() == false) {
 			throw new IllegalArgumentException(getClass()+" "+s);
 		}
 
 		final Iterator<String> it = new MatcherIterator(matcher);
-		return Collections.unmodifiableMap(createPartialMatch(it));
+		return new RegexResult(createPartialMatch(it));
 	}
 
 	final public boolean match(String s) {

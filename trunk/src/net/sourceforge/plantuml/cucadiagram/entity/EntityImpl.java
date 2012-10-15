@@ -62,6 +62,7 @@ import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.TextBlockWidth;
 import net.sourceforge.plantuml.graphic.TextBlockWidthVertical;
+import net.sourceforge.plantuml.graphic.USymbol;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
 
@@ -524,5 +525,22 @@ class EntityImpl implements ILeaf, IGroup {
 		this.groupType = groupType;
 		this.leafType = null;
 		this.parentContainer = parentContainer;
+	}
+
+	public boolean isHidden() {
+		if (stereotype != null) {
+			return stereotype.isHidden();
+		}
+		return false;
+	}
+	
+	private USymbol symbol;
+
+	public USymbol getUSymbol() {
+		return symbol;
+	}
+
+	public void setUSymbol(USymbol symbol) {
+		this.symbol = symbol;
 	}
 }

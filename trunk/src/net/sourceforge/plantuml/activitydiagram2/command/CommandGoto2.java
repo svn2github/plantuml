@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.activitydiagram2.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.activitydiagram2.ActivityDiagram2;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 
 public class CommandGoto2 extends SingleLineCommand2<ActivityDiagram2> {
 
@@ -57,8 +55,8 @@ public class CommandGoto2 extends SingleLineCommand2<ActivityDiagram2> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		getSystem().callGoto(arg.get("LABEL").get(0));
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		getSystem().callGoto(arg.get("LABEL", 0));
 		return CommandExecutionResult.ok();
 	}
 

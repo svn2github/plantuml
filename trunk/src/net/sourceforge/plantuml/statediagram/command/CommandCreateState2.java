@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.statediagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -67,17 +65,17 @@ public class CommandCreateState2 extends SingleLineCommand2<StateDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
-		final String code = arg2.get("CODE").get(0);
-		final String display = arg2.get("DISPLAY").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg2) {
+		final String code = arg2.get("CODE", 0);
+		final String display = arg2.get("DISPLAY", 0);
 		final IEntity ent = getSystem().getOrCreateClass(code);
 		ent.setDisplay(StringUtils.getWithNewlines(display));
 
-		final String stereotype = arg2.get("STEREOTYPE").get(0);
+		final String stereotype = arg2.get("STEREOTYPE", 0);
 		if (stereotype != null) {
 			ent.setStereotype(new Stereotype(stereotype));
 		}
-		final String color = arg2.get("STEREOTYPE").get(0);
+		final String color = arg2.get("STEREOTYPE", 0);
 		if (color != null) {
 			ent.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}

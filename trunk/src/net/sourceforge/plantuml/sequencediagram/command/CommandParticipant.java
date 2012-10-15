@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.sequencediagram.command;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.ISkinParam;
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.command.regex.IRegex;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
@@ -66,20 +65,20 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 	}
 
 	@Override
-	final protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
-		final String code = arg2.get("CODE").get(0);
+	final protected CommandExecutionResult executeArg(RegexResult arg2) {
+		final String code = arg2.get("CODE", 0);
 		if (getSystem().participants().containsKey(code)) {
 			getSystem().putParticipantInLast(code);
 			return CommandExecutionResult.ok();
 		}
 
 		List<String> strings = null;
-		if (arg2.get("FULL") != null && arg2.get("FULL").get(0) != null) {
-			strings = StringUtils.getWithNewlines(arg2.get("FULL").get(0));
+		if (arg2.get("FULL", 0) != null) {
+			strings = StringUtils.getWithNewlines(arg2.get("FULL", 0));
 		}
 
-		final String typeString1 = arg2.get("TYPE").get(0);
-		final String typeCreate1 = arg2.get("CREATE").get(0);
+		final String typeString1 = arg2.get("TYPE", 0);
+		final String typeCreate1 = arg2.get("CREATE", 0);
 		final ParticipantType type;
 		final boolean create;
 		if (typeCreate1 != null) {
@@ -94,7 +93,7 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 		}
 		final Participant participant = getSystem().createNewParticipant(type, code, strings);
 
-		final String stereotype = arg2.get("STEREO").get(0);
+		final String stereotype = arg2.get("STEREO", 0);
 
 		if (stereotype != null) {
 			final ISkinParam skinParam = getSystem().getSkinParam();
@@ -103,7 +102,7 @@ public abstract class CommandParticipant extends SingleLineCommand2<SequenceDiag
 			participant.setStereotype(new Stereotype(stereotype, skinParam.getCircledCharacterRadius(), font),
 					stereotypePositionTop);
 		}
-		participant.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("COLOR").get(0)));
+		participant.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("COLOR", 0)));
 
 		if (create) {
 			final String error = getSystem().activate(participant, LifeEventType.CREATE, null);

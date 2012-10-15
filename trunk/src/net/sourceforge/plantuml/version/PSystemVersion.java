@@ -84,7 +84,7 @@ public class PSystemVersion extends AbstractPSystem {
 		final List<String> strings = new ArrayList<String>();
 		strings.add("<b>PlantUML version " + Version.versionString() + "</b> (" + new Date(Version.compileTime()) + ")");
 		if (License.isCloseSource()) {
-			strings.add("(Close source distribution)");
+			strings.add("(LGPL source distribution)");
 		}
 		strings.add(" ");
 

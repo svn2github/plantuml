@@ -67,6 +67,12 @@ public abstract class AbstractEntityImage implements IEntityImage {
 		// stereoLabel = stereotype.getLabel();
 		// }
 	}
+	
+	public boolean isHidden() {
+		return entity.isHidden();
+	}
+
+
 
 	public abstract Dimension2D getDimension(StringBounder stringBounder);
 

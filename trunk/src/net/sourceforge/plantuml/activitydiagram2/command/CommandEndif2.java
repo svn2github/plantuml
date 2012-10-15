@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.activitydiagram2.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.activitydiagram2.ActivityDiagram2;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 
 public class CommandEndif2 extends SingleLineCommand2<ActivityDiagram2> {
 
@@ -56,7 +54,7 @@ public class CommandEndif2 extends SingleLineCommand2<ActivityDiagram2> {
 
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 //		if (getSystem().getLastEntityConsulted() == null) {
 //			return CommandExecutionResult.error("No if for this endif");
 //		}

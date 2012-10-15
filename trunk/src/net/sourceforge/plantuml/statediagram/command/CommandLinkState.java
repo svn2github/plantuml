@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.statediagram.command;
 
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import net.sourceforge.plantuml.Direction;
@@ -42,7 +41,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -67,7 +66,7 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 						new RegexLeaf("ARROW_BODY1", "(-+)"), //
 						new RegexLeaf("ARROW_DIRECTION", "(left|right|up|down|le?|ri?|up?|do?)?"), //
 						new RegexLeaf("ARROW_STYLE",
-								"(?:\\[((?:#\\w+|dotted|dashed|bold)(?:,#\\w+|,dotted|,dashed|,bold)*)\\])?"), //
+								"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"), //
 						new RegexLeaf("ARROW_BODY2", "(-*)"), //
 						new RegexLeaf("\\>"), //
 						new RegexLeaf("ARROW_CIRCLE_END", "(o\\s+)?")), //
@@ -85,27 +84,27 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String ent1 = arg.get("ENT1").get(0);
-		final String ent2 = arg.get("ENT2").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String ent1 = arg.get("ENT1", 0);
+		final String ent2 = arg.get("ENT2", 0);
 
 		final IEntity cl1 = getEntityStart(ent1);
 		final IEntity cl2 = getEntityEnd(ent2);
 
-		if (arg.get("ENT1").get(1) != null) {
-			cl1.setStereotype(new Stereotype(arg.get("ENT1").get(1)));
+		if (arg.get("ENT1", 1) != null) {
+			cl1.setStereotype(new Stereotype(arg.get("ENT1", 1)));
 		}
-		if (arg.get("ENT1").get(2) != null) {
-			cl1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("ENT1").get(2)));
+		if (arg.get("ENT1", 2) != null) {
+			cl1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("ENT1", 2)));
 		}
-		if (arg.get("ENT2").get(1) != null) {
-			cl2.setStereotype(new Stereotype(arg.get("ENT2").get(1)));
+		if (arg.get("ENT2", 1) != null) {
+			cl2.setStereotype(new Stereotype(arg.get("ENT2", 1)));
 		}
-		if (arg.get("ENT2").get(2) != null) {
-			cl2.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("ENT2").get(2)));
+		if (arg.get("ENT2", 2) != null) {
+			cl2.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("ENT2", 2)));
 		}
 
-		String queue = arg.get("ARROW_BODY1").get(0) + arg.get("ARROW_BODY2").get(0);
+		String queue = arg.get("ARROW_BODY1", 0) + arg.get("ARROW_BODY2", 0);
 		final Direction dir = getDirection(arg);
 
 		if (dir == Direction.LEFT || dir == Direction.RIGHT) {
@@ -114,26 +113,28 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 
 		final int lenght = queue.length();
 
-		final boolean crossStart = arg.get("ARROW_CROSS_START").get(0) != null;
-		final boolean circleEnd = arg.get("ARROW_CIRCLE_END").get(0) != null;
+		final boolean crossStart = arg.get("ARROW_CROSS_START", 0) != null;
+		final boolean circleEnd = arg.get("ARROW_CIRCLE_END", 0) != null;
 		final LinkType linkType = new LinkType(circleEnd ? LinkDecor.ARROW_AND_CIRCLE : LinkDecor.ARROW,
 				crossStart ? LinkDecor.CIRCLE_CROSS : LinkDecor.NONE);
 
-		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL").get(0), lenght);
+		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL", 0), lenght);
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
 		}
-		final String arrowStyle = arg.get("ARROW_STYLE").get(0);
+		final String arrowStyle = arg.get("ARROW_STYLE", 0);
 		if (arrowStyle != null) {
 			final StringTokenizer st = new StringTokenizer(arrowStyle, ",");
 			while (st.hasMoreTokens()) {
 				final String s = st.nextToken();
 				if (s.equalsIgnoreCase("dashed")) {
-					link = link.getDashed();
+					link.goDashed();
 				} else if (s.equalsIgnoreCase("bold")) {
-					link = link.getBold();
+					link.goBold();
 				} else if (s.equalsIgnoreCase("dotted")) {
-					link = link.getDotted();
+					link.goDotted();
+				} else if (s.equalsIgnoreCase("hidden")) {
+					link.goHidden();
 				} else {
 					link.setSpecificColor(s);
 				}
@@ -144,8 +145,8 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		return CommandExecutionResult.ok();
 	}
 
-	private Direction getDirection(Map<String, RegexPartialMatch> arg) {
-		final String arrowDirection = arg.get("ARROW_DIRECTION").get(0);
+	private Direction getDirection(RegexResult arg) {
+		final String arrowDirection = arg.get("ARROW_DIRECTION", 0);
 		if (arrowDirection != null) {
 			return StringUtils.getQueueDirection(arrowDirection);
 		}

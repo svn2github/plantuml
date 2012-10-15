@@ -199,7 +199,7 @@ public class EntityImageComponent extends AbstractEntityImage {
 		} else {
 			final SymbolContext ctx = new SymbolContext(backcolor, getColor(ColorParam.componentBorder, getStereo()))
 					.withStroke(new UStroke(1.5)).withShadow(getSkinParam().shadowing());
-			symbol.asSmall(TextBlockUtils.mergeTB(desc, stereo, HorizontalAlignement.CENTER), ctx).drawU(ug,
+			symbol.asSmall(TextBlockUtils.mergeTB(desc, stereo, HorizontalAlignement.CENTER), null, ctx).drawU(ug,
 					xTheoricalPosition, yTheoricalPosition);
 		}
 		if (url.size() > 0) {

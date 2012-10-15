@@ -31,8 +31,6 @@
  */
 package net.sourceforge.plantuml.usecasediagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -41,6 +39,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -73,9 +72,9 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String ent1 = arg.get("ENT1").get(0);
-		final String ent2 = arg.get("ENT2").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String ent1 = arg.get("ENT1", 0);
+		final String ent2 = arg.get("ENT2", 0);
 
 		if (getSystem().isGroup(ent1) && getSystem().isGroup(ent2)) {
 			return executePackageLink(arg);
@@ -87,11 +86,11 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 		final IEntity cl1 = getSystem().getOrCreateClass(ent1);
 		final IEntity cl2 = getSystem().getOrCreateClass(ent2);
 		
-		if (arg.get("ENT1").get(1) != null) {
-			cl1.setStereotype(new Stereotype(arg.get("ENT1").get(1)));
+		if (arg.get("ENT1", 1) != null) {
+			cl1.setStereotype(new Stereotype(arg.get("ENT1", 1)));
 		}
-		if (arg.get("ENT2").get(1) != null) {
-			cl2.setStereotype(new Stereotype(arg.get("ENT2").get(1)));
+		if (arg.get("ENT2", 1) != null) {
+			cl2.setStereotype(new Stereotype(arg.get("ENT2", 1)));
 		}
 
 		final LinkType linkType = getLinkType(arg);
@@ -106,7 +105,7 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 			dir = dir.getInv();
 		}
 
-		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL_LINK").get(0), queue.length());
+		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL_LINK", 0), queue.length());
 
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
@@ -116,9 +115,9 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 		return CommandExecutionResult.ok();
 	}
 
-	private CommandExecutionResult executePackageLink(Map<String, RegexPartialMatch> arg) {
-		final String ent1 = arg.get("ENT1").get(0);
-		final String ent2 = arg.get("ENT2").get(0);
+	private CommandExecutionResult executePackageLink(RegexResult arg) {
+		final String ent1 = arg.get("ENT1", 0);
+		final String ent2 = arg.get("ENT2", 0);
 		final IEntity cl1 = getSystem().getGroup(ent1);
 		final IEntity cl2 = getSystem().getGroup(ent2);
 
@@ -134,7 +133,7 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 			dir = dir.getInv();
 		}
 
-		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL_LINK").get(0),
+		Link link = new Link(cl1, cl2, linkType, arg.get("LABEL_LINK", 0),
 				queue.length());
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
@@ -143,31 +142,31 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 		return CommandExecutionResult.ok();
 	}
 
-	private String getQueue(Map<String, RegexPartialMatch> arg) {
-		if (arg.get("LEFT_TO_RIGHT").get(1) != null) {
-			return arg.get("LEFT_TO_RIGHT").get(1).trim() + arg.get("LEFT_TO_RIGHT").get(3).trim();
+	private String getQueue(RegexResult arg) {
+		if (arg.get("LEFT_TO_RIGHT", 1) != null) {
+			return arg.get("LEFT_TO_RIGHT", 1).trim() + arg.get("LEFT_TO_RIGHT", 3).trim();
 		}
-		if (arg.get("RIGHT_TO_LEFT").get(2) != null) {
-			return arg.get("RIGHT_TO_LEFT").get(2).trim() + arg.get("RIGHT_TO_LEFT").get(4).trim();
+		if (arg.get("RIGHT_TO_LEFT", 2) != null) {
+			return arg.get("RIGHT_TO_LEFT", 2).trim() + arg.get("RIGHT_TO_LEFT", 4).trim();
 		}
 		throw new IllegalArgumentException();
 	}
 
-	private Direction getDirection(Map<String, RegexPartialMatch> arg) {
-		if (arg.get("LEFT_TO_RIGHT").get(2) != null) {
-			return StringUtils.getQueueDirection(arg.get("LEFT_TO_RIGHT").get(2));
+	private Direction getDirection(RegexResult arg) {
+		if (arg.get("LEFT_TO_RIGHT", 2) != null) {
+			return StringUtils.getQueueDirection(arg.get("LEFT_TO_RIGHT", 2));
 		}
-		if (arg.get("RIGHT_TO_LEFT").get(3) != null) {
-			return StringUtils.getQueueDirection(arg.get("RIGHT_TO_LEFT").get(3)).getInv();
+		if (arg.get("RIGHT_TO_LEFT", 3) != null) {
+			return StringUtils.getQueueDirection(arg.get("RIGHT_TO_LEFT", 3)).getInv();
 		}
 		return null;
 	}
 
-	private LinkType getLinkType(Map<String, RegexPartialMatch> arg) {
-		if (arg.get("LEFT_TO_RIGHT").get(0) != null) {
+	private LinkType getLinkType(RegexResult arg) {
+		if (arg.get("LEFT_TO_RIGHT", 0) != null) {
 			return getLinkTypeNormal(arg.get("LEFT_TO_RIGHT"));
 		}
-		if (arg.get("RIGHT_TO_LEFT").get(0) != null) {
+		if (arg.get("RIGHT_TO_LEFT", 0) != null) {
 			return getLinkTypeInv(arg.get("RIGHT_TO_LEFT"));
 		}
 		throw new IllegalArgumentException();

@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -65,11 +63,11 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final String code;
 		final String display;
-		final String name = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME").get(0));
-		if (arg.get("AS").get(0) == null) {
+		final String name = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME", 0));
+		if (arg.get("AS", 0) == null) {
 			if (name.length() == 0) {
 				code = "##" + UniqueSequence.getValue();
 				display = null;
@@ -79,15 +77,15 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 			}
 		} else {
 			display = name;
-			code = arg.get("AS").get(0);
+			code = arg.get("AS", 0);
 		}
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);
-		final String stereotype = arg.get("STEREOTYPE").get(0);
+		final String stereotype = arg.get("STEREOTYPE", 0);
 		if (stereotype != null) {
 			p.setStereotype(new Stereotype(stereotype));
 		}
-		final String color = arg.get("COLOR").get(0);
+		final String color = arg.get("COLOR", 0);
 		if (color != null) {
 			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}

@@ -176,5 +176,6 @@ public class EntityImageState extends AbstractEntityImage {
 	public int getShield() {
 		return 0;
 	}
+	
 
 }

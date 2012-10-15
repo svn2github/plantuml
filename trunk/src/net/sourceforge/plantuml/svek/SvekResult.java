@@ -86,7 +86,11 @@ public final class SvekResult implements IEntityImage, Moveable {
 		for (Shape shape : dotStringFactory.getBibliotekon().allShapes()) {
 			final double minX = shape.getMinX();
 			final double minY = shape.getMinY();
+			if (shape.isHidden()) {
+				ug.getParam().setHidden(true);
+			}
 			shape.getImage().drawU(ug, x + minX, y + minY);
+			ug.getParam().setHidden(false);
 			if (hasVerticalLine) {
 				final double xv = x + minX;
 				xdots.add(xv);
@@ -95,9 +99,13 @@ public final class SvekResult implements IEntityImage, Moveable {
 		}
 
 		for (Line line : dotStringFactory.getBibliotekon().allLines()) {
+			if (line.isHidden()) {
+				ug.getParam().setHidden(true);
+			}
 			// line.patchLineForCluster(dotStringFactory.getAllSubCluster());
 			final HtmlColor color = rose.getHtmlColor(dotData.getSkinParam(), getArrowColorParam(), null);
 			line.drawU(ug, x, y, color);
+			ug.getParam().setHidden(false);
 		}
 
 		final double THICKNESS_BORDER = 1.5;
@@ -139,6 +147,8 @@ public final class SvekResult implements IEntityImage, Moveable {
 			return ColorParam.objectArrow;
 		} else if (dotData.getUmlDiagramType() == UmlDiagramType.USECASE) {
 			return ColorParam.usecaseArrow;
+		} else if (dotData.getUmlDiagramType() == UmlDiagramType.DESCRIPTION) {
+			return ColorParam.usecaseArrow;
 		} else if (dotData.getUmlDiagramType() == UmlDiagramType.ACTIVITY) {
 			return ColorParam.activityArrow;
 		} else if (dotData.getUmlDiagramType() == UmlDiagramType.COMPONENT) {
@@ -168,6 +178,10 @@ public final class SvekResult implements IEntityImage, Moveable {
 	public void moveSvek(double deltaX, double deltaY) {
 		dotStringFactory.moveSvek(deltaX, deltaY);
 		dim = dim.delta(deltaX > 0 ? deltaX : 0, deltaY > 0 ? deltaY : 0);
+	}
+
+	public boolean isHidden() {
+		return false;
 	}
 
 }

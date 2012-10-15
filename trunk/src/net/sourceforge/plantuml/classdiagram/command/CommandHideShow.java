@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
@@ -42,7 +41,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.EntityGender;
 import net.sourceforge.plantuml.cucadiagram.EntityGenderUtils;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
@@ -86,12 +85,12 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 
-		final Set<EntityPortion> portion = getEntityPortion(arg.get("PORTION").get(0));
+		final Set<EntityPortion> portion = getEntityPortion(arg.get("PORTION", 0));
 		EntityGender gender = null;
 
-		final String arg1 = arg.get("GENDER").get(0);
+		final String arg1 = arg.get("GENDER", 0);
 
 		if (arg1 == null) {
 			gender = EntityGenderUtils.all();
@@ -110,14 +109,14 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 			gender = EntityGenderUtils.byEntityAlone(entity);
 		}
 		if (gender != null) {
-			final boolean empty = arg.get("EMPTY").get(0) != null;
+			final boolean empty = arg.get("EMPTY", 0) != null;
 			if (empty == true) {
 				gender = EntityGenderUtils.and(gender, emptyByGender(portion));
 			}
 			if (EntityUtils.groupNull(getSystem().getCurrentGroup())==false) {
 				gender = EntityGenderUtils.and(gender, EntityGenderUtils.byPackage(getSystem().getCurrentGroup()));
 			}
-			getSystem().hideOrShow(gender, portion, arg.get("COMMAND").get(0).equalsIgnoreCase("show"));
+			getSystem().hideOrShow(gender, portion, arg.get("COMMAND", 0).equalsIgnoreCase("show"));
 		}
 		return CommandExecutionResult.ok();
 	}

@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
@@ -49,7 +48,7 @@ import net.sourceforge.plantuml.command.regex.IRegex;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -93,8 +92,8 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 		return new SingleLineCommand2<AbstractEntityDiagram>(system, getRegexConcatSingleLine(partialPattern)) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final String s = arg.get("NOTE").get(0);
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				final String s = arg.get("NOTE", 0);
 				return executeInternal(arg, system, null, StringUtils.getWithNewlines(s));
 			}
 		};
@@ -110,7 +109,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 
 			public CommandExecutionResult execute(List<String> lines) {
 				StringUtils.trim(lines, false);
-				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				Url url = null;
@@ -126,12 +125,12 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 		};
 	}
 
-	private CommandExecutionResult executeInternal(Map<String, RegexPartialMatch> line0, AbstractEntityDiagram system,
+	private CommandExecutionResult executeInternal(RegexResult line0, AbstractEntityDiagram system,
 			Url url, List<? extends CharSequence> s) {
 
-		final String pos = line0.get("POSITION").get(0);
+		final String pos = line0.get("POSITION", 0);
 
-		final String code = line0.get("ENTITY").get(0);
+		final String code = line0.get("ENTITY", 0);
 		final IEntity cl1;
 		if (code == null) {
 			cl1 = system.getLastEntity();
@@ -143,7 +142,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 		}
 
 		final IEntity note = system.createLeaf("GMN" + UniqueSequence.getValue(), s, LeafType.NOTE);
-		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR").get(0)));
+		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR", 0)));
 		if (url != null) {
 			note.addUrl(url);
 		}

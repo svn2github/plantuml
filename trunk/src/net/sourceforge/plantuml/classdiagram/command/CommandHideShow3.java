@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -43,7 +42,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
@@ -70,17 +69,17 @@ public class CommandHideShow3 extends SingleLineCommand2<ClassDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
+	protected CommandExecutionResult executeArg(RegexResult arg) {
 
-		final Set<EntityPortion> portion = getEntityPortion(arg.get("PORTION").get(0));
+		final Set<EntityPortion> portion = getEntityPortion(arg.get("PORTION", 0));
 
 		final Set<VisibilityModifier> visibilities = EnumSet.<VisibilityModifier> noneOf(VisibilityModifier.class);
-		final StringTokenizer st = new StringTokenizer(arg.get("VISIBILITY").get(0).toLowerCase(), " ,");
+		final StringTokenizer st = new StringTokenizer(arg.get("VISIBILITY", 0).toLowerCase(), " ,");
 		while (st.hasMoreTokens()) {
 			addVisibilities(st.nextToken(), portion, visibilities);
 		}
 
-		getSystem().hideOrShow(visibilities, arg.get("COMMAND").get(0).equalsIgnoreCase("show"));
+		getSystem().hideOrShow(visibilities, arg.get("COMMAND", 0).equalsIgnoreCase("show"));
 
 		return CommandExecutionResult.ok();
 	}

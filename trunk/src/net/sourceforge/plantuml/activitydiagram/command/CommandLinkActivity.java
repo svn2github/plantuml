@@ -33,8 +33,6 @@
  */
 package net.sourceforge.plantuml.activitydiagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
@@ -45,6 +43,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -96,53 +95,53 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
+	protected CommandExecutionResult executeArg(RegexResult arg2) {
 		final IEntity entity1 = getEntity(getSystem(), arg2, true);
 		if (entity1 == null) {
 			return CommandExecutionResult.error("No such activity");
 		}
-		if (arg2.get("STEREOTYPE").get(0) != null) {
-			entity1.setStereotype(new Stereotype(arg2.get("STEREOTYPE").get(0)));
+		if (arg2.get("STEREOTYPE", 0) != null) {
+			entity1.setStereotype(new Stereotype(arg2.get("STEREOTYPE", 0)));
 		}
-		if (arg2.get("BACKCOLOR").get(0) != null) {
-			entity1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("BACKCOLOR").get(0)));
+		if (arg2.get("BACKCOLOR", 0) != null) {
+			entity1.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("BACKCOLOR", 0)));
 		}
 
 		final IEntity entity2 = getEntity(getSystem(), arg2, false);
 		if (entity2 == null) {
 			return CommandExecutionResult.error("No such activity");
 		}
-		if (arg2.get("BACKCOLOR2").get(0) != null) {
-			entity2.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("BACKCOLOR2").get(0)));
+		if (arg2.get("BACKCOLOR2", 0) != null) {
+			entity2.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg2.get("BACKCOLOR2", 0)));
 		}
-		if (arg2.get("STEREOTYPE2").get(0) != null) {
-			entity2.setStereotype(new Stereotype(arg2.get("STEREOTYPE2").get(0)));
+		if (arg2.get("STEREOTYPE2", 0) != null) {
+			entity2.setStereotype(new Stereotype(arg2.get("STEREOTYPE2", 0)));
 		}
 
-		final String linkLabel = arg2.get("BRACKET").get(0);
+		final String linkLabel = arg2.get("BRACKET", 0);
 
-		final String arrow = StringUtils.manageArrowForCuca(arg2.get("ARROW").get(0));
+		final String arrow = StringUtils.manageArrowForCuca(arg2.get("ARROW", 0));
 		int lenght = arrow.length() - 1;
-		if (arg2.get("ARROW").get(0).contains("*")) {
+		if (arg2.get("ARROW", 0).contains("*")) {
 			lenght = 2;
 		}
 
 		LinkType type = new LinkType(LinkDecor.ARROW, LinkDecor.NONE);
-		if (arg2.get("ARROW").get(0).contains(".")) {
+		if (arg2.get("ARROW", 0).contains(".")) {
 			type = type.getDotted();
 		}
 
 		Link link = new Link(entity1, entity2, type, linkLabel, lenght);
-		if (arg2.get("ARROW").get(0).contains("*")) {
+		if (arg2.get("ARROW", 0).contains("*")) {
 			link.setConstraint(false);
 		}
-		final Direction direction = StringUtils.getArrowDirection(arg2.get("ARROW").get(0));
+		final Direction direction = StringUtils.getArrowDirection(arg2.get("ARROW", 0));
 		if (direction == Direction.LEFT || direction == Direction.UP) {
 			link = link.getInv();
 		}
-		if (arg2.get("URL").get(0) != null) {
-			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), arg2.get("URL")
-					.get(0), true);
+		if (arg2.get("URL", 0) != null) {
+			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"),
+					arg2.get("URL", 0), true);
 			link.setUrl(urlLink);
 		}
 
@@ -152,30 +151,27 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 
 	}
 
-	static IEntity getEntity(ActivityDiagram system, Map<String, RegexPartialMatch> arg, final boolean start) {
+	static IEntity getEntity(ActivityDiagram system, RegexResult arg, final boolean start) {
 		final String suf = start ? "" : "2";
 
-		final RegexPartialMatch openBracket = arg.get("OPENBRACKET" + suf);
-		if (openBracket != null && openBracket.get(0) != null) {
+		final String openBracket2 = arg.get("OPENBRACKET" + suf, 0);
+		if (openBracket2 != null) {
 			return system.createInnerActivity();
 		}
-		if (arg.get("STAR" + suf).get(0) != null) {
+		if (arg.get("STAR" + suf, 0) != null) {
 			if (start) {
-				if (arg.get("STAR" + suf).get(1) != null) {
+				if (arg.get("STAR" + suf, 1) != null) {
 					system.getStart().setTop(true);
 				}
 				return system.getStart();
 			}
 			return system.getEnd();
 		}
-		String partition = null;
-		if (arg.get("PARTITION" + suf) != null) {
-			partition = arg.get("PARTITION" + suf).get(0);
-			if (partition != null) {
-				partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
-			}
+		String partition = arg.get("PARTITION" + suf, 0);
+		if (partition != null) {
+			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
-		final String code = arg.get("CODE" + suf).get(0);
+		final String code = arg.get("CODE" + suf, 0);
 		if (code != null) {
 			if (partition != null) {
 				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
@@ -188,7 +184,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 			}
 			return result;
 		}
-		final String bar = arg.get("BAR" + suf).get(0);
+		final String bar = arg.get("BAR" + suf, 0);
 		if (bar != null) {
 			return system.getOrCreate(bar, StringUtils.getWithNewlines(bar), LeafType.SYNCHRO_BAR);
 		}
@@ -206,20 +202,19 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 			}
 			return result;
 		}
-		final RegexPartialMatch quotedInvisible = arg.get("QUOTED_INVISIBLE" + suf);
-		if (quotedInvisible != null && quotedInvisible.get(0) != null) {
-			final String s = quotedInvisible.get(0);
+		final String quotedInvisible = arg.get("QUOTED_INVISIBLE" + suf, 0);
+		if (quotedInvisible !=  null) {
 			if (partition != null) {
 				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
 						system.getRootGroup());
 			}
-			final IEntity result = system.getOrCreate(s, StringUtils.getWithNewlines(s), LeafType.ACTIVITY);
+			final IEntity result = system.getOrCreate(quotedInvisible, StringUtils.getWithNewlines(quotedInvisible), LeafType.ACTIVITY);
 			if (partition != null) {
 				system.endGroup();
 			}
 			return result;
 		}
-		final String first = arg.get("FIRST" + suf).get(0);
+		final String first = arg.get("FIRST" + suf, 0);
 		if (first == null) {
 			return system.getLastEntityConsulted();
 		}

@@ -84,5 +84,9 @@ public final class InnerStateConcurrent implements IEntityImage {
 	public int getShield() {
 		return 0;
 	}
+	
+	public boolean isHidden() {
+		return im.isHidden();
+	}
 
 }

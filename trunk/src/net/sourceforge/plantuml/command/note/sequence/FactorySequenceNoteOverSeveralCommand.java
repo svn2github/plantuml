@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note.sequence;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.Command;
@@ -44,7 +43,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Note;
 import net.sourceforge.plantuml.sequencediagram.NoteStyle;
@@ -75,8 +74,8 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 		return new SingleLineCommand2<SequenceDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final List<String> strings = StringUtils.getWithNewlines(arg.get("NOTE").get(0));
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				final List<String> strings = StringUtils.getWithNewlines(arg.get("NOTE", 0));
 
 				return executeInternal(getSystem(), arg, strings);
 			}
@@ -93,7 +92,7 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 			}
 
 			public CommandExecutionResult execute(List<String> lines) {
-				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 
 				return executeInternal(getSystem(), line0, strings);
@@ -102,17 +101,17 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 		};
 	}
 
-	private CommandExecutionResult executeInternal(SequenceDiagram system, final Map<String, RegexPartialMatch> line0,
+	private CommandExecutionResult executeInternal(SequenceDiagram system, final RegexResult line0,
 			final List<String> strings) {
 		final Participant p1 = system.getOrCreateParticipant(StringUtils
-				.eventuallyRemoveStartingAndEndingDoubleQuote(line0.get("P1").get(0)));
+				.eventuallyRemoveStartingAndEndingDoubleQuote(line0.get("P1", 0)));
 		final Participant p2 = system.getOrCreateParticipant(StringUtils
-				.eventuallyRemoveStartingAndEndingDoubleQuote(line0.get("P2").get(0)));
+				.eventuallyRemoveStartingAndEndingDoubleQuote(line0.get("P2", 0)));
 
 		if (strings.size() > 0) {
 			final Note note = new Note(p1, p2, strings);
-			note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR").get(0)));
-			note.setStyle(NoteStyle.getNoteStyle(line0.get("STYLE").get(0)));
+			note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR", 0)));
+			note.setStyle(NoteStyle.getNoteStyle(line0.get("STYLE", 0)));
 			system.addNote(note);
 		}
 		return CommandExecutionResult.ok();

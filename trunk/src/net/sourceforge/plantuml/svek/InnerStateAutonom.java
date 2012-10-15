@@ -141,4 +141,8 @@ public final class InnerStateAutonom implements IEntityImage {
 		return 0;
 	}
 
+	public boolean isHidden() {
+		return im.isHidden();
+	}
+
 }

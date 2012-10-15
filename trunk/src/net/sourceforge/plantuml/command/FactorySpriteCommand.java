@@ -36,14 +36,13 @@ package net.sourceforge.plantuml.command;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagram;
 import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.ugraphic.Sprite;
 import net.sourceforge.plantuml.ugraphic.SpriteGrayLevel;
 
@@ -72,8 +71,8 @@ public final class FactorySpriteCommand implements SingleMultiFactoryCommand<Uml
 		return new SingleLineCommand2<UmlDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				return executeInternal(getSystem(), arg, Arrays.asList(arg.get("DATA").get(0)));
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				return executeInternal(getSystem(), arg, Arrays.asList(arg.get("DATA", 0)));
 			}
 
 		};
@@ -89,7 +88,7 @@ public final class FactorySpriteCommand implements SingleMultiFactoryCommand<Uml
 
 			public CommandExecutionResult execute(List<String> lines) {
 				StringUtils.trim(lines, true);
-				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				if (strings.size() == 0) {
@@ -101,27 +100,27 @@ public final class FactorySpriteCommand implements SingleMultiFactoryCommand<Uml
 		};
 	}
 
-	private CommandExecutionResult executeInternal(UmlDiagram system, Map<String, RegexPartialMatch> line0,
+	private CommandExecutionResult executeInternal(UmlDiagram system, RegexResult line0,
 			final List<String> strings) {
 		try {
 			final Sprite sprite;
-			if (line0.get("DIM").get(0) == null) {
+			if (line0.get("DIM", 0) == null) {
 				sprite = SpriteGrayLevel.GRAY_16.buildSprite(-1, -1, strings);
 			} else {
-				final int width = Integer.parseInt(line0.get("DIM").get(0));
-				final int height = Integer.parseInt(line0.get("DIM").get(1));
-				final int nbColor = Integer.parseInt(line0.get("DIM").get(2));
+				final int width = Integer.parseInt(line0.get("DIM", 0));
+				final int height = Integer.parseInt(line0.get("DIM", 1));
+				final int nbColor = Integer.parseInt(line0.get("DIM", 2));
 				if (nbColor != 4 && nbColor != 8 && nbColor != 16) {
 					return CommandExecutionResult.error("Only 4, 8 or 16 graylevel are allowed.");
 				}
 				final SpriteGrayLevel level = SpriteGrayLevel.get(nbColor);
-				if (line0.get("DIM").get(3) == null) {
+				if (line0.get("DIM", 3) == null) {
 					sprite = level.buildSprite(width, height, strings);
 				} else {
 					sprite = level.buildSpriteZ(width, height, concat(strings));
 				}
 			}
-			system.addSprite(line0.get("NAME").get(0), sprite);
+			system.addSprite(line0.get("NAME", 0), sprite);
 			return CommandExecutionResult.ok();
 		} catch (IOException e) {
 			return CommandExecutionResult.error("Cannot decode sprite.");

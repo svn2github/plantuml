@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7948 $
+ * Revision $Revision: 8915 $
  *
  */
 package net.sourceforge.plantuml.ugraphic;
@@ -40,22 +40,14 @@ public class UParam {
 	private HtmlColor color = null;
 	private HtmlColor backcolor = null;
 	private UStroke stroke = new UStroke(1);
-//	private UGradient gradient = null;
+	private boolean hidden = false;
 
 	public void reset() {
 		color = null;
 		backcolor = null;
-//		gradient = null;
 		stroke = new UStroke(1);
+		hidden = false;
 	}
-
-//	public final UGradient getGradient() {
-//		return gradient;
-//	}
-//
-//	public final void setGradient(UGradient gradient) {
-//		this.gradient = gradient;
-//	}
 
 	public void setColor(HtmlColor color) {
 		this.color = color;
@@ -80,15 +72,13 @@ public class UParam {
 	public UStroke getStroke() {
 		return stroke;
 	}
-	
-//	private Map<String, Sprite> sprites = new HashMap<String, Sprite>();
-//
-//	public final Map<String, Sprite> getSprites() {
-//		return sprites;
-//	}
-//
-//	public final void setSprites(Map<String, Sprite> sprites) {
-//		this.sprites = sprites;
-//	}
 
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+	
 }

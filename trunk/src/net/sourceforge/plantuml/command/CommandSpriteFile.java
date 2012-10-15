@@ -36,7 +36,6 @@ package net.sourceforge.plantuml.command;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.Log;
 import net.sourceforge.plantuml.UmlDiagram;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.ugraphic.SpriteImage;
 
 public class CommandSpriteFile extends SingleLineCommand2<UmlDiagram> {
@@ -64,8 +63,8 @@ public class CommandSpriteFile extends SingleLineCommand2<UmlDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String src = arg.get("FILE").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String src = arg.get("FILE", 0);
 		final BufferedImage im;
 		try {
 			final File f = FileSystem.getInstance().getFile(src);
@@ -77,7 +76,7 @@ public class CommandSpriteFile extends SingleLineCommand2<UmlDiagram> {
 			Log.error("Error reading " + src + " " + e);
 			return CommandExecutionResult.error("Cannot read: " + src);
 		}
-		getSystem().addSprite(arg.get("NAME").get(0), new SpriteImage(im));
+		getSystem().addSprite(arg.get("NAME", 0), new SpriteImage(im));
 		return CommandExecutionResult.ok();
 	}
 

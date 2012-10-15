@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8513 $
+ * Revision $Revision: 8900 $
  *
  */
 package net.sourceforge.plantuml.graphic;
@@ -205,6 +205,10 @@ public class GraphicStrings implements IEntityImage {
 
 	public int getShield() {
 		return 0;
+	}
+
+	public boolean isHidden() {
+		return false;
 	}
 
 }

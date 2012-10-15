@@ -36,9 +36,17 @@ package net.sourceforge.plantuml.graphic;
 public interface USymbol {
 
 	public static USymbol NODE = new USymbolNode();
+	public static USymbol ARTIFACT = new USymbolArtifact();
+	public static USymbol ACTOR = new USymbolActor();
+	public static USymbol COMPONENT1 = new USymbolComponent1();
+	public static USymbol COMPONENT2 = new USymbolComponent2();
+	public static USymbol BOUNDARY = new USymbolBoundary();
+	public static USymbol ENTITY_DOMAIN = new USymbolEntityDomain();
+	public static USymbol CONTROL = new USymbolControl();
+	public static USymbol INTERFACE = new USymbolInterface();
 
-	TextBlock asSmall(TextBlock label, SymbolContext symbolContext);
+	TextBlock asSmall(TextBlock label, TextBlock stereotype, SymbolContext symbolContext);
 
-	TextBlock asBig(TextBlock label, double width, double height, SymbolContext symbolContext);
+	TextBlock asBig(TextBlock label, TextBlock stereotype, double width, double height, SymbolContext symbolContext);
 
 }

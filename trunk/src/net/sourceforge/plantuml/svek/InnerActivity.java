@@ -90,4 +90,8 @@ public final class InnerActivity implements IEntityImage {
 		return 0;
 	}
 
+	public boolean isHidden() {
+		return im.isHidden();
+	}
+
 }

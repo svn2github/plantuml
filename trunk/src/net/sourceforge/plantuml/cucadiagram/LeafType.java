@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8886 $
+ * Revision $Revision: 8902 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -42,6 +42,8 @@ public enum LeafType {
 	ABSTRACT_CLASS, CLASS, INTERFACE, LOLLIPOP, ENUM, ACTOR, USECASE, COMPONENT, CIRCLE_INTERFACE, NOTE, OBJECT, ASSOCIATION,
 
 	BOUNDARY, CONTROL, ENTITY_DOMAIN,
+	
+	COMPONENT2,
 
 	ARC_CIRCLE,
 

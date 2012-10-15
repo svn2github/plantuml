@@ -35,7 +35,6 @@ package net.sourceforge.plantuml.sequencediagram.command;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -43,7 +42,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.LifeEventType;
@@ -87,21 +86,21 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 				new RegexLeaf("MESSAGE", "(?::\\s*(.*))?$"));
 	}
 
-	private Participant getOrCreateParticipant(Map<String, RegexPartialMatch> arg2, String n) {
+	private Participant getOrCreateParticipant(RegexResult arg2, String n) {
 		final String code;
 		final List<String> display;
-		if (arg2.get(n + "CODE").get(0) != null) {
-			code = arg2.get(n + "CODE").get(0);
+		if (arg2.get(n + "CODE", 0) != null) {
+			code = arg2.get(n + "CODE", 0);
 			display = StringUtils.getWithNewlines(code);
-		} else if (arg2.get(n + "LONG").get(0) != null) {
-			code = arg2.get(n + "LONG").get(0);
+		} else if (arg2.get(n + "LONG", 0) != null) {
+			code = arg2.get(n + "LONG", 0);
 			display = StringUtils.getWithNewlines(code);
-		} else if (arg2.get(n + "LONGCODE").get(0) != null) {
-			display = StringUtils.getWithNewlines(arg2.get(n + "LONGCODE").get(0));
-			code = arg2.get(n + "LONGCODE").get(1);
-		} else if (arg2.get(n + "CODELONG").get(0) != null) {
-			code = arg2.get(n + "CODELONG").get(0);
-			display = StringUtils.getWithNewlines(arg2.get(n + "CODELONG").get(1));
+		} else if (arg2.get(n + "LONGCODE", 0) != null) {
+			display = StringUtils.getWithNewlines(arg2.get(n + "LONGCODE", 0));
+			code = arg2.get(n + "LONGCODE", 1);
+		} else if (arg2.get(n + "CODELONG", 0) != null) {
+			code = arg2.get(n + "CODELONG", 0);
+			display = StringUtils.getWithNewlines(arg2.get(n + "CODELONG", 1));
 			return getSystem().getOrCreateParticipant(code, display);
 		} else {
 			throw new IllegalStateException();
@@ -109,21 +108,21 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 		return getSystem().getOrCreateParticipant(code, display);
 	}
 
-	private boolean decorationAtStart(Map<String, RegexPartialMatch> arg2, String decoration) {
+	private boolean decorationAtStart(RegexResult arg2, String decoration) {
 		return decorationAtPosition(arg2, 0, 2, decoration);
 	}
 
-	private boolean decorationAtEnd(Map<String, RegexPartialMatch> arg2, String decoration) {
+	private boolean decorationAtEnd(RegexResult arg2, String decoration) {
 		return decorationAtPosition(arg2, 2, 0, decoration);
 	}
 
-	private boolean decorationAtPosition(Map<String, RegexPartialMatch> arg2, int posDirect, int posReverse,
+	private boolean decorationAtPosition(RegexResult arg2, int posDirect, int posReverse,
 			String decoration) {
-		final String s1 = arg2.get("ARROW_DIRECT").get(posDirect);
+		final String s1 = arg2.get("ARROW_DIRECT", posDirect);
 		if (s1 != null && s1.toLowerCase().contains(decoration)) {
 			return true;
 		}
-		final String s2 = arg2.get("ARROW_REVERSE").get(posReverse);
+		final String s2 = arg2.get("ARROW_REVERSE", posReverse);
 		if (s2 != null && s2.toLowerCase().contains(decoration)) {
 			return true;
 		}
@@ -131,8 +130,8 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg2) {
-		final String fullArrow = StringUtils.manageArrowForSequence(arg2.get("ARROW").get(0));
+	protected CommandExecutionResult executeArg(RegexResult arg2) {
+		final String fullArrow = StringUtils.manageArrowForSequence(arg2.get("ARROW", 0));
 		final String arrowWithX = fullArrow.replaceAll("[ o]", "");
 		final String arrow = fullArrow.replaceAll("[ ox]", "");
 		final boolean circleAtStart = decorationAtStart(arg2, "o");
@@ -159,10 +158,10 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 		final boolean dotted = arrow.contains("--");
 
 		final List<String> labels;
-		if (arg2.get("MESSAGE").get(0) == null) {
+		if (arg2.get("MESSAGE", 0) == null) {
 			labels = Arrays.asList("");
 		} else {
-			labels = StringUtils.getWithNewlines(arg2.get("MESSAGE").get(0));
+			labels = StringUtils.getWithNewlines(arg2.get("MESSAGE", 0));
 		}
 
 		ArrowConfiguration config = ArrowConfiguration.withDirection(ArrowDirection.LEFT_TO_RIGHT_NORMAL);
@@ -191,7 +190,7 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 		// config = config.withDecorationStart(ArrowDecoration.CROSSX);
 		// }
 
-		final String activationSpec = arg2.get("ACTIVATION").get(0);
+		final String activationSpec = arg2.get("ACTIVATION", 0);
 
 		if (activationSpec != null && activationSpec.charAt(0) == '*') {
 			getSystem().activate(p2, LifeEventType.CREATE, null);
@@ -203,7 +202,7 @@ public class CommandArrow extends SingleLineCommand2<SequenceDiagram> {
 			return CommandExecutionResult.error(error);
 		}
 
-		final HtmlColor activationColor = HtmlColorUtils.getColorIfValid(arg2.get("LIFECOLOR").get(0));
+		final HtmlColor activationColor = HtmlColorUtils.getColorIfValid(arg2.get("LIFECOLOR", 0));
 
 		if (activationSpec != null) {
 			switch (activationSpec.charAt(0)) {

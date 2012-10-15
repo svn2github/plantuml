@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -87,7 +86,7 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, false);
-		final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 		final IEntity entity = executeArg0(line0);
 		if (entity == null) {
 			return CommandExecutionResult.error("No such entity");
@@ -117,10 +116,10 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		return CommandExecutionResult.ok();
 	}
 
-	private static void manageExtends(ClassDiagram system, Map<String, RegexPartialMatch> arg, final IEntity entity) {
-		if (arg.get("EXTENDS").get(1) != null) {
-			final Mode mode = arg.get("EXTENDS").get(1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
-			final String other = arg.get("EXTENDS").get(2);
+	private static void manageExtends(ClassDiagram system, RegexResult arg, final IEntity entity) {
+		if (arg.get("EXTENDS", 1) != null) {
+			final Mode mode = arg.get("EXTENDS", 1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
+			final String other = arg.get("EXTENDS", 2);
 			LeafType type2 = LeafType.CLASS;
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = LeafType.INTERFACE;
@@ -139,41 +138,42 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		}
 	}
 
-	private IEntity executeArg0(Map<String, RegexPartialMatch> arg) {
+	private IEntity executeArg0(RegexResult arg) {
 
-		final LeafType type = LeafType.getLeafType(arg.get("TYPE").get(0).toUpperCase());
+		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
 		final String code;
 		final String display;
-		if (arg.get("NAME1").get(1) != null) {
-			code = arg.get("NAME1").get(1);
-			display = arg.get("NAME1").get(0);
-		} else if (arg.get("NAME3").get(0) != null) {
-			code = arg.get("NAME3").get(0);
-			display = arg.get("NAME3").get(0);
+		if (arg.get("NAME1", 1) != null) {
+			code = arg.get("NAME1", 1);
+			display = arg.get("NAME1", 0);
+		} else if (arg.get("NAME3", 0) != null) {
+			code = arg.get("NAME3", 0);
+			display = arg.get("NAME3", 0);
 		} else {
-			code = arg.get("NAME2").get(0);
-			display = arg.get("NAME2").get(1);
+			code = arg.get("NAME2", 0);
+			display = arg.get("NAME2", 1);
 		}
-		final String stereotype = arg.get("STEREO").get(0);
-		final String generic = arg.get("GENERIC").get(0);
+		final String stereotype = arg.get("STEREO", 0);
+		final String generic = arg.get("GENERIC", 0);
 
+		final ILeaf result;
 		if (getSystem().leafExist(code)) {
-			final ILeaf result = getSystem().getOrCreateClass(code);
+			result = getSystem().getOrCreateClass(code);
 			result.muteToType(type);
-			return result;
+		} else {
+			result = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), type);
 		}
-		final ILeaf entity = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), type);
 		if (stereotype != null) {
-			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
+			result.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
 
-		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR").get(0)));
+		result.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 
 		if (generic != null) {
-			entity.setGeneric(generic);
+			result.setGeneric(generic);
 		}
-		return entity;
+		return result;
 	}
 
 }

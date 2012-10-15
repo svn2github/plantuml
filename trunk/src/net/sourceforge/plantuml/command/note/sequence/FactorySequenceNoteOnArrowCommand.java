@@ -34,7 +34,6 @@
 package net.sourceforge.plantuml.command.note.sequence;
 
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
@@ -45,7 +44,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.sequencediagram.AbstractMessage;
 import net.sourceforge.plantuml.sequencediagram.NotePosition;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
@@ -71,8 +70,8 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 		return new SingleLineCommand2<SequenceDiagram>(system, getRegexConcatSingleLine()) {
 
 			@Override
-			protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-				final List<String> strings = StringUtils.getWithNewlines(arg.get("NOTE").get(0));
+			protected CommandExecutionResult executeArg(RegexResult arg) {
+				final List<String> strings = StringUtils.getWithNewlines(arg.get("NOTE", 0));
 				return executeInternal(getSystem(), arg, strings);
 			}
 
@@ -88,7 +87,7 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 			}
 
 			public CommandExecutionResult execute(List<String> lines) {
-				final Map<String, RegexPartialMatch> line0 = getStartingPattern().matcher(lines.get(0).trim());
+				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 				final List<String> in = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 
 				return executeInternal(getSystem(), line0, in);
@@ -97,11 +96,11 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 		};
 	}
 
-	private CommandExecutionResult executeInternal(SequenceDiagram system, final Map<String, RegexPartialMatch> line0,
+	private CommandExecutionResult executeInternal(SequenceDiagram system, final RegexResult line0,
 			final List<String> in) {
 		final AbstractMessage m = system.getLastMessage();
 		if (m != null) {
-			final NotePosition position = NotePosition.valueOf(line0.get("POSITION").get(0).toUpperCase());
+			final NotePosition position = NotePosition.valueOf(line0.get("POSITION", 0).toUpperCase());
 			List<CharSequence> strings = StringUtils.manageEmbededDiagrams(in);
 			final Url url;
 			if (strings.size() > 0) {
@@ -113,7 +112,7 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 				strings = strings.subList(1, strings.size());
 			}
 
-			m.setNote(strings, position, line0.get("COLOR").get(0), url);
+			m.setNote(strings, position, line0.get("COLOR", 0), url);
 		}
 
 		return CommandExecutionResult.ok();

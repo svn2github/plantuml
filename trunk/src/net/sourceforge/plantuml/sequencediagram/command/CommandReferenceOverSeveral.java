@@ -35,7 +35,6 @@ package net.sourceforge.plantuml.sequencediagram.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
@@ -43,7 +42,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.sequencediagram.Participant;
@@ -67,14 +66,14 @@ public class CommandReferenceOverSeveral extends SingleLineCommand2<SequenceDiag
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final HtmlColor backColorElement = HtmlColorUtils.getColorIfValid(arg.get("REF").get(0));
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final HtmlColor backColorElement = HtmlColorUtils.getColorIfValid(arg.get("REF", 0));
 		// final HtmlColor backColorGeneral = HtmlColorUtils.getColorIfValid(arg.get("REF").get(1));
 		
-		final List<String> participants = StringUtils.splitComma(arg.get("PARTS").get(0));
-		final String url = arg.get("URL").get(0);
-		final String title = arg.get("URL").get(1);
-		final String text = arg.get("TEXT").get(0).trim();
+		final List<String> participants = StringUtils.splitComma(arg.get("PARTS", 0));
+		final String url = arg.get("URL", 0);
+		final String title = arg.get("URL", 1);
+		final String text = arg.get("TEXT", 0).trim();
 
 		final List<Participant> p = new ArrayList<Participant>();
 		for (String s : participants) {

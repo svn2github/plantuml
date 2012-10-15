@@ -33,15 +33,13 @@
  */
 package net.sourceforge.plantuml.componentdiagram.command;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -77,9 +75,9 @@ public class CommandLinkComponent2 extends SingleLineCommand2<ComponentDiagram> 
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String g1 = arg.get("G1").get(0);
-		final String g2 = arg.get("G2").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String g1 = arg.get("G1", 0);
+		final String g2 = arg.get("G2", 0);
 
 //		if (getSystem().isGroup(g1) && getSystem().isGroup(g2)) {
 //			return executePackageLink(arg);
@@ -92,20 +90,20 @@ public class CommandLinkComponent2 extends SingleLineCommand2<ComponentDiagram> 
 		final IEntity cl2 = getSystem().getOrCreateLeaf(g2, LeafType.ARC_CIRCLE);
 		
 
-		if (arg.get("G1").get(1) != null) {
-			cl1.setStereotype(new Stereotype(arg.get("G1").get(1)));
+		if (arg.get("G1", 1) != null) {
+			cl1.setStereotype(new Stereotype(arg.get("G1", 1)));
 		}
-		if (arg.get("G2").get(1) != null) {
-			cl2.setStereotype(new Stereotype(arg.get("G2").get(1)));
+		if (arg.get("G2", 1) != null) {
+			cl2.setStereotype(new Stereotype(arg.get("G2", 1)));
 		}
 
 		final LinkType linkType = new LinkType(LinkDecor.NONE, LinkDecor.NONE);
 		String queue;
-		if (arg.get("AR_TO_RIGHT").get(0) == null) {
-			queue = arg.get("AR_TO_LEFT").get(2) + arg.get("AR_TO_LEFT").get(4);
+		if (arg.get("AR_TO_RIGHT", 0) == null) {
+			queue = arg.get("AR_TO_LEFT", 2) + arg.get("AR_TO_LEFT", 4);
 //			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_LEFT").get(1)).getInversed();
 		} else {
-			queue = arg.get("AR_TO_RIGHT").get(1) + arg.get("AR_TO_RIGHT").get(3);
+			queue = arg.get("AR_TO_RIGHT", 1) + arg.get("AR_TO_RIGHT", 3);
 //			linkType = getLinkTypeNormal(queue, arg.get("AR_TO_RIGHT").get(4));
 		}
 		final Direction dir = getDirection(arg);
@@ -114,7 +112,7 @@ public class CommandLinkComponent2 extends SingleLineCommand2<ComponentDiagram> 
 			queue = "-";
 		}
 
-		Link link = new Link(cl1, cl2, linkType, arg.get("END").get(0), queue.length());
+		Link link = new Link(cl1, cl2, linkType, arg.get("END", 0), queue.length());
 
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
@@ -124,9 +122,9 @@ public class CommandLinkComponent2 extends SingleLineCommand2<ComponentDiagram> 
 		return CommandExecutionResult.ok();
 	}
 
-	private Direction getDirection(Map<String, RegexPartialMatch> arg) {
-		if (arg.get("AR_TO_RIGHT").get(1) != null) {
-			return StringUtils.getQueueDirection(arg.get("AR_TO_RIGHT").get(1));
+	private Direction getDirection(RegexResult arg) {
+		if (arg.get("AR_TO_RIGHT", 1) != null) {
+			return StringUtils.getQueueDirection(arg.get("AR_TO_RIGHT", 1));
 		}
 //		if (arg.get("AR_TO_LEFT").get(3) != null) {
 //			return StringUtils.getQueueDirection(arg.get("AR_TO_LEFT").get(3)).getInv();

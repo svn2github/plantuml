@@ -35,10 +35,16 @@ package net.sourceforge.plantuml.cucadiagram;
 
 import java.util.List;
 
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.SpecificBackcolorable;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.graphic.USymbol;
 
-public interface IEntity extends SpecificBackcolorable {
+public interface IEntity extends SpecificBackcolorable, Hideable {
+	
+	public USymbol getUSymbol();
+	
+	public void setUSymbol(USymbol symbol);
 
 	public LeafType getEntityType();
 

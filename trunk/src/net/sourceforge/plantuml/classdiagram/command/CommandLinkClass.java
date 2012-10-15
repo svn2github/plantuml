@@ -33,7 +33,6 @@
  */
 package net.sourceforge.plantuml.classdiagram.command;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +46,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -99,9 +99,9 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		String ent1 = arg.get("ENT1").get(1);
-		String ent2 = arg.get("ENT2").get(1);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		String ent1 = arg.get("ENT1", 1);
+		String ent2 = arg.get("ENT2", 1);
 		if (ent1 == null) {
 			return executeArgSpecial1(arg);
 		}
@@ -120,24 +120,24 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		final ILeaf cl1 = (ILeaf) getSystem().getOrCreateClass(ent1);
 		final ILeaf cl2 = (ILeaf) getSystem().getOrCreateClass(ent2);
 
-		if (arg.get("ENT1").get(0) != null) {
-			final LeafType type = LeafType.getLeafType(arg.get("ENT1").get(0));
+		if (arg.get("ENT1", 0) != null) {
+			final LeafType type = LeafType.getLeafType(arg.get("ENT1", 0));
 			if (type != LeafType.OBJECT) {
 				cl1.muteToType(type);
 			}
 		}
-		if (arg.get("ENT2").get(0) != null) {
-			final LeafType type = LeafType.getLeafType(arg.get("ENT2").get(0));
+		if (arg.get("ENT2", 0) != null) {
+			final LeafType type = LeafType.getLeafType(arg.get("ENT2", 0));
 			if (type != LeafType.OBJECT) {
 				cl2.muteToType(type);
 			}
 		}
-		if (arg.get("ENT1").get(2) != null) {
-			cl1.setStereotype(new Stereotype(arg.get("ENT1").get(2), getSystem().getSkinParam()
+		if (arg.get("ENT1", 2) != null) {
+			cl1.setStereotype(new Stereotype(arg.get("ENT1", 2), getSystem().getSkinParam()
 					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
-		if (arg.get("ENT2").get(2) != null) {
-			cl2.setStereotype(new Stereotype(arg.get("ENT2").get(2), getSystem().getSkinParam()
+		if (arg.get("ENT2", 2) != null) {
+			cl2.setStereotype(new Stereotype(arg.get("ENT2", 2), getSystem().getSkinParam()
 					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
 
@@ -153,13 +153,13 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		// dir = dir.getInv();
 		// }
 
-		String firstLabel = arg.get("FIRST_LABEL").get(0);
-		String secondLabel = arg.get("SECOND_LABEL").get(0);
+		String firstLabel = arg.get("FIRST_LABEL", 0);
+		String secondLabel = arg.get("SECOND_LABEL", 0);
 
 		String labelLink = null;
 
-		if (arg.get("LABEL_LINK").get(0) != null) {
-			labelLink = arg.get("LABEL_LINK").get(0);
+		if (arg.get("LABEL_LINK", 0) != null) {
+			labelLink = arg.get("LABEL_LINK", 0);
 			if (firstLabel == null && secondLabel == null) {
 				final Pattern p1 = Pattern.compile("^\"([^\"]+)\"([^\"]+)\"([^\"]+)\"$");
 				final Matcher m1 = p1.matcher(labelLink);
@@ -218,7 +218,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		}
 		link.setLinkArrow(linkArrow);
 
-		addLink(link, arg.get("HEADER").get(0));
+		addLink(link, arg.get("HEADER", 0));
 
 		return CommandExecutionResult.ok();
 	}
@@ -245,9 +245,9 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		}
 	}
 
-	private CommandExecutionResult executePackageLink(Map<String, RegexPartialMatch> arg) {
-		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1").get(1));
-		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2").get(1));
+	private CommandExecutionResult executePackageLink(RegexResult arg) {
+		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1));
+		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1));
 		final IEntity cl1 = getSystem().getGroup(ent1);
 		final IEntity cl2 = getSystem().getGroup(ent2);
 
@@ -260,9 +260,9 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			queue = getQueueLength(arg);
 		}
 
-		final String labelLink = arg.get("LABEL_LINK").get(0);
-		final String firstLabel = arg.get("FIRST_LABEL").get(0);
-		final String secondLabel = arg.get("SECOND_LABEL").get(0);
+		final String labelLink = arg.get("LABEL_LINK", 0);
+		final String firstLabel = arg.get("FIRST_LABEL", 0);
+		final String secondLabel = arg.get("SECOND_LABEL", 0);
 		final Link link = new Link(cl1, cl2, linkType, labelLink, queue,
 				firstLabel, secondLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
 		// if (dir == Direction.LEFT || dir == Direction.UP) {
@@ -270,13 +270,13 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		// }
 
 		getSystem().resetPragmaLabel();
-		addLink(link, arg.get("HEADER").get(0));
+		addLink(link, arg.get("HEADER", 0));
 		return CommandExecutionResult.ok();
 	}
 
-	private CommandExecutionResult executeArgSpecial1(Map<String, RegexPartialMatch> arg) {
-		final String clName1 = arg.get("COUPLE1").get(0);
-		final String clName2 = arg.get("COUPLE1").get(1);
+	private CommandExecutionResult executeArgSpecial1(RegexResult arg) {
+		final String clName1 = arg.get("COUPLE1", 0);
+		final String clName2 = arg.get("COUPLE1", 1);
 		if (getSystem().leafExist(clName1) == false) {
 			return CommandExecutionResult.error("No class " + clName1);
 		}
@@ -284,11 +284,11 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			return CommandExecutionResult.error("No class " + clName2);
 		}
 
-		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2").get(1));
+		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1));
 		final IEntity cl2 = getSystem().getOrCreateClass(ent2);
 
 		final LinkType linkType = getLinkType(arg);
-		final String label = arg.get("LABEL_LINK").get(0);
+		final String label = arg.get("LABEL_LINK", 0);
 		// final int length = getQueueLength(arg);
 		// final String weight = arg.get("HEADER").get(0);
 
@@ -300,9 +300,9 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		return CommandExecutionResult.ok();
 	}
 
-	private CommandExecutionResult executeArgSpecial2(Map<String, RegexPartialMatch> arg) {
-		final String clName1 = arg.get("COUPLE2").get(0);
-		final String clName2 = arg.get("COUPLE2").get(1);
+	private CommandExecutionResult executeArgSpecial2(RegexResult arg) {
+		final String clName1 = arg.get("COUPLE2", 0);
+		final String clName2 = arg.get("COUPLE2", 1);
 		if (getSystem().leafExist(clName1) == false) {
 			return CommandExecutionResult.error("No class " + clName1);
 		}
@@ -310,11 +310,11 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			return CommandExecutionResult.error("No class " + clName2);
 		}
 
-		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1").get(1));
+		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1));
 		final IEntity cl1 = getSystem().getOrCreateClass(ent1);
 
 		final LinkType linkType = getLinkType(arg);
-		final String label = arg.get("LABEL_LINK").get(0);
+		final String label = arg.get("LABEL_LINK", 0);
 		// final int length = getQueueLength(arg);
 		// final String weight = arg.get("HEADER").get(0);
 
@@ -380,7 +380,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		return LinkDecor.NONE;
 	}
 
-	private LinkType getLinkType(Map<String, RegexPartialMatch> arg) {
+	private LinkType getLinkType(RegexResult arg) {
 		final RegexPartialMatch match = arg.get("ARROW");
 		// Log.println("type=" + match);
 		final LinkDecor decors1 = getDecors1(match.get(1));
@@ -395,22 +395,22 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		return result;
 	}
 
-	private int getQueueLength(Map<String, RegexPartialMatch> arg) {
-		String s = arg.get("ARROW").get(0);
+	private int getQueueLength(RegexResult arg) {
+		String s = arg.get("ARROW", 0);
 		// Log.println("queue1=" + s);
 		s = s.replaceAll("[^-.=]", "");
 		// Log.println("queue2=" + s);
 		return s.length();
 	}
 
-	private Direction getDirection(Map<String, RegexPartialMatch> arg) {
+	private Direction getDirection(RegexResult arg) {
 		final RegexPartialMatch match = arg.get("ARROW");
 		final LinkDecor decors1 = getDecors1(match.get(1));
 		final LinkDecor decors2 = getDecors2(match.get(5));
 		// Log.println("Bdecors1=" + decors1);
 		// Log.println("Bdecors2=" + decors2);
 
-		String s = arg.get("ARROW").get(0);
+		String s = arg.get("ARROW", 0);
 		// Log.println("direction1=" + s);
 		s = s.replaceAll("[^-.=\\w]", "");
 		if (s.startsWith("o")) {

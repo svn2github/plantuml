@@ -35,11 +35,12 @@ package net.sourceforge.plantuml.svek;
 
 import java.awt.geom.Dimension2D;
 
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public interface IEntityImage {
+public interface IEntityImage extends Hideable {
 
 	public static final int CORNER = 25;
 	public static final int MARGIN = 5;

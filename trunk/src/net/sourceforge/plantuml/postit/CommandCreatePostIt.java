@@ -33,14 +33,12 @@
  */
 package net.sourceforge.plantuml.postit;
 
-import java.util.Map;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 
 public class CommandCreatePostIt extends SingleLineCommand2<PostItDiagram> {
 
@@ -57,9 +55,9 @@ public class CommandCreatePostIt extends SingleLineCommand2<PostItDiagram> {
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(Map<String, RegexPartialMatch> arg) {
-		final String id = arg.get("ID").get(0);
-		final String text = arg.get("TEXT").get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String id = arg.get("ID", 0);
+		final String text = arg.get("TEXT", 0);
 		getSystem().createPostIt(id, StringUtils.getWithNewlines(text));
 		return CommandExecutionResult.ok();
 	}

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.EntityPosition;
@@ -46,7 +47,7 @@ import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.posimo.Positionable;
 import net.sourceforge.plantuml.svek.image.EntityImageStateBorder;
 
-public class Shape implements Positionable, IShapePseudo {
+public class Shape implements Positionable, IShapePseudo, Hideable {
 
 	private final ShapeType type;
 	private final double width;
@@ -61,6 +62,8 @@ public class Shape implements Positionable, IShapePseudo {
 	private final List<Url> urls = new ArrayList<Url>();
 
 	private final EntityPosition entityPosition;
+	private final IEntityImage image;
+
 
 	public EntityPosition getEntityPosition() {
 		return entityPosition;
@@ -210,8 +213,6 @@ public class Shape implements Positionable, IShapePseudo {
 		return minY;
 	}
 
-	private final IEntityImage image;
-
 	public IEntityImage getImage() {
 		return image;
 	}
@@ -244,6 +245,10 @@ public class Shape implements Positionable, IShapePseudo {
 	public double getMaxWidthFromLabelForEntryExit(StringBounder stringBounder) {
 		final EntityImageStateBorder im = (EntityImageStateBorder) image;
 		return im.getMaxWidthFromLabelForEntryExit(stringBounder);
+	}
+
+	public boolean isHidden() {
+		return image.isHidden();
 	}
 
 }

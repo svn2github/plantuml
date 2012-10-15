@@ -56,25 +56,26 @@ public enum LinkDecor {
 	}
 
 	public String getArrowDotSvek() {
-		if (this == LinkDecor.NONE) {
-			return "none";
-		} else if (this == LinkDecor.EXTENDS) {
-			return "empty";
-		} else if (this == LinkDecor.COMPOSITION) {
-			return "empty";
-		} else if (this == LinkDecor.AGREGATION) {
-			return "empty";
-		} else if (this == LinkDecor.ARROW) {
-			return "empty";
-		} else if (this == LinkDecor.ARROW_AND_CIRCLE) {
-			return "empty";
-		} else if (this == LinkDecor.PLUS) {
-			return "empty";
-		} else if (this == LinkDecor.CIRCLE_CROSS) {
-			return "empty";
-		} else {
-			throw new UnsupportedOperationException();
-		}
+		return "empty";
+//		if (this == LinkDecor.NONE) {
+//			return "none";
+//		} else if (this == LinkDecor.EXTENDS) {
+//			return "empty";
+//		} else if (this == LinkDecor.COMPOSITION) {
+//			return "empty";
+//		} else if (this == LinkDecor.AGREGATION) {
+//			return "empty";
+//		} else if (this == LinkDecor.ARROW) {
+//			return "empty";
+//		} else if (this == LinkDecor.ARROW_AND_CIRCLE) {
+//			return "empty";
+//		} else if (this == LinkDecor.PLUS) {
+//			return "empty";
+//		} else if (this == LinkDecor.CIRCLE_CROSS) {
+//			return "empty";
+//		} else {
+//			throw new UnsupportedOperationException();
+//		}
 	}
 
 	public int getMargin() {

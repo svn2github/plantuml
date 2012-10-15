@@ -52,7 +52,7 @@ public class DriverEllipseSvg implements UDriver<SvgGraphics> {
 		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
 		svg.setStrokeWidth(""+param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
-
+		
 		svg.svgEllipse(x + width / 2, y + height / 2, width / 2, height / 2, shape.getDeltaShadow());
 	}
 

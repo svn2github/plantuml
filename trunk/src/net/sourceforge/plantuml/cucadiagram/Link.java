@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8667 $
+ * Revision $Revision: 8906 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -37,6 +37,7 @@ import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.plantuml.Hideable;
 import net.sourceforge.plantuml.SpriteContainer;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
@@ -51,11 +52,11 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public class Link {
+public class Link implements Hideable {
 
 	final private IEntity cl1;
 	final private IEntity cl2;
-	final private LinkType type;
+	private LinkType type;
 	final private String label;
 
 	private int length;
@@ -135,19 +136,22 @@ public class Link {
 		return result;
 	}
 
-	public Link getDashed() {
-		return new Link(cl1, cl2, getType().getDashed(), label, length, qualifier1, qualifier2, labeldistance,
-				labelangle, specificColor);
+	public void goDashed() {
+		type = type.getDashed();
 	}
 
-	public Link getDotted() {
-		return new Link(cl1, cl2, getType().getDotted(), label, length, qualifier1, qualifier2, labeldistance,
-				labelangle, specificColor);
+	public void goDotted() {
+		type =  type.getDotted();
+	}
+	
+	private boolean hidden = false;
+	
+	public void goHidden() {
+		this.hidden = true;
 	}
 
-	public Link getBold() {
-		return new Link(cl1, cl2, getType().getBold(), label, length, qualifier1, qualifier2, labeldistance,
-				labelangle, specificColor);
+	public void goBold() {
+		type = type.getBold();
 	}
 
 	public String getLabeldistance() {
@@ -378,6 +382,10 @@ public class Link {
 
 	public void setUrl(Url url) {
 		this.url = url;
+	}
+
+	public boolean isHidden() {
+		return hidden || cl1.isHidden() || cl2.isHidden();
 	}
 
 	// private Group containerEntryPoint;

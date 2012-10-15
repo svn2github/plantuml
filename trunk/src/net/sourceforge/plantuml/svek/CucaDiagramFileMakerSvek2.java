@@ -82,6 +82,7 @@ import net.sourceforge.plantuml.svek.image.EntityImageCircleInterface;
 import net.sourceforge.plantuml.svek.image.EntityImageCircleStart;
 import net.sourceforge.plantuml.svek.image.EntityImageClass;
 import net.sourceforge.plantuml.svek.image.EntityImageComponent;
+import net.sourceforge.plantuml.svek.image.EntityImageComponentForDescriptionDiagram;
 import net.sourceforge.plantuml.svek.image.EntityImageEmptyPackage2;
 import net.sourceforge.plantuml.svek.image.EntityImageGroup;
 import net.sourceforge.plantuml.svek.image.EntityImageLollipopInterface;
@@ -352,6 +353,9 @@ public final class CucaDiagramFileMakerSvek2 {
 		}
 		if (leaf.getEntityType() == LeafType.COMPONENT) {
 			return new EntityImageComponent(leaf, dotData.getSkinParam());
+		}
+		if (leaf.getEntityType() == LeafType.COMPONENT2) {
+			return new EntityImageComponentForDescriptionDiagram(leaf, dotData.getSkinParam());
 		}
 		if (leaf.getEntityType() == LeafType.OBJECT) {
 			return new EntityImageObject(leaf, dotData.getSkinParam());

@@ -41,6 +41,7 @@ import java.util.List;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.cucadiagram.entity.EntityFactory;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.USymbol;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
 
@@ -214,6 +215,18 @@ public class GroupRoot implements IGroup {
 	}
 
 	public void overideImage(IEntityImage img, List<Url> urls, LeafType state) {
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean isHidden() {
+		return false;
+	}
+
+	public USymbol getUSymbol() {
+		throw new UnsupportedOperationException();
+	}
+
+	public void setUSymbol(USymbol symbol) {
 		throw new UnsupportedOperationException();
 	}
 
