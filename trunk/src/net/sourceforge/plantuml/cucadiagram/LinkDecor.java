@@ -36,14 +36,24 @@ package net.sourceforge.plantuml.cucadiagram;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactory;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryArrow;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryArrowAndCircle;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryCircle;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryCircleConnect;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryCircleCross;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryDiamond;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryParenthesis;
 import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryPlus;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactorySquarre;
+import net.sourceforge.plantuml.svek.extremity.ExtremityFactoryTriangle;
 
 public enum LinkDecor {
 
-	NONE(2, false, 0), EXTENDS(30, false, 2), COMPOSITION(15, true, 1.3), AGREGATION(15, false, 1.3), ARROW(10, true,
-			0.5), ARROW_AND_CIRCLE(10, false, 0.5), CIRCLE_CROSS(0, false, 0.5), PLUS(0, false, 1.5), SQUARRE(30, false, 0);
+	NONE(2, false, 0), EXTENDS(30, false, 2), COMPOSITION(15, true, 1.3), AGREGATION(15, false, 1.3),
+
+	ARROW(10, true, 0.5), ARROW_TRIANGLE(10, true, 0.8), ARROW_AND_CIRCLE(10, false, 0.5),
+
+	CIRCLE(0, false, 0.5), CIRCLE_CONNECT(0, false, 0.5), PARENTHESIS(0, false, 1.0), SQUARRE(0, false, 0.5),
+
+	CIRCLE_CROSS(0, false, 0.5), PLUS(0, false, 1.5), SQUARRE_toberemoved(30, false, 0);
 
 	private final double arrowSize;
 	private final int margin;
@@ -53,29 +63,6 @@ public enum LinkDecor {
 		this.margin = margin;
 		this.fill = fill;
 		this.arrowSize = arrowSize;
-	}
-
-	public String getArrowDotSvek() {
-		return "empty";
-//		if (this == LinkDecor.NONE) {
-//			return "none";
-//		} else if (this == LinkDecor.EXTENDS) {
-//			return "empty";
-//		} else if (this == LinkDecor.COMPOSITION) {
-//			return "empty";
-//		} else if (this == LinkDecor.AGREGATION) {
-//			return "empty";
-//		} else if (this == LinkDecor.ARROW) {
-//			return "empty";
-//		} else if (this == LinkDecor.ARROW_AND_CIRCLE) {
-//			return "empty";
-//		} else if (this == LinkDecor.PLUS) {
-//			return "empty";
-//		} else if (this == LinkDecor.CIRCLE_CROSS) {
-//			return "empty";
-//		} else {
-//			throw new UnsupportedOperationException();
-//		}
 	}
 
 	public int getMargin() {
@@ -93,6 +80,8 @@ public enum LinkDecor {
 	public ExtremityFactory getExtremityFactory() {
 		if (this == LinkDecor.PLUS) {
 			return new ExtremityFactoryPlus();
+		} else if (this == LinkDecor.ARROW_TRIANGLE) {
+			return new ExtremityFactoryTriangle();
 		} else if (this == LinkDecor.CIRCLE_CROSS) {
 			return new ExtremityFactoryCircleCross();
 		} else if (this == LinkDecor.ARROW) {
@@ -103,7 +92,16 @@ public enum LinkDecor {
 			return new ExtremityFactoryDiamond(false);
 		} else if (this == LinkDecor.COMPOSITION) {
 			return new ExtremityFactoryDiamond(true);
+		} else if (this == LinkDecor.CIRCLE) {
+			return new ExtremityFactoryCircle();
+		} else if (this == LinkDecor.SQUARRE) {
+			return new ExtremityFactorySquarre();
+		} else if (this == LinkDecor.PARENTHESIS) {
+			return new ExtremityFactoryParenthesis();
+		} else if (this == LinkDecor.CIRCLE_CONNECT) {
+			return new ExtremityFactoryCircleConnect();
 		}
+
 		return null;
 	}
 

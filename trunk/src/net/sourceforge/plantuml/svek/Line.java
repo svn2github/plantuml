@@ -49,6 +49,8 @@ import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkArrow;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
+import net.sourceforge.plantuml.cucadiagram.LinkHat;
+import net.sourceforge.plantuml.cucadiagram.LinkMiddleDecor;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColor;
@@ -97,8 +99,8 @@ public class Line implements Moveable, Hideable {
 	private Positionable endHeadLabelXY;
 	private Positionable noteLabelXY;
 
-	private UDrawable endHead;
-	private UDrawable startTail;
+	private UDrawable extremity2;
+	private UDrawable extremity1;
 
 	private double dx;
 	private double dy;
@@ -351,15 +353,15 @@ public class Line implements Moveable, Hideable {
 		return endUid;
 	}
 
-	public UDrawable getExtremity(LinkDecor decor, PointListIterator pointListIterator) {
-		final ExtremityFactory extremityFactory2 = decor.getExtremityFactory();
+	public UDrawable getExtremity(LinkHat hat, LinkDecor decor, PointListIterator pointListIterator) {
+		final ExtremityFactory extremityFactory = decor.getExtremityFactory();
 
-		if (extremityFactory2 != null) {
+		if (extremityFactory != null) {
 			final List<Point2D.Double> points = pointListIterator.next();
 			final Point2D p0 = points.get(0);
 			final Point2D p1 = points.get(1);
 			final Point2D p2 = points.get(2);
-			return extremityFactory2.createUDrawable(p0, p1, p2);
+			return extremityFactory.createUDrawable(p0, p1, p2);
 		} else if (decor != LinkDecor.NONE) {
 			final UShape sh = new UPolygon(pointListIterator.next());
 			return new UDrawable() {
@@ -388,8 +390,8 @@ public class Line implements Moveable, Hideable {
 
 		final PointListIterator pointListIterator = new PointListIterator(svg.substring(end), fullHeight);
 
-		this.endHead = getExtremity(link.getType().getDecor2(), pointListIterator);
-		this.startTail = getExtremity(link.getType().getDecor1(), pointListIterator);
+		this.extremity2 = getExtremity(link.getType().getHat2(), link.getType().getDecor2(), pointListIterator);
+		this.extremity1 = getExtremity(link.getType().getHat1(), link.getType().getDecor1(), pointListIterator);
 
 		if (this.noteLabelText != null) {
 			final Point2D pos = getXY(svg, this.noteLabelColor, fullHeight);
@@ -506,23 +508,23 @@ public class Line implements Moveable, Hideable {
 
 		ug.getParam().setStroke(new UStroke());
 
-		if (this.startTail != null) {
+		if (this.extremity1 != null) {
 			ug.getParam().setColor(color);
 			if (this.link.getType().getDecor1().isFill()) {
 				ug.getParam().setBackcolor(color);
 			} else {
 				ug.getParam().setBackcolor(null);
 			}
-			this.startTail.drawU(ug, x + moveEndX, y + moveEndY);
+			this.extremity1.drawU(ug, x + moveEndX, y + moveEndY);
 		}
-		if (this.endHead != null) {
+		if (this.extremity2 != null) {
 			ug.getParam().setColor(color);
 			if (this.link.getType().getDecor2().isFill()) {
 				ug.getParam().setBackcolor(color);
 			} else {
 				ug.getParam().setBackcolor(null);
 			}
-			this.endHead.drawU(ug, x + moveStartX, y + moveStartY);
+			this.extremity2.drawU(ug, x + moveStartX, y + moveStartY);
 		}
 		if (this.noteLabelText != null) {
 			this.noteLabelText.drawU(ug, x + this.noteLabelXY.getPosition().getX(), y
@@ -535,6 +537,15 @@ public class Line implements Moveable, Hideable {
 		if (this.endHeadText != null) {
 			this.endHeadText.drawU(ug, x + this.endHeadLabelXY.getPosition().getX(), y
 					+ this.endHeadLabelXY.getPosition().getY());
+		}
+
+		if (link.getType().getMiddleDecor() != LinkMiddleDecor.NONE) {
+			ug.getParam().setColor(color);
+			final PointAndAngle middle = dotPath.getMiddle();
+			final double angleRad = middle.getAngle();
+			final double angleDeg = -angleRad * 180.0 / Math.PI;
+			final UDrawable mi = link.getType().getMiddleDecor().getMiddleFactory().createUDrawable(angleDeg - 45);
+			mi.drawU(ug, x + middle.getX(), y + middle.getY());
 		}
 
 		if (url != null) {

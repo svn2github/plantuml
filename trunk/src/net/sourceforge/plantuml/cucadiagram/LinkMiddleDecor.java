@@ -33,8 +33,29 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+import net.sourceforge.plantuml.svek.extremity.MiddleCircleCircledMode;
+import net.sourceforge.plantuml.svek.extremity.MiddleFactory;
+import net.sourceforge.plantuml.svek.extremity.MiddleFactoryCircle;
+import net.sourceforge.plantuml.svek.extremity.MiddleFactoryCircleCircled;
+
 public enum LinkMiddleDecor {
 
-	NONE, CIRCLE;
+	NONE, CIRCLE, CIRCLE_CIRCLED, CIRCLE_CIRCLED1, CIRCLE_CIRCLED2;
+
+	public MiddleFactory getMiddleFactory() {
+		if (this == CIRCLE) {
+			return new MiddleFactoryCircle();
+		}
+		if (this == CIRCLE_CIRCLED) {
+			return new MiddleFactoryCircleCircled(MiddleCircleCircledMode.BOTH);
+		}
+		if (this == CIRCLE_CIRCLED1) {
+			return new MiddleFactoryCircleCircled(MiddleCircleCircledMode.MODE1);
+		}
+		if (this == CIRCLE_CIRCLED2) {
+			return new MiddleFactoryCircleCircled(MiddleCircleCircledMode.MODE2);
+		}
+		throw new UnsupportedOperationException();
+	}
 
 }

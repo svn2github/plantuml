@@ -70,7 +70,9 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				new RegexOr(//
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$") //
 		);
@@ -82,7 +84,8 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				new RegexOr(//
 						new RegexConcat(new RegexLeaf("\\s+of\\s+"), partialPattern), //
 						new RegexLeaf("")), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("\\s*\\{?"), //
 				new RegexLeaf("$") //
 		);
@@ -125,8 +128,8 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 		};
 	}
 
-	private CommandExecutionResult executeInternal(RegexResult line0, AbstractEntityDiagram system,
-			Url url, List<? extends CharSequence> s) {
+	private CommandExecutionResult executeInternal(RegexResult line0, AbstractEntityDiagram system, Url url,
+			List<? extends CharSequence> s) {
 
 		final String pos = line0.get("POSITION", 0);
 

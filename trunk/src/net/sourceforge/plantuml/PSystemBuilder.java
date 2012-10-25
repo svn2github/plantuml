@@ -44,7 +44,6 @@ import net.sourceforge.plantuml.activitydiagram2.ActivityDiagramFactory2;
 import net.sourceforge.plantuml.classdiagram.ClassDiagramFactory;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagramFactory;
 import net.sourceforge.plantuml.compositediagram.CompositeDiagramFactory;
-import net.sourceforge.plantuml.descdiagram.DescriptionDiagramFactory;
 import net.sourceforge.plantuml.directdot.PSystemDotFactory;
 import net.sourceforge.plantuml.ditaa.PSystemDitaaFactory;
 import net.sourceforge.plantuml.eggs.PSystemAppleTwoFactory;
@@ -105,7 +104,7 @@ public class PSystemBuilder {
 		factories.add(new ClassDiagramFactory());
 		factories.add(new ActivityDiagramFactory());
 		factories.add(new ActivityDiagramFactory2());
-		factories.add(new DescriptionDiagramFactory(DiagramType.UML2));
+		//factories.add(new DescriptionDiagramFactory());
 		factories.add(new UsecaseDiagramFactory());
 		factories.add(new ComponentDiagramFactory());
 		factories.add(new StateDiagramFactory());

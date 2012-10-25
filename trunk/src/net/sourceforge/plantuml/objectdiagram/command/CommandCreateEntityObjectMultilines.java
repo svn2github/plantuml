@@ -38,30 +38,40 @@ import java.util.List;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.CommandMultilines;
+import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.objectdiagram.ObjectDiagram;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
-public class CommandCreateEntityObjectMultilines extends CommandMultilines<ObjectDiagram> {
+public class CommandCreateEntityObjectMultilines extends CommandMultilines2<ObjectDiagram> {
 
 	public CommandCreateEntityObjectMultilines(ObjectDiagram diagram) {
-		super(
-				diagram,
-				"(?i)^(object)\\s+(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?\\s*\\{\\s*$");
+		super(diagram, getRegexConcat());
 	}
-	
+
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexLeaf("TYPE", "(object)\\s+"), //
+				new RegexLeaf("NAME", "(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)"), //
+				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*\\{\\s*$"));
+	}
+
 	@Override
 	public String getPatternEnd() {
 		return "(?i)^\\s*\\}\\s*$";
 	}
 
-
 	public CommandExecutionResult execute(List<String> lines) {
 		StringUtils.trim(lines, true);
-		final List<String> line0 = StringUtils.getSplit(getStartingPattern(), lines.get(0).trim());
+		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 		final IEntity entity = executeArg0(line0);
 		if (entity == null) {
 			return CommandExecutionResult.error("No such entity");
@@ -76,10 +86,10 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines<Objec
 		return CommandExecutionResult.ok();
 	}
 
-	private IEntity executeArg0(List<String> arg) {
-		final String code = arg.get(2);
-		final String display = arg.get(1);
-		final String stereotype = arg.get(3);
+	private IEntity executeArg0(RegexResult line0) {
+		final String code = line0.get("NAME", 1);
+		final String display = line0.get("NAME", 0);
+		final String stereotype = line0.get("STEREO", 0);
 		if (getSystem().leafExist(code)) {
 			return getSystem().getOrCreateClass(code);
 		}
@@ -88,6 +98,7 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines<Objec
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR", 0)));
 		return entity;
 	}
 

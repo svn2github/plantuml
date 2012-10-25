@@ -58,7 +58,8 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("COLOR", "(#[0-9a-fA-F]{6}|#?\\w+)?"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				// new RegexLeaf("COLOR", "(#[0-9a-fA-F]{6}|#?\\w+)?"), //
 				new RegexLeaf("\\s*\\{?$"));
 	}
 

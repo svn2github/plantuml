@@ -71,7 +71,7 @@ public class CommandLinkBlock extends SingleLineCommand<CompositeDiagram> {
 
 	private LinkDecor getLinkDecor(String s) {
 		if ("[]".equals(s)) {
-			return LinkDecor.SQUARRE;
+			return LinkDecor.SQUARRE_toberemoved;
 		}
 		return LinkDecor.NONE;
 	}

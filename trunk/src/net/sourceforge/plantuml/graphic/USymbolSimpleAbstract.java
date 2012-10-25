@@ -41,7 +41,7 @@ import net.sourceforge.plantuml.Dimension2DDouble;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-abstract class USymbolSimpleAbstract extends USymbolAbstract {
+abstract class USymbolSimpleAbstract extends USymbol {
 
 	public TextBlock asSmall(final TextBlock label, final TextBlock stereotype, final SymbolContext symbolContext) {
 		if (stereotype == null) {

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8441 $
+ * Revision $Revision: 9041 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -57,6 +57,8 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramInfo;
 import net.sourceforge.plantuml.eps.EpsStrategy;
 import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
+import net.sourceforge.plantuml.graphic.HtmlColorSimple;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.TextBlock;
@@ -76,6 +78,7 @@ import net.sourceforge.plantuml.skin.ComponentType;
 import net.sourceforge.plantuml.skin.SimpleContext2D;
 import net.sourceforge.plantuml.skin.Skin;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
+import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.eps.UGraphicEps;
 import net.sourceforge.plantuml.ugraphic.g2d.UGraphicG2d;
 import net.sourceforge.plantuml.ugraphic.html5.UGraphicHtml5;
@@ -240,8 +243,11 @@ public class SequenceDiagramFileMaker implements FileMaker {
 		offsetX = (int) Math.round(area.getSequenceAreaX());
 		offsetY = (int) Math.round(area.getSequenceAreaY());
 
-		final Color backColor = diagram.getSkinParam().getColorMapper()
-				.getMappedColor(diagram.getSkinParam().getBackgroundColor());
+		Color backColor = null;
+		if (diagram.getSkinParam().getBackgroundColor() instanceof HtmlColorSimple) {
+			backColor = diagram.getSkinParam().getColorMapper()
+					.getMappedColor(diagram.getSkinParam().getBackgroundColor());
+		}
 		final UGraphic ug;
 		final FileFormat fileFormat = fileFormatOption.getFileFormat();
 		final double dpiFactor = diagram.getDpiFactor(fileFormatOption);
@@ -273,8 +279,18 @@ public class SequenceDiagramFileMaker implements FileMaker {
 			graphics2D.setTransform(scale);
 			ug = new UGraphicG2d(diagram.getSkinParam().getColorMapper(), graphics2D, builder.getBufferedImage(),
 					dpiFactor, fileFormatOption.getAffineTransform());
+
+			if (diagram.getSkinParam().getBackgroundColor() instanceof HtmlColorGradient) {
+				final BufferedImage im = ((UGraphicG2d) ug).getBufferedImage();
+				ug.getParam().setBackcolor(diagram.getSkinParam().getBackgroundColor());
+				ug.draw(0, 0, new URectangle(im.getWidth(), im.getHeight()));
+				ug.getParam().setBackcolor(null);
+			}
 		} else if (fileFormat == FileFormat.SVG) {
-			if (backColor.equals(Color.WHITE)) {
+			if (diagram.getSkinParam().getBackgroundColor() instanceof HtmlColorGradient) {
+				ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), (HtmlColorGradient) diagram
+						.getSkinParam().getBackgroundColor(), false);
+			} else if (backColor == null || backColor.equals(Color.WHITE)) {
 				ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), false);
 			} else {
 				ug = new UGraphicSvg(diagram.getSkinParam().getColorMapper(), StringUtils.getAsHtml(backColor), false);

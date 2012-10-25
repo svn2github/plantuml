@@ -54,14 +54,15 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 	private RegexConcat getRegexConcatMultiLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left)\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 
 	private RegexConcat getRegexConcatSingleLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left)\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}

@@ -33,27 +33,45 @@
  */
 package net.sourceforge.plantuml.command;
 
-import java.util.List;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
-public class CommandNamespace extends SingleLineCommand<AbstractEntityDiagram> {
+public class CommandNamespace extends SingleLineCommand2<AbstractEntityDiagram> {
 
 	public CommandNamespace(AbstractEntityDiagram diagram) {
-		super(diagram, "(?i)^namespace\\s+([\\p{L}0-9_][\\p{L}0-9_.]*)\\s*(#[0-9a-fA-F]{6}|\\w+)?\\s*\\{?$");
+		super(diagram, getRegexConcat());
 	}
 
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^namespace\\s+"), //
+				new RegexLeaf("NAME", "([\\p{L}0-9_][\\p{L}0-9_.:]*)"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*\\{?$"));
+	}
+
+
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
-		final String code = arg.get(0);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String code = arg.get("NAME", 0);
 		final IGroup currentPackage = getSystem().getCurrentGroup();
-		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), code, GroupType.PACKAGE, currentPackage);
-		final String color = arg.get(1);
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), code,
+				GroupType.PACKAGE, currentPackage);
+		final String stereotype = arg.get("STEREOTYPE", 0);
+		if (stereotype != null) {
+			p.setStereotype(new Stereotype(stereotype));
+		}
+		final String color = arg.get("COLOR", 0);
 		if (color != null) {
 			p.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(color));
 		}

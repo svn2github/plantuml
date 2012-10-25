@@ -44,7 +44,7 @@ import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 
-class USymbolNode extends USymbolAbstract {
+class USymbolNode extends USymbol {
 
 	private void drawNode(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition, double width,
 			double height, boolean shadowing) {
@@ -73,7 +73,7 @@ class USymbolNode extends USymbolAbstract {
 		return new Margin(10 + 5, 20 + 5, 15 + 5, 5 + 5);
 	}
 
-	public TextBlock asSmall(final TextBlock label, TextBlock stereotype, final SymbolContext symbolContext) {
+	public TextBlock asSmall(final TextBlock label, final TextBlock stereotype, final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {
@@ -81,13 +81,15 @@ class USymbolNode extends USymbolAbstract {
 				symbolContext.apply(ug);
 				drawNode(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
 				final Margin margin = getMargin();
-				label.drawU(ug, x + margin.getX1(), y + margin.getY1());
+				final TextBlock tb = TextBlockUtils.mergeTB(stereotype, label, HorizontalAlignement.CENTER);
+				tb.drawU(ug, x + margin.getX1(), y + margin.getY1());
 
 			}
 
 			public Dimension2D calculateDimension(StringBounder stringBounder) {
-				final Dimension2D dim = label.calculateDimension(stringBounder);
-				return getMargin().addDimension(dim);
+				final Dimension2D dimLabel = label.calculateDimension(stringBounder);
+				final Dimension2D dimStereo = stereotype.calculateDimension(stringBounder);
+				return getMargin().addDimension(Dimension2DDouble.mergeTB(dimStereo, dimLabel));
 			}
 
 			public List<Url> getUrls() {

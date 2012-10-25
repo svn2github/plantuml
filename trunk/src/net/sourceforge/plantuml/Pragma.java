@@ -45,7 +45,7 @@ public class Pragma {
 	public void define(String name, String value) {
 		values.put(name, value);
 		if (name.equalsIgnoreCase("graphviz_dot")) {
-			OptionFlags.getInstance().setDotExecutable(value);
+			OptionFlags.getInstance().setDotExecutable(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(value));
 		}
 	}
 

@@ -51,7 +51,7 @@ public class CommandParticipantA4 extends CommandParticipant {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.*\\>\\>))?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), // 
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 

@@ -52,6 +52,7 @@ import net.sourceforge.plantuml.asciiart.BasicCharArea;
 import net.sourceforge.plantuml.eps.EpsGraphics;
 import net.sourceforge.plantuml.svek.ClusterPosition;
 import net.sourceforge.plantuml.svek.MinFinder;
+import net.sourceforge.plantuml.svek.PointAndAngle;
 import net.sourceforge.plantuml.svek.PointDirected;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
@@ -138,6 +139,43 @@ public class DotPath implements UShape, Moveable {
 
 	public Point2D getStartPoint() {
 		return beziers.get(0).getP1();
+	}
+
+	public PointAndAngle getMiddle() {
+		Point2D result = null;
+		double angle = 0;
+		for (CubicCurve2D.Double bez : beziers) {
+			final CubicCurve2D.Double left = new CubicCurve2D.Double();
+			final CubicCurve2D.Double right = new CubicCurve2D.Double();
+			bez.subdivide(left, right);
+			final Point2D p1 = left.getP1();
+			final Point2D p2 = left.getP2();
+			final Point2D p3 = right.getP1();
+			final Point2D p4 = right.getP2();
+			if (result == null || getCost(p1) < getCost(result)) {
+				result = p1;
+				angle = BezierUtils.getStartingAngle(left);
+			}
+			if (getCost(p2) < getCost(result)) {
+				result = p2;
+				angle = BezierUtils.getEndingAngle(left);
+			}
+			if (getCost(p3) < getCost(result)) {
+				result = p3;
+				angle = BezierUtils.getStartingAngle(right);
+			}
+			if (getCost(p4) < getCost(result)) {
+				result = p4;
+				angle = BezierUtils.getEndingAngle(right);
+			}
+		}
+		return new PointAndAngle(result, angle);
+	}
+
+	private double getCost(Point2D pt) {
+		final Point2D start = getStartPoint();
+		final Point2D end = getEndPoint();
+		return pt.distanceSq(start) + pt.distanceSq(end);
 	}
 
 	public void forceStartPoint(double x, double y) {
@@ -293,19 +331,17 @@ public class DotPath implements UShape, Moveable {
 		}
 		g2d.draw(p);
 	}
-	
+
 	public void manageEnsureVisible(double x, double y, EnsureVisible visible) {
 		for (CubicCurve2D.Double bez : beziers) {
 			visible.ensureVisible(x + bez.x1, y + bez.y1);
 			visible.ensureVisible(x + bez.x2, y + bez.y2);
 		}
-		
+
 	}
 
-
-
 	public void drawOk(EpsGraphics eps, double x, double y) {
-//		boolean first = true;
+		// boolean first = true;
 		for (CubicCurve2D.Double bez : beziers) {
 			bez = new CubicCurve2D.Double(x + bez.x1, y + bez.y1, x + bez.ctrlx1, y + bez.ctrly1, x + bez.ctrlx2, y
 					+ bez.ctrly2, x + bez.x2, y + bez.y2);

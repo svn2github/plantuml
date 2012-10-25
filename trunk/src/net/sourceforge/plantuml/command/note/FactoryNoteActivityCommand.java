@@ -59,14 +59,16 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 	private RegexConcat getRegexConcatMultiLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("$"));
 	}
 
 	private RegexConcat getRegexConcatSingleLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}
@@ -115,8 +117,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 		};
 	}
 
-	private CommandExecutionResult executeInternal(ActivityDiagram system, RegexResult arg,
-			IEntity note) {
+	private CommandExecutionResult executeInternal(ActivityDiagram system, RegexResult arg, IEntity note) {
 
 		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 

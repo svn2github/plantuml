@@ -43,7 +43,7 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
-class USymbolComponent1 extends USymbolAbstract {
+class USymbolComponent1 extends USymbol {
 
 	private void drawNode(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition, double widthTotal,
 			double heightTotal, boolean shadowing) {
@@ -55,8 +55,6 @@ class USymbolComponent1 extends USymbolAbstract {
 
 		ug.draw(xTheoricalPosition, yTheoricalPosition, form);
 		final UShape small = new URectangle(10, 5);
-
-		ug.draw(xTheoricalPosition, yTheoricalPosition, form);
 
 		// UML 1 Component Notation
 		ug.draw(xTheoricalPosition - 5, yTheoricalPosition + 5, small);

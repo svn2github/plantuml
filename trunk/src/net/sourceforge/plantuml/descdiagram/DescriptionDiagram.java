@@ -43,14 +43,14 @@ import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
+import net.sourceforge.plantuml.graphic.USymbol;
 
 public class DescriptionDiagram extends AbstractEntityDiagram {
 
 	@Override
 	public ILeaf getOrCreateClass(String code) {
 		if (code.startsWith("[") && code.endsWith("]")) {
-			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
-					LeafType.COMPONENT);
+			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.COMPONENT);
 		}
 		if (code.startsWith(":") && code.endsWith(":")) {
 			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
@@ -61,18 +61,43 @@ public class DescriptionDiagram extends AbstractEntityDiagram {
 			return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
 		}
 		code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
-		return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
+		// if (isUsecase()) {
+		// return getOrCreateLeaf(code, LeafType.ACTOR);
+		// }
+		// return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
+		return getOrCreateLeaf(code, LeafType.STILL_UNKNOWN);
 	}
-	
+
+	private boolean isUsecase() {
+		for (ILeaf leaf : getLeafs().values()) {
+			final LeafType type = leaf.getEntityType();
+			final USymbol usymbol = leaf.getUSymbol();
+			if (type == LeafType.USECASE || usymbol == USymbol.ACTOR) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void makeDiagramReady() {
+		final LeafType defaultType = isUsecase() ? LeafType.ACTOR : LeafType.CIRCLE_INTERFACE;
+		for (ILeaf leaf : getLeafs().values()) {
+			if (leaf.getEntityType() == LeafType.STILL_UNKNOWN) {
+				leaf.muteToType(defaultType);
+			}
+		}
+	}
+
 	@Override
 	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
 		code = getFullyQualifiedCode(code);
-//		if (super.leafExist(code)) {
-			return super.getOrCreateLeaf(code, defaultType);
-//		}
-//		return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
+		// if (super.leafExist(code)) {
+		return super.getOrCreateLeaf(code, defaultType);
+		// }
+		// return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
 	}
-	
+
 	@Override
 	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
 		if (type != LeafType.COMPONENT) {
@@ -89,19 +114,17 @@ public class DescriptionDiagram extends AbstractEntityDiagram {
 		IGroup group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
 		if (namespace != null && (EntityUtils.groupNull(group) || group.getCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
+			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace,
+					GroupType.PACKAGE, getRootGroup());
 		}
-		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode)) : display, type, group);
+		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode))
+				: display, type, group);
 	}
 
 	@Override
 	public final boolean leafExist(String code) {
 		return super.leafExist(getFullyQualifiedCode(code));
 	}
-
-
-
-
 
 	@Override
 	public UmlDiagramType getUmlDiagramType() {

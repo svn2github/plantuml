@@ -52,7 +52,7 @@ public class CommandParticipantA2 extends CommandParticipant {
 				new RegexLeaf("FULL", "\"([^\"]+)\""), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.*\\>\\>))?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), // 
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 

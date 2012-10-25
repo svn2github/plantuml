@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8475 $
+ * Revision $Revision: 9040 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -54,7 +54,7 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 
 		final List<String> def = Arrays.asList("nodesep=.35;", "ranksep=0.8;", "edge [fontsize=11,labelfontsize=11];",
 				"node [fontsize=11,height=.35,width=.55];");
-		if (getPragma().isDefine("graphattributes")==false) {
+		if (getPragma().isDefine("graphattributes") == false) {
 			return def;
 		}
 		final String attribute = getPragma().getValue("graphattributes");
@@ -66,11 +66,13 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 	final public String getDescription() {
 		return "(" + getLeafs().size() + " entities)";
 	}
-	
-	
+
 	protected final String getFullyQualifiedCode(String code) {
 		if (code.startsWith("\\") || code.startsWith("~") || code.startsWith(".")) {
 			return code.substring(1);
+		}
+		if (code.contains("::")) {
+			return code;
 		}
 		if (code.contains(".")) {
 			return code;
@@ -83,6 +85,9 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 		if (namespace == null) {
 			return code;
 		}
+		if (namespace.contains("::")) {
+			return namespace + "::" + code;
+		}
 		return namespace + "." + code;
 	}
 
@@ -91,12 +96,18 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 		if (namespace == null) {
 			return code;
 		}
+		if (code.contains("::")) {
+			return code.substring(namespace.length() + 2);
+		}
 		return code.substring(namespace.length() + 1);
 	}
 
 	protected final String getNamespace(String code) {
 		assert code.startsWith("\\") == false;
 		assert code.startsWith("~") == false;
+		if (code.contains("::")) {
+			return getNamespaceDoublePoint(code);
+		}
 		do {
 			final int x = code.lastIndexOf('.');
 			if (x == -1) {
@@ -106,7 +117,18 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 		} while (leafExist(code));
 		return code;
 	}
-	
 
+	private final String getNamespaceDoublePoint(String code) {
+		assert code.startsWith("\\") == false;
+		assert code.startsWith("~") == false;
+		do {
+			final int x = code.lastIndexOf(':');
+			if (x == -1) {
+				return null;
+			}
+			code = code.substring(0, x - 1);
+		} while (leafExist(code));
+		return code;
+	}
 
 }

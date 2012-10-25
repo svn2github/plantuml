@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8892 $
+ * Revision $Revision: 9047 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -144,7 +144,7 @@ public class Rose implements Skin {
 	}
 
 	public HtmlColor getHtmlColor(ISkinParam param, ColorParam color, String stereotype) {
-		HtmlColor result = param.getHtmlColor(color, stereotype);
+		HtmlColor result = param.getHtmlColor(color, stereotype, false);
 		if (result == null) {
 			result = defaultsColor.get(color);
 			if (result == null) {

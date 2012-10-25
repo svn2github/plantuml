@@ -33,20 +33,82 @@
  */
 package net.sourceforge.plantuml.graphic;
 
-public interface USymbol {
+import java.awt.geom.Dimension2D;
+import java.util.HashMap;
+import java.util.Map;
 
-	public static USymbol NODE = new USymbolNode();
-	public static USymbol ARTIFACT = new USymbolArtifact();
-	public static USymbol ACTOR = new USymbolActor();
-	public static USymbol COMPONENT1 = new USymbolComponent1();
-	public static USymbol COMPONENT2 = new USymbolComponent2();
-	public static USymbol BOUNDARY = new USymbolBoundary();
-	public static USymbol ENTITY_DOMAIN = new USymbolEntityDomain();
-	public static USymbol CONTROL = new USymbolControl();
-	public static USymbol INTERFACE = new USymbolInterface();
+import net.sourceforge.plantuml.Dimension2DDouble;
 
-	TextBlock asSmall(TextBlock label, TextBlock stereotype, SymbolContext symbolContext);
+public abstract class USymbol {
 
-	TextBlock asBig(TextBlock label, TextBlock stereotype, double width, double height, SymbolContext symbolContext);
+	private static final Map<String, USymbol> all = new HashMap<String, USymbol>();
+
+	public final static USymbol STORAGE = record("STORAGE", new USymbolStorage());
+	public final static USymbol DATABASE = record("DATABASE", new USymbolDatabase());
+	public final static USymbol CLOUD = record("CLOUD", new USymbolCloud());
+	public final static USymbol FRAME = record("FRAME", new USymbolFrame());
+	public final static USymbol NODE = record("NODE", new USymbolNode());
+	public final static USymbol ARTIFACT = record("ARTIFACT", new USymbolArtifact());
+	public final static USymbol FOLDER = record("FOLDER", new USymbolFolder());
+	public final static USymbol RECT = record("RECT", new USymbolRect());
+	public final static USymbol ACTOR = record("ACTOR", new USymbolActor());
+	public final static USymbol COMPONENT1 = record("COMPONENT1", new USymbolComponent1());
+	public final static USymbol COMPONENT2 = record("COMPONENT2", new USymbolComponent2());
+	public final static USymbol BOUNDARY = record("BOUNDARY", new USymbolBoundary());
+	public final static USymbol ENTITY_DOMAIN = record("ENTITY_DOMAIN", new USymbolEntityDomain());
+	public final static USymbol CONTROL = record("CONTROL", new USymbolControl());
+	public final static USymbol INTERFACE = record("INTERFACE", new USymbolInterface());
+
+	public static USymbol getFromString(String s) {
+		final USymbol result = all.get(s.toUpperCase());
+		if (result == null) {
+			throw new IllegalArgumentException("s=" + s);
+		}
+		return result;
+	}
+
+	private static USymbol record(String code, USymbol symbol) {
+		all.put(code.toUpperCase(), symbol);
+		return symbol;
+	}
+
+	public abstract TextBlock asSmall(TextBlock label, TextBlock stereotype, SymbolContext symbolContext);
+
+	public abstract TextBlock asBig(TextBlock label, TextBlock stereotype, double width, double height,
+			SymbolContext symbolContext);
+
+	static class Margin {
+		private final double x1;
+		private final double x2;
+		private final double y1;
+		private final double y2;
+
+		Margin(double x1, double x2, double y1, double y2) {
+			this.x1 = x1;
+			this.x2 = x2;
+			this.y1 = y1;
+			this.y2 = y2;
+		}
+
+		double getWidth() {
+			return x1 + x2;
+		}
+
+		double getHeight() {
+			return y1 + y2;
+		}
+
+		public Dimension2D addDimension(Dimension2D dim) {
+			return new Dimension2DDouble(dim.getWidth() + x1 + x2, dim.getHeight() + y1 + y2);
+		}
+
+		public double getX1() {
+			return x1;
+		}
+
+		public double getY1() {
+			return y1;
+		}
+	}
 
 }

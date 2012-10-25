@@ -37,18 +37,24 @@ import net.sourceforge.plantuml.ugraphic.UStroke;
 
 public class LinkType {
 
+	private final LinkHat hat1;
 	private final LinkDecor decor1;
 	private final LinkStyle style;
 	private final LinkDecor decor2;
+	private final LinkHat hat2;
 	private final LinkMiddleDecor middleDecor;
 
 	public LinkType(LinkDecor decor1, LinkDecor decor2) {
-		this(decor1, LinkStyle.NORMAL, LinkMiddleDecor.NONE, decor2);
+		this(LinkHat.NONE, decor1, decor2, LinkHat.NONE);
 	}
 
-//	public boolean contains(LinkDecor decors) {
-//		return decor1 == decors || decor2 == decors;
-//	}
+	public LinkType(LinkHat hat1, LinkDecor decor1, LinkDecor decor2, LinkHat hat2) {
+		this(hat1, decor1, LinkStyle.NORMAL, LinkMiddleDecor.NONE, decor2, hat2);
+	}
+
+	// public boolean contains(LinkDecor decors) {
+	// return decor1 == decors || decor2 == decors;
+	// }
 
 	@Override
 	public String toString() {
@@ -66,11 +72,14 @@ public class LinkType {
 		return this.decor1 == other.decor1 && this.decor2 == other.decor2 && this.style == other.style;
 	}
 
-	private LinkType(LinkDecor decor1, LinkStyle style, LinkMiddleDecor middleDecor, LinkDecor decor2) {
+	private LinkType(LinkHat hat1, LinkDecor decor1, LinkStyle style, LinkMiddleDecor middleDecor, LinkDecor decor2,
+			LinkHat hat2) {
 		this.decor1 = decor1;
 		this.style = style;
 		this.decor2 = decor2;
 		this.middleDecor = middleDecor;
+		this.hat1 = hat1;
+		this.hat2 = hat2;
 	}
 
 	public boolean isDashed() {
@@ -90,65 +99,84 @@ public class LinkType {
 	}
 
 	public LinkType getDashed() {
-		return new LinkType(decor1, LinkStyle.DASHED, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.DASHED, middleDecor, decor2, hat2);
 	}
 
 	public LinkType getDotted() {
-		return new LinkType(decor1, LinkStyle.DOTTED, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.DOTTED, middleDecor, decor2, hat2);
 	}
 
 	public LinkType getBold() {
-		return new LinkType(decor1, LinkStyle.BOLD, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.BOLD, middleDecor, decor2, hat2);
 	}
 
 	public LinkType getInterfaceProvider() {
-		return new LinkType(decor1, LinkStyle.__toremove_INTERFACE_PROVIDER, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.__toremove_INTERFACE_PROVIDER, middleDecor, decor2, hat2);
 	}
 
 	public LinkType getInterfaceUser() {
-		return new LinkType(decor1, LinkStyle.__toremove_INTERFACE_USER, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.__toremove_INTERFACE_USER, middleDecor, decor2, hat2);
 	}
 
 	public LinkType getInversed() {
-		return new LinkType(decor2, style, middleDecor, decor1);
+		return new LinkType(hat2, decor2, style, middleDecor, decor1, hat1);
+	}
+
+	public LinkType withMiddleCircle() {
+		return new LinkType(hat1, decor1, style, LinkMiddleDecor.CIRCLE, decor2, hat2);
+	}
+
+	public LinkType withMiddleCircleCircled() {
+		return new LinkType(hat1, decor1, style, LinkMiddleDecor.CIRCLE_CIRCLED, decor2, hat2);
+	}
+
+	public LinkType withMiddleCircleCircled1() {
+		return new LinkType(hat1, decor1, style, LinkMiddleDecor.CIRCLE_CIRCLED1, decor2, hat2);
+	}
+
+	public LinkType withMiddleCircleCircled2() {
+		return new LinkType(hat1, decor1, style, LinkMiddleDecor.CIRCLE_CIRCLED2, decor2, hat2);
 	}
 
 	public LinkType getInvisible() {
-		return new LinkType(decor1, LinkStyle.INVISIBLE, middleDecor, decor2);
+		return new LinkType(hat1, decor1, LinkStyle.INVISIBLE, middleDecor, decor2, hat2);
 	}
 
 	public String getSpecificDecorationSvek() {
 		final StringBuilder sb = new StringBuilder();
-		
-		if (decor1 == LinkDecor.NONE && decor2 == LinkDecor.NONE) {
+
+		final boolean isEmpty1 = decor1 == LinkDecor.NONE && hat1 == LinkHat.NONE;
+		final boolean isEmpty2 = decor2 == LinkDecor.NONE && hat2 == LinkHat.NONE;
+
+		if (isEmpty1 && isEmpty2) {
 			sb.append("arrowtail=none");
 			sb.append(",arrowhead=none");
-		} else if (decor1 != LinkDecor.NONE && decor2 != LinkDecor.NONE) {
+		} else if (isEmpty1 == false && isEmpty2 == false) {
 			sb.append("dir=both,");
 			sb.append("arrowtail=empty");
 			sb.append(",arrowhead=empty");
-		} else if (decor1 == LinkDecor.NONE && decor2 != LinkDecor.NONE) {
+		} else if (isEmpty1 && isEmpty2 == false) {
 			sb.append("arrowtail=empty");
 			sb.append(",arrowhead=none");
 			sb.append(",dir=back");
-		} else if (decor1 != LinkDecor.NONE && decor2 == LinkDecor.NONE) {
+		} else if (isEmpty1 == false && isEmpty2) {
 			sb.append("arrowtail=none");
 			sb.append(",arrowhead=empty");
 		}
 
-//		if (decor1 == LinkDecor.NONE && decor2 != LinkDecor.NONE) {
-//			sb.append("dir=back,");
-//		}
-//		if (decor1 != LinkDecor.NONE && decor2 != LinkDecor.NONE) {
-//			sb.append("dir=both,");
-//		}
-//
-//		sb.append("dir=both,");
-//		
-//		sb.append("arrowtail=");
-//		sb.append(decor2.getArrowDotSvek());
-//		sb.append(",arrowhead=");
-//		sb.append(decor1.getArrowDotSvek());
+		// if (decor1 == LinkDecor.NONE && decor2 != LinkDecor.NONE) {
+		// sb.append("dir=back,");
+		// }
+		// if (decor1 != LinkDecor.NONE && decor2 != LinkDecor.NONE) {
+		// sb.append("dir=both,");
+		// }
+		//
+		// sb.append("dir=both,");
+		//
+		// sb.append("arrowtail=");
+		// sb.append(decor2.getArrowDotSvek());
+		// sb.append(",arrowhead=");
+		// sb.append(decor1.getArrowDotSvek());
 
 		final double arrowsize = Math.max(decor1.getArrowSize(), decor2.getArrowSize());
 		if (arrowsize > 0) {
@@ -187,11 +215,11 @@ public class LinkType {
 	}
 
 	public LinkType getPart1() {
-		return new LinkType(decor1, style, middleDecor, LinkDecor.NONE);
+		return new LinkType(hat1, decor1, style, middleDecor, LinkDecor.NONE, LinkHat.NONE);
 	}
 
 	public LinkType getPart2() {
-		return new LinkType(LinkDecor.NONE, style, middleDecor, decor2);
+		return new LinkType(LinkHat.NONE, LinkDecor.NONE, style, middleDecor, decor2, hat2);
 	}
 
 	public UStroke getStroke() {
@@ -205,6 +233,18 @@ public class LinkType {
 			return new UStroke(2);
 		}
 		return new UStroke();
+	}
+
+	public LinkMiddleDecor getMiddleDecor() {
+		return middleDecor;
+	}
+
+	public LinkHat getHat1() {
+		return hat1;
+	}
+
+	public LinkHat getHat2() {
+		return hat2;
 	}
 
 }

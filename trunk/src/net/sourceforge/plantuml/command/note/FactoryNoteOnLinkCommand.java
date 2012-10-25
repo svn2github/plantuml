@@ -54,7 +54,9 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 	private RegexConcat getRegexConcatSingleLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}
@@ -62,7 +64,8 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 	private RegexConcat getRegexConcatMultiLine() {
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|top|bottom)?\\s*on\\s+link"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 

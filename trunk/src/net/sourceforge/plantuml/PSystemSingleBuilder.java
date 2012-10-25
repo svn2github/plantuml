@@ -146,6 +146,7 @@ final public class PSystemSingleBuilder {
 				if (sys == null) {
 					return;
 				}
+				sys.makeDiagramReady();
 				sys.setSource(source);
 				return;
 			}

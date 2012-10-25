@@ -46,14 +46,32 @@ public class DriverEllipseSvg implements UDriver<SvgGraphics> {
 		final double width = shape.getWidth();
 		final double height = shape.getHeight();
 
-		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getColor()));
-		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param.getBackcolor()));
+		final String color = param.getColor() == null ? "none" : StringUtils.getAsHtml(mapper.getMappedColor(param
+				.getColor()));
+		final String backcolor = param.getBackcolor() == null ? "none" : StringUtils.getAsHtml(mapper
+				.getMappedColor(param.getBackcolor()));
 
 		svg.setFillColor(backcolor);
 		svg.setStrokeColor(color);
-		svg.setStrokeWidth(""+param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
-		
-		svg.svgEllipse(x + width / 2, y + height / 2, width / 2, height / 2, shape.getDeltaShadow());
+		svg.setStrokeWidth("" + param.getStroke().getThickness(), param.getStroke().getDasharraySvg());
+
+		double start = shape.getStart();
+		final double extend = shape.getExtend();
+		final double cx = x + width / 2;
+		final double cy = y + height / 2;
+		if (start == 0 && extend == 0) {
+			svg.svgEllipse(cx, cy, width / 2, height / 2, shape.getDeltaShadow());
+		} else {
+			// http://www.itk.ilstu.edu/faculty/javila/SVG/SVG_drawing1/elliptical_curve.htm
+			start = start + 90;
+			final double x1 = cx + Math.sin(start * Math.PI / 180.) * width / 2;
+			final double y1 = cy + Math.cos(start * Math.PI / 180.) * height / 2;
+			final double x2 = cx + Math.sin((start + extend) * Math.PI / 180.) * width / 2;
+			final double y2 = cy + Math.cos((start + extend) * Math.PI / 180.) * height / 2;
+			// svg.svgEllipse(x1, y1, 1, 1, 0);
+			// svg.svgEllipse(x2, y2, 1, 1, 0);
+			svg.svgArcEllipse(width / 2, height / 2, x1, y1, x2, y2);
+		}
 	}
 
 }

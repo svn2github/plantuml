@@ -41,6 +41,7 @@ import javax.xml.transform.TransformerException;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.StringBounderUtils;
 import net.sourceforge.plantuml.graphic.UnusedSpace;
@@ -74,6 +75,13 @@ public class UGraphicSvg extends AbstractUGraphic<SvgGraphics> implements ClipCo
 
 	public UGraphicSvg(ColorMapper colorMapper, boolean textAsPath) {
 		this(colorMapper, new SvgGraphics(), textAsPath);
+	}
+
+	public UGraphicSvg(ColorMapper mapper, HtmlColorGradient gr, boolean textAsPath) {
+		this(mapper, new SvgGraphics(), textAsPath);
+
+		final SvgGraphics svg = getGraphicObject();
+		svg.paintBackcolorGradient(mapper, gr);
 	}
 
 	@Override

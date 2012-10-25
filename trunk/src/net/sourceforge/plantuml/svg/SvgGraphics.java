@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8916 $
+ * Revision $Revision: 9035 $
  *
  */
 package net.sourceforge.plantuml.svg;
@@ -55,8 +55,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.sourceforge.plantuml.Log;
+import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.code.Base64Coder;
 import net.sourceforge.plantuml.eps.EpsGraphics;
+import net.sourceforge.plantuml.graphic.HtmlColorGradient;
+import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.USegment;
 import net.sourceforge.plantuml.ugraphic.USegmentType;
@@ -121,7 +124,17 @@ public class SvgGraphics {
 			e.printStackTrace();
 			throw new IllegalStateException(e);
 		}
+	}
 
+	private Element pendingBackground;
+
+	public void paintBackcolorGradient(ColorMapper mapper, HtmlColorGradient gr) {
+		final String id = createSvgGradient(StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor1())),
+				StringUtils.getAsHtml(mapper.getMappedColor(gr.getColor2())), gr.getPolicy());
+		setFillColor("url(#" + id + ")");
+		setStrokeColor(null);
+		pendingBackground = createRectangleInternal(0, 0, 0, 0);
+		getG().appendChild(pendingBackground);
 	}
 
 	// This method returns a reference to a simple XML
@@ -177,6 +190,20 @@ public class SvgGraphics {
 			getG().appendChild(elt);
 		}
 		ensureVisible(x + xRadius + deltaShadow * 2, y + yRadius + deltaShadow * 2);
+	}
+
+	public void svgArcEllipse(double rx, double ry, double x1, double y1, double x2, double y2) {
+		if (hidden == false) {
+			final String path = "M" + format(x1) + "," + format(y1) + " A" + format(rx) + "," + format(ry) + " 0 0 0 "
+					+ format(x2) + " " + format(y2);
+			final Element elt = (Element) document.createElement("path");
+			elt.setAttribute("d", path);
+			elt.setAttribute("fill", fill);
+			elt.setAttribute("style", getStyle());
+			getG().appendChild(elt);
+		}
+		ensureVisible(x1, y1);
+		ensureVisible(x2, y2);
 	}
 
 	private Map<List<Object>, String> gradients = new HashMap<List<Object>, String>();
@@ -270,13 +297,7 @@ public class SvgGraphics {
 	public void svgRectangle(double x, double y, double width, double height, double rx, double ry, double deltaShadow) {
 		manageShadow(deltaShadow);
 		if (hidden == false) {
-			final Element elt = (Element) document.createElement("rect");
-			elt.setAttribute("x", format(x));
-			elt.setAttribute("y", format(y));
-			elt.setAttribute("width", format(width));
-			elt.setAttribute("height", format(height));
-			elt.setAttribute("fill", fill);
-			elt.setAttribute("style", getStyle());
+			final Element elt = createRectangleInternal(x, y, width, height);
 			if (deltaShadow > 0) {
 				elt.setAttribute("filter", "url(#f1)");
 			}
@@ -288,6 +309,17 @@ public class SvgGraphics {
 			getG().appendChild(elt);
 		}
 		ensureVisible(x + width + 2 * deltaShadow, y + height + 2 * deltaShadow);
+	}
+
+	private Element createRectangleInternal(double x, double y, double width, double height) {
+		final Element elt = (Element) document.createElement("rect");
+		elt.setAttribute("x", format(x));
+		elt.setAttribute("y", format(y));
+		elt.setAttribute("width", format(width));
+		elt.setAttribute("height", format(height));
+		elt.setAttribute("fill", fill);
+		elt.setAttribute("style", getStyle());
+		return elt;
 	}
 
 	public void svgLine(double x1, double y1, double x2, double y2, double deltaShadow) {
@@ -431,6 +463,12 @@ public class SvgGraphics {
 		root.setAttribute("width", format(maxX) + "pt");
 		root.setAttribute("height", format(maxY) + "pt");
 		root.setAttribute("viewBox", "0 0 " + maxX + " " + maxY);
+
+		if (pendingBackground != null) {
+			pendingBackground.setAttribute("width", format(maxX));
+			pendingBackground.setAttribute("height", format(maxY));
+
+		}
 
 		// Get a StreamResult object that points to the
 		// screen. Then transform the DOM sending XML to

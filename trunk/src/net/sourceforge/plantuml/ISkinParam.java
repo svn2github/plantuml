@@ -47,7 +47,7 @@ public interface ISkinParam extends SpriteContainer {
 
 	public String getValue(String key);
 
-	public HtmlColor getHtmlColor(ColorParam param, String stereotype);
+	public HtmlColor getHtmlColor(ColorParam param, String stereotype, boolean clickable);
 
 	public HtmlColor getFontHtmlColor(FontParam param, String stereotype);
 

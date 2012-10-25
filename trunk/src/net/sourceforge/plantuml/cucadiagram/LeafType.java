@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8902 $
+ * Revision $Revision: 8980 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -51,7 +51,9 @@ public enum LeafType {
 
 	STATE, STATE_CONCURRENT, PSEUDO_STATE,
 
-	BLOCK;
+	BLOCK,
+	
+	STILL_UNKNOWN;
 
 	public static LeafType getLeafType(String arg0) {
 		arg0 = arg0.toUpperCase();

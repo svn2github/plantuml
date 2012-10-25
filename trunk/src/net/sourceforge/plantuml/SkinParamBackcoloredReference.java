@@ -71,14 +71,14 @@ public class SkinParamBackcoloredReference implements ISkinParam {
 		return skinParam.getFontHtmlColor(param, stereotype);
 	}
 
-	public HtmlColor getHtmlColor(ColorParam param, String stereotype) {
+	public HtmlColor getHtmlColor(ColorParam param, String stereotype, boolean clickable) {
 		if (param == ColorParam.sequenceReferenceHeaderBackground && sequenceReferenceHeaderBackground != null) {
 			return sequenceReferenceHeaderBackground;
 		}
 		if (param == ColorParam.sequenceReferenceBackground && sequenceReferenceBackground != null) {
 			return sequenceReferenceBackground;
 		}
-		return skinParam.getHtmlColor(param, stereotype);
+		return skinParam.getHtmlColor(param, stereotype, clickable);
 	}
 
 	public String getValue(String key) {

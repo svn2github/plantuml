@@ -296,7 +296,7 @@ public class Cluster implements Moveable {
 		if (title != null) {
 			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
 					group.getStereotype() == null ? null : group.getStereotype().getLabel());
-			final ClusterDecoration decoration = new ClusterDecoration(style, title, stateBack, minX, minY, maxX, maxY);
+			final ClusterDecoration decoration = new ClusterDecoration(style, group.getUSymbol(), title, stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
 		}
@@ -735,10 +735,10 @@ public class Cluster implements Moveable {
 
 	public static HtmlColor getStateBackColor(HtmlColor stateBack, ISkinParam skinParam, String stereotype) {
 		if (stateBack == null) {
-			stateBack = skinParam.getHtmlColor(ColorParam.packageBackground, stereotype);
+			stateBack = skinParam.getHtmlColor(ColorParam.packageBackground, stereotype, false);
 		}
 		if (stateBack == null) {
-			stateBack = skinParam.getHtmlColor(ColorParam.background, stereotype);
+			stateBack = skinParam.getHtmlColor(ColorParam.background, stereotype, false);
 		}
 		if (stateBack == null) {
 			stateBack = HtmlColorUtils.WHITE;

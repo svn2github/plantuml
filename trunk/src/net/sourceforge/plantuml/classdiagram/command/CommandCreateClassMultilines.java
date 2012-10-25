@@ -55,13 +55,13 @@ import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
-public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<ClassDiagram> {
+public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagram> {
 
 	enum Mode {
 		EXTENDS, IMPLEMENTS
 	};
 
-	public CommandCreateEntityClassMultilines2(ClassDiagram diagram) {
+	public CommandCreateClassMultilines(ClassDiagram diagram) {
 		super(diagram, getRegexConcat());
 	}
 
@@ -74,13 +74,13 @@ public class CommandCreateEntityClassMultilines2 extends CommandMultilines2<Clas
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("TYPE", "(interface|enum|abstract\\s+class|abstract|class)\\s+"), //
 				new RegexOr(//
-						new RegexLeaf("NAME1", "(?:\"([^\"]+)\"\\s+as\\s+)?(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*)"), //
-						new RegexLeaf("NAME2", "(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*)\\s+as\\s+\"([^\"]+)\""), //
+						new RegexLeaf("NAME1", "(?:\"([^\"]+)\"\\s+as\\s+)?((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)"), //
+						new RegexLeaf("NAME2", "((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)\\s+as\\s+\"([^\"]+)\""), //
 						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
-				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("\\s*\\{\\s*$"));
 	}
 

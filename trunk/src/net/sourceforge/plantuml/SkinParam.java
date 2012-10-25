@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8900 $
+ * Revision $Revision: 9048 $
  *
  */
 package net.sourceforge.plantuml;
@@ -89,7 +89,7 @@ public class SkinParam implements ISkinParam {
 	}
 
 	public HtmlColor getBackgroundColor() {
-		final HtmlColor result = getHtmlColor(ColorParam.background, null);
+		final HtmlColor result = getHtmlColor(ColorParam.background, null, false);
 		if (result == null) {
 			return HtmlColorUtils.WHITE;
 		}
@@ -115,7 +115,7 @@ public class SkinParam implements ISkinParam {
 		return sb.toString();
 	}
 
-	public HtmlColor getHtmlColor(ColorParam param, String stereotype) {
+	public HtmlColor getHtmlColor(ColorParam param, String stereotype, boolean clickable) {
 		if (stereotype != null) {
 			checkStereotype(stereotype);
 			final String value2 = getValue(param.name() + "color" + stereotype);
@@ -123,12 +123,22 @@ public class SkinParam implements ISkinParam {
 				return HtmlColorUtils.getColorIfValid(value2);
 			}
 		}
-		final String value = getValue(param.name() + "color");
+		final String value = getValue(getParamName(param, clickable));
 		final boolean acceptTransparent = param == ColorParam.background;
 		if (value == null) {
 			return null;
 		}
 		return HtmlColorUtils.getColorIfValid(value, acceptTransparent);
+	}
+
+	private String getParamName(ColorParam param, boolean clickable) {
+		String n = param.name();
+		if (clickable && n.endsWith("Background")) {
+			n = n.replaceAll("Background", "ClickableBackground");
+		} else if (clickable && n.endsWith("Border")) {
+			n = n.replaceAll("Border", "ClickableBorder");
+		}
+		return n + "color";
 	}
 
 	private void checkStereotype(String stereotype) {

@@ -47,14 +47,24 @@ public class SkinParamBackcolored implements ISkinParam {
 	final private ISkinParam skinParam;
 	final private HtmlColor backColorElement;
 	final private HtmlColor backColorGeneral;
+	final private boolean forceClickage;
 
 	public SkinParamBackcolored(ISkinParam skinParam, HtmlColor backColorElement) {
-		this(skinParam, backColorElement, null);
+		this(skinParam, backColorElement, null, false);
 	}
 
-	public SkinParamBackcolored(ISkinParam skinParam,
-			HtmlColor backColorElement, HtmlColor backColorGeneral) {
+	public SkinParamBackcolored(ISkinParam skinParam, HtmlColor backColorElement, boolean forceClickage) {
+		this(skinParam, backColorElement, null, forceClickage);
+	}
+
+	public SkinParamBackcolored(ISkinParam skinParam, HtmlColor backColorElement, HtmlColor backColorGeneral) {
+		this(skinParam, backColorElement, backColorGeneral, false);
+	}
+
+	public SkinParamBackcolored(ISkinParam skinParam, HtmlColor backColorElement, HtmlColor backColorGeneral,
+			boolean forceClickage) {
 		this.skinParam = skinParam;
+		this.forceClickage = forceClickage;
 		this.backColorElement = backColorElement;
 		this.backColorGeneral = backColorGeneral;
 	}
@@ -78,11 +88,14 @@ public class SkinParamBackcolored implements ISkinParam {
 		return skinParam.getFontHtmlColor(param, stereotype);
 	}
 
-	public HtmlColor getHtmlColor(ColorParam param, String stereotype) {
+	public HtmlColor getHtmlColor(ColorParam param, String stereotype, boolean clickable) {
 		if (param.isBackground() && backColorElement != null) {
 			return backColorElement;
 		}
-		return skinParam.getHtmlColor(param, stereotype);
+		if (forceClickage) {
+			clickable = true;
+		}
+		return skinParam.getHtmlColor(param, stereotype, clickable);
 	}
 
 	public String getValue(String key) {

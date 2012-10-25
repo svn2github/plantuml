@@ -60,10 +60,13 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 		return new RegexConcat(
 				new RegexLeaf("^"), //
 				getGroup("ENT1"), //
-				new RegexLeaf("\\s*"), new RegexLeaf("LABEL1", "(?:\"([^\"]+)\")?"), new RegexLeaf("\\s*"),
-				new RegexLeaf("HEAD2", "([<^*]|<\\|| +o)?"), //
-				new RegexLeaf("BODY", "([-=.~]+)(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.~]))?([-=.~]*)"), //
-				new RegexLeaf("HEAD1", "([>^*]|\\|>|o +)?"), //
+				new RegexLeaf("\\s*"),
+				new RegexLeaf("LABEL1", "(?:\"([^\"]+)\")?"),
+				new RegexLeaf("\\s*"),
+				new RegexLeaf("HEAD2", "(0\\)|<<|[<^*+~#0)]|<\\|| +o)?"), //
+				new RegexLeaf("BODY",
+						"([-=.~]+)(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.~0()]))?(?:(0|\\(0\\)|\\(0|0\\))(?=[-=.~]))?([-=.~]*)"), //
+				new RegexLeaf("HEAD1", "(\\(0|>>|[>^*+#0(]|\\|>|o +)?"), //
 				new RegexLeaf("\\s*"), new RegexLeaf("LABEL2", "(?:\"([^\"]+)\")?"), new RegexLeaf("\\s*"), //
 				getGroup("ENT2"), //
 				new RegexLeaf("\\s*"), //
@@ -75,23 +78,49 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 		final String head2 = trimAndLowerCase(arg.get("HEAD2", 0));
 		LinkDecor d1 = LinkDecor.NONE;
 		LinkDecor d2 = LinkDecor.NONE;
-		if (head1.equals(">")) {
+
+		if (head1.equals("(0")) {
+			d1 = LinkDecor.CIRCLE_CONNECT;
+		} else if (head1.equals("#")) {
+			d1 = LinkDecor.SQUARRE;
+		} else if (head1.equals("0")) {
+			d1 = LinkDecor.CIRCLE;
+		} else if (head1.equals("(")) {
+			d1 = LinkDecor.PARENTHESIS;
+		} else if (head1.equals(">")) {
 			d1 = LinkDecor.ARROW;
 		} else if (head1.equals("*")) {
 			d1 = LinkDecor.COMPOSITION;
 		} else if (head1.equals("o")) {
 			d1 = LinkDecor.AGREGATION;
+		} else if (head1.equals("+")) {
+			d1 = LinkDecor.PLUS;
+		} else if (head1.equals(">>")) {
+			d1 = LinkDecor.ARROW_TRIANGLE;
 		} else if (head1.equals("^")) {
 			d1 = LinkDecor.EXTENDS;
 		} else if (head1.equals("|>")) {
 			d1 = LinkDecor.EXTENDS;
 		}
-		if (head2.equals("<")) {
+
+		if (head2.equals("0)")) {
+			d2 = LinkDecor.CIRCLE_CONNECT;
+		} else if (head2.equals("#")) {
+			d2 = LinkDecor.SQUARRE;
+		} else if (head2.equals("0")) {
+			d2 = LinkDecor.CIRCLE;
+		} else if (head2.equals(")")) {
+			d2 = LinkDecor.PARENTHESIS;
+		} else if (head2.equals("<")) {
 			d2 = LinkDecor.ARROW;
 		} else if (head2.equals("*")) {
 			d2 = LinkDecor.COMPOSITION;
 		} else if (head2.equals("o")) {
 			d2 = LinkDecor.AGREGATION;
+		} else if (head2.equals("+")) {
+			d2 = LinkDecor.PLUS;
+		} else if (head2.equals("<<")) {
+			d2 = LinkDecor.ARROW_TRIANGLE;
 		} else if (head2.equals("^")) {
 			d2 = LinkDecor.EXTENDS;
 		} else if (head2.equals("<|")) {
@@ -105,6 +134,17 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 		} else if (body.contains("~")) {
 			result = result.getDotted();
 		}
+
+		final String middle = arg.get("BODY", 2);
+		if ("0".equals(middle)) {
+			result = result.withMiddleCircle();
+		} else if ("0)".equals(middle)) {
+			result = result.withMiddleCircleCircled1();
+		} else if ("(0".equals(middle)) {
+			result = result.withMiddleCircleCircled2();
+		} else if ("(0)".equals(middle)) {
+			result = result.withMiddleCircleCircled();
+		}
 		return result;
 	}
 
@@ -115,25 +155,25 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 		return s.trim().toLowerCase();
 	}
 
-	private LinkDecor getDecors1(String head1) {
-		if (head1 == null) {
-			return LinkDecor.NONE;
-		}
-		if (head1.equals(">")) {
-			return LinkDecor.ARROW;
-		}
-		return LinkDecor.NONE;
-	}
-
-	private LinkDecor getDecors2(String head2) {
-		if (head2 == null) {
-			return LinkDecor.NONE;
-		}
-		if (head2.equals("*")) {
-			return LinkDecor.COMPOSITION;
-		}
-		return LinkDecor.NONE;
-	}
+	// private LinkDecor getDecors1(String head1) {
+	// if (head1 == null) {
+	// return LinkDecor.NONE;
+	// }
+	// if (head1.equals(">")) {
+	// return LinkDecor.ARROW;
+	// }
+	// return LinkDecor.NONE;
+	// }
+	//
+	// private LinkDecor getDecors2(String head2) {
+	// if (head2 == null) {
+	// return LinkDecor.NONE;
+	// }
+	// if (head2.equals("*")) {
+	// return LinkDecor.COMPOSITION;
+	// }
+	// return LinkDecor.NONE;
+	// }
 
 	private Direction getDirection(RegexResult arg) {
 		final String dir = arg.get("BODY", 1);
@@ -144,13 +184,13 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 	}
 
 	private String getQueue(RegexResult arg) {
-		return arg.get("BODY", 0).trim() + arg.get("BODY", 2).trim();
+		return arg.get("BODY", 0).trim() + arg.get("BODY", 3).trim();
 	}
 
 	private static RegexLeaf getGroup(String name) {
 		return new RegexLeaf(
 				name,
-				"([\\p{L}0-9_.]+|\\(\\)\\s*[\\p{L}0-9_.]+|:[^:]+:|(?!\\[\\*\\])\\[[^\\[\\]]+\\]|\\((?!\\*\\))[^)]+\\))(?:\\s*(\\<\\<.*\\>\\>))?");
+				"([\\p{L}0-9_.]+|\\(\\)\\s*[\\p{L}0-9_.]+|\\(\\)\\s*\"[^\"]+\"|:[^:]+:|(?!\\[\\*\\])\\[[^\\[\\]]+\\]|\\((?!\\*\\))[^)]+\\))(?:\\s*(\\<\\<.*\\>\\>))?");
 	}
 
 	static class Labels {
@@ -249,7 +289,9 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 
 	private ILeaf getOrCreateLeaf(final String code) {
 		if (code.startsWith("()")) {
-			return getSystem().getOrCreateLeaf(code.substring(2).trim(), LeafType.CIRCLE_INTERFACE);
+			return getSystem().getOrCreateLeaf(
+					StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code.substring(2).trim()),
+					LeafType.CIRCLE_INTERFACE);
 		}
 		final char codeChar = code.length() > 2 ? code.charAt(0) : 0;
 		if (codeChar == '(') {

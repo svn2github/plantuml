@@ -48,6 +48,7 @@ import net.sourceforge.plantuml.cucadiagram.PortionShower;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
+import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockEmpty;
@@ -73,13 +74,14 @@ public class EntityImageObject extends AbstractEntityImage {
 	public EntityImageObject(ILeaf entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
-		this.name = TextBlockUtils.withMargin(TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(
-				getFont(FontParam.OBJECT, stereotype), getFontColor(FontParam.OBJECT, stereotype)),
-				HorizontalAlignement.CENTER, skinParam), 2, 2);
+		this.name = TextBlockUtils.withMargin(
+				TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(getFont(FontParam.OBJECT, stereotype),
+						getFontColor(FontParam.OBJECT, stereotype)), HorizontalAlignement.CENTER, skinParam), 2, 2);
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
-			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
+			this.stereo = TextBlockUtils.create(
+					StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.OBJECT_STEREOTYPE, stereotype), getFontColor(
 							FontParam.OBJECT_STEREOTYPE, stereotype)), HorizontalAlignement.CENTER, skinParam);
 		}
@@ -152,8 +154,12 @@ public class EntityImageObject extends AbstractEntityImage {
 		}
 
 		ug.getParam().setColor(getColor(ColorParam.objectBorder, getStereo()));
-		ug.getParam().setBackcolor(getColor(ColorParam.objectBackground, getStereo()));
-		if (url.size()>0) {
+		HtmlColor backcolor = getEntity().getSpecificBackColor();
+		if (backcolor == null) {
+			backcolor = getColor(ColorParam.objectBackground, getStereo());
+		}
+		ug.getParam().setBackcolor(backcolor);
+		if (url.size() > 0) {
 			ug.startUrl(url.get(0));
 		}
 
@@ -178,7 +184,7 @@ public class EntityImageObject extends AbstractEntityImage {
 		// ug.draw(x, y, new ULine(widthTotal, 0));
 		// ug.getParam().setStroke(new UStroke());
 		fields.drawU(ug, x, y, widthTotal);
-		if (url.size()>0) {
+		if (url.size() > 0) {
 			ug.closeAction();
 		}
 

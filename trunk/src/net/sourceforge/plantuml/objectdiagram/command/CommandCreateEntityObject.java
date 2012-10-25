@@ -33,37 +33,48 @@
  */
 package net.sourceforge.plantuml.objectdiagram.command;
 
-import java.util.List;
-
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.command.SingleLineCommand2;
+import net.sourceforge.plantuml.command.regex.RegexConcat;
+import net.sourceforge.plantuml.command.regex.RegexLeaf;
+import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.objectdiagram.ObjectDiagram;
 
-public class CommandCreateEntityObject extends SingleLineCommand<ObjectDiagram> {
+public class CommandCreateEntityObject extends SingleLineCommand2<ObjectDiagram> {
 
 	public CommandCreateEntityObject(ObjectDiagram diagram) {
-		super(diagram,
-				"(?i)^(object)\\s+(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?$");
+		super(diagram, getRegexConcat());
+	}
+
+	private static RegexConcat getRegexConcat() {
+		return new RegexConcat(new RegexLeaf("^"), //
+				new RegexLeaf("TYPE", "(object)\\s+"), //
+				new RegexLeaf("NAME", "(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)"), //
+				new RegexLeaf("STEREO", "(?:\\s*(\\<{2}.*\\>{2}))?"), //
+				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("$"));
 	}
 
 	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
-		final String code = arg.get(2);
-		final String display = arg.get(1);
-		final String stereotype = arg.get(3);
+	protected CommandExecutionResult executeArg(RegexResult arg) {
+		final String code = arg.get("NAME", 1);
+		final String display = arg.get("NAME", 0);
+		final String stereotype = arg.get("STEREO", 0);
 		if (getSystem().leafExist(code)) {
-			return CommandExecutionResult.error("Object already exists : "+code);
+			return CommandExecutionResult.error("Object already exists : " + code);
 		}
 		final IEntity entity = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), LeafType.OBJECT);
 		if (stereotype != null) {
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		return CommandExecutionResult.ok();
 	}
 

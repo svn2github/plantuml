@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8606 $
+ * Revision $Revision: 8980 $
  *
  */
 package net.sourceforge.plantuml;
@@ -116,6 +116,9 @@ public abstract class AbstractPSystem implements PSystem {
 
 	public String getWarningOrError() {
 		return null;
+	}
+	
+	public void makeDiagramReady() {
 	}
 
 }

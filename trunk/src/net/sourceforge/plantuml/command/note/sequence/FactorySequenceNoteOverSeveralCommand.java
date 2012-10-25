@@ -56,7 +56,7 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 		return new RegexConcat(new RegexLeaf("STYLE", "^(note|hnote|rnote)\\s+over\\s+"), //
 				new RegexLeaf("P1", "([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*\\,\\s*"), //
 				new RegexLeaf("P2", "([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$") //
 		);
 	}
@@ -65,7 +65,8 @@ public final class FactorySequenceNoteOverSeveralCommand implements SingleMultiF
 		return new RegexConcat(new RegexLeaf("STYLE", "^(note|hnote|rnote)\\s+over\\s+"), //
 				new RegexLeaf("P1", "([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*\\,\\s*"), //
 				new RegexLeaf("P2", "([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}

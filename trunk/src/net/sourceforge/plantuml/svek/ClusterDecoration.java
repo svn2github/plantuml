@@ -44,7 +44,6 @@ import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.USymbol;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.ULine;
-import net.sourceforge.plantuml.ugraphic.UPath;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UStroke;
@@ -52,6 +51,7 @@ import net.sourceforge.plantuml.ugraphic.UStroke;
 public class ClusterDecoration {
 
 	final private PackageStyle style;
+	final private USymbol symbol;
 	final private TextBlock title;
 	final private HtmlColor stateBack;
 
@@ -60,8 +60,9 @@ public class ClusterDecoration {
 	final private double maxX;
 	final private double maxY;
 
-	public ClusterDecoration(PackageStyle style, TextBlock title, HtmlColor stateBack, double minX, double minY,
-			double maxX, double maxY) {
+	public ClusterDecoration(PackageStyle style, USymbol symbol, TextBlock title, HtmlColor stateBack, double minX,
+			double minY, double maxX, double maxY) {
+		this.symbol = symbol;
 		this.style = style;
 		this.title = title;
 		this.stateBack = stateBack;
@@ -72,6 +73,13 @@ public class ClusterDecoration {
 	}
 
 	public void drawU(UGraphic ug, double x, double y, HtmlColor borderColor, boolean shadowing) {
+		if (symbol != null) {
+			final SymbolContext symbolContext = new SymbolContext(stateBack, borderColor).withShadow(shadowing)
+					.withStroke(new UStroke(2));
+			symbol.asBig(title, title, maxX - minX, maxY - minY, symbolContext).drawU(ug, x + minX, y + minY);
+			ug.getParam().setStroke(new UStroke());
+			return;
+		}
 		if (style == PackageStyle.NODE) {
 			drawWithTitleNode(ug, x, y, borderColor, shadowing);
 		} else if (style == PackageStyle.DATABASE) {

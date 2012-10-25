@@ -57,7 +57,7 @@ public final class FactorySequenceNoteCommand implements SingleMultiFactoryComma
 		return new RegexConcat(new RegexLeaf("STYLE", "^(note|hnote|rnote)\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|over)\\s+"), //
 				new RegexLeaf("PARTICIPANT", "(?:of\\s+)?([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 
@@ -65,7 +65,8 @@ public final class FactorySequenceNoteCommand implements SingleMultiFactoryComma
 		return new RegexConcat(new RegexLeaf("STYLE", "^(note|hnote|rnote)\\s+"), //
 				new RegexLeaf("POSITION", "(right|left|over)\\s+"), //
 				new RegexLeaf("PARTICIPANT", "(?:of\\s+)?([\\p{L}0-9_.@]+|\"[^\"]+\")\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?\\s*:\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*:\\s*"), //
 				new RegexLeaf("NOTE", "(.*)"), //
 				new RegexLeaf("$"));
 	}

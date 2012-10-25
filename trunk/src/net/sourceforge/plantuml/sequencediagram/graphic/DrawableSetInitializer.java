@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8891 $
+ * Revision $Revision: 9048 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -588,7 +588,8 @@ class DrawableSetInitializer {
 		} else {
 			throw new IllegalArgumentException();
 		}
-		final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), p.getSpecificBackColor());
+		final ISkinParam skinParam = new SkinParamBackcolored(drawableSet.getSkinParam(), p.getSpecificBackColor(),
+				p.getUrl() != null);
 		final Component head = drawableSet.getSkin().createComponent(headType, null, skinParam, p.getDisplay());
 		final Component tail = drawableSet.getSkin().createComponent(tailType, null, skinParam, p.getDisplay());
 		final Component line = drawableSet.getSkin().createComponent(this.defaultLineType, null,

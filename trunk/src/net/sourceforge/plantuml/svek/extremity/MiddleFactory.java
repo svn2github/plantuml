@@ -27,50 +27,16 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
- * 
- * Revision $Revision: 8066 $
  *
+ * Revision $Revision: 4236 $
+ * 
  */
-package net.sourceforge.plantuml.graphic;
+package net.sourceforge.plantuml.svek.extremity;
 
-import java.awt.geom.Dimension2D;
+import net.sourceforge.plantuml.graphic.UDrawable;
 
-import net.sourceforge.plantuml.Dimension2DDouble;
+public interface MiddleFactory {
 
-abstract class USymbolAbstract implements USymbol {
-
-	static class Margin {
-		private final double x1;
-		private final double x2;
-		private final double y1;
-		private final double y2;
-
-		Margin(double x1, double x2, double y1, double y2) {
-			this.x1 = x1;
-			this.x2 = x2;
-			this.y1 = y1;
-			this.y2 = y2;
-		}
-
-		double getWidth() {
-			return x1 + x2;
-		}
-
-		double getHeight() {
-			return y1 + y2;
-		}
-
-		public Dimension2D addDimension(Dimension2D dim) {
-			return new Dimension2DDouble(dim.getWidth() + x1 + x2, dim.getHeight() + y1 + y2);
-		}
-
-		public double getX1() {
-			return x1;
-		}
-
-		public double getY1() {
-			return y1;
-		}
-	}
+	public UDrawable createUDrawable(double angle);
 
 }

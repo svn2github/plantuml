@@ -42,7 +42,7 @@ import java.awt.geom.Rectangle2D;
 
 public class BezierUtils {
 
-	static double getEndingAngle(final CubicCurve2D.Double left) {
+	static public double getEndingAngle(final CubicCurve2D.Double left) {
 		if (left.getCtrlP2().equals(left.getP2())) {
 			return getAngle(left.getP1(), left.getP2());
 		}

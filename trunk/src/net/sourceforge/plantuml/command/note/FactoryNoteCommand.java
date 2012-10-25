@@ -53,7 +53,8 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 	private RegexConcat getRegexConcatMultiLine() {
 		return new RegexConcat(new RegexLeaf("^(note)\\s+"), //
 				new RegexLeaf("CODE", "as\\s+([\\p{L}0-9_.]+)"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$") //
 		);
 	}
@@ -62,7 +63,7 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 		return new RegexConcat(new RegexLeaf("^note\\s+"), //
 				new RegexLeaf("DISPLAY", "\"([^\"]+)\"\\s+as\\s+"), //
 				new RegexLeaf("CODE", "([\\p{L}0-9_.]+)\\s*"), //
-				new RegexLeaf("COLOR", "(#\\w+)?"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$") //
 		);
 
@@ -98,7 +99,7 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 			}
 		};
 	}
-	
+
 	private CommandExecutionResult executeInternal(AbstractEntityDiagram system, RegexResult arg,
 			final List<? extends CharSequence> display) {
 		final String code = arg.get("CODE", 0);
@@ -107,7 +108,5 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		return CommandExecutionResult.ok();
 	}
-
-
 
 }

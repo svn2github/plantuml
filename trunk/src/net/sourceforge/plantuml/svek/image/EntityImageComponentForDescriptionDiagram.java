@@ -66,33 +66,90 @@ public class EntityImageComponentForDescriptionDiagram extends AbstractEntityIma
 	public EntityImageComponentForDescriptionDiagram(ILeaf entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
-		final TextBlock desc = TextBlockUtils.create(
-				entity.getDisplay(),
-				new FontConfiguration(getFont(FontParam.COMPONENT, stereotype), getFontColor(FontParam.COMPONENT,
-						stereotype)), HorizontalAlignement.CENTER, skinParam);
-
 		final USymbol symbol = entity.getUSymbol();
 		if (symbol == null) {
 			throw new IllegalArgumentException();
 		}
+		final TextBlock desc = TextBlockUtils.create(
+				entity.getDisplay(),
+				new FontConfiguration(getFont(getFontParam(symbol), stereotype), getFontColor(getFontParam(symbol),
+						stereotype)), HorizontalAlignement.CENTER, skinParam);
+
 		this.url = entity.getUrls();
 
 		HtmlColor backcolor = getEntity().getSpecificBackColor();
 		if (backcolor == null) {
-			backcolor = getColor(ColorParam.componentBackground, getStereo());
+			backcolor = getColor(getColorParamBack(symbol), getStereo());
 		}
-		final SymbolContext ctx = new SymbolContext(backcolor, getColor(ColorParam.componentBorder, getStereo()))
-				.withStroke(new UStroke(1.5)).withShadow(getSkinParam().shadowing());
+		final HtmlColor forecolor = getColor(getColorParamBorder(symbol), getStereo());
+		final SymbolContext ctx = new SymbolContext(backcolor, forecolor).withStroke(new UStroke(1.5)).withShadow(
+				getSkinParam().shadowing());
 
 		TextBlock stereo = TextBlockUtils.empty(0, 0);
 		if (stereotype != null && stereotype.getLabel() != null) {
 			stereo = TextBlockUtils.create(
 					StringUtils.getWithNewlines(stereotype.getLabel()),
-					new FontConfiguration(getFont(FontParam.COMPONENT_STEREOTYPE, stereotype), getFontColor(
-							FontParam.COMPONENT_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
+					new FontConfiguration(getFont(getFontParamStereotype(symbol), stereotype), getFontColor(
+							getFontParamStereotype(symbol), null)), HorizontalAlignement.CENTER, skinParam);
 		}
 
 		asSmall = symbol.asSmall(desc, stereo, ctx);
+	}
+
+	private FontParam getFontParamStereotype(USymbol symbol) {
+		if (symbol == USymbol.COMPONENT1 || symbol == USymbol.COMPONENT2 || symbol == USymbol.INTERFACE) {
+			return FontParam.COMPONENT_STEREOTYPE;
+		}
+		if (symbol == USymbol.ACTOR) {
+			return FontParam.USECASE_ACTOR_STEREOTYPE;
+		}
+		if (symbol == USymbol.ARTIFACT || symbol == USymbol.FOLDER || symbol == USymbol.BOUNDARY || symbol == USymbol.ENTITY_DOMAIN || symbol == USymbol.CONTROL) {
+			return FontParam.USECASE_ACTOR_STEREOTYPE;
+		}
+		return FontParam.USECASE_ACTOR_STEREOTYPE;
+//		throw new UnsupportedOperationException("symbol=" + symbol.getClass());
+	}
+
+	private FontParam getFontParam(USymbol symbol) {
+		if (symbol == USymbol.COMPONENT1 || symbol == USymbol.COMPONENT2 || symbol == USymbol.INTERFACE) {
+			return FontParam.COMPONENT;
+		}
+		if (symbol == USymbol.ACTOR) {
+			return FontParam.USECASE_ACTOR;
+		}
+		if (symbol == USymbol.ARTIFACT || symbol == USymbol.FOLDER || symbol == USymbol.BOUNDARY || symbol == USymbol.ENTITY_DOMAIN || symbol == USymbol.CONTROL) {
+			return FontParam.USECASE_ACTOR;
+		}
+		return FontParam.USECASE_ACTOR;
+		// throw new UnsupportedOperationException("symbol=" + symbol.getClass());
+	}
+
+	private ColorParam getColorParamBorder(USymbol symbol) {
+		if (symbol == USymbol.COMPONENT1 || symbol == USymbol.COMPONENT2 || symbol == USymbol.INTERFACE) {
+			return ColorParam.componentBorder;
+		}
+		if (symbol == USymbol.ACTOR) {
+			return ColorParam.usecaseActorBorder;
+		}
+		if (symbol == USymbol.ARTIFACT || symbol == USymbol.FOLDER || symbol == USymbol.BOUNDARY || symbol == USymbol.ENTITY_DOMAIN || symbol == USymbol.CONTROL) {
+			return ColorParam.usecaseActorBorder;
+		}
+		return ColorParam.usecaseActorBorder;
+//		throw new UnsupportedOperationException("symbol=" + symbol.getClass());
+	}
+
+	private ColorParam getColorParamBack(USymbol symbol) {
+		if (symbol == USymbol.COMPONENT1 || symbol == USymbol.COMPONENT2 || symbol == USymbol.INTERFACE) {
+			return ColorParam.componentBackground;
+		}
+		if (symbol == USymbol.ACTOR) {
+			return ColorParam.usecaseActorBackground;
+		}
+		if (symbol == USymbol.ARTIFACT || symbol == USymbol.FOLDER || symbol == USymbol.BOUNDARY || symbol == USymbol.ENTITY_DOMAIN || symbol == USymbol.CONTROL) {
+			return ColorParam.usecaseActorBackground;
+		}
+		return ColorParam.usecaseActorBackground;
+//		throw new UnsupportedOperationException("symbol=" + symbol.getClass());
 	}
 
 	@Override

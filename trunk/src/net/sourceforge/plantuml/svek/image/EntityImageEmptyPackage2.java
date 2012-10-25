@@ -88,7 +88,7 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 		final HtmlColor stateBack = Cluster.getStateBackColor(specificBackColor, skinParam,
 				stereotype == null ? null : stereotype.getLabel());
 
-		final ClusterDecoration decoration = new ClusterDecoration(getSkinParam().getPackageStyle(), desc, stateBack,
+		final ClusterDecoration decoration = new ClusterDecoration(getSkinParam().getPackageStyle(), null, desc, stateBack,
 				0, 0, widthTotal, heightTotal);
 
 		decoration.drawU(ug, xTheoricalPosition, yTheoricalPosition, getColor(ColorParam.packageBorder, getStereo()),

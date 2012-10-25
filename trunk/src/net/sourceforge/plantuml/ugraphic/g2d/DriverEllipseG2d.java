@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8033 $
+ * Revision $Revision: 8996 $
  *
  */
 package net.sourceforge.plantuml.ugraphic.g2d;
@@ -78,17 +78,21 @@ public class DriverEllipseG2d extends DriverShadowedG2d implements UDriver<Graph
 				g2d.draw(ellipse);
 			}
 		} else {
-			final Shape arc = new Arc2D.Double(x, y, shape.getWidth(), shape.getHeight(), shape.getStart(),
-					shape.getExtend(), Arc2D.OPEN);
+			final Shape arc = new Arc2D.Double(x, y, shape.getWidth(), shape.getHeight(), round(shape.getStart()),
+					round(shape.getExtend()), Arc2D.OPEN);
 			if (param.getColor() != null) {
-				g2d.setColor(mapper.getMappedColor(param.getBackcolor()));
-				g2d.fill(arc);
-			}
-			if (param.getColor() != null && param.getColor().equals(param.getBackcolor()) == false) {
 				g2d.setColor(mapper.getMappedColor(param.getColor()));
 				g2d.draw(arc);
 			}
 		}
+	}
+
+	private static final double ROU = 5.0;
+
+	static double round(double value) {
+		return value;
+		// final int v = (int) Math.round(value / ROU);
+		// return v * ROU;
 	}
 
 }

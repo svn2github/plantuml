@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8511 $
+ * Revision $Revision: 9040 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.plantuml.classdiagram.command.CommandAddMethod;
-import net.sourceforge.plantuml.classdiagram.command.CommandCreateEntityClass3;
-import net.sourceforge.plantuml.classdiagram.command.CommandCreateEntityClassMultilines2;
+import net.sourceforge.plantuml.classdiagram.command.CommandCreateClass;
+import net.sourceforge.plantuml.classdiagram.command.CommandCreateClassMultilines;
 import net.sourceforge.plantuml.classdiagram.command.CommandDiamondAssociation;
 import net.sourceforge.plantuml.classdiagram.command.CommandHideShow;
 import net.sourceforge.plantuml.classdiagram.command.CommandHideShow3;
@@ -85,7 +85,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(new CommandPage(system));
 		addCommand(new CommandAddMethod(system));
 
-		addCommand(new CommandCreateEntityClass3(system));
+		addCommand(new CommandCreateClass(system));
 		final FactoryNoteCommand factoryNoteCommand = new FactoryNoteCommand();
 		addCommand(factoryNoteCommand.createSingleLine(system));
 
@@ -108,7 +108,7 @@ public class ClassDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 		addCommand(factoryNoteOnEntityCommand.createMultiLine(system));
 		addCommand(factoryNoteCommand.createMultiLine(system));
-		addCommand(new CommandCreateEntityClassMultilines2(system));
+		addCommand(new CommandCreateClassMultilines(system));
 
 		final FactoryNoteOnLinkCommand factoryNoteOnLinkCommand = new FactoryNoteOnLinkCommand();
 		addCommand(factoryNoteOnLinkCommand.createSingleLine(system));

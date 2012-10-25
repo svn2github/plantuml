@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8900 $
+ * Revision $Revision: 9024 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -47,8 +47,8 @@ import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.UFont;
 
-public class Stereotype implements CharSequence, Hideable {
 
+public class Stereotype implements CharSequence, Hideable {
 	private final static Pattern circleChar = Pattern
 			.compile("\\<\\<\\s*\\(?(\\S)\\s*,\\s*(#[0-9a-fA-F]{6}|\\w+)\\s*(?:[),](.*?))?\\>\\>");
 	private final static Pattern circleSprite = Pattern
@@ -60,14 +60,20 @@ public class Stereotype implements CharSequence, Hideable {
 	private final String sprite;
 	private final double radius;
 	private final UFont circledFont;
+	private final boolean automaticPackageStyle;
 
 	public Stereotype(String label, double radius, UFont circledFont) {
+		this(label, radius, circledFont, true);
+	}
+
+	public Stereotype(String label, double radius, UFont circledFont, boolean automaticPackageStyle) {
 		if (label == null) {
 			throw new IllegalArgumentException();
 		}
 		if (label.startsWith("<<") == false || label.endsWith(">>") == false) {
 			throw new IllegalArgumentException(label);
 		}
+		this.automaticPackageStyle = automaticPackageStyle;
 		this.radius = radius;
 		this.circledFont = circledFont;
 		final Matcher mCircleChar = circleChar.matcher(label);
@@ -101,8 +107,13 @@ public class Stereotype implements CharSequence, Hideable {
 		}
 	}
 
-	public Stereotype(String stereotype) {
-		this.label = stereotype;
+	public Stereotype(String label) {
+		this(label, true);
+	}
+
+	public Stereotype(String label, boolean automaticPackageStyle) {
+		this.automaticPackageStyle = automaticPackageStyle;
+		this.label = label;
 		this.htmlColor = null;
 		this.character = '\0';
 		this.radius = 0;
@@ -176,6 +187,9 @@ public class Stereotype implements CharSequence, Hideable {
 	}
 
 	public PackageStyle getPackageStyle() {
+		if (automaticPackageStyle==false) {
+			return null;
+		}
 		for (PackageStyle p : EnumSet.allOf(PackageStyle.class)) {
 			if (("<<" + p + ">>").equalsIgnoreCase(label)) {
 				return p;

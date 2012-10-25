@@ -44,7 +44,7 @@ import net.sourceforge.plantuml.ugraphic.ULine;
 import net.sourceforge.plantuml.ugraphic.UPolygon;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 
-class USymbolArtifact extends USymbolAbstract {
+class USymbolArtifact extends USymbol {
 
 	private void drawArtifact(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition, double widthTotal,
 			double heightTotal, boolean shadowing) {

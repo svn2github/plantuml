@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8539 $
+ * Revision $Revision: 9037 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram.dot;
@@ -82,9 +82,13 @@ public class GraphvizUtils {
 	public static String getenvGraphvizDot() {
 		final String env = System.getProperty("GRAPHVIZ_DOT");
 		if (StringUtils.isNotEmpty(env)) {
-			return env;
+			return StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(env);
 		}
-		return System.getenv("GRAPHVIZ_DOT");
+		final String getenv = System.getenv("GRAPHVIZ_DOT");
+		if (StringUtils.isNotEmpty(getenv)) {
+			return StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(getenv);
+		}
+		return null;
 	}
 
 	public static String getenvLogData() {

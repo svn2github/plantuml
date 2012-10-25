@@ -43,7 +43,7 @@ import net.sourceforge.plantuml.ugraphic.UGraphic;
 import net.sourceforge.plantuml.ugraphic.URectangle;
 import net.sourceforge.plantuml.ugraphic.UShape;
 
-class USymbolComponent2 extends USymbolAbstract {
+class USymbolComponent2 extends USymbol {
 
 	private void drawNode(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition, double widthTotal,
 			double heightTotal, boolean shadowing) {

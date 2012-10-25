@@ -42,18 +42,16 @@ import net.sourceforge.plantuml.command.CommandPage;
 import net.sourceforge.plantuml.command.CommandRankDir;
 import net.sourceforge.plantuml.command.note.FactoryNoteCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
+import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.descdiagram.command.CommandCreateElementFull;
 import net.sourceforge.plantuml.descdiagram.command.CommandLinkElement;
+import net.sourceforge.plantuml.descdiagram.command.CommandPackageWithUSymbol;
 
 public class DescriptionDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 	private DescriptionDiagram system;
-
-	public DescriptionDiagramFactory(DiagramType type) {
-		super(type);
-	}
 
 	public DescriptionDiagram getSystem() {
 		return system;
@@ -70,6 +68,7 @@ public class DescriptionDiagramFactory extends AbstractUmlSystemCommandFactory {
 		addCommand(new CommandLinkElement(system));
 		// addCommand(new CommandLinkComponent2(system));
 		//
+		addCommand(new CommandPackageWithUSymbol(system));
 		addCommand(new CommandPackage(system));
 		addCommand(new CommandEndPackage(system));
 		// addCommand(new CommandNamespace(system));
@@ -82,7 +81,11 @@ public class DescriptionDiagramFactory extends AbstractUmlSystemCommandFactory {
 				new RegexLeaf("[\\p{L}0-9_.]+"), //
 				new RegexLeaf("\\(\\)\\s*[\\p{L}0-9_.]+"), //
 				new RegexLeaf("\\(\\)\\s*\"[^\"]+\""), //
-				new RegexLeaf("\\[[^\\]*]+[^\\]]*\\]")));
+				new RegexLeaf("\\[[^\\]*]+[^\\]]*\\]"), //
+				new RegexLeaf("\\((?!\\*\\))[^\\)]+\\)"), //
+				new RegexLeaf(":[^:]+:"), //
+				new RegexLeaf("\"[^\"]+\"") //
+				));
 		addCommand(factoryNoteOnEntityCommand.createSingleLine(system));
 
 		addCommand(factoryNoteCommand.createSingleLine(system));
@@ -92,6 +95,14 @@ public class DescriptionDiagramFactory extends AbstractUmlSystemCommandFactory {
 		// addCommand(new CommandCreateElementTyped(system));
 		// addCommand(new CommandCreateCircleInterface(system));
 		// addCommand(new CommandCreateActorInComponent(system));
+
+		addCommand(factoryNoteOnEntityCommand.createMultiLine(system));
+		addCommand(factoryNoteCommand.createMultiLine(system));
+		
+		final FactoryNoteOnLinkCommand factoryNoteOnLinkCommand = new FactoryNoteOnLinkCommand();
+		addCommand(factoryNoteOnLinkCommand.createSingleLine(system));
+		addCommand(factoryNoteOnLinkCommand.createMultiLine(system));
+
 
 	}
 }
