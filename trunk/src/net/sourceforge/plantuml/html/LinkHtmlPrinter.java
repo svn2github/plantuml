@@ -63,9 +63,9 @@ public final class LinkHtmlPrinter {
 		final String ent2h;
 		if (chiral) {
 			ent1h = htmlLink(link.getEntity1());
-			ent2h = "<i>" + StringUtils.unicodeForHtml(link.getEntity2().getCode()) + "</i>";
+			ent2h = "<i>" + StringUtils.unicodeForHtml(link.getEntity2().getCode().getCode()) + "</i>";
 		} else {
-			ent1h = "<i>" + StringUtils.unicodeForHtml(link.getEntity1().getCode()) + "</i>";
+			ent1h = "<i>" + StringUtils.unicodeForHtml(link.getEntity1().getCode().getCode()) + "</i>";
 			ent2h = htmlLink(link.getEntity2());
 		}
 		String label = link.getLabel() == null ? null : StringUtils.unicodeForHtml(link.getLabel());
@@ -168,7 +168,7 @@ public final class LinkHtmlPrinter {
 		sb.append("<a href=\"");
 		sb.append(urlOf(ent));
 		sb.append("\">");
-		sb.append(StringUtils.unicodeForHtml(ent.getCode()));
+		sb.append(StringUtils.unicodeForHtml(ent.getCode().getCode()));
 		sb.append("</a>");
 		return sb.toString();
 	}
@@ -177,8 +177,8 @@ public final class LinkHtmlPrinter {
 		if (ent.getEntityType() == LeafType.NOTE) {
 			throw new IllegalArgumentException();
 		}
-		if (ent.getCode().matches("[-\\w_ .]+")) {
-			return StringUtils.unicodeForHtml(ent.getCode()) + ".html";
+		if (ent.getCode().getCode().matches("[-\\w_ .]+")) {
+			return StringUtils.unicodeForHtml(ent.getCode().getCode()) + ".html";
 		}
 		return StringUtils.unicodeForHtml(ent.getUid()) + ".html";
 	}

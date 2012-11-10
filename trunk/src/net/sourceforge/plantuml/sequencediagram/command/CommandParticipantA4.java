@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.sequencediagram.command;
 
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.sequencediagram.SequenceDiagram;
@@ -50,6 +51,8 @@ public class CommandParticipantA4 extends CommandParticipant {
 				new RegexLeaf("CODE", "\"([^\"]+)\""), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.*\\>\\>))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));

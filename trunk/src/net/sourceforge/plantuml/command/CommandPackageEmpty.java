@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -52,19 +53,19 @@ public class CommandPackageEmpty extends SingleLineCommand<AbstractEntityDiagram
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final String code;
+		final Code code;
 		final String display;
 		if (arg.get(1) == null) {
 			if (StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0)).length() == 0) {
-				code = "##" + UniqueSequence.getValue();
+				code = Code.of("##" + UniqueSequence.getValue());
 				display = null;
 			} else {
-				code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-				display = code;
+				code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0)));
+				display = code.getCode();
 			}
 		} else {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			code = arg.get(1);
+			code = Code.of(arg.get(1));
 		}
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);

@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -63,7 +64,7 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 				new RegexLeaf("\\s*"),
 				new RegexLeaf("LABEL1", "(?:\"([^\"]+)\")?"),
 				new RegexLeaf("\\s*"),
-				new RegexLeaf("HEAD2", "(0\\)|<<|[<^*+~#0)]|<\\|| +o)?"), //
+				new RegexLeaf("HEAD2", "(0\\)|<<|[<^*+#0)]|<\\|| +o)?"), //
 				new RegexLeaf("BODY",
 						"([-=.~]+)(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.~0()]))?(?:(0|\\(0\\)|\\(0|0\\))(?=[-=.~]))?([-=.~]*)"), //
 				new RegexLeaf("HEAD1", "(\\(0|>>|[>^*+#0(]|\\|>|o +)?"), //
@@ -133,6 +134,8 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 			result = result.getDashed();
 		} else if (body.contains("~")) {
 			result = result.getDotted();
+		} else if (body.contains("=")) {
+			result = result.getBold();
 		}
 
 		final String middle = arg.get("BODY", 2);
@@ -242,8 +245,8 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String ent1 = arg.get("ENT1", 0);
-		final String ent2 = arg.get("ENT2", 0);
+		final Code ent1 = Code.of(arg.get("ENT1", 0));
+		final Code ent2 = Code.of(arg.get("ENT2", 0));
 
 		if (getSystem().isGroup(ent1) && getSystem().isGroup(ent2)) {
 			return executePackageLink(arg);
@@ -287,30 +290,31 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 		return CommandExecutionResult.ok();
 	}
 
-	private ILeaf getOrCreateLeaf(final String code) {
+	private ILeaf getOrCreateLeaf(final Code code2) {
+		final String code = code2.getCode();
 		if (code.startsWith("()")) {
 			return getSystem().getOrCreateLeaf(
-					StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code.substring(2).trim()),
+					Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code.substring(2).trim())),
 					LeafType.CIRCLE_INTERFACE);
 		}
 		final char codeChar = code.length() > 2 ? code.charAt(0) : 0;
 		if (codeChar == '(') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
+			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
 					LeafType.USECASE);
 		} else if (codeChar == ':') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
+			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
 					LeafType.ACTOR);
 		} else if (codeChar == '[') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
+			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
 					LeafType.COMPONENT);
 		}
 
-		return getSystem().getOrCreateClass(code);
+		return getSystem().getOrCreateClass(code2);
 	}
 
 	private CommandExecutionResult executePackageLink(RegexResult arg) {
-		final String ent1 = arg.get("ENT1", 0);
-		final String ent2 = arg.get("ENT2", 0);
+		final Code ent1 = Code.of(arg.get("ENT1", 0));
+		final Code ent2 = Code.of(arg.get("ENT2", 0));
 		final IEntity cl1 = getSystem().getGroup(ent1);
 		final IEntity cl2 = getSystem().getGroup(ent2);
 

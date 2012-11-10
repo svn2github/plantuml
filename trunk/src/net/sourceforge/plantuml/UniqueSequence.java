@@ -28,12 +28,14 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7715 $
+ * Revision $Revision: 9061 $
  * 
  */
 package net.sourceforge.plantuml;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import net.sourceforge.plantuml.cucadiagram.Code;
 
 public class UniqueSequence {
 
@@ -45,6 +47,10 @@ public class UniqueSequence {
 
 	public static int getValue() {
 		return cpt.addAndGet(1);
+	}
+
+	public static Code getCode(String prefix) {
+		return Code.of(prefix + getValue());
 	}
 
 }

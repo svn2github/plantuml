@@ -63,15 +63,15 @@ public class EntityGenderUtils {
 	}
 
 	static public EntityGender byPackage(final IGroup group) {
-		if (EntityUtils.groupNull(group)) {
+		if (EntityUtils.groupRoot(group)) {
 			throw new IllegalArgumentException();
 		}
 		return new EntityGender() {
 			public boolean contains(IEntity test) {
-				if (EntityUtils.groupNull(test.getParentContainer())) {
+				if (EntityUtils.groupRoot(test.getParentContainer())) {
 					return false;
 				}
-				if (EntityUtils.equals(group, test.getParentContainer())) {
+				if (group == test.getParentContainer()) {
 					return true;
 				}
 				return false;

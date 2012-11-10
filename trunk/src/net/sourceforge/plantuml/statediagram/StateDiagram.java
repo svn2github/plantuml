@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8536 $
+ * Revision $Revision: 9063 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -48,8 +49,8 @@ import net.sourceforge.plantuml.cucadiagram.LeafType;
 public class StateDiagram extends AbstractEntityDiagram {
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
-		if (code.startsWith("[*]")) {
+	public IEntity getOrCreateClass(Code code) {
+		if (code.getCode().startsWith("[*]")) {
 			throw new IllegalArgumentException();
 		}
 		if (isGroup(code)) {
@@ -61,31 +62,31 @@ public class StateDiagram extends AbstractEntityDiagram {
 
 	public IEntity getStart() {
 		final IGroup g = getCurrentGroup();
-		if (EntityUtils.groupNull(g)) {
-			return getOrCreateLeaf("*start", LeafType.CIRCLE_START);
+		if (EntityUtils.groupRoot(g)) {
+			return getOrCreateLeaf(Code.of("*start"), LeafType.CIRCLE_START);
 		}
-		return getOrCreateLeaf("*start*" + g.getCode(), LeafType.CIRCLE_START);
+		return getOrCreateLeaf(Code.of("*start*" + g.getCode().getCode()), LeafType.CIRCLE_START);
 	}
 
 	public IEntity getEnd() {
 		final IGroup p = getCurrentGroup();
-		if (EntityUtils.groupNull(p)) {
-			return getOrCreateLeaf("*end", LeafType.CIRCLE_END);
+		if (EntityUtils.groupRoot(p)) {
+			return getOrCreateLeaf(Code.of("*end"), LeafType.CIRCLE_END);
 		}
-		return getOrCreateLeaf("*end*" + p.getCode(), LeafType.CIRCLE_END);
+		return getOrCreateLeaf(Code.of("*end*" + p.getCode().getCode()), LeafType.CIRCLE_END);
 	}
 
 	public IEntity getHistorical() {
 		final IGroup g = getCurrentGroup();
-		if (EntityUtils.groupNull(g)) {
-			return getOrCreateLeaf("*historical", LeafType.PSEUDO_STATE);
+		if (EntityUtils.groupRoot(g)) {
+			return getOrCreateLeaf(Code.of("*historical"), LeafType.PSEUDO_STATE);
 		}
-		return getOrCreateLeaf("*historical*" + g.getCode(), LeafType.PSEUDO_STATE);
+		return getOrCreateLeaf(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
 	}
 
-	public IEntity getHistorical(String codeGroup) {
+	public IEntity getHistorical(Code codeGroup) {
 		final IEntity g = getOrCreateGroup(codeGroup, StringUtils.getWithNewlines(codeGroup), null, GroupType.STATE, getRootGroup());
-		final IEntity result = getOrCreateLeaf("*historical*" + g.getCode(), LeafType.PSEUDO_STATE);
+		final IEntity result = getOrCreateLeaf(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
 		endGroup();
 		return result;
 	}
@@ -93,15 +94,15 @@ public class StateDiagram extends AbstractEntityDiagram {
 	public boolean concurrentState() {
 		final IGroup cur = getCurrentGroup();
 		// printlink("BEFORE");
-		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
+		if (EntityUtils.groupRoot(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
-		final IGroup conc1 = getOrCreateGroup("CONC" + UniqueSequence.getValue(), Arrays.asList(""), null,
+		final IGroup conc1 = getOrCreateGroup(UniqueSequence.getCode("CONC"), Arrays.asList(""), null,
 				GroupType.CONCURRENT_STATE, getCurrentGroup());
-		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.STATE) {
+		if (EntityUtils.groupRoot(cur) == false && cur.zgetGroupType() == GroupType.STATE) {
 			cur.zmoveEntitiesTo(conc1);
 			super.endGroup();
-			getOrCreateGroup("CONC" + UniqueSequence.getValue(), Arrays.asList(""), null,
+			getOrCreateGroup(UniqueSequence.getCode("CONC"), Arrays.asList(""), null,
 					GroupType.CONCURRENT_STATE, getCurrentGroup());
 		}
 		// printlink("AFTER");
@@ -118,7 +119,7 @@ public class StateDiagram extends AbstractEntityDiagram {
 	@Override
 	public void endGroup() {
 		final IGroup cur = getCurrentGroup();
-		if (EntityUtils.groupNull(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
+		if (EntityUtils.groupRoot(cur) == false && cur.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			super.endGroup();
 		}
 		super.endGroup();

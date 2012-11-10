@@ -36,6 +36,7 @@ package net.sourceforge.plantuml.activitydiagram.command;
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
@@ -44,6 +45,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -72,7 +74,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 				// new RegexLeaf("BACKCOLOR", "(#\\w+)?"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("URL", "(" + StringUtils.URL_PATTERN + ")?"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
 				new RegexLeaf("ARROW", "([-=.]+(?:\\*|left|right|up|down|le?|ri?|up?|do?)?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
@@ -140,8 +142,8 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 			link = link.getInv();
 		}
 		if (arg2.get("URL", 0) != null) {
-			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"),
-					arg2.get("URL", 0), true);
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url urlLink = urlBuilder.getUrl(arg2.get("URL", 0));
 			link.setUrl(urlLink);
 		}
 
@@ -171,10 +173,10 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		if (partition != null) {
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
-		final String code = arg.get("CODE" + suf, 0);
+		final Code code = Code.of(arg.get("CODE" + suf, 0));
 		if (code != null) {
 			if (partition != null) {
-				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+				system.getOrCreateGroup(Code.of(partition), StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
 						system.getRootGroup());
 			}
 			final IEntity result = system.getOrCreate(code, StringUtils.getWithNewlines(code),
@@ -186,13 +188,13 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		}
 		final String bar = arg.get("BAR" + suf, 0);
 		if (bar != null) {
-			return system.getOrCreate(bar, StringUtils.getWithNewlines(bar), LeafType.SYNCHRO_BAR);
+			return system.getOrCreate(Code.of(bar), StringUtils.getWithNewlines(bar), LeafType.SYNCHRO_BAR);
 		}
 		final RegexPartialMatch quoted = arg.get("QUOTED" + suf);
 		if (quoted.get(0) != null) {
-			final String quotedCode = quoted.get(1) == null ? quoted.get(0) : quoted.get(1);
+			final Code quotedCode = Code.of(quoted.get(1) == null ? quoted.get(0) : quoted.get(1));
 			if (partition != null) {
-				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+				system.getOrCreateGroup(Code.of(partition), StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
 						system.getRootGroup());
 			}
 			final IEntity result = system.getOrCreate(quotedCode, StringUtils.getWithNewlines(quoted.get(0)),
@@ -202,10 +204,10 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 			}
 			return result;
 		}
-		final String quotedInvisible = arg.get("QUOTED_INVISIBLE" + suf, 0);
+		final Code quotedInvisible = Code.of(arg.get("QUOTED_INVISIBLE" + suf, 0));
 		if (quotedInvisible !=  null) {
 			if (partition != null) {
-				system.getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+				system.getOrCreateGroup(Code.of(partition), StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
 						system.getRootGroup());
 			}
 			final IEntity result = system.getOrCreate(quotedInvisible, StringUtils.getWithNewlines(quotedInvisible), LeafType.ACTIVITY);
@@ -222,7 +224,7 @@ public class CommandLinkActivity extends SingleLineCommand2<ActivityDiagram> {
 		return null;
 	}
 
-	static LeafType getTypeIfExisting(ActivityDiagram system, String code) {
+	static LeafType getTypeIfExisting(ActivityDiagram system, Code code) {
 		if (system.leafExist(code)) {
 			final IEntity ent = system.getLeafs().get(code);
 			if (ent.getEntityType() == LeafType.BRANCH) {

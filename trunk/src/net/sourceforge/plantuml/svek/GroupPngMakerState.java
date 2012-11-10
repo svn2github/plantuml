@@ -77,7 +77,7 @@ public final class GroupPngMakerState {
 	class InnerGroupHierarchy implements GroupHierarchy {
 
 		public Collection<IGroup> getChildrenGroups(IGroup parent) {
-			if (EntityUtils.groupNull(parent)) {
+			if (EntityUtils.groupRoot(parent)) {
 				return diagram.getChildrenGroups(group);
 			}
 			return diagram.getChildrenGroups(parent);
@@ -153,7 +153,7 @@ public final class GroupPngMakerState {
 				subUrls.addAll(ent.getUrls());
 			}
 			final Stereotype stereotype = group.getStereotype();
-			final boolean withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
+			final boolean withSymbol = stereotype != null && stereotype.isWithOOSymbol();
 
 			return new InnerStateAutonom(svek2.createFile(), title, attribute, borderColor, backColor,
 					skinParam.shadowing(), subUrls, group.getUrls(), withSymbol);

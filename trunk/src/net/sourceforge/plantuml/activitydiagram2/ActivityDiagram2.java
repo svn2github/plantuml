@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.UniqueSequence;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -153,15 +154,15 @@ public class ActivityDiagram2 extends CucaDiagram {
 		return null;
 	}
 
-	private String getAutoCode() {
-		return "ac" + UniqueSequence.getValue();
+	private Code getAutoCode() {
+		return Code.of("ac" + UniqueSequence.getValue());
 	}
 
 	public void start() {
 		if (waitings.size() != 0) {
 			throw new IllegalStateException();
 		}
-		this.waitings.add(createLeaf("start", StringUtils.getWithNewlines("start"), LeafType.CIRCLE_START));
+		this.waitings.add(createLeaf(Code.of("start"), StringUtils.getWithNewlines("start"), LeafType.CIRCLE_START));
 	}
 
 	public void startIf(String test, String when) {
@@ -255,7 +256,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() == 0) {
 			throw new IllegalStateException();
 		}
-		final IEntity act = getOrCreateLeaf("end", LeafType.CIRCLE_END);
+		final IEntity act = getOrCreateLeaf(Code.of("end"), LeafType.CIRCLE_END);
 		afterAdd(act, direction);
 	}
 

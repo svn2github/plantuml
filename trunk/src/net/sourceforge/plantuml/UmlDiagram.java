@@ -28,11 +28,12 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8606 $
+ * Revision $Revision: 9072 $
  *
  */
 package net.sourceforge.plantuml;
 
+import java.awt.Font;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -44,16 +45,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import net.sourceforge.plantuml.flashcode.FlashCodeFactory;
 import net.sourceforge.plantuml.flashcode.FlashCodeUtils;
+import net.sourceforge.plantuml.graphic.GraphicStrings;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.mjpeg.MJPEGGenerator;
 import net.sourceforge.plantuml.pdf.PdfConverter;
 import net.sourceforge.plantuml.ugraphic.Sprite;
+import net.sourceforge.plantuml.ugraphic.UFont;
 
 public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 
@@ -200,7 +205,36 @@ public abstract class UmlDiagram extends AbstractPSystem implements PSystem {
 			// return;*
 			throw new UnsupportedOperationException();
 		}
-		lastInfo = exportDiagramInternal(os, cmap, index, fileFormatOption, flashcodes);
+		try {
+			lastInfo = exportDiagramInternal(os, cmap, index, fileFormatOption, flashcodes);
+		} catch (Exception e) {
+			exportDiagramError(os, e, fileFormatOption);
+		}
+	}
+
+	private void exportDiagramError(OutputStream os, Exception exception, FileFormatOption fileFormat)
+			throws IOException {
+		final UFont font = new UFont("SansSerif", Font.PLAIN, 12);
+		final List<String> strings = new ArrayList<String>();
+		strings.add("An error has occured : " + exception);
+		strings.add(" ");
+		strings.add("PlantUML cannot parse result from dot/GraphViz.");
+		strings.add(" ");
+		strings.add("This may be caused by :");
+		strings.add(" - a bug in PlantUML");
+		strings.add(" - a problem in GraphViz");
+		strings.add(" ");
+		strings.add("You should send this diagram and this image to <b>plantuml@gmail.com</b> to solve this issue.");
+		strings.add("You can try to turn arround this issue by simplifing your diagram.");
+		strings.add(" ");
+		strings.add(exception.toString());
+		for (StackTraceElement ste : exception.getStackTrace()) {
+			strings.add("  " + ste.toString());
+
+		}
+		final GraphicStrings graphicStrings = new GraphicStrings(strings, font, HtmlColorUtils.BLACK,
+				HtmlColorUtils.WHITE, false);
+		graphicStrings.writeImage(os, fileFormat);
 	}
 
 	private FlashCodeUtils getFlashCodeUtils() {

@@ -43,6 +43,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 
+import net.sourceforge.plantuml.Log;
+
 public class DriverShadowedG2d {
 
 	private ConvolveOp getConvolveOp(int blurRadius, double dpiFactor) {
@@ -74,29 +76,35 @@ public class DriverShadowedG2d {
 		final Rectangle2D bounds = shape.getBounds2D();
 		final double ww = bounds.getMaxX() - bounds.getMinX();
 		final double hh = bounds.getMaxY() - bounds.getMinY();
-//		final double ww = bounds.getMaxX();
-//		final double hh = bounds.getMaxY();
+
 		final double w = (ww + deltaShadow * 2 + 6) * dpiFactor;
 		final double h = (hh + deltaShadow * 2 + 6) * dpiFactor;
-		BufferedImage destination = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
-		final Graphics2D gg = destination.createGraphics();
-		gg.scale(dpiFactor, dpiFactor);
-		gg.translate(deltaShadow - bounds.getMinX(), deltaShadow - bounds.getMinY());
-		final boolean isLine = shape instanceof Line2D.Double;
-		if (isLine) {
-			gg.setColor(colorLine);
-			gg.draw(shape);
-		} else {
-			gg.setColor(color);
-			gg.fill(shape);
+		BufferedImage destination = null;
+		try {
+			destination = new BufferedImage((int) w, (int) h, BufferedImage.TYPE_INT_ARGB);
+			final Graphics2D gg = destination.createGraphics();
+			gg.scale(dpiFactor, dpiFactor);
+			gg.translate(deltaShadow - bounds.getMinX(), deltaShadow - bounds.getMinY());
+			final boolean isLine = shape instanceof Line2D.Double;
+			if (isLine) {
+				gg.setColor(colorLine);
+				gg.draw(shape);
+			} else {
+				gg.setColor(color);
+				gg.fill(shape);
+			}
+			gg.dispose();
+
+			final ConvolveOp simpleBlur = getConvolveOp(6, dpiFactor);
+			destination = simpleBlur.filter(destination, null);
+		} catch (OutOfMemoryError error) {
+			Log.info("Warning: Cannot draw shadow, image too big.");
 		}
-		gg.dispose();
-		// final ConvolveOp simpleBlur = getConvolveOp(isLine ? 5 : 6, dpiFactor);
-		final ConvolveOp simpleBlur = getConvolveOp(6, dpiFactor);
-		destination = simpleBlur.filter(destination, null);
-		final AffineTransform at = g2d.getTransform();
-		g2d.scale(1 / dpiFactor, 1 / dpiFactor);
-		g2d.drawImage(destination, (int) (bounds.getMinX() * dpiFactor), (int) (bounds.getMinY() * dpiFactor), null);
-		g2d.setTransform(at);
+		if (destination != null) {
+			final AffineTransform at = g2d.getTransform();
+			g2d.scale(1 / dpiFactor, 1 / dpiFactor);
+			g2d.drawImage(destination, (int) (bounds.getMinX() * dpiFactor), (int) (bounds.getMinY() * dpiFactor), null);
+			g2d.setTransform(at);
+		}
 	}
 }

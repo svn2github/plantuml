@@ -34,11 +34,14 @@
 package net.sourceforge.plantuml.statediagram.command;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
@@ -60,13 +63,15 @@ public class CommandCreateState2 extends SingleLineCommand2<StateDiagram> {
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg2) {
-		final String code = arg2.get("CODE", 0);
+		final Code code = Code.of(arg2.get("CODE", 0));
 		final String display = arg2.get("DISPLAY", 0);
 		final IEntity ent = getSystem().getOrCreateClass(code);
 		ent.setDisplay(StringUtils.getWithNewlines(display));
@@ -74,6 +79,12 @@ public class CommandCreateState2 extends SingleLineCommand2<StateDiagram> {
 		final String stereotype = arg2.get("STEREOTYPE", 0);
 		if (stereotype != null) {
 			ent.setStereotype(new Stereotype(stereotype));
+		}
+		final String urlString = arg2.get("URL", 0);
+		if (urlString != null) {
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url url = urlBuilder.getUrl(urlString);
+			ent.addUrl(url);
 		}
 		final String color = arg2.get("STEREOTYPE", 0);
 		if (color != null) {

@@ -34,12 +34,15 @@
 package net.sourceforge.plantuml.statediagram.command;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -69,6 +72,8 @@ public class CommandCreatePackageState extends SingleLineCommand2<StateDiagram> 
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("STEREOTYPE", "(\\<\\<.*\\>\\>)?"), //
 				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+)?"), //
 				new RegexLeaf("(?:\\s*\\{|\\s+begin)$"));
 	}
@@ -83,15 +88,21 @@ public class CommandCreatePackageState extends SingleLineCommand2<StateDiagram> 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final IGroup currentPackage = getSystem().getCurrentGroup();
-		final String code = getNotNull(arg, "CODE1", "CODE2");
+		final Code code = Code.of(getNotNull(arg, "CODE1", "CODE2"));
 		String display = getNotNull(arg, "DISPLAY1", "DISPLAY2");
 		if (display == null) {
-			display = code;
+			display = code.getCode();
 		}
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.STATE, currentPackage);
 		final String stereotype = arg.get("STEREOTYPE", 0);
 		if (stereotype != null) {
 			p.setStereotype(new Stereotype(stereotype));
+		}
+		final String urlString = arg.get("URL", 0);
+		if (urlString != null) {
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url url = urlBuilder.getUrl(urlString);
+			p.addUrl(url);
 		}
 		final String color = arg.get("COLOR", 0);
 		if (HtmlColorUtils.getColorIfValid(color) != null) {

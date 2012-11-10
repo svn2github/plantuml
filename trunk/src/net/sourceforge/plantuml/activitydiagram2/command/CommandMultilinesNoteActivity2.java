@@ -75,7 +75,7 @@ public class CommandMultilinesNoteActivity2 extends CommandMultilines<ActivityDi
 		final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 //		final String s = StringUtils.getMergedLines(strings);
 
-		final IEntity note = getSystem().createLeaf("GMN" + UniqueSequence.getValue(), strings, LeafType.NOTE);
+		final IEntity note = getSystem().createLeaf(UniqueSequence.getCode("GMN"), strings, LeafType.NOTE);
 		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get(1)));
 
 		final Link link;

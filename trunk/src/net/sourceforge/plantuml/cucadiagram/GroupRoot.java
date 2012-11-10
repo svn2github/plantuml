@@ -56,7 +56,7 @@ public class GroupRoot implements IGroup {
 	public Collection<ILeaf> getLeafsDirect() {
 		final List<ILeaf> result = new ArrayList<ILeaf>();
 		for (ILeaf ent : entityFactory.getLeafs().values()) {
-			if (EntityUtils.equals(ent.getParentContainer(), this)) {
+			if (ent.getParentContainer() == this) {
 				result.add(ent);
 			}
 		}
@@ -119,8 +119,8 @@ public class GroupRoot implements IGroup {
 
 	}
 
-	public String getCode() {
-		return "__ROOT__";
+	public Code getCode() {
+		return Code.of("__ROOT__");
 	}
 
 
@@ -165,7 +165,7 @@ public class GroupRoot implements IGroup {
 	public Collection<IGroup> zgetChildren() {
 		final List<IGroup> result = new ArrayList<IGroup>();
 		for (IGroup ent : entityFactory.getGroups().values()) {
-			if (EntityUtils.equals(ent.getParentContainer(), this)) {
+			if (ent.getParentContainer() == this) {
 				result.add(ent);
 			}
 		}

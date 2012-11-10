@@ -34,6 +34,7 @@
 package net.sourceforge.plantuml.cucadiagram.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.plantuml.cucadiagram.Bodier;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupRoot;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -52,13 +54,13 @@ import net.sourceforge.plantuml.skin.VisibilityModifier;
 
 public class EntityFactory {
 
-	private final Map<String, ILeaf> leafs = new LinkedHashMap<String, ILeaf>();
+	private final Map<Code, ILeaf> leafs = new Protect<ILeaf>(new LinkedHashMap<Code, ILeaf>());
 	private final List<Link> links = new ArrayList<Link>();
-	private final Map<String, IGroup> groups = new LinkedHashMap<String, IGroup>();
+	private final Map<Code, IGroup> groups = new Protect<IGroup>(new LinkedHashMap<Code, IGroup>());
 
 	private final IGroup rootGroup = new GroupRoot(this);
 
-	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType entityType,
+	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType entityType,
 			IGroup parentContainer, Set<VisibilityModifier> hides) {
 		if (entityType == null) {
 			throw new IllegalArgumentException();
@@ -69,8 +71,8 @@ public class EntityFactory {
 		return result;
 	}
 
-	public IGroup createGroup(String code, List<? extends CharSequence> display, String namespace,
-			GroupType groupType, IGroup parentContainer, Set<VisibilityModifier> hides) {
+	public IGroup createGroup(Code code, List<? extends CharSequence> display, String namespace, GroupType groupType,
+			IGroup parentContainer, Set<VisibilityModifier> hides) {
 		if (groupType == null) {
 			throw new IllegalArgumentException();
 		}
@@ -86,7 +88,7 @@ public class EntityFactory {
 		return rootGroup;
 	}
 
-	public final Map<String, ILeaf> getLeafs() {
+	public final Map<Code, ILeaf> getLeafs() {
 		return Collections.unmodifiableMap(leafs);
 	}
 
@@ -94,7 +96,7 @@ public class EntityFactory {
 		leafs.put(entity.getCode(), entity);
 	}
 
-	void removeLeaf(String code) {
+	void removeLeaf(Code code) {
 		final IEntity removed = leafs.remove(code);
 		if (removed == null) {
 			throw new IllegalArgumentException();
@@ -105,14 +107,14 @@ public class EntityFactory {
 		groups.put(group.getCode(), group);
 	}
 
-	void removeGroup(String code) {
+	void removeGroup(Code code) {
 		final IEntity removed = groups.remove(code);
 		if (removed == null) {
 			throw new IllegalArgumentException();
 		}
 	}
 
-	public final Map<String, IGroup> getGroups() {
+	public final Map<Code, IGroup> getGroups() {
 		return Collections.unmodifiableMap(groups);
 	}
 
@@ -131,7 +133,7 @@ public class EntityFactory {
 		}
 	}
 
-	public IGroup muteToGroup(String code, String namespace, GroupType type, IGroup parent) {
+	public IGroup muteToGroup(Code code, String namespace, GroupType type, IGroup parent) {
 		final ILeaf leaf = getLeafs().get(code);
 		((EntityImpl) leaf).muteToGroup(namespace, type, parent);
 		final IGroup result = (IGroup) leaf;
@@ -139,4 +141,74 @@ public class EntityFactory {
 		return result;
 	}
 
+	static class Protect<O extends Object> implements Map<Code, O> {
+
+		private final Map<Code, O> m;
+
+		public Protect(Map<Code, O> data) {
+			this.m = data;
+		}
+
+		public O remove(Object key) {
+			if (key instanceof Code == false) {
+				throw new IllegalArgumentException();
+			}
+			return m.remove(key);
+		}
+
+		public O get(Object key) {
+			if (key instanceof Code == false) {
+				throw new IllegalArgumentException();
+			}
+			return m.get(key);
+		}
+
+		public Set<Code> keySet() {
+			return m.keySet();
+		}
+
+		public void putAll(Map<? extends Code, ? extends O> m) {
+			this.m.putAll(m);
+		}
+
+		public boolean containsKey(Object key) {
+			if (key instanceof Code == false) {
+				throw new IllegalArgumentException();
+			}
+			return m.containsKey(key);
+		}
+
+		public boolean isEmpty() {
+			return m.isEmpty();
+		}
+
+		public O put(Code key, O value) {
+			if (key instanceof Code == false) {
+				throw new IllegalArgumentException();
+			}
+			return m.put(key, value);
+		}
+
+		public boolean containsValue(Object value) {
+			return m.containsValue(value);
+		}
+
+		public Set<Map.Entry<Code, O>> entrySet() {
+			return m.entrySet();
+		}
+
+		public Collection<O> values() {
+			return m.values();
+		}
+
+		public void clear() {
+			m.clear();
+
+		}
+
+		public int size() {
+			return m.size();
+		}
+
+	}
 }

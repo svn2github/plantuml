@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -81,7 +82,7 @@ public final class CucaDiagramHtmlMaker {
 	private void printAllType(final PrintWriter pw, LeafType type) throws IOException {
 		if (hasSome(type)) {
 			pw.println("<h2>" + type.toHtml() + "</h2>");
-			for (Map.Entry<String, IEntity> ent : new TreeMap<String, IEntity>(diagram.getLeafs()).entrySet()) {
+			for (Map.Entry<Code, IEntity> ent : new TreeMap<Code, IEntity>(diagram.getLeafs()).entrySet()) {
 				if (ent.getValue().getEntityType() != type) {
 					continue;
 				}
@@ -106,7 +107,7 @@ public final class CucaDiagramHtmlMaker {
 		final File f = new File(dir, LinkHtmlPrinter.urlOf(entity));
 		final PrintWriter pw = new PrintWriter(f);
 		pw.println("<html>");
-		pw.println("<title>" + StringUtils.unicodeForHtml(entity.getCode()) + "</title>");
+		pw.println("<title>" + StringUtils.unicodeForHtml(entity.getCode().getCode()) + "</title>");
 		pw.println("<h2>" + entity.getEntityType().toHtml() + "</h2>");
 		for (CharSequence s : entity.getDisplay()) {
 			pw.println(StringUtils.unicodeForHtml(s.toString()));

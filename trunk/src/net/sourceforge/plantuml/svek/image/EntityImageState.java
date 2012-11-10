@@ -80,7 +80,7 @@ public class EntityImageState extends AbstractEntityImage {
 	public EntityImageState(IEntity entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
-		this.withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
+		this.withSymbol = stereotype != null && stereotype.isWithOOSymbol();
 
 		this.desc = TextBlockUtils.create(entity.getDisplay(),
 				new FontConfiguration(getFont(FontParam.STATE, stereotype), getFontColor(FontParam.STATE, stereotype)),

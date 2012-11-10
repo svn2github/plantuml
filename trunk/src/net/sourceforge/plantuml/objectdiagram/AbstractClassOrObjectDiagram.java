@@ -38,6 +38,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -88,7 +89,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 
 	private final List<Association> assocations = new ArrayList<Association>();
 
-	public boolean associationClass(int mode, String clName1, String clName2, IEntity associed, LinkType linkType,
+	public boolean associationClass(int mode, Code clName1, Code clName2, IEntity associed, LinkType linkType,
 			String label) {
 		final IEntity entity1 = getOrCreateClass(clName1);
 		final IEntity entity2 = getOrCreateClass(clName2);
@@ -133,7 +134,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 			this.entity1 = entity1;
 			this.entity2 = entity2;
 			this.associed = associed;
-			point = getOrCreateLeaf("apoint" + UniqueSequence.getValue(), LeafType.POINT_FOR_ASSOCIATION);
+			point = getOrCreateLeaf(UniqueSequence.getCode("apoint"), LeafType.POINT_FOR_ASSOCIATION);
 
 		}
 

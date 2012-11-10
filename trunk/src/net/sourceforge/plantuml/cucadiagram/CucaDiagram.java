@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8772 $
+ * Revision $Revision: 9064 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -95,7 +95,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return false;
 	}
 
-	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
+	public ILeaf getOrCreateLeaf(Code code, LeafType defaultType) {
 		ILeaf result = getLeafs().get(code);
 		if (result == null) {
 			result = createLeafInternal(code, StringUtils.getWithNewlines(code), defaultType, getCurrentGroup());
@@ -103,14 +103,14 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return result;
 	}
 
-	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType type) {
 		if (getLeafs().containsKey(code)) {
 			throw new IllegalArgumentException("Already known: " + code);
 		}
 		return createLeafInternal(code, display, type, getCurrentGroup());
 	}
 
-	final protected ILeaf createLeafInternal(String code, List<? extends CharSequence> display, LeafType type,
+	final protected ILeaf createLeafInternal(Code code, List<? extends CharSequence> display, LeafType type,
 			IGroup group) {
 		if (display == null) {
 			display = StringUtils.getWithNewlines(code);
@@ -120,28 +120,28 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return leaf;
 	}
 
-	public boolean leafExist(String code) {
+	public boolean leafExist(Code code) {
 		return getLeafs().containsKey(code);
 	}
 
 	final public Collection<IGroup> getChildrenGroups(IGroup parent) {
 		final Collection<IGroup> result = new ArrayList<IGroup>();
 		for (IGroup gg : getGroups(false)) {
-			if (EntityUtils.equals(gg.getParentContainer(), parent)) {
+			if (gg.getParentContainer() == parent) {
 				result.add(gg);
 			}
 		}
 		return Collections.unmodifiableCollection(result);
 	}
 
-	public final IGroup getOrCreateGroup(String code, List<? extends CharSequence> display, String namespace,
+	public final IGroup getOrCreateGroup(Code code, List<? extends CharSequence> display, String namespace,
 			GroupType type, IGroup parent) {
 		final IGroup g = getOrCreateGroupInternal(code, display, namespace, type, parent);
 		currentGroup = g;
 		return g;
 	}
 
-	protected final IGroup getOrCreateGroupInternal(String code, List<? extends CharSequence> display,
+	protected final IGroup getOrCreateGroupInternal(Code code, List<? extends CharSequence> display,
 			String namespace, GroupType type, IGroup parent) {
 		IGroup result = entityFactory.getGroups().get(code);
 		if (result != null) {
@@ -161,7 +161,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return currentGroup;
 	}
 
-	public final IGroup getGroup(String code) {
+	public final IGroup getGroup(Code code) {
 		final IGroup p = entityFactory.getGroups().get(code);
 		if (p == null) {
 			throw new IllegalArgumentException();
@@ -171,14 +171,14 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 	}
 
 	public void endGroup() {
-		if (EntityUtils.groupNull(currentGroup)) {
+		if (EntityUtils.groupRoot(currentGroup)) {
 			Log.error("No parent group");
 			return;
 		}
 		currentGroup = currentGroup.getParentContainer();
 	}
 
-	public final boolean isGroup(String code) {
+	public final boolean isGroup(Code code) {
 		return entityFactory.getGroups().containsKey(code);
 	}
 
@@ -197,7 +197,7 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	}
 
-	final public Map<String, ILeaf> getLeafs() {
+	final public Map<Code, ILeaf> getLeafs() {
 		return entityFactory.getLeafs();
 	}
 
@@ -434,10 +434,10 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	final public boolean isEmpty(IGroup gToTest) {
 		for (IEntity gg : getGroups(false)) {
-			if (EntityUtils.equals(gg, gToTest)) {
+			if (gg == gToTest) {
 				continue;
 			}
-			if (EntityUtils.equals(gg.getParentContainer(), gToTest)) {
+			if (gg.getParentContainer() == gToTest) {
 				return false;
 			}
 		}

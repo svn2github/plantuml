@@ -36,17 +36,7 @@ package net.sourceforge.plantuml.cucadiagram;
 
 public abstract class EntityUtils {
 
-	public static boolean equals(IEntity g1, IEntity g2) {
-		if (g1 == null) {
-			throw new IllegalStateException("g1 null");
-		}
-		if (g2 == null) {
-			throw new IllegalStateException("g2 null");
-		}
-		return g1 == g2;
-	}
-
-	public static boolean groupNull(IGroup g) {
+	public static boolean groupRoot(IGroup g) {
 		if (g == null) {
 			throw new IllegalStateException();
 		}
@@ -61,8 +51,8 @@ public abstract class EntityUtils {
 		if (groupToBeTested.isGroup() == false) {
 			throw new IllegalArgumentException();
 		}
-		while (EntityUtils.groupNull(groupToBeTested) == false) {
-			if (EntityUtils.equals(groupToBeTested, parentGroup)) {
+		while (EntityUtils.groupRoot(groupToBeTested) == false) {
+			if (groupToBeTested == parentGroup) {
 				return true;
 			}
 			groupToBeTested = groupToBeTested.getParentContainer();

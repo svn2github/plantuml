@@ -98,8 +98,8 @@ class USymbolNode extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width,
-			final double height, final SymbolContext symbolContext) {
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width, final double height,
+			final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {
@@ -107,6 +107,11 @@ class USymbolNode extends USymbol {
 				symbolContext.apply(ug);
 				drawNode(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
 				title.drawU(ug, x + 3, y + 13);
+
+				final Dimension2D dimStereo = stereotype.calculateDimension(ug.getStringBounder());
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+				final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+				stereotype.drawU(ug, x + posStereo, y + dimTitle.getHeight() + 13);
 
 			}
 

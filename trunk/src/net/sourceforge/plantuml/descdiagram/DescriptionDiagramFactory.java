@@ -33,7 +33,9 @@
  */
 package net.sourceforge.plantuml.descdiagram;
 
-import net.sourceforge.plantuml.DiagramType;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.plantuml.classdiagram.command.CommandUrl;
 import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
 import net.sourceforge.plantuml.command.CommandEndPackage;
@@ -45,6 +47,12 @@ import net.sourceforge.plantuml.command.note.FactoryNoteOnEntityCommand;
 import net.sourceforge.plantuml.command.note.FactoryNoteOnLinkCommand;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
+import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.Link;
+import net.sourceforge.plantuml.cucadiagram.LinkDecor;
+import net.sourceforge.plantuml.cucadiagram.LinkType;
 import net.sourceforge.plantuml.descdiagram.command.CommandCreateElementFull;
 import net.sourceforge.plantuml.descdiagram.command.CommandLinkElement;
 import net.sourceforge.plantuml.descdiagram.command.CommandPackageWithUSymbol;
@@ -105,4 +113,53 @@ public class DescriptionDiagramFactory extends AbstractUmlSystemCommandFactory {
 
 
 	}
+	
+	@Override
+	public String checkFinalError() {
+		for (IGroup g : system.getGroups(true)) {
+			final List<ILeaf> standalones = new ArrayList<ILeaf>();
+			for (ILeaf ent : g.getLeafsDirect()) {
+				if (system.isStandalone(ent)) {
+					standalones.add(ent);
+				}
+			}
+			if (standalones.size() < 3) {
+				continue;
+			}
+			putInSquare(standalones);
+		}
+		return super.checkFinalError();
+	}
+
+	private void putInSquare(List<ILeaf> standalones) {
+		final LinkType linkType = new LinkType(LinkDecor.NONE, LinkDecor.NONE).getInvisible();
+		final int branch = computeBranch(standalones.size());
+		int headBranch = 0;
+		for (int i = 1; i < standalones.size(); i++) {
+			final int dist = i - headBranch;
+			final IEntity ent2 = standalones.get(i);
+			final Link link;
+			if (dist == branch) {
+				final IEntity ent1 = standalones.get(headBranch);
+				link = new Link(ent1, ent2, linkType, null, 2);
+				headBranch = i;
+			} else {
+				final IEntity ent1 = standalones.get(i - 1);
+				link = new Link(ent1, ent2, linkType, null, 1);
+			}
+			system.addLink(link);
+		}
+
+	}
+	
+	static int computeBranch(int size) {
+		final double sqrt = Math.sqrt(size);
+		final int r = (int) sqrt;
+		if (r * r == size) {
+			return r;
+		}
+		return r + 1;
+	}
+
+
 }

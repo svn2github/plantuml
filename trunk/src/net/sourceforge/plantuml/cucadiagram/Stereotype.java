@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 9024 $
+ * Revision $Revision: 9110 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -46,7 +46,6 @@ import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.svek.PackageStyle;
 import net.sourceforge.plantuml.ugraphic.UFont;
-
 
 public class Stereotype implements CharSequence, Hideable {
 	private final static Pattern circleChar = Pattern
@@ -133,8 +132,15 @@ public class Stereotype implements CharSequence, Hideable {
 		return sprite;
 	}
 
+	public boolean isWithOOSymbol() {
+		return "<<O-O>>".equalsIgnoreCase(label);
+	}
+
 	public String getLabel() {
 		assert label == null || label.length() > 0;
+		if (isWithOOSymbol()) {
+			return null;
+		}
 		return label;
 	}
 
@@ -174,12 +180,12 @@ public class Stereotype implements CharSequence, Hideable {
 	}
 
 	public List<String> getLabels() {
-		if (label == null) {
+		if (getLabel() == null) {
 			return null;
 		}
 		final List<String> result = new ArrayList<String>();
 		final Pattern p = Pattern.compile("\\<\\<.*?\\>\\>");
-		final Matcher m = p.matcher(label);
+		final Matcher m = p.matcher(getLabel());
 		while (m.find()) {
 			result.add(m.group());
 		}
@@ -187,7 +193,7 @@ public class Stereotype implements CharSequence, Hideable {
 	}
 
 	public PackageStyle getPackageStyle() {
-		if (automaticPackageStyle==false) {
+		if (automaticPackageStyle == false) {
 			return null;
 		}
 		for (PackageStyle p : EnumSet.allOf(PackageStyle.class)) {
@@ -201,5 +207,6 @@ public class Stereotype implements CharSequence, Hideable {
 	public boolean isHidden() {
 		return "<<hidden>>".equalsIgnoreCase(label);
 	}
+
 
 }

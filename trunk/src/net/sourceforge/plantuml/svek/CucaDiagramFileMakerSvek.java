@@ -100,13 +100,10 @@ public final class CucaDiagramFileMakerSvek {
 			FileFormatOption fileFormatOption) throws IOException {
 		try {
 			return createFileInternal(os, dotStrings, fileFormatOption);
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			throw new IOException(e);
 		}
-		return null;
-
 	}
 
 	private CucaDiagramFileMakerResult createFileInternal(OutputStream os, List<String> dotStrings,

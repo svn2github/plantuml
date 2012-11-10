@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8475 $
+ * Revision $Revision: 9063 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -37,6 +37,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -48,7 +49,7 @@ import net.sourceforge.plantuml.objectdiagram.AbstractClassOrObjectDiagram;
 public class ClassDiagram extends AbstractClassOrObjectDiagram {
 
 	@Override
-	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
+	public ILeaf getOrCreateLeaf(Code code, LeafType defaultType) {
 		assert defaultType == LeafType.ABSTRACT_CLASS || defaultType == LeafType.CLASS
 				|| defaultType == LeafType.INTERFACE || defaultType == LeafType.ENUM
 				|| defaultType == LeafType.LOLLIPOP || defaultType == LeafType.POINT_FOR_ASSOCIATION;
@@ -60,7 +61,7 @@ public class ClassDiagram extends AbstractClassOrObjectDiagram {
 	}
 
 	@Override
-	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType type) {
 		if (type != LeafType.ABSTRACT_CLASS && type != LeafType.CLASS && type != LeafType.INTERFACE
 				&& type != LeafType.ENUM && type != LeafType.LOLLIPOP) {
 			return super.createLeaf(code, display, type);
@@ -72,26 +73,26 @@ public class ClassDiagram extends AbstractClassOrObjectDiagram {
 		return createEntityWithNamespace(code, display, type);
 	}
 
-	private ILeaf createEntityWithNamespace(String fullyCode, List<? extends CharSequence> display, LeafType type) {
+	private ILeaf createEntityWithNamespace(Code fullyCode, List<? extends CharSequence> display, LeafType type) {
 		IGroup group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (EntityUtils.groupNull(group) || group.getCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
+		if (namespace != null && (EntityUtils.groupRoot(group) || group.getCode().getCode().equals(namespace) == false)) {
+			group = getOrCreateGroupInternal(Code.of(namespace), StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
 		}
 		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode)) : display, type, group);
 	}
 
 	@Override
-	public final boolean leafExist(String code) {
+	public final boolean leafExist(Code code) {
 		return super.leafExist(getFullyQualifiedCode(code));
 	}
 
 	@Override
-	public ILeaf getOrCreateClass(String code) {
+	public ILeaf getOrCreateClass(Code code) {
 		return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.CLASS);
 	}
 
-	final public IEntity getOrCreateClass(String code, LeafType type) {
+	final public IEntity getOrCreateClass(Code code, LeafType type) {
 		if (type != LeafType.ABSTRACT_CLASS && type != LeafType.CLASS && type != LeafType.INTERFACE
 				&& type != LeafType.ENUM && type != LeafType.LOLLIPOP) {
 			throw new IllegalArgumentException();

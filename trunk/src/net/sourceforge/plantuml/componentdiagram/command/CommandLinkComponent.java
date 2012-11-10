@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -78,8 +79,8 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String g1 = arg.get("G1", 0);
-		final String g2 = arg.get("G2", 0);
+		final Code g1 = Code.of(arg.get("G1", 0));
+		final Code g2 = Code.of(arg.get("G2", 0));
 
 		if (getSystem().isGroup(g1) && getSystem().isGroup(g2)) {
 			return executePackageLink(arg);
@@ -134,8 +135,8 @@ public class CommandLinkComponent extends SingleLineCommand2<ComponentDiagram> {
 	}
 
 	private CommandExecutionResult executePackageLink(RegexResult arg) {
-		final String g1 = arg.get("G1", 0);
-		final String g2 = arg.get("G2", 0);
+		final Code g1 = Code.of(arg.get("G1", 0));
+		final Code g2 = Code.of(arg.get("G2", 0));
 
 		final IEntity cl1 = getSystem().getGroup(g1);
 		final IEntity cl2 = getSystem().getGroup(g2);

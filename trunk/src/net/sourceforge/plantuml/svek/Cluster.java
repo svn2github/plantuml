@@ -86,7 +86,8 @@ public class Cluster implements Moveable {
 
 	private int titleAndAttributeWidth;
 	private int titleAndAttributeHeight;
-	private TextBlock title;
+	private TextBlock ztitle;
+	private TextBlock zstereo;
 
 	private double xTitle;
 	private double yTitle;
@@ -238,11 +239,12 @@ public class Cluster implements Moveable {
 	}
 
 	public Cluster createChild(IGroup g, int titleAndAttributeWidth, int titleAndAttributeHeight, TextBlock title,
-			ColorSequence colorSequence, ISkinParam skinParam) {
+			TextBlock stereo, ColorSequence colorSequence, ISkinParam skinParam) {
 		final Cluster child = new Cluster(this, g, colorSequence, skinParam);
 		child.titleAndAttributeWidth = titleAndAttributeWidth;
 		child.titleAndAttributeHeight = titleAndAttributeHeight;
-		child.title = title;
+		child.ztitle = title;
+		child.zstereo = stereo;
 		this.children.add(child);
 		return child;
 	}
@@ -293,10 +295,11 @@ public class Cluster implements Moveable {
 		if (style == null) {
 			style = dotData.getSkinParam().getPackageStyle();
 		}
-		if (title != null) {
+		if (ztitle != null || zstereo != null) {
 			final HtmlColor stateBack = getStateBackColor(getBackColor(), dotData.getSkinParam(),
 					group.getStereotype() == null ? null : group.getStereotype().getLabel());
-			final ClusterDecoration decoration = new ClusterDecoration(style, group.getUSymbol(), title, stateBack, minX, minY, maxX, maxY);
+			final ClusterDecoration decoration = new ClusterDecoration(style, group.getUSymbol(), ztitle, zstereo,
+					stateBack, minX, minY, maxX, maxY);
 			decoration.drawU(ug, x, y, borderColor, dotData.getSkinParam().shadowing());
 			return;
 		}
@@ -337,13 +340,13 @@ public class Cluster implements Moveable {
 		maxX = forced.getMaxX();
 		maxY = forced.getMaxY();
 		yTitle = minY + IEntityImage.MARGIN;
-		final double widthTitle = title.calculateDimension(stringBounder).getWidth();
+		final double widthTitle = ztitle.calculateDimension(stringBounder).getWidth();
 		xTitle = minX + ((maxX - minX - widthTitle) / 2);
 	}
 
 	private void drawSwinLinesState(UGraphic ug, double x, double y, HtmlColor borderColor, DotData dotData) {
-		if (title != null) {
-			title.drawU(ug, x + xTitle, y);
+		if (ztitle != null) {
+			ztitle.drawU(ug, x + xTitle, y);
 		}
 		final ULine line = new ULine(0, maxY - minY);
 		ug.getParam().setColor(borderColor);
@@ -359,10 +362,10 @@ public class Cluster implements Moveable {
 	private void drawUState(UGraphic ug, final double x, final double y, HtmlColor borderColor, DotData dotData) {
 		final Dimension2D total = new Dimension2DDouble(maxX - minX, maxY - minY);
 		final double suppY;
-		if (title == null) {
+		if (ztitle == null) {
 			suppY = 0;
 		} else {
-			suppY = title.calculateDimension(ug.getStringBounder()).getHeight() + IEntityImage.MARGIN
+			suppY = ztitle.calculateDimension(ug.getStringBounder()).getHeight() + IEntityImage.MARGIN
 					+ IEntityImage.MARGIN_LINE;
 		}
 
@@ -378,8 +381,8 @@ public class Cluster implements Moveable {
 				+ (attributeHeight > 0 ? IEntityImage.MARGIN : 0), borderColor, stateBack, background);
 		r.drawU(ug, x + minX, y + minY, dotData.getSkinParam().shadowing());
 
-		if (title != null) {
-			title.drawU(ug, x + xTitle, y + yTitle);
+		if (ztitle != null) {
+			ztitle.drawU(ug, x + xTitle, y + yTitle);
 		}
 
 		if (attributeHeight > 0) {
@@ -388,7 +391,7 @@ public class Cluster implements Moveable {
 		}
 
 		final Stereotype stereotype = group.getStereotype();
-		final boolean withSymbol = stereotype != null && "<<O-O>>".equalsIgnoreCase(stereotype.getLabel());
+		final boolean withSymbol = stereotype != null && stereotype.isWithOOSymbol();
 		if (withSymbol) {
 			ug.getParam().setColor(borderColor);
 			EntityImageState.drawSymbol(ug, x + maxX, y + maxY);
@@ -713,7 +716,7 @@ public class Cluster implements Moveable {
 	}
 
 	private final HtmlColor getBackColor() {
-		if (EntityUtils.groupNull(group)) {
+		if (EntityUtils.groupRoot(group)) {
 			return null;
 		}
 		final HtmlColor result = group.getSpecificBackColor();

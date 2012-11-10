@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8475 $
+ * Revision $Revision: 9061 $
  *
  */
 package net.sourceforge.plantuml.classdiagram.command;
@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 
@@ -49,7 +50,7 @@ public class CommandAddMethod extends SingleLineCommand<ClassDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntity entity = getSystem().getOrCreateClass(arg.get(0));
+		final IEntity entity = getSystem().getOrCreateClass(Code.of(arg.get(0)));
 
 		final String field = arg.get(1);
 		if (field.length() > 0 && VisibilityModifier.isVisibilityCharacter(field.charAt(0))) {

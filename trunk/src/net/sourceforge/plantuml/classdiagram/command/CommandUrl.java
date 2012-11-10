@@ -35,26 +35,28 @@ package net.sourceforge.plantuml.classdiagram.command;
 
 import java.util.List;
 
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 
 public class CommandUrl extends SingleLineCommand<AbstractEntityDiagram> {
 
 	public CommandUrl(AbstractEntityDiagram diagram) {
 		super(diagram, "(?i)^url\\s*(?:of|for)?\\s+([\\p{L}0-9_.]+|\"[^\"]+\")\\s+(?:is)?\\s*("
-				+ StringUtils.URL_PATTERN + ")$");
+				+ UrlBuilder.getRegexp() + ")$");
 	}
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final String code = arg.get(0);
+		final Code code = Code.of(arg.get(0));
 		final String urlString = arg.get(1);
 		final IEntity entity = getSystem().getOrCreateClass(code);
-		final Url url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), urlString, true);
+		final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+		final Url url = urlBuilder.getUrl(urlString);
 		entity.addUrl(url);
 		return CommandExecutionResult.ok();
 	}

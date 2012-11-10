@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.plantuml.Direction;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -46,6 +47,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -78,7 +80,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BACKCOLOR", "(#\\w+)?"), //
 				new RegexLeaf("\\s*"), //
-				new RegexLeaf("URL", "(" + StringUtils.URL_PATTERN + ")?"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
 				new RegexLeaf("ARROW", "([-=.]+(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?[-=.]*\\>)"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("BRACKET", "(?:\\[([^\\]*]+[^\\]]*)\\])?"), //
@@ -105,7 +107,8 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		final String desc0 = line0.get("DESC", 0);
 		Url urlActivity = null;
 		if (StringUtils.isNotEmpty(desc0)) {
-			urlActivity = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), desc0, true);
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			urlActivity = urlBuilder.getUrl(desc0);
 			if (urlActivity == null) {
 				sb.append(desc0);
 				sb.append("\\n");
@@ -113,7 +116,8 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		}
 		for (int i = 1; i < lines.size() - 1; i++) {
 			if (i == 1 && urlActivity == null) {
-				urlActivity = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(i), true);
+				final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+				urlActivity = urlBuilder.getUrl(lines.get(i));
 				if (urlActivity != null) {
 					continue;
 				}
@@ -134,7 +138,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		}
 
 		final String display = sb.toString();
-		final String code = lineLast.get(1) == null ? display : lineLast.get(1);
+		final Code code = Code.of(lineLast.get(1) == null ? display : lineLast.get(1));
 
 		String partition = null;
 		if (lineLast.get(3) != null) {
@@ -142,7 +146,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 			partition = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(partition);
 		}
 		if (partition != null) {
-			getSystem().getOrCreateGroup(partition, StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
+			getSystem().getOrCreateGroup(Code.of(partition), StringUtils.getWithNewlines(partition), null, GroupType.PACKAGE,
 					null);
 		}
 		final IEntity entity2 = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), LeafType.ACTIVITY);
@@ -180,7 +184,8 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 		}
 
 		if (line0.get("URL", 0) != null) {
-			final Url urlLink = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), line0.get("URL", 0), true);
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url urlLink = urlBuilder.getUrl(line0.get("URL", 0));
 			link.setUrl(urlLink);
 		}
 

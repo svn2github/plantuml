@@ -53,8 +53,6 @@ class USymbolStorage extends USymbol {
 		ug.draw(xTheoricalPosition, yTheoricalPosition, shape);
 	}
 
-
-
 	private Margin getMargin() {
 		return new Margin(10, 10, 10, 10);
 	}
@@ -84,7 +82,7 @@ class USymbolStorage extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width, final double height,
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width, final double height,
 			final SymbolContext symbolContext) {
 		return new TextBlock() {
 
@@ -92,7 +90,15 @@ class USymbolStorage extends USymbol {
 				final Dimension2D dim = calculateDimension(ug.getStringBounder());
 				symbolContext.apply(ug);
 				drawStorage(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
-				title.drawU(ug, x + 3, y + 13);
+
+				final Dimension2D dimStereo = stereotype.calculateDimension(ug.getStringBounder());
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+				stereotype.drawU(ug, x + posStereo, y + 5);
+				final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+				final double posTitle = (width - dimTitle.getWidth()) / 2;
+				title.drawU(ug, x + posTitle, y + 7 + dimStereo.getHeight());
+
+				// title.drawU(ug, x + 3, y + 13);
 
 			}
 

@@ -46,6 +46,7 @@ import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
 import net.sourceforge.plantuml.graphic.FontConfiguration;
 import net.sourceforge.plantuml.graphic.HorizontalAlignement;
+import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.StringBounder;
 import net.sourceforge.plantuml.graphic.TextBlock;
 import net.sourceforge.plantuml.graphic.TextBlockUtils;
@@ -66,13 +67,16 @@ public class EntityImageUseCase extends AbstractEntityImage {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
 
-		this.desc = TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(getFont(FontParam.USECASE,
-				stereotype), getFontColor(FontParam.USECASE, stereotype)), HorizontalAlignement.CENTER, skinParam);
+		this.desc = TextBlockUtils.create(
+				entity.getDisplay(),
+				new FontConfiguration(getFont(FontParam.USECASE, stereotype), getFontColor(FontParam.USECASE,
+						stereotype)), HorizontalAlignement.CENTER, skinParam);
 
 		if (stereotype == null || stereotype.getLabel() == null) {
 			this.stereo = null;
 		} else {
-			this.stereo = TextBlockUtils.create(StringUtils.getWithNewlines(stereotype.getLabel()),
+			this.stereo = TextBlockUtils.create(
+					StringUtils.getWithNewlines(stereotype.getLabel()),
 					new FontConfiguration(getFont(FontParam.USECASE_ACTOR_STEREOTYPE, stereotype), getFontColor(
 							FontParam.USECASE_ACTOR_STEREOTYPE, null)), HorizontalAlignement.CENTER, skinParam);
 		}
@@ -106,13 +110,17 @@ public class EntityImageUseCase extends AbstractEntityImage {
 		if (getSkinParam().shadowing()) {
 			ellipse.setDeltaShadow(3);
 		}
-		if (url.size()>0) {
+		if (url.size() > 0) {
 			ug.startUrl(url.get(0));
 		}
 
 		ug.getParam().setStroke(new UStroke(1.5));
 		ug.getParam().setColor(getColor(ColorParam.usecaseBorder, getStereo()));
-		ug.getParam().setBackcolor(getColor(ColorParam.usecaseBackground, getStereo()));
+		HtmlColor backcolor = getEntity().getSpecificBackColor();
+		if (backcolor == null) {
+			backcolor = getColor(ColorParam.usecaseBackground, getStereo());
+		}
+		ug.getParam().setBackcolor(backcolor);
 		ug.draw(xTheoricalPosition, yTheoricalPosition, ellipse);
 		ug.getParam().setStroke(new UStroke());
 
@@ -124,7 +132,7 @@ public class EntityImageUseCase extends AbstractEntityImage {
 			final double stereoX = (dimTotal.getWidth() - dimStereo.getWidth()) / 2;
 			stereo.drawU(ug, xTheoricalPosition + stereoX, yTheoricalPosition + MARGIN);
 		}
-		if (url.size()>0) {
+		if (url.size() > 0) {
 			ug.closeAction();
 		}
 

@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -45,6 +46,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -78,8 +80,11 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 						new RegexLeaf("NAME2", "((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)\\s+as\\s+\"([^\"]+)\""), //
 						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
-				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.+\\>\\>))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("\\s*\\{\\s*$"));
 	}
@@ -94,7 +99,8 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 		lines = lines.subList(1, lines.size() - 1);
 		final Url url;
 		if (lines.size() > 0) {
-			url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), lines.get(0).toString(), true);
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			url = urlBuilder.getUrl(lines.get(0).toString());
 		} else {
 			url = null;
 		}
@@ -119,7 +125,7 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 	private static void manageExtends(ClassDiagram system, RegexResult arg, final IEntity entity) {
 		if (arg.get("EXTENDS", 1) != null) {
 			final Mode mode = arg.get("EXTENDS", 1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
-			final String other = arg.get("EXTENDS", 2);
+			final Code other = Code.of(arg.get("EXTENDS", 2));
 			LeafType type2 = LeafType.CLASS;
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = LeafType.INTERFACE;
@@ -141,16 +147,16 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 	private IEntity executeArg0(RegexResult arg) {
 
 		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
-		final String code;
+		final Code code;
 		final String display;
 		if (arg.get("NAME1", 1) != null) {
-			code = arg.get("NAME1", 1);
+			code = Code.of(arg.get("NAME1", 1));
 			display = arg.get("NAME1", 0);
 		} else if (arg.get("NAME3", 0) != null) {
-			code = arg.get("NAME3", 0);
+			code = Code.of(arg.get("NAME3", 0));
 			display = arg.get("NAME3", 0);
 		} else {
-			code = arg.get("NAME2", 0);
+			code = Code.of(arg.get("NAME2", 0));
 			display = arg.get("NAME2", 1);
 		}
 		final String stereotype = arg.get("STEREO", 0);
@@ -166,6 +172,13 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 		if (stereotype != null) {
 			result.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
+		}
+
+		final String urlString = arg.get("URL", 0);
+		if (urlString != null) {
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url url = urlBuilder.getUrl(urlString);
+			result.addUrl(url);
 		}
 
 		result.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));

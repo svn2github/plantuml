@@ -38,6 +38,7 @@ import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -63,9 +64,9 @@ public class CommandNamespace extends SingleLineCommand2<AbstractEntityDiagram> 
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String code = arg.get("NAME", 0);
+		final Code code = Code.of(arg.get("NAME", 0));
 		final IGroup currentPackage = getSystem().getCurrentGroup();
-		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), code,
+		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(code), code.getCode(),
 				GroupType.PACKAGE, currentPackage);
 		final String stereotype = arg.get("STEREOTYPE", 0);
 		if (stereotype != null) {

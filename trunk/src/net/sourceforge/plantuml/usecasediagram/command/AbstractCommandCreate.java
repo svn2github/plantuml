@@ -37,6 +37,7 @@ import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -57,19 +58,19 @@ abstract class AbstractCommandCreate extends SingleLineCommand2<UsecaseDiagram> 
 	}
 
 	final protected CommandExecutionResult executeArg(RegexResult arg, LeafType type) {
-		final String code;
+		final Code code;
 		final String display;
 		final String string1 = arg.get("STRING1", 0);
 		final String string2 = arg.get("STRING2", 0);
 		if (string2 == null) {
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1);
-			display = code;
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1));
+			display = code.getCode();
 		} else if (defineCode(string1) && defineCode(string2)==false) {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string2);
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1);
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1));
 		} else {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string1);
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string2);
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(string2));
 		}
 
 		final IEntity entity = getSystem().getOrCreateLeaf(code, type);

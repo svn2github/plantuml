@@ -46,7 +46,6 @@ import net.sourceforge.plantuml.EmptyImageBuilder;
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.cucadiagram.EntityPosition;
-import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -224,7 +223,7 @@ public final class CucaDiagramFileMakerSvek2 {
 
 	private Cluster getCluster(IEntity g) {
 		for (Cluster cl : getBibliotekon().allCluster()) {
-			if (EntityUtils.equals(cl.getGroup(), g)) {
+			if (cl.getGroup() == g) {
 				return cl;
 			}
 		}
@@ -414,24 +413,14 @@ public final class CucaDiagramFileMakerSvek2 {
 		if (g.zgetGroupType() == GroupType.CONCURRENT_STATE) {
 			return;
 		}
-		// final String stereo = g.getStereotype();
-
 		int titleAndAttributeWidth = 0;
 		int titleAndAttributeHeight = 0;
 
-		final List<? extends CharSequence> label = g.getDisplay();
-		TextBlock title = null;
-		if (label != null) {
-			final FontParam fontParam = g.zgetGroupType() == GroupType.STATE ? FontParam.STATE : FontParam.PACKAGE;
-
-			final String stereo = g.getStereotype() == null ? null : g.getStereotype().getLabel();
-
-			title = TextBlockUtils.create(label, new FontConfiguration(dotData.getSkinParam()
-					.getFont(fontParam, stereo), dotData.getSkinParam().getFontHtmlColor(fontParam, stereo)),
-					HorizontalAlignement.CENTER, dotData.getSkinParam());
-
-			final Dimension2D dimLabel = title.calculateDimension(stringBounder);
-
+		final TextBlock title = getTitleBlock(g);
+		final TextBlock stereo = getStereoBlock(g);
+		final TextBlock stereoAndTitle = TextBlockUtils.mergeTB(stereo, title, HorizontalAlignement.CENTER);
+		final Dimension2D dimLabel = stereoAndTitle.calculateDimension(stringBounder);
+		if (dimLabel.getWidth() > 0) {
 			final List<Member> members = ((IEntity) g).getFieldsToDisplay();
 			final TextBlockWidth attribute;
 			if (members.size() == 0) {
@@ -448,12 +437,42 @@ public final class CucaDiagramFileMakerSvek2 {
 			titleAndAttributeHeight = (int) (dimLabel.getHeight() + attributeHeight + marginForFields);
 		}
 
-		dotStringFactory.openCluster(g, titleAndAttributeWidth, titleAndAttributeHeight, title);
+		dotStringFactory.openCluster(g, titleAndAttributeWidth, titleAndAttributeHeight, title, stereo);
 		this.printEntities(g.getLeafsDirect());
 
 		printGroups(g);
 
 		dotStringFactory.closeCluster();
+	}
+
+	private TextBlock getTitleBlock(IGroup g) {
+		final List<? extends CharSequence> label = g.getDisplay();
+		final String stereo = g.getStereotype() == null ? null : g.getStereotype().getLabel();
+
+		if (label == null) {
+			return TextBlockUtils.empty(0, 0);
+		}
+
+		final FontParam fontParam = g.zgetGroupType() == GroupType.STATE ? FontParam.STATE : FontParam.PACKAGE;
+		return TextBlockUtils.create(label, new FontConfiguration(dotData.getSkinParam().getFont(fontParam, stereo),
+				dotData.getSkinParam().getFontHtmlColor(fontParam, stereo)), HorizontalAlignement.CENTER, dotData
+				.getSkinParam());
+	}
+
+	private TextBlock getStereoBlock(IGroup g) {
+		if (g.getStereotype() == null) {
+			return TextBlockUtils.empty(0, 0);
+		}
+		final List<String> stereos = g.getStereotype().getLabels();
+		if (stereos == null) {
+			return TextBlockUtils.empty(0, 0);
+		}
+		final String stereo = g.getStereotype().getLabel();
+
+		final FontParam fontParam = FontParam.COMPONENT_STEREOTYPE;
+		return TextBlockUtils.create(stereos, new FontConfiguration(dotData.getSkinParam().getFont(fontParam, stereo),
+				dotData.getSkinParam().getFontHtmlColor(fontParam, stereo)), HorizontalAlignement.CENTER, dotData
+				.getSkinParam());
 	}
 
 }

@@ -36,6 +36,7 @@ import java.util.List;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.compositediagram.CompositeDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -49,8 +50,8 @@ public class CommandLinkBlock extends SingleLineCommand<CompositeDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntity cl1 = getSystem().getOrCreateClass(arg.get(0));
-		final IEntity cl2 = getSystem().getOrCreateClass(arg.get(4));
+		final IEntity cl1 = getSystem().getOrCreateClass(Code.of(arg.get(0)));
+		final IEntity cl2 = getSystem().getOrCreateClass(Code.of(arg.get(4)));
 
 		final String deco1 = arg.get(1);
 		final String deco2 = arg.get(3);

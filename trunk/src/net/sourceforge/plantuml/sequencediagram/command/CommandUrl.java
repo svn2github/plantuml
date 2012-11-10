@@ -35,8 +35,8 @@ package net.sourceforge.plantuml.sequencediagram.command;
 
 import java.util.List;
 
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.sequencediagram.Participant;
@@ -46,7 +46,7 @@ public class CommandUrl extends SingleLineCommand<SequenceDiagram> {
 
 	public CommandUrl(SequenceDiagram diagram) {
 		super(diagram, "(?i)^url\\s*(?:of|for)?\\s+([\\p{L}0-9_.@]+|\"[^\"]+\")\\s+(?:is)?\\s*("
-				+ StringUtils.URL_PATTERN + ")$");
+				+ UrlBuilder.getRegexp() + ")$");
 	}
 
 	@Override
@@ -55,7 +55,8 @@ public class CommandUrl extends SingleLineCommand<SequenceDiagram> {
 		final String urlString = arg.get(1);
 		// final String title = arg.get(2);
 		final Participant p = getSystem().getOrCreateParticipant(code);
-		final Url url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), urlString, true);
+		final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+		final Url url = urlBuilder.getUrl(urlString);
 		p.setUrl(url);
 		return CommandExecutionResult.ok();
 	}

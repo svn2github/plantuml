@@ -56,14 +56,13 @@ class USymbolFolder extends USymbol {
 			double height, Dimension2D dimTitle, boolean shadowing) {
 
 		final double wtitle;
-		final double htitle;
 		if (dimTitle.getWidth() == 0) {
 			wtitle = Math.max(30, width / 4);
-			htitle = 10;
 		} else {
 			wtitle = dimTitle.getWidth() + marginTitleX1 + marginTitleX2;
-			htitle = dimTitle.getHeight() + marginTitleY1 + marginTitleY2;
 		}
+		final double htitle = getHTitle(dimTitle);
+
 		final UPolygon shape = new UPolygon();
 		shape.addPoint(0, 0);
 		shape.addPoint(wtitle, 0);
@@ -80,24 +79,14 @@ class USymbolFolder extends USymbol {
 		ug.draw(xTheoricalPosition, yTheoricalPosition + htitle, new ULine(wtitle + marginTitleX3, 0));
 	}
 
-	private void drawFolderOld(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition, double width,
-			double height, Dimension2D dimTitle, boolean shadowing) {
-		final double wtitle = Math.max(30, width / 4);
-		final UPolygon shape = new UPolygon();
-		shape.addPoint(0, 0);
-		shape.addPoint(wtitle, 0);
-		final double htitle = 10;
-		final double marginTitleX3 = 7;
-		shape.addPoint(wtitle + marginTitleX3, htitle);
-		shape.addPoint(width, htitle);
-		shape.addPoint(width, height);
-		shape.addPoint(0, height);
-		shape.addPoint(0, 0);
-		if (shadowing) {
-			shape.setDeltaShadow(3.0);
+	private double getHTitle(Dimension2D dimTitle) {
+		final double htitle;
+		if (dimTitle.getWidth() == 0) {
+			htitle = 10;
+		} else {
+			htitle = dimTitle.getHeight() + marginTitleY1 + marginTitleY2;
 		}
-		ug.draw(xTheoricalPosition, yTheoricalPosition, shape);
-		ug.draw(xTheoricalPosition, yTheoricalPosition + htitle, new ULine(wtitle + marginTitleX3, 0));
+		return htitle;
 	}
 
 	private Margin getMargin() {
@@ -130,16 +119,21 @@ class USymbolFolder extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width, final double height,
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width, final double height,
 			final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {
-				final Dimension2D dim = calculateDimension(ug.getStringBounder());
+				final StringBounder stringBounder = ug.getStringBounder();
+				final Dimension2D dim = calculateDimension(stringBounder);
 				symbolContext.apply(ug);
-				drawFolder(ug, x, y, dim.getWidth(), dim.getHeight(), title.calculateDimension(ug.getStringBounder()),
-						symbolContext.isShadowing());
+				final Dimension2D dimTitle = title.calculateDimension(stringBounder);
+				drawFolder(ug, x, y, dim.getWidth(), dim.getHeight(), dimTitle, symbolContext.isShadowing());
 				title.drawU(ug, x + 4, y + 2);
+				final Dimension2D dimStereo = stereotype.calculateDimension(stringBounder);
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+
+				stereotype.drawU(ug, x + 4 + posStereo, y + 2 + getHTitle(dimTitle));
 
 			}
 

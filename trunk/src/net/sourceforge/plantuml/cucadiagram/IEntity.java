@@ -68,7 +68,7 @@ public interface IEntity extends SpecificBackcolorable, Hideable {
 
 	public BlockMember getBody(PortionShower portionShower);
 
-	public String getCode();
+	public Code getCode();
 
 	public BlockMember getMouseOver();
 

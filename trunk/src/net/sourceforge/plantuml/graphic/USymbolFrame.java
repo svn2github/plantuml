@@ -55,17 +55,15 @@ class USymbolFrame extends USymbol {
 		ug.draw(xTheoricalPosition, yTheoricalPosition, shape);
 
 		final double textWidth;
-		final double textHeight;
 		final int cornersize;
 		if (dimTitle.getWidth() == 0) {
 			textWidth = width / 3;
-			textHeight = 12;
 			cornersize = 7;
 		} else {
 			textWidth = dimTitle.getWidth() + 10;
-			textHeight = dimTitle.getHeight() + 3;
 			cornersize = 10;
 		}
+		final double textHeight = getYpos(dimTitle);
 
 		final UPath polygon = new UPath();
 		polygon.moveTo(textWidth, 1);
@@ -76,6 +74,13 @@ class USymbolFrame extends USymbol {
 		polygon.lineTo(0, textHeight);
 		ug.draw(xTheoricalPosition, yTheoricalPosition, polygon);
 
+	}
+
+	private double getYpos(Dimension2D dimTitle) {
+		if (dimTitle.getWidth() == 0) {
+			return 12;
+		}
+		return dimTitle.getHeight() + 3;
 	}
 
 	private Margin getMargin() {
@@ -108,16 +113,22 @@ class USymbolFrame extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width, final double height,
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width, final double height,
 			final SymbolContext symbolContext) {
 		return new TextBlock() {
 
 			public void drawU(UGraphic ug, double x, double y) {
-				final Dimension2D dim = calculateDimension(ug.getStringBounder());
+				final StringBounder stringBounder = ug.getStringBounder();
+				final Dimension2D dim = calculateDimension(stringBounder);
 				symbolContext.apply(ug);
-				drawFrame(ug, x, y, dim.getWidth(), dim.getHeight(), title.calculateDimension(ug.getStringBounder()),
-						symbolContext.isShadowing());
+				final Dimension2D dimTitle = title.calculateDimension(stringBounder);
+				drawFrame(ug, x, y, dim.getWidth(), dim.getHeight(), dimTitle, symbolContext.isShadowing());
 				title.drawU(ug, x + 3, y + 1);
+
+				final Dimension2D dimStereo = stereotype.calculateDimension(stringBounder);
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+
+				stereotype.drawU(ug, x + 4 + posStereo, y + 2 + getYpos(dimTitle));
 
 			}
 

@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class CommandDiamondAssociation extends SingleLineCommand<ClassDiagram> {
@@ -48,7 +49,7 @@ public class CommandDiamondAssociation extends SingleLineCommand<ClassDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final String code = arg.get(0);
+		final Code code = Code.of(arg.get(0));
 		if (getSystem().leafExist(code)) {
 			return CommandExecutionResult.error("Already existing : "+code);
 		}

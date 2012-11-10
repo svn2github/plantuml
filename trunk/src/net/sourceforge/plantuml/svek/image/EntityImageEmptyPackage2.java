@@ -85,11 +85,11 @@ public class EntityImageEmptyPackage2 extends AbstractEntityImage {
 		final double widthTotal = dimTotal.getWidth();
 		final double heightTotal = dimTotal.getHeight();
 
-		final HtmlColor stateBack = Cluster.getStateBackColor(specificBackColor, skinParam,
-				stereotype == null ? null : stereotype.getLabel());
+		final HtmlColor stateBack = Cluster.getStateBackColor(specificBackColor, skinParam, stereotype == null ? null
+				: stereotype.getLabel());
 
-		final ClusterDecoration decoration = new ClusterDecoration(getSkinParam().getPackageStyle(), null, desc, stateBack,
-				0, 0, widthTotal, heightTotal);
+		final ClusterDecoration decoration = new ClusterDecoration(getSkinParam().getPackageStyle(), null, desc,
+				TextBlockUtils.empty(0, 0), stateBack, 0, 0, widthTotal, heightTotal);
 
 		decoration.drawU(ug, xTheoricalPosition, yTheoricalPosition, getColor(ColorParam.packageBorder, getStereo()),
 				getSkinParam().shadowing());

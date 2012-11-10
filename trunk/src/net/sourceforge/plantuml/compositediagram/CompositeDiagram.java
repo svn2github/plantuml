@@ -35,13 +35,14 @@ package net.sourceforge.plantuml.compositediagram;
 
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class CompositeDiagram extends AbstractEntityDiagram {
 
 	@Override
-	public IEntity getOrCreateClass(String code) {
+	public IEntity getOrCreateClass(Code code) {
 		if (isGroup(code)) {
 			return getGroup(code);
 		}

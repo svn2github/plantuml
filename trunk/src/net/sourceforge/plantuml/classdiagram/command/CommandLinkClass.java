@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -100,8 +101,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		String ent1 = arg.get("ENT1", 1);
-		String ent2 = arg.get("ENT2", 1);
+		Code ent1 = Code.of(arg.get("ENT1", 1));
+		Code ent2 = Code.of(arg.get("ENT2", 1));
 		if (ent1 == null) {
 			return executeArgSpecial1(arg);
 		}
@@ -248,8 +249,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	private CommandExecutionResult executePackageLink(RegexResult arg) {
 		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1));
 		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1));
-		final IEntity cl1 = getSystem().getGroup(ent1);
-		final IEntity cl2 = getSystem().getGroup(ent2);
+		final IEntity cl1 = getSystem().getGroup(Code.of(ent1));
+		final IEntity cl2 = getSystem().getGroup(Code.of(ent2));
 
 		final LinkType linkType = getLinkType(arg);
 		final Direction dir = getDirection(arg);
@@ -275,8 +276,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	private CommandExecutionResult executeArgSpecial1(RegexResult arg) {
-		final String clName1 = arg.get("COUPLE1", 0);
-		final String clName2 = arg.get("COUPLE1", 1);
+		final Code clName1 = Code.of(arg.get("COUPLE1", 0));
+		final Code clName2 = Code.of(arg.get("COUPLE1", 1));
 		if (getSystem().leafExist(clName1) == false) {
 			return CommandExecutionResult.error("No class " + clName1);
 		}
@@ -284,7 +285,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			return CommandExecutionResult.error("No class " + clName2);
 		}
 
-		final String ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1));
+		final Code ent2 = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1)));
 		final IEntity cl2 = getSystem().getOrCreateClass(ent2);
 
 		final LinkType linkType = getLinkType(arg);
@@ -301,8 +302,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	private CommandExecutionResult executeArgSpecial2(RegexResult arg) {
-		final String clName1 = arg.get("COUPLE2", 0);
-		final String clName2 = arg.get("COUPLE2", 1);
+		final Code clName1 = Code.of(arg.get("COUPLE2", 0));
+		final Code clName2 = Code.of(arg.get("COUPLE2", 1));
 		if (getSystem().leafExist(clName1) == false) {
 			return CommandExecutionResult.error("No class " + clName1);
 		}
@@ -310,7 +311,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			return CommandExecutionResult.error("No class " + clName2);
 		}
 
-		final String ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1));
+		final Code ent1 = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1)));
 		final IEntity cl1 = getSystem().getOrCreateClass(ent1);
 
 		final LinkType linkType = getLinkType(arg);

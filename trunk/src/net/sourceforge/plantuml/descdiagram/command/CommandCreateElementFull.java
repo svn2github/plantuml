@@ -35,12 +35,15 @@ package net.sourceforge.plantuml.descdiagram.command;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -74,8 +77,11 @@ public class CommandCreateElementFull extends SingleLineCommand2<DescriptionDiag
 								new RegexLeaf("\\s*as\\s+"), //
 								new RegexLeaf("CODE4", CODE)) //
 				), //
-				new RegexLeaf("STEREOTYPE", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("STEREOTYPE", "(?:\\s*(\\<\\<.+\\>\\>))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("$"));
 	}
 
@@ -176,10 +182,10 @@ public class CommandCreateElementFull extends SingleLineCommand2<DescriptionDiag
 			throw new IllegalStateException();
 		}
 
-		final String code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(codeRaw);
+		final Code code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(codeRaw));
 		String display = displayRaw;
 		if (display == null) {
-			display = code;
+			display = code.getCode();
 		}
 		display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(display);
 		final String stereotype = arg.get("STEREOTYPE", 0);
@@ -190,6 +196,14 @@ public class CommandCreateElementFull extends SingleLineCommand2<DescriptionDiag
 			entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
 					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+
+		final String urlString = arg.get("URL", 0);
+		if (urlString != null) {
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url url = urlBuilder.getUrl(urlString);
+			entity.addUrl(url);
+		}
+
 		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		return CommandExecutionResult.ok();
 	}

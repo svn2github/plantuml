@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -88,7 +89,8 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0), true);
+					final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+					url = urlBuilder.getUrl(strings.get(0));
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());
@@ -96,7 +98,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 				// final String s = StringUtils.getMergedLines(strings);
 
-				final IEntity note = getSystem().createLeaf("GMN" + UniqueSequence.getValue(), strings, LeafType.NOTE);
+				final IEntity note = getSystem().createLeaf(UniqueSequence.getCode("GMN"), strings, LeafType.NOTE);
 				if (url != null) {
 					note.addUrl(url);
 				}
@@ -110,7 +112,7 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 
 			@Override
 			protected CommandExecutionResult executeArg(RegexResult arg) {
-				final IEntity note = getSystem().createNote("GN" + UniqueSequence.getValue(),
+				final IEntity note = getSystem().createNote(UniqueSequence.getCode("GN"),
 						StringUtils.getWithNewlines(arg.get("NOTE", 0)));
 				return executeInternal(getSystem(), arg, note);
 			}

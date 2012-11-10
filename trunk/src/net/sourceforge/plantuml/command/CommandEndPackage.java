@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8475 $
+ * Revision $Revision: 9063 $
  *
  */
 package net.sourceforge.plantuml.command;
@@ -48,7 +48,7 @@ public class CommandEndPackage extends SingleLineCommand<AbstractEntityDiagram> 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final IGroup currentPackage = getSystem().getCurrentGroup();
-		if (EntityUtils.groupNull(currentPackage)) {
+		if (EntityUtils.groupRoot(currentPackage)) {
 			return CommandExecutionResult.error("No package defined");
 		}
 		getSystem().endGroup();

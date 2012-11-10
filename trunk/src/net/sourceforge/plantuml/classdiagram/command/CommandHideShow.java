@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.EntityGender;
 import net.sourceforge.plantuml.cucadiagram.EntityGenderUtils;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
@@ -105,7 +106,7 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 		} else if (arg1.startsWith("<<")) {
 			gender = EntityGenderUtils.byStereotype(arg1);
 		} else {
-			final IEntity entity = getSystem().getOrCreateClass(arg1);
+			final IEntity entity = getSystem().getOrCreateClass(Code.of(arg1));
 			gender = EntityGenderUtils.byEntityAlone(entity);
 		}
 		if (gender != null) {
@@ -113,7 +114,7 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 			if (empty == true) {
 				gender = EntityGenderUtils.and(gender, emptyByGender(portion));
 			}
-			if (EntityUtils.groupNull(getSystem().getCurrentGroup())==false) {
+			if (EntityUtils.groupRoot(getSystem().getCurrentGroup())==false) {
 				gender = EntityGenderUtils.and(gender, EntityGenderUtils.byPackage(getSystem().getCurrentGroup()));
 			}
 			getSystem().hideOrShow(gender, portion, arg.get("COMMAND", 0).equalsIgnoreCase("show"));

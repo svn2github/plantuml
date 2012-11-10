@@ -47,6 +47,7 @@ import net.sourceforge.plantuml.cucadiagram.BlockMember;
 import net.sourceforge.plantuml.cucadiagram.BlockMemberImpl;
 import net.sourceforge.plantuml.cucadiagram.Bodier;
 import net.sourceforge.plantuml.cucadiagram.BodyEnhanced;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.EntityPortion;
 import net.sourceforge.plantuml.cucadiagram.EntityPosition;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
@@ -71,7 +72,7 @@ class EntityImpl implements ILeaf, IGroup {
 	private final EntityFactory entityFactory;
 
 	// Entity
-	private final String code;
+	private final Code code;
 	private final List<Url> urls = new ArrayList<Url>();
 
 	private final Bodier bodier;
@@ -113,7 +114,7 @@ class EntityImpl implements ILeaf, IGroup {
 		this.top = top;
 	}
 
-	private EntityImpl(EntityFactory entityFactory, String code, Bodier bodier, IGroup parentContainer) {
+	private EntityImpl(EntityFactory entityFactory, Code code, Bodier bodier, IGroup parentContainer) {
 		if (code == null) {
 			throw new IllegalArgumentException();
 		}
@@ -123,12 +124,12 @@ class EntityImpl implements ILeaf, IGroup {
 		this.parentContainer = parentContainer;
 	}
 
-	EntityImpl(EntityFactory entityFactory, String code, Bodier bodier, IGroup parentContainer, LeafType leafType) {
+	EntityImpl(EntityFactory entityFactory, Code code, Bodier bodier, IGroup parentContainer, LeafType leafType) {
 		this(entityFactory, code, bodier, parentContainer);
 		this.leafType = leafType;
 	}
 
-	EntityImpl(EntityFactory entityFactory, String code, Bodier bodier, IGroup parentContainer, GroupType groupType,
+	EntityImpl(EntityFactory entityFactory, Code code, Bodier bodier, IGroup parentContainer, GroupType groupType,
 			String namespace) {
 		this(entityFactory, code, bodier, parentContainer);
 		this.groupType = groupType;
@@ -144,7 +145,6 @@ class EntityImpl implements ILeaf, IGroup {
 	}
 
 	public LeafType getEntityType() {
-		checkNotGroup();
 		return leafType;
 	}
 
@@ -166,7 +166,7 @@ class EntityImpl implements ILeaf, IGroup {
 		this.leafType = newType;
 	}
 
-	public String getCode() {
+	public Code getCode() {
 		return code;
 	}
 
@@ -377,7 +377,7 @@ class EntityImpl implements ILeaf, IGroup {
 			throw new IllegalArgumentException();
 		}
 		checkGroup();
-		if (EntityUtils.equals(leaf.getParentContainer(), this)) {
+		if (leaf.getParentContainer() == this) {
 			return true;
 		}
 		for (IGroup child : zgetChildren()) {
@@ -395,7 +395,7 @@ class EntityImpl implements ILeaf, IGroup {
 			if (ent.isGroup()) {
 				throw new IllegalStateException();
 			}
-			if (EntityUtils.equals(ent.getParentContainer(), this)) {
+			if (ent.getParentContainer() == this) {
 				result.add(ent);
 			}
 		}

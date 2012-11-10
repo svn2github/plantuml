@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
@@ -49,6 +50,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
@@ -117,7 +119,8 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				Url url = null;
 				if (strings.size() > 0) {
-					url = StringUtils.extractUrl(getSystem().getSkinParam().getValue("topurl"), strings.get(0), true);
+					final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+					url = urlBuilder.getUrl(strings.get(0));
 				}
 				if (url != null) {
 					strings = strings.subList(1, strings.size());
@@ -133,7 +136,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 
 		final String pos = line0.get("POSITION", 0);
 
-		final String code = line0.get("ENTITY", 0);
+		final Code code = Code.of(line0.get("ENTITY", 0));
 		final IEntity cl1;
 		if (code == null) {
 			cl1 = system.getLastEntity();
@@ -144,7 +147,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 			cl1 = system.getOrCreateClass(code);
 		}
 
-		final IEntity note = system.createLeaf("GMN" + UniqueSequence.getValue(), s, LeafType.NOTE);
+		final IEntity note = system.createLeaf(UniqueSequence.getCode("GMN"), s, LeafType.NOTE);
 		note.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR", 0)));
 		if (url != null) {
 			note.addUrl(url);

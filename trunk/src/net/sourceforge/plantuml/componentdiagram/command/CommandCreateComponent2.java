@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -75,14 +76,14 @@ public class CommandCreateComponent2 extends SingleLineCommand2<ComponentDiagram
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final LeafType type = LeafType.COMPONENT;
-		final String code;
+		final Code code;
 		final String display;
 		if (arg.get("AS", 0) == null) {
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("CODE", 0));
-			display = code;
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("CODE", 0)));
+			display = code.getCode();
 		} else {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("CODE", 0));
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("AS", 0));
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("AS", 0)));
 		}
 		final String stereotype = arg.get("STEREOTYPE", 0);
 		final IEntity entity = getSystem().getOrCreateLeaf(code, type);

@@ -28,35 +28,54 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7951 $
+ * Revision $Revision: 8770 $
  *
  */
-package net.sourceforge.plantuml.graphic;
+package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.ugraphic.UFont;
+public class Code implements Comparable<Code> {
 
-public enum FontPosition {
-	NORMAL, EXPOSANT, INDICE;
+	private final String code;
 
-	public int getSpace() {
-		if (this == EXPOSANT) {
-			return -6;
+	private Code(String code) {
+		if (code == null) {
+			throw new IllegalArgumentException();
 		}
-		if (this == INDICE) {
-			return 3;
-		}
-		return 0;
+		this.code = code;
 	}
 
-	public UFont mute(UFont font) {
-		if (this == NORMAL) {
-			return font;
+	public static Code of(String code) {
+		if (code == null) {
+			return null;
 		}
-		int size = font.getSize() - 3;
-		if (size < 2) {
-			size = 2;
-		}
-		return font.deriveSize((float) size);
+		return new Code(code);
 	}
 
+	public final String getCode() {
+		return code;
+	}
+
+	@Override
+	public String toString() {
+		return code;
+	}
+
+	@Override
+	public int hashCode() {
+		return code.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		final Code other = (Code) obj;
+		return this.code.equals(other.code);
+	}
+
+	public Code addSuffix(String suffix) {
+		return new Code(code + suffix);
+	}
+
+	public int compareTo(Code other) {
+		return this.code.compareTo(other.code);
+	}
 }

@@ -82,27 +82,32 @@ class USymbolRect extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width, final double height,
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width, final double height,
 			final SymbolContext symbolContext) {
-		throw new UnsupportedOperationException();
-		// return new TextBlock() {
-		//
-		// public void drawU(UGraphic ug, double x, double y) {
-		// final Dimension2D dim = calculateDimension(ug.getStringBounder());
-		// symbolContext.apply(ug);
-		// drawArtifact(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
-		// title.drawU(ug, x, y);
-		//
-		// }
-		//
-		// public Dimension2D calculateDimension(StringBounder stringBounder) {
-		// return new Dimension2DDouble(width, height);
-		// }
-		//
-		// public List<Url> getUrls() {
-		// return Collections.emptyList();
-		// }
-		// };
+		return new TextBlock() {
+
+			public void drawU(UGraphic ug, double x, double y) {
+				final Dimension2D dim = calculateDimension(ug.getStringBounder());
+				symbolContext.apply(ug);
+				drawRect(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
+				final Dimension2D dimStereo = stereotype.calculateDimension(ug.getStringBounder());
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+				stereotype.drawU(ug, x + posStereo, y + 2);
+				final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+				final double posTitle = (width - dimTitle.getWidth()) / 2;
+				title.drawU(ug, x + posTitle, y + 2 + dimStereo.getHeight());
+
+
+			}
+
+			public Dimension2D calculateDimension(StringBounder stringBounder) {
+				return new Dimension2DDouble(width, height);
+			}
+
+			public List<Url> getUrls() {
+				return Collections.emptyList();
+			}
+		};
 	}
 
 }

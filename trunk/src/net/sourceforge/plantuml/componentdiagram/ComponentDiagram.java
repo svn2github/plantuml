@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8532 $
+ * Revision $Revision: 9063 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram;
@@ -38,6 +38,7 @@ import java.util.List;
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -47,25 +48,26 @@ import net.sourceforge.plantuml.cucadiagram.LeafType;
 public class ComponentDiagram extends AbstractEntityDiagram {
 
 	@Override
-	public ILeaf getOrCreateClass(String code) {
-		if (code.startsWith("[") && code.endsWith("]")) {
+	public ILeaf getOrCreateClass(Code code) {
+		String code2 = code.getCode();
+		if (code2.startsWith("[") && code2.endsWith("]")) {
 			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code),
 					LeafType.COMPONENT);
 		}
-		if (code.startsWith(":") && code.endsWith(":")) {
+		if (code2.startsWith(":") && code2.endsWith(":")) {
 			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
 		}
-		if (code.startsWith("()")) {
-			code = code.substring(2).trim();
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
-			return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
+		if (code2.startsWith("()")) {
+			code2 = code2.substring(2).trim();
+			code2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2);
+			return getOrCreateLeaf(Code.of(code2), LeafType.CIRCLE_INTERFACE);
 		}
 		code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
 		return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
 	}
 	
 	@Override
-	public ILeaf getOrCreateLeaf(String code, LeafType defaultType) {
+	public ILeaf getOrCreateLeaf(Code code, LeafType defaultType) {
 		code = getFullyQualifiedCode(code);
 //		if (super.leafExist(code)) {
 			return super.getOrCreateLeaf(code, defaultType);
@@ -74,7 +76,7 @@ public class ComponentDiagram extends AbstractEntityDiagram {
 	}
 	
 	@Override
-	public ILeaf createLeaf(String code, List<? extends CharSequence> display, LeafType type) {
+	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType type) {
 		if (type != LeafType.COMPONENT) {
 			return super.createLeaf(code, display, type);
 		}
@@ -85,17 +87,17 @@ public class ComponentDiagram extends AbstractEntityDiagram {
 		return createEntityWithNamespace(code, display, type);
 	}
 
-	private ILeaf createEntityWithNamespace(String fullyCode, List<? extends CharSequence> display, LeafType type) {
+	private ILeaf createEntityWithNamespace(Code fullyCode, List<? extends CharSequence> display, LeafType type) {
 		IGroup group = getCurrentGroup();
 		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (EntityUtils.groupNull(group) || group.getCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(namespace, StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
+		if (namespace != null && (EntityUtils.groupRoot(group) || group.getCode().equals(namespace) == false)) {
+			group = getOrCreateGroupInternal(Code.of(namespace), StringUtils.getWithNewlines(namespace), namespace, GroupType.PACKAGE, getRootGroup());
 		}
 		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode)) : display, type, group);
 	}
 
 	@Override
-	public final boolean leafExist(String code) {
+	public final boolean leafExist(Code code) {
 		return super.leafExist(getFullyQualifiedCode(code));
 	}
 

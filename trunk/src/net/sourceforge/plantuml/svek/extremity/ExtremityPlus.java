@@ -35,6 +35,7 @@ package net.sourceforge.plantuml.svek.extremity;
 
 import java.awt.geom.Point2D;
 
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.UDrawable;
 import net.sourceforge.plantuml.ugraphic.UEllipse;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
@@ -56,7 +57,9 @@ class ExtremityPlus extends Extremity implements UDrawable {
 	}
 
 	public void drawU(UGraphic ug, double x, double y) {
+		ug.getParam().setBackcolor(HtmlColorUtils.WHITE);
 		ug.draw(px + x, py + y, circle);
+		ug.getParam().setBackcolor(null);
 		drawLine(ug, x, y, getPointOnCircle(angle - Math.PI / 2), getPointOnCircle(angle + Math.PI / 2));
 		drawLine(ug, x, y, getPointOnCircle(angle), getPointOnCircle(angle + Math.PI));
 	}

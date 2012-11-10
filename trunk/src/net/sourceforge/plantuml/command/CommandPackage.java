@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -65,20 +66,20 @@ public class CommandPackage extends SingleLineCommand2<AbstractEntityDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String code;
+		final Code code;
 		final String display;
 		final String name = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME", 0));
 		if (arg.get("AS", 0) == null) {
 			if (name.length() == 0) {
-				code = "##" + UniqueSequence.getValue();
+				code = Code.of("##" + UniqueSequence.getValue());
 				display = null;
 			} else {
-				code = name;
-				display = code;
+				code = Code.of(name);
+				display = code.getCode();
 			}
 		} else {
 			display = name;
-			code = arg.get("AS", 0);
+			code = Code.of(arg.get("AS", 0));
 		}
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);

@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -84,7 +85,7 @@ public class CommandIf extends SingleLineCommand2<ActivityDiagram> {
 			ifCode = null;
 			ifLabel = arg.get("IF2", 0);
 		}
-		getSystem().startIf(ifCode);
+		getSystem().startIf(Code.of(ifCode));
 
 		int lenght = 2;
 

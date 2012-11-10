@@ -35,6 +35,8 @@ package net.sourceforge.plantuml.classdiagram.command;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
@@ -42,6 +44,7 @@ import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
@@ -72,6 +75,8 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<{2}.*\\>{2}))?"), //
 				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("$"));
@@ -80,16 +85,16 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
-		final String code;
+		final Code code;
 		final String display;
 		if (arg.get("NAME1", 1) != null) {
-			code = arg.get("NAME1", 1);
+			code = Code.of(arg.get("NAME1", 1));
 			display = arg.get("NAME1", 0);
 		} else if (arg.get("NAME3", 0) != null) {
-			code = arg.get("NAME3", 0);
+			code = Code.of(arg.get("NAME3", 0));
 			display = arg.get("NAME3", 0);
 		} else {
-			code = arg.get("NAME2", 0);
+			code = Code.of(arg.get("NAME2", 0));
 			display = arg.get("NAME2", 1);
 		}
 		final String stereotype = arg.get("STEREO", 0);
@@ -108,7 +113,14 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 		if (generic != null) {
 			entity.setGeneric(generic);
 		}
-		
+
+		final String urlString = arg.get("URL", 0);
+		if (urlString != null) {
+			final UrlBuilder urlBuilder = new UrlBuilder(getSystem().getSkinParam().getValue("topurl"), true);
+			final Url url = urlBuilder.getUrl(urlString);
+			entity.addUrl(url);
+		}
+
 		entity.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(arg.get("COLOR", 0)));
 		manageExtends(getSystem(), arg, entity);
 
@@ -118,7 +130,7 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 	public static void manageExtends(ClassDiagram system, RegexResult arg, final IEntity entity) {
 		if (arg.get("EXTENDS", 1) != null) {
 			final Mode mode = arg.get("EXTENDS", 1).equalsIgnoreCase("extends") ? Mode.EXTENDS : Mode.IMPLEMENTS;
-			final String other = arg.get("EXTENDS", 2);
+			final Code other = Code.of(arg.get("EXTENDS", 2));
 			LeafType type2 = LeafType.CLASS;
 			if (mode == Mode.IMPLEMENTS) {
 				type2 = LeafType.INTERFACE;

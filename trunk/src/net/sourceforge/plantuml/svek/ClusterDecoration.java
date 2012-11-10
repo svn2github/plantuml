@@ -53,6 +53,7 @@ public class ClusterDecoration {
 	final private PackageStyle style;
 	final private USymbol symbol;
 	final private TextBlock title;
+	final private TextBlock stereo;
 	final private HtmlColor stateBack;
 
 	final private double minX;
@@ -60,10 +61,11 @@ public class ClusterDecoration {
 	final private double maxX;
 	final private double maxY;
 
-	public ClusterDecoration(PackageStyle style, USymbol symbol, TextBlock title, HtmlColor stateBack, double minX,
-			double minY, double maxX, double maxY) {
+	public ClusterDecoration(PackageStyle style, USymbol symbol, TextBlock title, TextBlock stereo,
+			HtmlColor stateBack, double minX, double minY, double maxX, double maxY) {
 		this.symbol = symbol;
 		this.style = style;
+		this.stereo = stereo;
 		this.title = title;
 		this.stateBack = stateBack;
 		this.minX = minX;
@@ -76,7 +78,7 @@ public class ClusterDecoration {
 		if (symbol != null) {
 			final SymbolContext symbolContext = new SymbolContext(stateBack, borderColor).withShadow(shadowing)
 					.withStroke(new UStroke(2));
-			symbol.asBig(title, title, maxX - minX, maxY - minY, symbolContext).drawU(ug, x + minX, y + minY);
+			symbol.asBig(title, stereo, maxX - minX, maxY - minY, symbolContext).drawU(ug, x + minX, y + minY);
 			ug.getParam().setStroke(new UStroke());
 			return;
 		}
@@ -144,7 +146,7 @@ public class ClusterDecoration {
 		final double height = maxY - minY;
 		final SymbolContext ctx = new SymbolContext(stateBack, borderColor).withStroke(new UStroke(2)).withShadow(
 				shadowing);
-		USymbol.NODE.asBig(title, null, width + 10, height, ctx).drawU(ug, x + minX, y + minY);
+		USymbol.NODE.asBig(title, stereo, width + 10, height, ctx).drawU(ug, x + minX, y + minY);
 		ug.getParam().setStroke(new UStroke());
 	}
 

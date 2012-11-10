@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8512 $
+ * Revision $Revision: 9061 $
  *
  */
 package net.sourceforge.plantuml.componentdiagram.command;
@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.componentdiagram.ComponentDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -63,14 +64,14 @@ public class CommandCreateCircleInterface extends SingleLineCommand<ComponentDia
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final LeafType type = LeafType.CIRCLE_INTERFACE;
-		final String code;
+		final Code code;
 		final String display;
 		if (arg.get(1) == null) {
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			display = code;
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0)));
+			display = code.getCode();
 		} else {
 			display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(0));
-			code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1));
+			code = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get(1)));
 		}
 		final String stereotype = arg.get(2);
 		// final Entity entity = getSystem().createEntity(code, display, type);

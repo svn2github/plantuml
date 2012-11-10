@@ -49,8 +49,10 @@ public abstract class USymbol {
 	public final static USymbol FRAME = record("FRAME", new USymbolFrame());
 	public final static USymbol NODE = record("NODE", new USymbolNode());
 	public final static USymbol ARTIFACT = record("ARTIFACT", new USymbolArtifact());
+	public final static USymbol PACKAGE = record("PACKAGE", new USymbolFolder());
 	public final static USymbol FOLDER = record("FOLDER", new USymbolFolder());
 	public final static USymbol RECT = record("RECT", new USymbolRect());
+	public final static USymbol RECTANGLE = record("RECTANGLE", new USymbolRect());
 	public final static USymbol ACTOR = record("ACTOR", new USymbolActor());
 	public final static USymbol COMPONENT1 = record("COMPONENT1", new USymbolComponent1());
 	public final static USymbol COMPONENT2 = record("COMPONENT2", new USymbolComponent2());

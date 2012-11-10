@@ -28,35 +28,43 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7951 $
+ * Revision $Revision: 8770 $
  *
  */
-package net.sourceforge.plantuml.graphic;
+package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.ugraphic.UFont;
+public class Namespace {
 
-public enum FontPosition {
-	NORMAL, EXPOSANT, INDICE;
+	private final String namespace;
 
-	public int getSpace() {
-		if (this == EXPOSANT) {
-			return -6;
+	private Namespace(String namespace) {
+		if (namespace == null) {
+			throw new IllegalArgumentException();
 		}
-		if (this == INDICE) {
-			return 3;
-		}
-		return 0;
+		this.namespace = namespace;
 	}
 
-	public UFont mute(UFont font) {
-		if (this == NORMAL) {
-			return font;
-		}
-		int size = font.getSize() - 3;
-		if (size < 2) {
-			size = 2;
-		}
-		return font.deriveSize((float) size);
+	public final String getNamespace() {
+		return namespace;
+	}
+
+	public static Namespace of(String namespace) {
+		return new Namespace(namespace);
+	}
+
+	@Override
+	public int hashCode() {
+		return namespace.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		final Namespace other = (Namespace) obj;
+		return this.namespace.equals(other.namespace);
+	}
+
+	public boolean isMain() {
+		return namespace.length() == 0;
 	}
 
 }

@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexPartialMatch;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -73,8 +74,8 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String ent1 = arg.get("ENT1", 0);
-		final String ent2 = arg.get("ENT2", 0);
+		final Code ent1 = Code.of(arg.get("ENT1", 0));
+		final Code ent2 = Code.of(arg.get("ENT2", 0));
 
 		if (getSystem().isGroup(ent1) && getSystem().isGroup(ent2)) {
 			return executePackageLink(arg);
@@ -116,8 +117,8 @@ public class CommandLinkUsecase extends SingleLineCommand2<UsecaseDiagram> {
 	}
 
 	private CommandExecutionResult executePackageLink(RegexResult arg) {
-		final String ent1 = arg.get("ENT1", 0);
-		final String ent2 = arg.get("ENT2", 0);
+		final Code ent1 = Code.of(arg.get("ENT1", 0));
+		final Code ent2 = Code.of(arg.get("ENT2", 0));
 		final IEntity cl1 = getSystem().getGroup(ent1);
 		final IEntity cl2 = getSystem().getGroup(ent2);
 

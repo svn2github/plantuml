@@ -39,6 +39,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
 import net.sourceforge.plantuml.compositediagram.CompositeDiagram;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
 
@@ -52,9 +53,9 @@ public class CommandCreatePackageBlock extends SingleLineCommand<CompositeDiagra
 	protected CommandExecutionResult executeArg(List<String> arg) {
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		String display = arg.get(0);
-		final String code = arg.get(1);
+		final Code code = Code.of(arg.get(1));
 		if (display == null) {
-			display = code;
+			display = code.getCode();
 		}
 		getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null, GroupType.PACKAGE, currentPackage);
 		return CommandExecutionResult.ok();

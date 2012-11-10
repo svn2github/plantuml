@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9040 $
+ * Revision $Revision: 9063 $
  *
  */
 package net.sourceforge.plantuml.classdiagram;
@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
@@ -45,7 +46,7 @@ import net.sourceforge.plantuml.cucadiagram.IGroup;
 
 public abstract class AbstractEntityDiagram extends CucaDiagram {
 
-	abstract public IEntity getOrCreateClass(String code);
+	abstract public IEntity getOrCreateClass(Code code);
 
 	final protected List<String> getDotStrings() {
 		// return Arrays.asList("nodesep=.5;", "ranksep=0.8;", "edge
@@ -67,46 +68,49 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 		return "(" + getLeafs().size() + " entities)";
 	}
 
-	protected final String getFullyQualifiedCode(String code) {
+	protected final Code getFullyQualifiedCode(Code code2) {
+		final String code = code2.getCode();
 		if (code.startsWith("\\") || code.startsWith("~") || code.startsWith(".")) {
-			return code.substring(1);
+			return Code.of(code.substring(1));
 		}
 		if (code.contains("::")) {
-			return code;
+			return Code.of(code);
 		}
 		if (code.contains(".")) {
-			return code;
+			return Code.of(code);
 		}
 		final IGroup g = this.getCurrentGroup();
-		if (EntityUtils.groupNull(g)) {
-			return code;
+		if (EntityUtils.groupRoot(g)) {
+			return Code.of(code);
 		}
 		final String namespace = g.zgetNamespace();
 		if (namespace == null) {
-			return code;
+			return Code.of(code);
 		}
 		if (namespace.contains("::")) {
-			return namespace + "::" + code;
+			return Code.of(namespace + "::" + code);
 		}
-		return namespace + "." + code;
+		return Code.of(namespace + "." + code);
 	}
 
-	protected final String getShortName(String code) {
-		final String namespace = getNamespace(code);
+	protected final Code getShortName(Code code2) {
+		String code = code2.getCode();
+		final String namespace = getNamespace(code2);
 		if (namespace == null) {
-			return code;
+			return Code.of(code);
 		}
 		if (code.contains("::")) {
-			return code.substring(namespace.length() + 2);
+			return Code.of(code.substring(namespace.length() + 2));
 		}
-		return code.substring(namespace.length() + 1);
+		return Code.of(code.substring(namespace.length() + 1));
 	}
 
-	protected final String getNamespace(String code) {
+	protected final String getNamespace(Code code2) {
+		String code = code2.getCode();
 		assert code.startsWith("\\") == false;
 		assert code.startsWith("~") == false;
 		if (code.contains("::")) {
-			return getNamespaceDoublePoint(code);
+			return getNamespaceDoublePoint(code2);
 		}
 		do {
 			final int x = code.lastIndexOf('.');
@@ -114,11 +118,12 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 				return null;
 			}
 			code = code.substring(0, x);
-		} while (leafExist(code));
+		} while (leafExist(Code.of(code)));
 		return code;
 	}
 
-	private final String getNamespaceDoublePoint(String code) {
+	private final String getNamespaceDoublePoint(Code code2) {
+		String code = code2.getCode();
 		assert code.startsWith("\\") == false;
 		assert code.startsWith("~") == false;
 		do {
@@ -127,7 +132,7 @@ public abstract class AbstractEntityDiagram extends CucaDiagram {
 				return null;
 			}
 			code = code.substring(0, x - 1);
-		} while (leafExist(code));
+		} while (leafExist(Code.of(code)));
 		return code;
 	}
 

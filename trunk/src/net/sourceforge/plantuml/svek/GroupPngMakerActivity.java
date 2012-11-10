@@ -65,7 +65,7 @@ public final class GroupPngMakerActivity {
 	class InnerGroupHierarchy implements GroupHierarchy {
 
 		public Collection<IGroup> getChildrenGroups(IGroup parent) {
-			if (EntityUtils.groupNull(parent)) {
+			if (EntityUtils.groupRoot(parent)) {
 				return diagram.getChildrenGroups(group);
 			}
 			return diagram.getChildrenGroups(parent);
@@ -87,8 +87,8 @@ public final class GroupPngMakerActivity {
 		for (Link link : diagram.getLinks()) {
 			final IEntity e1 = (IEntity) link.getEntity1();
 			final IEntity e2 = (IEntity) link.getEntity2();
-			if (EntityUtils.equals(e1.getParentContainer(), group) && e1.isGroup() == false
-					&& EntityUtils.equals(e2.getParentContainer(), group) && e2.isGroup() == false) {
+			if ((e1.getParentContainer() == group) && e1.isGroup() == false
+					&& (e2.getParentContainer() == group) && e2.isGroup() == false) {
 				result.add(link);
 			}
 		}

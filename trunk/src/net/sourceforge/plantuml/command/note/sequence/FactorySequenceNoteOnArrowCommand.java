@@ -37,6 +37,7 @@ import java.util.List;
 
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
@@ -105,7 +106,8 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 			List<CharSequence> strings = StringUtils.manageEmbededDiagrams(in);
 			final Url url;
 			if (strings.size() > 0) {
-				url = StringUtils.extractUrl(system.getSkinParam().getValue("topurl"), strings.get(0).toString(), true);
+				final UrlBuilder urlBuilder = new UrlBuilder(system.getSkinParam().getValue("topurl"), true);
+				url = urlBuilder.getUrl(strings.get(0).toString());
 			} else {
 				url = null;
 			}

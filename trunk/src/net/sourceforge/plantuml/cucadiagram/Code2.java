@@ -28,35 +28,50 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7951 $
+ * Revision $Revision: 8770 $
  *
  */
-package net.sourceforge.plantuml.graphic;
+package net.sourceforge.plantuml.cucadiagram;
 
-import net.sourceforge.plantuml.ugraphic.UFont;
+public class Code2 {
 
-public enum FontPosition {
-	NORMAL, EXPOSANT, INDICE;
+	private final Namespace namespace;
+	private final String unqualifiedCode;
 
-	public int getSpace() {
-		if (this == EXPOSANT) {
-			return -6;
+	private Code2(Namespace namespace, String unqualifiedCode) {
+		if (namespace == null) {
+			throw new IllegalArgumentException();
 		}
-		if (this == INDICE) {
-			return 3;
+		if (unqualifiedCode == null) {
+			throw new IllegalArgumentException();
 		}
-		return 0;
+		this.namespace = namespace;
+		this.unqualifiedCode = unqualifiedCode;
 	}
 
-	public UFont mute(UFont font) {
-		if (this == NORMAL) {
-			return font;
-		}
-		int size = font.getSize() - 3;
-		if (size < 2) {
-			size = 2;
-		}
-		return font.deriveSize((float) size);
+	public final Namespace getNamespace() {
+		return namespace;
 	}
 
+	public final String getUnqualifiedCode() {
+		return unqualifiedCode;
+	}
+
+	public final String getFullQualifiedCode() {
+		if (namespace.isMain()) {
+			return unqualifiedCode;
+		}
+		return namespace.getNamespace() + "." + unqualifiedCode;
+	}
+
+	@Override
+	public int hashCode() {
+		return namespace.hashCode() + 43 * unqualifiedCode.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		final Code2 other = (Code2) obj;
+		return this.unqualifiedCode.equals(other.unqualifiedCode) && this.namespace.equals(other.namespace);
+	}
 }

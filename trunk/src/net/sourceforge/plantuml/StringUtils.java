@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8515 $
+ * Revision $Revision: 9061 $
  *
  */
 package net.sourceforge.plantuml;
@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.preproc.ReadLineReader;
 import net.sourceforge.plantuml.preproc.UncommentReadLine;
 
@@ -53,6 +54,9 @@ public class StringUtils {
 		return file.getAbsolutePath();
 	}
 
+	public static List<String> getWithNewlines(Code s) {
+		return getWithNewlines(s.getCode());
+	}
 	public static List<String> getWithNewlines(String s) {
 		if (s == null) {
 			return null;
@@ -229,6 +233,10 @@ public class StringUtils {
 			return Direction.RIGHT;
 		}
 		return Direction.DOWN;
+	}
+
+	public static Code eventuallyRemoveStartingAndEndingDoubleQuote(Code s) {
+		return Code.of(eventuallyRemoveStartingAndEndingDoubleQuote(s.getCode()));
 	}
 
 	public static String eventuallyRemoveStartingAndEndingDoubleQuote(String s) {
@@ -431,39 +439,6 @@ public class StringUtils {
 		return s.contains("(") || s.contains(")");
 	}
 
-	public static final String URL_PATTERN = "\\[\\[([^{} \\]\\[]*)(?: *\\{([^{}]+)\\})?(?: ([^\\]\\[]*))?\\]\\]";
-
-	public static Url extractUrl(String topurl, String s, boolean strict) {
-		final Pattern p;
-		if (strict) {
-			p = Pattern.compile("(?i)^" + URL_PATTERN + "$");
-		} else {
-			p = Pattern.compile(".*" + URL_PATTERN + ".*");
-		}
-		final Matcher m = p.matcher(s.trim());
-		if (m.matches() == false) {
-			return null;
-		}
-		String url = m.group(1);
-		if (url.startsWith("http:") == false && url.startsWith("https:") == false) {
-			// final String top = getSystem().getSkinParam().getValue("topurl");
-			if (topurl != null) {
-				url = topurl + url;
-			}
-		}
-		return new Url(url, m.group(2), m.group(3));
-	}
-
-	public static String removeUrl(final String label) {
-		final Pattern p = Pattern.compile("(?: )*" + URL_PATTERN + "(?: )*");
-		final Matcher m = p.matcher(label);
-		if (m.find() == false) {
-			throw new IllegalStateException();
-		}
-		final String url = m.group(0);
-		final int x = label.indexOf(url);
-		return label.substring(0, x) + label.substring(x + url.length());
-	}
 
 	public static <O> List<O> merge(List<O> l1, List<O> l2) {
 		final List<O> result = new ArrayList<O>(l1);

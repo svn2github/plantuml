@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 8515 $
+ * Revision $Revision: 9071 $
  *
  */
 package net.sourceforge.plantuml;
@@ -66,6 +66,7 @@ import net.sourceforge.plantuml.swing.MainWindow2;
 import net.sourceforge.plantuml.ugraphic.SpriteGrayLevel;
 import net.sourceforge.plantuml.ugraphic.SpriteUtils;
 import net.sourceforge.plantuml.usecasediagram.UsecaseDiagramFactory;
+import net.sourceforge.plantuml.version.Version;
 
 public class Run {
 
@@ -77,6 +78,7 @@ public class Run {
 			return;
 		}
 		if (OptionFlags.getInstance().isVerbose()) {
+			Log.info("PlantUML Version " + Version.versionString());
 			Log.info("GraphicsEnvironment.isHeadless() " + GraphicsEnvironment.isHeadless());
 		}
 		if (OptionFlags.getInstance().isPrintFonts()) {

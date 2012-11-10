@@ -39,8 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.Url;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.skin.ArrowConfiguration;
@@ -80,7 +80,7 @@ public abstract class AbstractMessage implements Event {
 			return label;
 		}
 		final List<String> result = new ArrayList<String>();
-		result.add(StringUtils.removeUrl(label.get(0)));
+		result.add(UrlBuilder.purgeUrl(label.get(0)));
 		result.addAll(label.subList(1, label.size()));
 		return result;
 
@@ -90,7 +90,8 @@ public abstract class AbstractMessage implements Event {
 		if (label.size() == 0) {
 			return null;
 		}
-		return StringUtils.extractUrl(null, label.get(0).trim(), false);
+		final UrlBuilder urlBuilder = new UrlBuilder(null, false);
+		return urlBuilder.getUrl(label.get(0).trim());
 	}
 
 	public final boolean addLifeEvent(LifeEvent lifeEvent) {

@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
@@ -56,7 +57,7 @@ public class CommandPackageWithUSymbol extends SingleLineCommand2<AbstractEntity
 
 	private static RegexConcat getRegexConcat() {
 		return new RegexConcat(new RegexLeaf("^"), //
-				new RegexLeaf("SYMBOL", "(node|artifact|folder|frame|cloud|database)"), //
+				new RegexLeaf("SYMBOL", "(package|rectangle|node|artifact|folder|frame|cloud|database|storage)"), //
 				new RegexLeaf("\\s+"), //
 				new RegexLeaf("NAME", "(\"[^\"]+\"|[^#\\s{}]*)"), //
 				new RegexLeaf("AS", "(?:\\s+as\\s+([\\p{L}0-9_.]+))?"), //
@@ -69,20 +70,20 @@ public class CommandPackageWithUSymbol extends SingleLineCommand2<AbstractEntity
 
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
-		final String code;
+		final Code code;
 		final String display;
 		final String name = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("NAME", 0));
 		if (arg.get("AS", 0) == null) {
 			if (name.length() == 0) {
-				code = "##" + UniqueSequence.getValue();
+				code = UniqueSequence.getCode("##");
 				display = null;
 			} else {
-				code = name;
-				display = code;
+				code = Code.of(name);
+				display = code.getCode();
 			}
 		} else {
 			display = name;
-			code = arg.get("AS", 0);
+			code = Code.of(arg.get("AS", 0));
 		}
 		final IGroup currentPackage = getSystem().getCurrentGroup();
 		final IEntity p = getSystem().getOrCreateGroup(code, StringUtils.getWithNewlines(display), null,

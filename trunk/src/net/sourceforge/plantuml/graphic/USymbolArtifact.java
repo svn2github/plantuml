@@ -108,7 +108,7 @@ class USymbolArtifact extends USymbol {
 		};
 	}
 
-	public TextBlock asBig(final TextBlock title, TextBlock stereotype, final double width,
+	public TextBlock asBig(final TextBlock title, final TextBlock stereotype, final double width,
 			final double height, final SymbolContext symbolContext) {
 		return new TextBlock() {
 
@@ -116,7 +116,12 @@ class USymbolArtifact extends USymbol {
 				final Dimension2D dim = calculateDimension(ug.getStringBounder());
 				symbolContext.apply(ug);
 				drawArtifact(ug, x, y, dim.getWidth(), dim.getHeight(), symbolContext.isShadowing());
-				title.drawU(ug, x, y);
+				final Dimension2D dimStereo = stereotype.calculateDimension(ug.getStringBounder());
+				final double posStereo = (width - dimStereo.getWidth()) / 2;
+				stereotype.drawU(ug, x + posStereo, y + 2);
+				final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
+				final double posTitle = (width - dimTitle.getWidth()) / 2;
+				title.drawU(ug, x + posTitle, y + 2 + dimStereo.getHeight());
 
 			}
 

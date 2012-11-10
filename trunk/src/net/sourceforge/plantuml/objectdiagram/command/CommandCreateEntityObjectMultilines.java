@@ -37,11 +37,13 @@ import java.util.List;
 
 import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
+import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
+import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Stereotype;
@@ -59,8 +61,11 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines2<Obje
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("TYPE", "(object)\\s+"), //
 				new RegexLeaf("NAME", "(?:\"([^\"]+)\"\\s+as\\s+)?([\\p{L}0-9_.]+)"), //
-				new RegexLeaf("STEREO", "(?:\\s*([\\<\\[]{2}.*[\\>\\]]{2}))?"), //
-				new RegexLeaf("COLOR", "\\s*(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.+\\>\\>))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
 				new RegexLeaf("\\s*\\{\\s*$"));
 	}
 
@@ -87,7 +92,7 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines2<Obje
 	}
 
 	private IEntity executeArg0(RegexResult line0) {
-		final String code = line0.get("NAME", 1);
+		final Code code = Code.of(line0.get("NAME", 1));
 		final String display = line0.get("NAME", 0);
 		final String stereotype = line0.get("STEREO", 0);
 		if (getSystem().leafExist(code)) {
