@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.note.SingleMultiFactoryCommand;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
@@ -81,14 +82,14 @@ public final class FactorySequenceNoteOnArrowCommand implements SingleMultiFacto
 	}
 
 	public Command createMultiLine(final SequenceDiagram system) {
-		return new CommandMultilines2<SequenceDiagram>(system, getRegexConcatMultiLine()) {
+		return new CommandMultilines2<SequenceDiagram>(system, getRegexConcatMultiLine(), MultilinesStrategy.KEEP_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^end ?note$";
 			}
 
-			public CommandExecutionResult execute(List<String> lines) {
+			public CommandExecutionResult executeNow(List<String> lines) {
 				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 				final List<String> in = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 

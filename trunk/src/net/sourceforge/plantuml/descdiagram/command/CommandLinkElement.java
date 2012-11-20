@@ -293,23 +293,21 @@ public class CommandLinkElement extends SingleLineCommand2<DescriptionDiagram> {
 	private ILeaf getOrCreateLeaf(final Code code2) {
 		final String code = code2.getCode();
 		if (code.startsWith("()")) {
-			return getSystem().getOrCreateLeaf(
+			return getSystem().getOrCreateLeaf1(
 					Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code.substring(2).trim())),
 					LeafType.CIRCLE_INTERFACE);
 		}
 		final char codeChar = code.length() > 2 ? code.charAt(0) : 0;
 		if (codeChar == '(') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
-					LeafType.USECASE);
+			return getSystem().getOrCreateLeaf1(code2.eventuallyRemoveStartingAndEndingDoubleQuote(), LeafType.USECASE);
 		} else if (codeChar == ':') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
-					LeafType.ACTOR);
+			return getSystem().getOrCreateLeaf1(code2.eventuallyRemoveStartingAndEndingDoubleQuote(), LeafType.ACTOR);
 		} else if (codeChar == '[') {
-			return getSystem().getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2),
+			return getSystem().getOrCreateLeaf1(code2.eventuallyRemoveStartingAndEndingDoubleQuote(),
 					LeafType.COMPONENT);
 		}
 
-		return getSystem().getOrCreateClass(code2);
+		return getSystem().getOrCreateLeaf1(code2, null);
 	}
 
 	private CommandExecutionResult executePackageLink(RegexResult arg) {

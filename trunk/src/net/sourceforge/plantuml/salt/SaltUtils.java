@@ -56,6 +56,7 @@ import net.sourceforge.plantuml.salt.factory.ElementFactoryRetrieveFromDictonnar
 import net.sourceforge.plantuml.salt.factory.ElementFactoryTab;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryText;
 import net.sourceforge.plantuml.salt.factory.ElementFactoryTextField;
+import net.sourceforge.plantuml.salt.factory.ElementFactoryTree;
 
 public class SaltUtils {
 
@@ -63,7 +64,7 @@ public class SaltUtils {
 		final DataSourceImpl source = new DataSourceImpl(data);
 
 		final Collection<AbstractElementFactoryComplex> cpx = new ArrayList<AbstractElementFactoryComplex>();
-		
+
 		final Dictionary dictionnary = new Dictionary();
 
 		// cpx.add(new ElementFactorySimpleFrame(source, dictionnary));
@@ -81,11 +82,12 @@ public class SaltUtils {
 
 		for (ElementFactory f : cpx) {
 			if (f.ready()) {
+				Log.info("Using " + f);
 				return f.create().getElement();
 			}
 		}
 
-		Log.println("data="+data);
+		Log.println("data=" + data);
 		throw new IllegalArgumentException();
 
 	}
@@ -93,6 +95,7 @@ public class SaltUtils {
 	private static void addSimpleFactory(final AbstractElementFactoryComplex cpxFactory, final DataSource source,
 			Dictionary dictionnary) {
 		cpxFactory.addFactory(new ElementFactoryMenu(source, dictionnary));
+		cpxFactory.addFactory(new ElementFactoryTree(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryTab(source, dictionnary));
 		cpxFactory.addFactory(new ElementFactoryLine(source));
 		cpxFactory.addFactory(new ElementFactoryTextField(source, dictionnary));

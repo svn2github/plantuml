@@ -50,6 +50,7 @@ import net.sourceforge.plantuml.UniqueSequence;
 import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.CucaDiagram;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
@@ -64,6 +65,11 @@ public class ActivityDiagram2 extends CucaDiagram {
 
 	private final Collection<String> pendingLabels = new HashSet<String>();
 	private final Map<String, IEntity> labels = new HashMap<String, IEntity>();
+	
+	public ILeaf getOrCreateLeaf1(Code code, LeafType type) {
+		return getOrCreateLeaf1Default(code, type);
+	}
+
 
 	final protected List<String> getDotStrings() {
 		return Arrays.asList("nodesep=.20;", "ranksep=0.4;", "edge [fontsize=11,labelfontsize=11];",
@@ -256,7 +262,7 @@ public class ActivityDiagram2 extends CucaDiagram {
 		if (waitings.size() == 0) {
 			throw new IllegalStateException();
 		}
-		final IEntity act = getOrCreateLeaf(Code.of("end"), LeafType.CIRCLE_END);
+		final IEntity act = getOrCreateLeaf1(Code.of("end"), LeafType.CIRCLE_END);
 		afterAdd(act, direction);
 	}
 

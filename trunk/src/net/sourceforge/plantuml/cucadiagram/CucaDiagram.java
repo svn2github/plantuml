@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 9064 $
+ * Revision $Revision: 9433 $
  *
  */
 package net.sourceforge.plantuml.cucadiagram;
@@ -66,6 +66,7 @@ import net.sourceforge.plantuml.html.CucaDiagramHtmlMaker;
 import net.sourceforge.plantuml.png.PngSplitter;
 import net.sourceforge.plantuml.skin.VisibilityModifier;
 import net.sourceforge.plantuml.svek.CucaDiagramFileMakerSvek;
+import net.sourceforge.plantuml.svek.SingleStrategy;
 import net.sourceforge.plantuml.ugraphic.ColorMapper;
 import net.sourceforge.plantuml.xmi.CucaDiagramXmiMaker;
 
@@ -81,6 +82,8 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	private boolean visibilityModifierPresent;
 
+	public abstract IEntity getOrCreateLeaf1(Code code, LeafType type);
+
 	public boolean hasUrl() {
 		for (IEntity entity : getLeafs().values()) {
 			if (entity.getUrls().size() > 0) {
@@ -95,10 +98,18 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return false;
 	}
 
-	public ILeaf getOrCreateLeaf(Code code, LeafType defaultType) {
+
+//	public ILeaf getOrCreateLeaf1(Code code, LeafType type) {
+//		return getOrCreateLeaf1Default(code, type);
+//	}
+
+	final protected ILeaf getOrCreateLeaf1Default(Code code, LeafType type) {
+		if (type == null) {
+			throw new IllegalArgumentException();
+		}
 		ILeaf result = getLeafs().get(code);
 		if (result == null) {
-			result = createLeafInternal(code, StringUtils.getWithNewlines(code), defaultType, getCurrentGroup());
+			result = createLeafInternal(code, StringUtils.getWithNewlines(code), type, getCurrentGroup());
 		}
 		return result;
 	}
@@ -141,8 +152,8 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 		return g;
 	}
 
-	protected final IGroup getOrCreateGroupInternal(Code code, List<? extends CharSequence> display,
-			String namespace, GroupType type, IGroup parent) {
+	protected final IGroup getOrCreateGroupInternal(Code code, List<? extends CharSequence> display, String namespace,
+			GroupType type, IGroup parent) {
 		IGroup result = entityFactory.getGroups().get(code);
 		if (result != null) {
 			return result;
@@ -537,6 +548,25 @@ public abstract class CucaDiagram extends UmlDiagram implements GroupHierarchy, 
 
 	final public EntityFactory getEntityFactory() {
 		return entityFactory;
+	}
+
+	public void applySingleStrategy() {
+		for (IGroup g : getGroups(true)) {
+			final List<ILeaf> standalones = new ArrayList<ILeaf>();
+			final SingleStrategy singleStrategy = g.getSingleStrategy();
+
+			for (ILeaf ent : g.getLeafsDirect()) {
+				if (isStandalone(ent)) {
+					standalones.add(ent);
+				}
+			}
+			if (standalones.size() < 3) {
+				continue;
+			}
+			for (Link link : singleStrategy.generateLinks(standalones)) {
+				addLink(link);
+			}
+		}
 	}
 
 }

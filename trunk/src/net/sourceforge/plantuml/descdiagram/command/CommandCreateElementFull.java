@@ -66,14 +66,17 @@ public class CommandCreateElementFull extends SingleLineCommand2<DescriptionDiag
 						new RegexLeaf("CODE1", CODE_WITH_QUOTE), //
 						new RegexConcat(//
 								new RegexLeaf("DISPLAY2", DISPLAY), //
+								new RegexLeaf("STEREOTYPE2", "(?:\\s+(\\<\\<.+\\>\\>))?"), //
 								new RegexLeaf("\\s*as\\s+"), //
 								new RegexLeaf("CODE2", CODE)), //
 						new RegexConcat(//
 								new RegexLeaf("CODE3", CODE), //
+								new RegexLeaf("STEREOTYPE3", "(?:\\s+(\\<\\<.+\\>\\>))?"), //
 								new RegexLeaf("\\s+as\\s*"), //
 								new RegexLeaf("DISPLAY3", DISPLAY)), //
 						new RegexConcat(//
 								new RegexLeaf("DISPLAY4", DISPLAY_WITHOUT_QUOTE), //
+								new RegexLeaf("STEREOTYPE4", "(?:\\s+(\\<\\<.+\\>\\>))?"), //
 								new RegexLeaf("\\s*as\\s+"), //
 								new RegexLeaf("CODE4", CODE)) //
 				), //
@@ -188,8 +191,8 @@ public class CommandCreateElementFull extends SingleLineCommand2<DescriptionDiag
 			display = code.getCode();
 		}
 		display = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(display);
-		final String stereotype = arg.get("STEREOTYPE", 0);
-		final IEntity entity = getSystem().getOrCreateLeaf(code, type);
+		final String stereotype = arg.getLazzy("STEREOTYPE", 0);
+		final IEntity entity = getSystem().getOrCreateLeaf1(code, type);
 		entity.setDisplay(StringUtils.getWithNewlines(display));
 		entity.setUSymbol(usymbol);
 		if (stereotype != null) {

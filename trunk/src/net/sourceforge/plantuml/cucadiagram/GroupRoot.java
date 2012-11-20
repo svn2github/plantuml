@@ -44,6 +44,7 @@ import net.sourceforge.plantuml.graphic.HtmlColor;
 import net.sourceforge.plantuml.graphic.USymbol;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
+import net.sourceforge.plantuml.svek.SingleStrategy;
 
 public class GroupRoot implements IGroup {
 
@@ -228,6 +229,10 @@ public class GroupRoot implements IGroup {
 
 	public void setUSymbol(USymbol symbol) {
 		throw new UnsupportedOperationException();
+	}
+
+	public SingleStrategy getSingleStrategy() {
+		return SingleStrategy.SQUARRE;
 	}
 
 }

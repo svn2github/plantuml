@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 9041 $
+ * Revision $Revision: 9352 $
  *
  */
 package net.sourceforge.plantuml.sequencediagram.graphic;
@@ -38,7 +38,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -329,18 +328,6 @@ public class SequenceDiagramFileMaker implements FileMaker {
 		drawableSet.drawU(ug, delta, diagramWidth, page, diagram.isShowFootbox());
 
 		return ug;
-	}
-
-	static public File computeFilename(File pngFile, int i, FileFormat fileFormat) {
-		if (i == 0) {
-			return pngFile;
-		}
-		final File dir = pngFile.getParentFile();
-		String name = pngFile.getName();
-		name = name.replaceAll("\\" + fileFormat.getFileSuffix() + "$",
-				"_" + String.format("%03d", i) + fileFormat.getFileSuffix());
-		return new File(dir, name);
-
 	}
 
 	private void addFooter2(SequenceDiagramArea area) {

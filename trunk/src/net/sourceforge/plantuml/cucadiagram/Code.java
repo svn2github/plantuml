@@ -33,6 +33,10 @@
  */
 package net.sourceforge.plantuml.cucadiagram;
 
+import java.util.Map;
+
+import net.sourceforge.plantuml.StringUtils;
+
 public class Code implements Comparable<Code> {
 
 	private final String code;
@@ -78,4 +82,57 @@ public class Code implements Comparable<Code> {
 	public int compareTo(Code other) {
 		return this.code.compareTo(other.code);
 	}
+
+	public Code eventuallyRemoveStartingAndEndingDoubleQuote() {
+		return Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code));
+	}
+
+	public final String getNamespace(Map<Code, ILeaf> leafs, String namespaceSeparator) {
+		String code = this.getCode();
+		if (namespaceSeparator == null) {
+			throw new IllegalArgumentException();
+		}
+		do {
+			final int x = code.lastIndexOf(namespaceSeparator);
+			if (x == -1) {
+				return null;
+			}
+			code = code.substring(0, x);
+		} while (leafs.containsKey(Code.of(code)));
+		return code;
+	}
+
+	public final Code getShortName(Map<Code, ILeaf> leafs, String namespaceSeparator) {
+		if (namespaceSeparator == null) {
+			throw new IllegalArgumentException();
+		}
+		final String code = this.getCode();
+		final String namespace = getNamespace(leafs, namespaceSeparator);
+		if (namespace == null) {
+			return Code.of(code);
+		}
+		return Code.of(code.substring(namespace.length() + namespaceSeparator.length()));
+	}
+
+	public final Code getFullyQualifiedCode(IGroup g, String namespaceSeparator) {
+		if (namespaceSeparator == null) {
+			throw new IllegalArgumentException();
+		}
+		final String code = this.getCode();
+		if (code.startsWith(namespaceSeparator)) {
+			return Code.of(code.substring(namespaceSeparator.length()));
+		}
+		if (code.contains(namespaceSeparator)) {
+			return Code.of(code);
+		}
+		if (EntityUtils.groupRoot(g)) {
+			return Code.of(code);
+		}
+		final String namespace = g.zgetNamespace();
+		if (namespace == null) {
+			return Code.of(code);
+		}
+		return Code.of(namespace + namespaceSeparator + code);
+	}
+
 }

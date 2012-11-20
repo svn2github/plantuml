@@ -66,6 +66,7 @@ import net.sourceforge.plantuml.graphic.TextBlockWidthVertical;
 import net.sourceforge.plantuml.graphic.USymbol;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
+import net.sourceforge.plantuml.svek.SingleStrategy;
 
 class EntityImpl implements ILeaf, IGroup {
 
@@ -544,5 +545,9 @@ class EntityImpl implements ILeaf, IGroup {
 
 	public void setUSymbol(USymbol symbol) {
 		this.symbol = symbol;
+	}
+
+	public SingleStrategy getSingleStrategy() {
+		return SingleStrategy.SQUARRE;
 	}
 }

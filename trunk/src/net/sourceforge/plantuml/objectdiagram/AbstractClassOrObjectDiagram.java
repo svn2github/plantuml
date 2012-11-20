@@ -91,8 +91,8 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 
 	public boolean associationClass(int mode, Code clName1, Code clName2, IEntity associed, LinkType linkType,
 			String label) {
-		final IEntity entity1 = getOrCreateClass(clName1);
-		final IEntity entity2 = getOrCreateClass(clName2);
+		final IEntity entity1 = getOrCreateLeaf1(clName1, null);
+		final IEntity entity2 = getOrCreateLeaf1(clName2, null);
 		final List<Association> same = new ArrayList<Association>();
 		for (Association existing : assocations) {
 			if (existing.sameCouple(entity1, entity2)) {
@@ -134,7 +134,7 @@ public abstract class AbstractClassOrObjectDiagram extends AbstractEntityDiagram
 			this.entity1 = entity1;
 			this.entity2 = entity2;
 			this.associed = associed;
-			point = getOrCreateLeaf(UniqueSequence.getCode("apoint"), LeafType.POINT_FOR_ASSOCIATION);
+			point = getOrCreateLeaf1(UniqueSequence.getCode("apoint"), LeafType.POINT_FOR_ASSOCIATION);
 
 		}
 

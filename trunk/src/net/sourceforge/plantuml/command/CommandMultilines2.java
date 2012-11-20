@@ -45,28 +45,26 @@ public abstract class CommandMultilines2<S extends PSystem> implements Command {
 	private final S system;
 
 	private final RegexConcat starting;
-	// private final Pattern ending;
 
-	public CommandMultilines2(final S system, RegexConcat patternStart) {
+	private final MultilinesStrategy strategy;
+
+	public CommandMultilines2(final S system, RegexConcat patternStart, MultilinesStrategy strategy) {
 		if (patternStart.getPattern().startsWith("^") == false || patternStart.getPattern().endsWith("$") == false) {
 			throw new IllegalArgumentException("Bad pattern " + patternStart.getPattern());
 		}
-//		if (patternEnd.startsWith("(?i)^") == false || patternEnd.endsWith("$") == false) {
-//			throw new IllegalArgumentException("Bad pattern " + patternEnd);
-//		}
+		this.strategy = strategy;
 		this.system = system;
 		this.starting = patternStart;
-		//this.ending = Pattern.compile(patternEnd);
 	}
-	
+
 	public abstract String getPatternEnd();
 
-	
 	public String[] getDescription() {
-		return new String[] { "START: "+starting.getPattern(), "END: "+getPatternEnd() };
+		return new String[] { "START: " + starting.getPattern(), "END: " + getPatternEnd() };
 	}
 
 	final public CommandControl isValid(List<String> lines) {
+		lines = strategy.filter(lines);
 		if (isCommandForbidden()) {
 			return CommandControl.NOT_OK;
 		}
@@ -87,6 +85,12 @@ public abstract class CommandMultilines2<S extends PSystem> implements Command {
 		return CommandControl.OK;
 	}
 
+	public final CommandExecutionResult execute(List<String> lines) {
+		return executeNow(strategy.filter(lines));
+	}
+
+	public abstract CommandExecutionResult executeNow(List<String> lines);
+
 	protected boolean isCommandForbidden() {
 		return false;
 	}
@@ -101,10 +105,6 @@ public abstract class CommandMultilines2<S extends PSystem> implements Command {
 	protected final RegexConcat getStartingPattern() {
 		return starting;
 	}
-
-//	protected final Pattern getEnding() {
-//		return ending;
-//	}
 
 	public boolean isDeprecated(List<String> line) {
 		return false;

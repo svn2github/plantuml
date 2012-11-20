@@ -65,9 +65,11 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 				new RegexConcat(//
 						new RegexLeaf("ARROW_CROSS_START", "(x)?"), //
 						new RegexLeaf("ARROW_BODY1", "(-+)"), //
+						new RegexLeaf("ARROW_STYLE1",
+						"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"), //
 						new RegexLeaf("ARROW_DIRECTION", "(left|right|up|down|le?|ri?|up?|do?)?"), //
-						new RegexLeaf("ARROW_STYLE",
-								"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"), //
+						new RegexLeaf("ARROW_STYLE2",
+						"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"), //
 						new RegexLeaf("ARROW_BODY2", "(-*)"), //
 						new RegexLeaf("\\>"), //
 						new RegexLeaf("ARROW_CIRCLE_END", "(o\\s+)?")), //
@@ -123,27 +125,31 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		if (dir == Direction.LEFT || dir == Direction.UP) {
 			link = link.getInv();
 		}
-		final String arrowStyle = arg.get("ARROW_STYLE", 0);
-		if (arrowStyle != null) {
-			final StringTokenizer st = new StringTokenizer(arrowStyle, ",");
-			while (st.hasMoreTokens()) {
-				final String s = st.nextToken();
-				if (s.equalsIgnoreCase("dashed")) {
-					link.goDashed();
-				} else if (s.equalsIgnoreCase("bold")) {
-					link.goBold();
-				} else if (s.equalsIgnoreCase("dotted")) {
-					link.goDotted();
-				} else if (s.equalsIgnoreCase("hidden")) {
-					link.goHidden();
-				} else {
-					link.setSpecificColor(s);
-				}
-			}
-		}
+		applyStyle(arg.getLazzy("ARROW_STYLE", 0), link);
 		getSystem().addLink(link);
 
 		return CommandExecutionResult.ok();
+	}
+
+	private void applyStyle(String arrowStyle, Link link) {
+		if (arrowStyle == null) {
+			return;
+		}
+		final StringTokenizer st = new StringTokenizer(arrowStyle, ",");
+		while (st.hasMoreTokens()) {
+			final String s = st.nextToken();
+			if (s.equalsIgnoreCase("dashed")) {
+				link.goDashed();
+			} else if (s.equalsIgnoreCase("bold")) {
+				link.goBold();
+			} else if (s.equalsIgnoreCase("dotted")) {
+				link.goDotted();
+			} else if (s.equalsIgnoreCase("hidden")) {
+				link.goHidden();
+			} else {
+				link.setSpecificColor(s);
+			}
+		}
 	}
 
 	private Direction getDirection(RegexResult arg) {
@@ -166,9 +172,9 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		}
 		if (code.startsWith("=") && code.endsWith("=")) {
 			code = removeEquals(code);
-			return getSystem().getOrCreateLeaf(Code.of(code), LeafType.SYNCHRO_BAR);
+			return getSystem().getOrCreateLeaf1(Code.of(code), LeafType.SYNCHRO_BAR);
 		}
-		return getSystem().getOrCreateClass(Code.of(code));
+		return getSystem().getOrCreateLeaf1(Code.of(code), null);
 	}
 
 	private String removeEquals(String code) {
@@ -190,9 +196,9 @@ public class CommandLinkState extends SingleLineCommand2<StateDiagram> {
 		}
 		if (code.startsWith("=") && code.endsWith("=")) {
 			code = removeEquals(code);
-			return getSystem().getOrCreateLeaf(Code.of(code), LeafType.SYNCHRO_BAR);
+			return getSystem().getOrCreateLeaf1(Code.of(code), LeafType.SYNCHRO_BAR);
 		}
-		return getSystem().getOrCreateClass(Code.of(code));
+		return getSystem().getOrCreateLeaf1(Code.of(code), null);
 	}
 
 }

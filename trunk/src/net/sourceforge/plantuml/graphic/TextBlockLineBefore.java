@@ -72,23 +72,21 @@ public class TextBlockLineBefore implements TextBlockWidth {
 	public void drawU(UGraphic ug, double x, double y, double widthToUse) {
 		final HtmlColor color = ug.getParam().getColor();
 		if (title == null) {
-			drawLine(ug, x, y, widthToUse);
+			drawLine(ug, x + 1, y, widthToUse - 2, separator);
 		}
 		textBlock.drawU(ug, x, y, widthToUse);
 		ug.getParam().setColor(color);
 		if (title != null) {
 			final Dimension2D dimTitle = title.calculateDimension(ug.getStringBounder());
 			final double space = (widthToUse - dimTitle.getWidth()) / 2;
-			drawLine(ug, x, y, space - 1);
+			drawLine(ug, x + 1, y, space - 1 - 2, separator);
 			title.drawU(ug, x + space, y - dimTitle.getHeight() / 2 - 0.5);
 			ug.getParam().setColor(color);
-			drawLine(ug, x + widthToUse - space + 1, y, space - 1);
+			drawLine(ug, x + 1 + widthToUse - space + 1, y, space - 1 - 2, separator);
 		}
 	}
 
-	private void drawLine(UGraphic ug, double x, double y, double widthToUse) {
-		x += 1;
-		widthToUse -= 2;
+	public static void drawLine(UGraphic ug, double x, double y, double widthToUse, char separator) {
 		if (separator == '=') {
 			ug.draw(x, y, new ULine(widthToUse, 0));
 			ug.draw(x, y + 2, new ULine(widthToUse, 0));

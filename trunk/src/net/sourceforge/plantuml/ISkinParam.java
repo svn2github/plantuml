@@ -84,5 +84,7 @@ public interface ISkinParam extends SpriteContainer {
 	public double getNodesep();
 	
 	public double getRanksep();
+	
+	public double getRoundCorner();
 
 }

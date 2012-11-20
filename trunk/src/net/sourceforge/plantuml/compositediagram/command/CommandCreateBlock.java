@@ -55,7 +55,7 @@ public class CommandCreateBlock extends SingleLineCommand<CompositeDiagram> {
 		if (display == null) {
 			display = code.getCode();
 		}
-		final IEntity ent = getSystem().getOrCreateClass(code);
+		final IEntity ent = getSystem().getOrCreateLeaf1(code, null);
 		ent.setDisplay(StringUtils.getWithNewlines(display));
 		return CommandExecutionResult.ok();
 	}

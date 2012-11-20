@@ -166,4 +166,8 @@ public class SkinParamBackcolored implements ISkinParam {
 		return skinParam.getRanksep();
 	}
 
+	public double getRoundCorner() {
+		return skinParam.getRoundCorner();
+	}
+
 }

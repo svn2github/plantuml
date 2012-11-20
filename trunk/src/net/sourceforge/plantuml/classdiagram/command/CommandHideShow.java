@@ -106,7 +106,7 @@ public class CommandHideShow extends SingleLineCommand2<ClassDiagram> {
 		} else if (arg1.startsWith("<<")) {
 			gender = EntityGenderUtils.byStereotype(arg1);
 		} else {
-			final IEntity entity = getSystem().getOrCreateClass(Code.of(arg1));
+			final IEntity entity = getSystem().getOrCreateLeaf1(Code.of(arg1), null);
 			gender = EntityGenderUtils.byEntityAlone(entity);
 		}
 		if (gender != null) {

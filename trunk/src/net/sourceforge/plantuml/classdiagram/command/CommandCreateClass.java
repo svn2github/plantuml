@@ -56,6 +56,8 @@ import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
 public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 
+	public static final String CODE = "[^\\s{}\"<>]+";
+
 	enum Mode {
 		EXTENDS, IMPLEMENTS
 	};
@@ -68,10 +70,17 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("TYPE", //
 						"(interface|enum|abstract\\s+class|abstract|class)\\s+"), //
-				new RegexOr(new RegexLeaf("NAME1",
-						"(?:\"([^\"]+)\"\\s+as\\s+)?((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)"), //
-						new RegexLeaf("NAME2", "((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)\\s+as\\s+\"([^\"]+)\""), //
-						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
+				new RegexOr(//
+						new RegexConcat(//
+								new RegexLeaf("DISPLAY1", "\"([^\"]+)\""), //
+								new RegexLeaf("\\s+as\\s+"), //
+								new RegexLeaf("CODE1", "(" + CODE + ")")), //
+						new RegexConcat(//
+								new RegexLeaf("CODE2", "(" + CODE + ")"), //
+								new RegexLeaf("\\s+as\\s+"), // //
+								new RegexLeaf("DISPLAY2", "\"([^\"]+)\"")), //
+						new RegexLeaf("CODE3", "(" + CODE + ")"), //
+						new RegexLeaf("CODE4", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<{2}.*\\>{2}))?"), //
 				new RegexLeaf("\\s*"), //
@@ -85,23 +94,14 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 	@Override
 	protected CommandExecutionResult executeArg(RegexResult arg) {
 		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
-		final Code code;
-		final String display;
-		if (arg.get("NAME1", 1) != null) {
-			code = Code.of(arg.get("NAME1", 1));
-			display = arg.get("NAME1", 0);
-		} else if (arg.get("NAME3", 0) != null) {
-			code = Code.of(arg.get("NAME3", 0));
-			display = arg.get("NAME3", 0);
-		} else {
-			code = Code.of(arg.get("NAME2", 0));
-			display = arg.get("NAME2", 1);
-		}
+		final Code code = Code.of(arg.getLazzy("CODE", 0)).eventuallyRemoveStartingAndEndingDoubleQuote();
+		final String display = arg.getLazzy("DISPLAY", 0);
+
 		final String stereotype = arg.get("STEREO", 0);
 		final String generic = arg.get("GENERIC", 0);
 		final ILeaf entity;
 		if (getSystem().leafExist(code)) {
-			entity = getSystem().getOrCreateLeaf(code, type);
+			entity = getSystem().getOrCreateLeaf1(code, type);
 			entity.muteToType(type);
 		} else {
 			entity = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), type);
@@ -138,7 +138,7 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 			if (mode == Mode.EXTENDS && entity.getEntityType() == LeafType.INTERFACE) {
 				type2 = LeafType.INTERFACE;
 			}
-			final IEntity cl2 = system.getOrCreateClass(other, type2);
+			final IEntity cl2 = system.getOrCreateLeaf1(other, type2);
 			LinkType typeLink = new LinkType(LinkDecor.NONE, LinkDecor.EXTENDS);
 			if (type2 == LeafType.INTERFACE && entity.getEntityType() != LeafType.INTERFACE) {
 				typeLink = typeLink.getDashed();
@@ -148,6 +148,5 @@ public class CommandCreateClass extends SingleLineCommand2<ClassDiagram> {
 			system.addLink(link);
 		}
 	}
-
 
 }

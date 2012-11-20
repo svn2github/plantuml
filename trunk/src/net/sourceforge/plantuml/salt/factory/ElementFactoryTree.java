@@ -33,17 +33,18 @@
  */
 package net.sourceforge.plantuml.salt.factory;
 
+import java.awt.Font;
+
 import net.sourceforge.plantuml.salt.DataSource;
 import net.sourceforge.plantuml.salt.Dictionary;
-import net.sourceforge.plantuml.salt.Positionner;
 import net.sourceforge.plantuml.salt.Terminated;
 import net.sourceforge.plantuml.salt.element.Element;
-import net.sourceforge.plantuml.salt.element.ElementPyramid;
-import net.sourceforge.plantuml.salt.element.TableStrategy;
+import net.sourceforge.plantuml.salt.element.ElementTree;
+import net.sourceforge.plantuml.ugraphic.UFont;
 
-public class ElementFactoryPyramid extends AbstractElementFactoryComplex {
+public class ElementFactoryTree extends AbstractElementFactoryComplex {
 
-	public ElementFactoryPyramid(DataSource dataSource, Dictionary dictionary) {
+	public ElementFactoryTree(DataSource dataSource, Dictionary dictionary) {
 		super(dataSource, dictionary);
 	}
 
@@ -52,30 +53,27 @@ public class ElementFactoryPyramid extends AbstractElementFactoryComplex {
 			throw new IllegalStateException();
 		}
 		final String header = getDataSource().next().getElement();
-		assert header.startsWith("{");
+		final String textT = getDataSource().next().getElement();
+		assert textT.equals("T");
 
-		TableStrategy strategy = TableStrategy.DRAW_NONE;
-		if (header.length() == 2) {
-			strategy = TableStrategy.fromChar(header.charAt(1));
-		}
-
-		final Positionner positionner = new Positionner();
+		final UFont font = new UFont("Default", Font.PLAIN, 12);
+		final ElementTree result = new ElementTree(font, getDictionary());
 
 		while (getDataSource().peek(0).getElement().equals("}") == false) {
-			positionner.add(getNextElement());
+			final Terminated<String> t = getDataSource().next();
+			final String s = t.getElement();
+			result.addEntry(s);
+
 		}
 		final Terminated<String> next = getDataSource().next();
-		return new Terminated<Element>(new ElementPyramid(positionner, strategy), next.getTerminator());
+		return new Terminated<Element>(result, next.getTerminator());
 	}
 
 	public boolean ready() {
 		final String text = getDataSource().peek(0).getElement();
-		if (text.equals("{") || text.equals("{+") || text.equals("{#") || text.equals("{!") || text.equals("{-")) {
+		if (text.equals("{")) {
 			final String text1 = getDataSource().peek(1).getElement();
-			if (text1.matches("[NSEW]=")) {
-				return false;
-			}
-			return true;
+			return text1.equals("T");
 		}
 		return false;
 	}

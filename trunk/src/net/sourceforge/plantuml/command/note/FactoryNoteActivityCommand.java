@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
@@ -75,14 +76,14 @@ public final class FactoryNoteActivityCommand implements SingleMultiFactoryComma
 	}
 
 	public Command createMultiLine(final ActivityDiagram system) {
-		return new CommandMultilines2<ActivityDiagram>(system, getRegexConcatMultiLine()) {
+		return new CommandMultilines2<ActivityDiagram>(system, getRegexConcatMultiLine(), MultilinesStrategy.KEEP_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^end ?note$";
 			}
 
-			public final CommandExecutionResult execute(List<String> lines) {
+			public final CommandExecutionResult executeNow(List<String> lines) {
 				// StringUtils.trim(lines, true);
 				final RegexResult arg = getStartingPattern().matcher(lines.get(0).trim());
 				List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));

@@ -33,15 +33,10 @@
  */
 package net.sourceforge.plantuml.descdiagram;
 
-import java.util.List;
-
 import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UmlDiagramType;
 import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.cucadiagram.Code;
-import net.sourceforge.plantuml.cucadiagram.EntityUtils;
-import net.sourceforge.plantuml.cucadiagram.GroupType;
-import net.sourceforge.plantuml.cucadiagram.IGroup;
 import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 import net.sourceforge.plantuml.graphic.USymbol;
@@ -49,26 +44,49 @@ import net.sourceforge.plantuml.graphic.USymbol;
 public class DescriptionDiagram extends AbstractEntityDiagram {
 
 	@Override
-	public ILeaf getOrCreateClass(Code code) {
-		String code2 = code.getCode();
-		if (code2.startsWith("[") && code2.endsWith("]")) {
-			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.COMPONENT);
+	public ILeaf getOrCreateLeaf1(Code code, LeafType type) {
+		if (type == null) {
+			String code2 = code.getCode();
+			if (code2.startsWith("[") && code2.endsWith("]")) {
+				return getOrCreateLeaf1Default(code.eventuallyRemoveStartingAndEndingDoubleQuote(), LeafType.COMPONENT);
+			}
+			if (code2.startsWith(":") && code2.endsWith(":")) {
+				return getOrCreateLeaf1Default(code.eventuallyRemoveStartingAndEndingDoubleQuote(), LeafType.ACTOR);
+			}
+			if (code2.startsWith("()")) {
+				code2 = code2.substring(2).trim();
+				code2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2);
+				return getOrCreateLeaf1Default(Code.of(code2), LeafType.CIRCLE_INTERFACE);
+			}
+			code = code.eventuallyRemoveStartingAndEndingDoubleQuote();
+			return getOrCreateLeaf1Default(code, LeafType.STILL_UNKNOWN);
 		}
-		if (code2.startsWith(":") && code2.endsWith(":")) {
-			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
-		}
-		if (code2.startsWith("()")) {
-			code2 = code2.substring(2).trim();
-			code2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code2);
-			return getOrCreateLeaf(Code.of(code2), LeafType.CIRCLE_INTERFACE);
-		}
-		code = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code);
-		// if (isUsecase()) {
-		// return getOrCreateLeaf(code, LeafType.ACTOR);
-		// }
-		// return getOrCreateLeaf(code, LeafType.CIRCLE_INTERFACE);
-		return getOrCreateLeaf(code, LeafType.STILL_UNKNOWN);
+		return getOrCreateLeaf1Default(code, type);
 	}
+
+//	@Override
+//	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType type) {
+//		if (type != LeafType.COMPONENT) {
+//			return super.createLeaf(code, display, type);
+//		}
+//		code = code.getFullyQualifiedCode(getCurrentGroup());
+//		if (super.leafExist(code)) {
+//			throw new IllegalArgumentException("Already known: " + code);
+//		}
+//		return createEntityWithNamespace(code, display, type);
+//	}
+
+//	private ILeaf createEntityWithNamespace(Code fullyCode, List<? extends CharSequence> display, LeafType type) {
+//		IGroup group = getCurrentGroup();
+//		final String namespace = fullyCode.getNamespace(getLeafs());
+//		if (namespace != null && (EntityUtils.groupRoot(group) || group.getCode().equals(namespace) == false)) {
+//			group = getOrCreateGroupInternal(Code.of(namespace), StringUtils.getWithNewlines(namespace), namespace,
+//					GroupType.PACKAGE, getRootGroup());
+//		}
+//		return createLeafInternal(fullyCode,
+//				display == null ? StringUtils.getWithNewlines(fullyCode.getShortName(getLeafs())) : display, type,
+//				group);
+//	}
 
 	private boolean isUsecase() {
 		for (ILeaf leaf : getLeafs().values()) {
@@ -89,43 +107,6 @@ public class DescriptionDiagram extends AbstractEntityDiagram {
 				leaf.muteToType(defaultType);
 			}
 		}
-	}
-
-	@Override
-	public ILeaf getOrCreateLeaf(Code code, LeafType defaultType) {
-		code = getFullyQualifiedCode(code);
-		// if (super.leafExist(code)) {
-		return super.getOrCreateLeaf(code, defaultType);
-		// }
-		// return createEntityWithNamespace(code, StringUtils.getWithNewlines(getShortName(code)), defaultType);
-	}
-
-	@Override
-	public ILeaf createLeaf(Code code, List<? extends CharSequence> display, LeafType type) {
-		if (type != LeafType.COMPONENT) {
-			return super.createLeaf(code, display, type);
-		}
-		code = getFullyQualifiedCode(code);
-		if (super.leafExist(code)) {
-			throw new IllegalArgumentException("Already known: " + code);
-		}
-		return createEntityWithNamespace(code, display, type);
-	}
-
-	private ILeaf createEntityWithNamespace(Code fullyCode, List<? extends CharSequence> display, LeafType type) {
-		IGroup group = getCurrentGroup();
-		final String namespace = getNamespace(fullyCode);
-		if (namespace != null && (EntityUtils.groupRoot(group) || group.getCode().equals(namespace) == false)) {
-			group = getOrCreateGroupInternal(Code.of(namespace), StringUtils.getWithNewlines(namespace), namespace,
-					GroupType.PACKAGE, getRootGroup());
-		}
-		return createLeafInternal(fullyCode, display == null ? StringUtils.getWithNewlines(getShortName(fullyCode))
-				: display, type, group);
-	}
-
-	@Override
-	public final boolean leafExist(Code code) {
-		return super.leafExist(getFullyQualifiedCode(code));
 	}
 
 	@Override

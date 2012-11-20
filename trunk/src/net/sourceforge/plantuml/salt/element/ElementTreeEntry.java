@@ -34,37 +34,45 @@
 package net.sourceforge.plantuml.salt.element;
 
 import java.awt.geom.Dimension2D;
+import java.util.Arrays;
 
 import net.sourceforge.plantuml.Dimension2DDouble;
-import net.sourceforge.plantuml.graphic.HtmlColor;
+import net.sourceforge.plantuml.SpriteContainer;
+import net.sourceforge.plantuml.graphic.FontConfiguration;
+import net.sourceforge.plantuml.graphic.HorizontalAlignement;
 import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 import net.sourceforge.plantuml.graphic.StringBounder;
-import net.sourceforge.plantuml.graphic.TextBlockLineBefore;
+import net.sourceforge.plantuml.graphic.TextBlock;
+import net.sourceforge.plantuml.graphic.TextBlockUtils;
+import net.sourceforge.plantuml.ugraphic.UFont;
 import net.sourceforge.plantuml.ugraphic.UGraphic;
 
-public class ElementLine implements Element {
+public class ElementTreeEntry implements Element {
 
-	private final char separator;
+	private final TextBlock block;
+	private final String text;
+	private final int level;
 
-	public ElementLine(char separator) {
-		this.separator = separator;
+	public ElementTreeEntry(int level, String text, UFont font, SpriteContainer spriteContainer) {
+		final FontConfiguration config = new FontConfiguration(font, HtmlColorUtils.BLACK);
+		this.block = TextBlockUtils.create(Arrays.asList(text), config, HorizontalAlignement.LEFT, spriteContainer);
+		this.text = text;
+		this.level = level;
 	}
 
 	public Dimension2D getPreferredDimension(StringBounder stringBounder, double x, double y) {
-		return new Dimension2DDouble(10, 6);
+		return Dimension2DDouble.delta(block.calculateDimension(stringBounder), getXDelta(), 0);
+	}
+
+	public double getXDelta() {
+		return level * 10;
 	}
 
 	public void drawU(UGraphic ug, double x, double y, int zIndex, Dimension2D dimToUse) {
-		if (zIndex != 0) {
-			return;
-		}
-		final HtmlColor old = ug.getParam().getColor();
-		ug.getParam().setColor(HtmlColorUtils.getColorIfValid("#AAAAAA"));
-		double y2 = y + dimToUse.getHeight() / 2;
-		if (separator == '=') {
-			y2 = y2 - 1;
-		}
-		TextBlockLineBefore.drawLine(ug, x, y2, dimToUse.getWidth(), separator);
-		ug.getParam().setColor(old);
+		block.drawU(ug, x + getXDelta(), y);
+	}
+
+	public String getText() {
+		return text;
 	}
 }

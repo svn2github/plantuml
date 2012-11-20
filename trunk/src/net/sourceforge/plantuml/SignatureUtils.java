@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7715 $
+ * Revision $Revision: 9320 $
  *
  */
 package net.sourceforge.plantuml;
@@ -53,10 +53,10 @@ public class SignatureUtils {
 			return coder.encode(digest);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			throw new IllegalStateException();
+			throw new UnsupportedOperationException(e);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			throw new IllegalStateException();
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -87,10 +87,10 @@ public class SignatureUtils {
 			return coder.encode(digest);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			throw new IllegalStateException();
+			throw new UnsupportedOperationException(e);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			throw new IllegalStateException();
+			throw new UnsupportedOperationException(e);
 		}
 	}
 }

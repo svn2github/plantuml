@@ -27,40 +27,35 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
+ * 
+ * Revision $Revision: 5041 $
  *
  */
-package net.sourceforge.plantuml.usecasediagram;
+package net.sourceforge.plantuml.command;
 
-import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.UmlDiagramType;
-import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
-import net.sourceforge.plantuml.cucadiagram.Code;
-import net.sourceforge.plantuml.cucadiagram.ILeaf;
-import net.sourceforge.plantuml.cucadiagram.LeafType;
-import net.sourceforge.plantuml.cucadiagram.Rankdir;
+import java.util.Iterator;
+import java.util.List;
 
-public class UsecaseDiagram extends AbstractEntityDiagram {
+public enum MultilinesStrategy {
+	REMOVE_STARTING_QUOTE, KEEP_STARTING_QUOTE;
 
-	public UsecaseDiagram() {
-		setRankdir(Rankdir.TOP_TO_BOTTOM);
-	}
-
-	@Override
-	public ILeaf getOrCreateClass(Code code) {
-		final String code2 = code.getCode();
-		if (code2.startsWith("(") && code2.endsWith(")")) {
-			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.USECASE);
+	public List<String> filter(List<String> lines) {
+		if (this == REMOVE_STARTING_QUOTE) {
+			filterQuote(lines);
 		}
-		if (code2.startsWith(":") && code2.endsWith(":")) {
-			return getOrCreateLeaf(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(code), LeafType.ACTOR);
+		return lines;
+	}
+
+	private void filterQuote(List<String> lines) {
+		for (final Iterator<String> it = lines.iterator(); it.hasNext();) {
+			final String s = it.next();
+			if (hasStartingQuote(s)) {
+				it.remove();
+			}
 		}
-		return getOrCreateLeaf(code, LeafType.ACTOR);
-	}
-	
-	@Override
-	public UmlDiagramType getUmlDiagramType() {
-		return UmlDiagramType.USECASE;
 	}
 
-
+	private boolean hasStartingQuote(String s) {
+		return s.trim().startsWith("\'");
+	}
 }

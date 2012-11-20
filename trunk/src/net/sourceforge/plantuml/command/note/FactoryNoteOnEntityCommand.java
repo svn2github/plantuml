@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.IRegex;
@@ -105,14 +106,14 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 	}
 
 	public Command createMultiLine(final AbstractEntityDiagram system) {
-		return new CommandMultilines2<AbstractEntityDiagram>(system, getRegexConcatMultiLine(partialPattern)) {
+		return new CommandMultilines2<AbstractEntityDiagram>(system, getRegexConcatMultiLine(partialPattern), MultilinesStrategy.KEEP_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^(end ?note|\\})$";
 			}
 
-			public CommandExecutionResult execute(List<String> lines) {
+			public CommandExecutionResult executeNow(List<String> lines) {
 				StringUtils.trim(lines, false);
 				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
@@ -144,7 +145,7 @@ public final class FactoryNoteOnEntityCommand implements SingleMultiFactoryComma
 				return CommandExecutionResult.error("Nothing to note to");
 			}
 		} else {
-			cl1 = system.getOrCreateClass(code);
+			cl1 = system.getOrCreateLeaf1(code, null);
 		}
 
 		final IEntity note = system.createLeaf(UniqueSequence.getCode("GMN"), s, LeafType.NOTE);

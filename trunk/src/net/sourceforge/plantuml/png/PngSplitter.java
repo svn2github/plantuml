@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 8536 $
+ * Revision $Revision: 9352 $
  *
  */
 package net.sourceforge.plantuml.png;
@@ -87,7 +87,7 @@ public class PngSplitter {
 		int x = 0;
 		for (int i = 0; i < horizontalPages; i++) {
 			for (int j = 0; j < verticalPages; j++) {
-				final File f = SequenceDiagramFileMaker.computeFilename(pngFile, x++, FileFormat.PNG);
+				final File f = FileFormat.PNG.computeFilename(pngFile, x++);
 				this.files.add(f);
 				final BufferedImage imPiece = im.getSubimage(horizontalSegment.getStart(i),
 						verticalSegment.getStart(j), horizontalSegment.getLen(i), verticalSegment.getLen(j));

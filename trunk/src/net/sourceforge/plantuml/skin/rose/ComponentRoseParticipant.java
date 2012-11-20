@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 7886 $
+ * Revision $Revision: 9449 $
  *
  */
 package net.sourceforge.plantuml.skin.rose;
@@ -52,11 +52,13 @@ public class ComponentRoseParticipant extends AbstractTextualComponent {
 	private final HtmlColor back;
 	private final HtmlColor foregroundColor;
 	private final double deltaShadow;
+	private final double roundCorner;
 
 	public ComponentRoseParticipant(HtmlColor back, HtmlColor foregroundColor, HtmlColor fontColor, UFont font,
-			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer, double deltaShadow) {
+			List<? extends CharSequence> stringsToDisplay, SpriteContainer spriteContainer, double deltaShadow, double roundCorner) {
 		super(stringsToDisplay, fontColor, font, HorizontalAlignement.CENTER, 7, 7, 7, spriteContainer);
 		this.back = back;
+		this.roundCorner = roundCorner;
 		this.deltaShadow = deltaShadow;
 		this.foregroundColor = foregroundColor;
 	}
@@ -67,7 +69,7 @@ public class ComponentRoseParticipant extends AbstractTextualComponent {
 		ug.getParam().setColor(foregroundColor);
 		ug.getParam().setBackcolor(back);
 		ug.getParam().setStroke(new UStroke(1.5));
-		final URectangle rect = new URectangle(getTextWidth(stringBounder), getTextHeight(stringBounder));
+		final URectangle rect = new URectangle(getTextWidth(stringBounder), getTextHeight(stringBounder), roundCorner, roundCorner);
 		rect.setDeltaShadow(deltaShadow);
 		ug.draw(0, 0, rect);
 		ug.getParam().setStroke(new UStroke());

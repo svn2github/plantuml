@@ -61,10 +61,11 @@ public class EntityImageClass extends AbstractEntityImage {
 	final private EntityImageClassHeader2 header;
 	final private List<Url> url;
 	final private TextBlockWidth mouseOver;
+	final private double roundCorner;
 
 	public EntityImageClass(ILeaf entity, ISkinParam skinParam, PortionShower portionShower) {
 		super(entity, skinParam);
-
+		this.roundCorner = skinParam.getRoundCorner();
 		this.shield = entity.hasNearDecoration() ? 16 : 0;
 		this.body = entity.getBody(portionShower).asTextBlock(FontParam.CLASS_ATTRIBUTE, skinParam);
 
@@ -90,7 +91,7 @@ public class EntityImageClass extends AbstractEntityImage {
 	}
 
 	public void drawU(UGraphic ug, double xTheoricalPosition, double yTheoricalPosition) {
-		if (url.size()>0 && url.get(0).isMember()==false) {
+		if (url.size() > 0 && url.get(0).isMember() == false) {
 			ug.startUrl(url.get(0));
 		}
 		drawInternal(ug, xTheoricalPosition, yTheoricalPosition);
@@ -116,7 +117,7 @@ public class EntityImageClass extends AbstractEntityImage {
 			g.close();
 		}
 
-		if (url.size()>0 && url.get(0).isMember()==false) {
+		if (url.size() > 0 && url.get(0).isMember() == false) {
 			ug.closeAction();
 		}
 	}
@@ -128,7 +129,7 @@ public class EntityImageClass extends AbstractEntityImage {
 
 		final double widthTotal = dimTotal.getWidth();
 		final double heightTotal = dimTotal.getHeight();
-		final Shadowable rect = new URectangle(widthTotal, heightTotal);
+		final Shadowable rect = new URectangle(widthTotal, heightTotal, roundCorner, roundCorner);
 		if (getSkinParam().shadowing()) {
 			rect.setDeltaShadow(4);
 		}
@@ -136,7 +137,7 @@ public class EntityImageClass extends AbstractEntityImage {
 		final HtmlColor classBorder = getColor(ColorParam.classBorder, getStereo());
 		ug.getParam().setColor(classBorder);
 		HtmlColor backcolor = getEntity().getSpecificBackColor();
-		if (backcolor==null) {
+		if (backcolor == null) {
 			backcolor = getColor(ColorParam.classBackground, getStereo());
 		}
 		ug.getParam().setBackcolor(backcolor);

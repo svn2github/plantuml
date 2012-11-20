@@ -41,12 +41,14 @@ import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class CompositeDiagram extends AbstractEntityDiagram {
 
-	@Override
-	public IEntity getOrCreateClass(Code code) {
-		if (isGroup(code)) {
-			return getGroup(code);
+	public IEntity getOrCreateLeaf1(Code code, LeafType type) {
+		if (type == null) {
+			if (isGroup(code)) {
+				return getGroup(code);
+			}
+			return getOrCreateLeaf1Default(code, LeafType.BLOCK);
 		}
-		return getOrCreateLeaf(code, LeafType.BLOCK);
+		return getOrCreateLeaf1Default(code, type);
 	}
 
 	@Override

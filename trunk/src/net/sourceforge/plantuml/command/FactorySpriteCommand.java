@@ -79,14 +79,14 @@ public final class FactorySpriteCommand implements SingleMultiFactoryCommand<Uml
 	}
 
 	public Command createMultiLine(final UmlDiagram system) {
-		return new CommandMultilines2<UmlDiagram>(system, getRegexConcatMultiLine()) {
+		return new CommandMultilines2<UmlDiagram>(system, getRegexConcatMultiLine(), MultilinesStrategy.REMOVE_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^end ?sprite|\\}$";
 			}
 
-			public CommandExecutionResult execute(List<String> lines) {
+			public CommandExecutionResult executeNow(List<String> lines) {
 				StringUtils.trim(lines, true);
 				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 

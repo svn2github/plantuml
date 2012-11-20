@@ -39,6 +39,7 @@ import java.util.List;
 import net.sourceforge.plantuml.Url;
 import net.sourceforge.plantuml.svek.IEntityImage;
 import net.sourceforge.plantuml.svek.PackageStyle;
+import net.sourceforge.plantuml.svek.SingleStrategy;
 
 public interface IGroup extends IEntity {
 
@@ -67,4 +68,6 @@ public interface IGroup extends IEntity {
 	public PackageStyle zgetPackageStyle();
 
 	public void overideImage(IEntityImage img, List<Url> urls, LeafType state);
-}
+	
+	public SingleStrategy getSingleStrategy();
+	}

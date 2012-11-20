@@ -28,10 +28,12 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 7983 $
+ * Revision $Revision: 9353 $
  *
  */
 package net.sourceforge.plantuml;
+
+import java.io.File;
 
 public enum FileFormat {
 	PNG, SVG, EPS, EPS_TEXT, ATXT, UTXT, XMI_STANDARD, XMI_STAR, XMI_ARGO, PDF, MJPEG, HTML, HTML5;
@@ -61,6 +63,25 @@ public enum FileFormat {
 			return fileName.replaceAll("\\.\\w+$", getFileSuffix());
 		}
 		return fileName.replaceAll("\\.\\w+$", "_" + String.format("%03d", cpt) + getFileSuffix());
+	}
+
+	public File computeFilename(File pngFile, int i) {
+		if (i == 0) {
+			return pngFile;
+		}
+		final File dir = pngFile.getParentFile();
+		return new File(dir, computeFilename(pngFile.getName(), i));
+//		String name = pngFile.getName();
+//		name = name.replaceAll("\\" + getFileSuffix() + "$", "_" + String.format("%03d", i) + getFileSuffix());
+//		return new File(dir, name);
+
+	}
+
+	public String computeFilename(String name, int i) {
+		if (i == 0) {
+			return name;
+		}
+		return name.replaceAll("\\" + getFileSuffix() + "$", "_" + String.format("%03d", i) + getFileSuffix());
 	}
 
 }

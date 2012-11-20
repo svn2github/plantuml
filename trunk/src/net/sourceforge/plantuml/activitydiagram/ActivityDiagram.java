@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9061 $
+ * Revision $Revision: 9431 $
  *
  */
 package net.sourceforge.plantuml.activitydiagram;
@@ -53,6 +53,10 @@ public class ActivityDiagram extends CucaDiagram {
 	private IEntity lastEntityBrancheConsulted;
 	private ConditionalContext currentContext;
 
+	public ILeaf getOrCreateLeaf1(Code code, LeafType type) {
+		return getOrCreateLeaf1Default(code, type);
+	}
+
 	private String getAutoBranch() {
 		return "#" + UniqueSequence.getValue();
 	}
@@ -60,7 +64,7 @@ public class ActivityDiagram extends CucaDiagram {
 	public IEntity getOrCreate(Code code, List<? extends CharSequence> display, LeafType type) {
 		final IEntity result;
 		if (leafExist(code)) {
-			result = super.getOrCreateLeaf(code, type);
+			result = getOrCreateLeaf1Default(code, type);
 			if (result.getEntityType() != type) {
 				// throw new IllegalArgumentException("Already known: " + code + " " + result.getType() + " " + type);
 				return null;
@@ -73,7 +77,8 @@ public class ActivityDiagram extends CucaDiagram {
 	}
 
 	public void startIf(Code optionalCode) {
-		final IEntity br = createLeaf(optionalCode == null ? Code.of(getAutoBranch()) : optionalCode, Arrays.asList(""), LeafType.BRANCH);
+		final IEntity br = createLeaf(optionalCode == null ? Code.of(getAutoBranch()) : optionalCode,
+				Arrays.asList(""), LeafType.BRANCH);
 		currentContext = new ConditionalContext(currentContext, br, Direction.DOWN);
 	}
 
@@ -144,7 +149,8 @@ public class ActivityDiagram extends CucaDiagram {
 	public IEntity createInnerActivity() {
 		// Log.println("createInnerActivity A");
 		final Code code = Code.of("##" + UniqueSequence.getValue());
-		final IEntity g = getOrCreateGroup(code, StringUtils.getWithNewlines(code), null, GroupType.INNER_ACTIVITY, getCurrentGroup());
+		final IEntity g = getOrCreateGroup(code, StringUtils.getWithNewlines(code), null, GroupType.INNER_ACTIVITY,
+				getCurrentGroup());
 		// g.setRankdir(Rankdir.LEFT_TO_RIGHT);
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
@@ -157,14 +163,15 @@ public class ActivityDiagram extends CucaDiagram {
 		if (getCurrentGroup().zgetGroupType() == GroupType.CONCURRENT_ACTIVITY) {
 			// getCurrentGroup().setRankdir(Rankdir.LEFT_TO_RIGHT);
 			endGroup();
-			//Log.println("endgroup");
+			// Log.println("endgroup");
 		}
 		// Log.println("concurrentActivity A name=" + name+" "+getCurrentGroup());
 		final Code code = Code.of("##" + UniqueSequence.getValue());
 		if (getCurrentGroup().zgetGroupType() != GroupType.INNER_ACTIVITY) {
 			throw new IllegalStateException("type=" + getCurrentGroup().zgetGroupType());
 		}
-		getOrCreateGroup(code, StringUtils.getWithNewlines("code"), null, GroupType.CONCURRENT_ACTIVITY, getCurrentGroup());
+		getOrCreateGroup(code, StringUtils.getWithNewlines("code"), null, GroupType.CONCURRENT_ACTIVITY,
+				getCurrentGroup());
 		lastEntityConsulted = null;
 		lastEntityBrancheConsulted = null;
 	}

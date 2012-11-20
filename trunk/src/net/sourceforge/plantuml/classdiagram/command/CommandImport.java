@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9061 $
+ * Revision $Revision: 9428 $
  *
  */
 package net.sourceforge.plantuml.classdiagram.command;
@@ -92,10 +92,10 @@ public class CommandImport extends SingleLineCommand<ClassDiagram> {
 		for (JavaClass cl : javaFile.getJavaClasses()) {
 			final Code name = Code.of(cl.getName());
 			final IEntity ent1 = getSystem()
-					.getOrCreateClass(name, cl.getType());
+					.getOrCreateLeaf1(name, cl.getType());
 
 			for (String p : cl.getParents()) {
-				final IEntity ent2 = getSystem().getOrCreateClass(Code.of(p),
+				final IEntity ent2 = getSystem().getOrCreateLeaf1(Code.of(p),
 						cl.getParentType());
 				final Link link = new Link(ent2, ent1, new LinkType(
 						LinkDecor.NONE, LinkDecor.EXTENDS), null, 2);

@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  * 
- * Revision $Revision: 9063 $
+ * Revision $Revision: 9434 $
  *
  */
 package net.sourceforge.plantuml.statediagram;
@@ -44,49 +44,53 @@ import net.sourceforge.plantuml.cucadiagram.EntityUtils;
 import net.sourceforge.plantuml.cucadiagram.GroupType;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
 import net.sourceforge.plantuml.cucadiagram.IGroup;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.LeafType;
 
 public class StateDiagram extends AbstractEntityDiagram {
 
-	@Override
-	public IEntity getOrCreateClass(Code code) {
-		if (code.getCode().startsWith("[*]")) {
-			throw new IllegalArgumentException();
+	public IEntity getOrCreateLeaf1(Code code, LeafType type) {
+		if (type == null) {
+			if (code.getCode().startsWith("[*]")) {
+				throw new IllegalArgumentException();
+			}
+			if (isGroup(code)) {
+				return getGroup(code);
+			}
+			return getOrCreateLeaf1Default(code, LeafType.STATE);
 		}
-		if (isGroup(code)) {
-			return getGroup(code);
-		}
-		final IEntity result = getOrCreateLeaf(code, LeafType.STATE);
-		return result;
+		return getOrCreateLeaf1Default(code, type);
 	}
+
 
 	public IEntity getStart() {
 		final IGroup g = getCurrentGroup();
 		if (EntityUtils.groupRoot(g)) {
-			return getOrCreateLeaf(Code.of("*start"), LeafType.CIRCLE_START);
+			return getOrCreateLeaf1(Code.of("*start"), LeafType.CIRCLE_START);
 		}
-		return getOrCreateLeaf(Code.of("*start*" + g.getCode().getCode()), LeafType.CIRCLE_START);
+		return getOrCreateLeaf1(Code.of("*start*" + g.getCode().getCode()), LeafType.CIRCLE_START);
 	}
 
 	public IEntity getEnd() {
 		final IGroup p = getCurrentGroup();
 		if (EntityUtils.groupRoot(p)) {
-			return getOrCreateLeaf(Code.of("*end"), LeafType.CIRCLE_END);
+			return getOrCreateLeaf1(Code.of("*end"), LeafType.CIRCLE_END);
 		}
-		return getOrCreateLeaf(Code.of("*end*" + p.getCode().getCode()), LeafType.CIRCLE_END);
+		return getOrCreateLeaf1(Code.of("*end*" + p.getCode().getCode()), LeafType.CIRCLE_END);
 	}
 
 	public IEntity getHistorical() {
 		final IGroup g = getCurrentGroup();
 		if (EntityUtils.groupRoot(g)) {
-			return getOrCreateLeaf(Code.of("*historical"), LeafType.PSEUDO_STATE);
+			return getOrCreateLeaf1(Code.of("*historical"), LeafType.PSEUDO_STATE);
 		}
-		return getOrCreateLeaf(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
+		return getOrCreateLeaf1(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
 	}
 
 	public IEntity getHistorical(Code codeGroup) {
-		final IEntity g = getOrCreateGroup(codeGroup, StringUtils.getWithNewlines(codeGroup), null, GroupType.STATE, getRootGroup());
-		final IEntity result = getOrCreateLeaf(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
+		final IEntity g = getOrCreateGroup(codeGroup, StringUtils.getWithNewlines(codeGroup), null, GroupType.STATE,
+				getRootGroup());
+		final IEntity result = getOrCreateLeaf1(Code.of("*historical*" + g.getCode().getCode()), LeafType.PSEUDO_STATE);
 		endGroup();
 		return result;
 	}
@@ -102,8 +106,8 @@ public class StateDiagram extends AbstractEntityDiagram {
 		if (EntityUtils.groupRoot(cur) == false && cur.zgetGroupType() == GroupType.STATE) {
 			cur.zmoveEntitiesTo(conc1);
 			super.endGroup();
-			getOrCreateGroup(UniqueSequence.getCode("CONC"), Arrays.asList(""), null,
-					GroupType.CONCURRENT_STATE, getCurrentGroup());
+			getOrCreateGroup(UniqueSequence.getCode("CONC"), Arrays.asList(""), null, GroupType.CONCURRENT_STATE,
+					getCurrentGroup());
 		}
 		// printlink("AFTER");
 		return true;
@@ -140,52 +144,52 @@ public class StateDiagram extends AbstractEntityDiagram {
 		return hideEmptyDescription;
 	}
 
-//	public Link isEntryPoint(IEntity ent) {
-//		final Stereotype stereotype = ent.getStereotype();
-//		if (stereotype == null) {
-//			return null;
-//		}
-//		final String label = stereotype.getLabel();
-//		if ("<<entrypoint>>".equalsIgnoreCase(label) == false) {
-//			return null;
-//		}
-//		Link inLink = null;
-//		Link outLink = null;
-//		for (Link link : getLinks()) {
-//			if (link.getEntity1() == ent) {
-//				if (outLink != null) {
-//					return null;
-//				}
-//				outLink = link;
-//			}
-//			if (link.getEntity2() == ent) {
-//				if (inLink != null) {
-//					return null;
-//				}
-//				inLink = link;
-//			}
-//		}
-//		if (inLink == null || outLink == null) {
-//			return null;
-//		}
-//		final Link result = Link.mergeForEntryPoint(inLink, outLink);
-//		result.setEntryPoint(ent.getContainer());
-//		return result;
-//	}
-//
-//	public void manageExitAndEntryPoints() {
-//		for (IEntity ent : getEntities().values()) {
-//			final Link entryPointLink = isEntryPoint(ent);
-//			if (entryPointLink != null) {
-//				addLink(entryPointLink);
-//				for (Link link : new ArrayList<Link>(getLinks())) {
-//					if (link.contains(ent)) {
-//						removeLink(link);
-//					}
-//				}
-//			}
-//		}
-//
-//	}
+	// public Link isEntryPoint(IEntity ent) {
+	// final Stereotype stereotype = ent.getStereotype();
+	// if (stereotype == null) {
+	// return null;
+	// }
+	// final String label = stereotype.getLabel();
+	// if ("<<entrypoint>>".equalsIgnoreCase(label) == false) {
+	// return null;
+	// }
+	// Link inLink = null;
+	// Link outLink = null;
+	// for (Link link : getLinks()) {
+	// if (link.getEntity1() == ent) {
+	// if (outLink != null) {
+	// return null;
+	// }
+	// outLink = link;
+	// }
+	// if (link.getEntity2() == ent) {
+	// if (inLink != null) {
+	// return null;
+	// }
+	// inLink = link;
+	// }
+	// }
+	// if (inLink == null || outLink == null) {
+	// return null;
+	// }
+	// final Link result = Link.mergeForEntryPoint(inLink, outLink);
+	// result.setEntryPoint(ent.getContainer());
+	// return result;
+	// }
+	//
+	// public void manageExitAndEntryPoints() {
+	// for (IEntity ent : getEntities().values()) {
+	// final Link entryPointLink = isEntryPoint(ent);
+	// if (entryPointLink != null) {
+	// addLink(entryPointLink);
+	// for (Link link : new ArrayList<Link>(getLinks())) {
+	// if (link.contains(ent)) {
+	// removeLink(link);
+	// }
+	// }
+	// }
+	// }
+	//
+	// }
 
 }

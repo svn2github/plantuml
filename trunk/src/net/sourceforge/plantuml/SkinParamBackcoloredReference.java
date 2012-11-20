@@ -148,6 +148,10 @@ public class SkinParamBackcoloredReference implements ISkinParam {
 	public double getRanksep() {
 		return skinParam.getRanksep();
 	}
+	
+	public double getRoundCorner() {
+		return skinParam.getRoundCorner();
+	}
 
 
 }

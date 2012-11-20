@@ -193,7 +193,7 @@ public class SequenceDiagram extends UmlDiagram {
 		final int nbImages = getNbImages();
 		for (int i = 0; i < nbImages; i++) {
 
-			final File f = SequenceDiagramFileMaker.computeFilename(suggestedFile, i, fileFormat.getFileFormat());
+			final File f = fileFormat.getFileFormat().computeFilename(suggestedFile, i);
 			Log.info("Creating file: " + f);
 			final OutputStream fos = new BufferedOutputStream(new FileOutputStream(f));
 			final CMapData cmap = new CMapData();

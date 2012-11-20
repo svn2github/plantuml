@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9061 $
+ * Revision $Revision: 9435 $
  *
  */
 package net.sourceforge.plantuml;
@@ -235,9 +235,9 @@ public class StringUtils {
 		return Direction.DOWN;
 	}
 
-	public static Code eventuallyRemoveStartingAndEndingDoubleQuote(Code s) {
-		return Code.of(eventuallyRemoveStartingAndEndingDoubleQuote(s.getCode()));
-	}
+//	public static Code eventuallyRemoveStartingAndEndingDoubleQuote(Code s) {
+//		return Code.of(eventuallyRemoveStartingAndEndingDoubleQuote(s.getCode()));
+//	}
 
 	public static String eventuallyRemoveStartingAndEndingDoubleQuote(String s) {
 		if (s.startsWith("\"") && s.endsWith("\"")) {

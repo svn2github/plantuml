@@ -31,92 +31,81 @@
  * Revision $Revision: 4161 $
  *
  */
-package net.sourceforge.plantuml.classdiagram.command;
+package net.sourceforge.plantuml.descdiagram.command;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import net.sourceforge.plantuml.FontParam;
 import net.sourceforge.plantuml.StringUtils;
-import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
 import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
-import net.sourceforge.plantuml.command.regex.RegexOr;
 import net.sourceforge.plantuml.command.regex.RegexResult;
 import net.sourceforge.plantuml.cucadiagram.Code;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
+import net.sourceforge.plantuml.cucadiagram.LeafType;
+import net.sourceforge.plantuml.cucadiagram.Stereotype;
+import net.sourceforge.plantuml.descdiagram.DescriptionDiagram;
+import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 
-public class CommandMouseOver extends CommandMultilines2<ClassDiagram> {
+public class CommandCreateElementMultilines extends CommandMultilines2<DescriptionDiagram> {
 
-	public CommandMouseOver(ClassDiagram diagram) {
+	enum Mode {
+		EXTENDS, IMPLEMENTS
+	};
+
+	public CommandCreateElementMultilines(DescriptionDiagram diagram) {
 		super(diagram, getRegexConcat(), MultilinesStrategy.REMOVE_STARTING_QUOTE);
 	}
 
 	@Override
 	public String getPatternEnd() {
-		return "(?i)^\\s*\\}\\s*$";
+		return "(?i)^(.*)\"$";
 	}
 
 	private static RegexConcat getRegexConcat() {
 		return new RegexConcat(new RegexLeaf("^"), //
-				new RegexLeaf("mouseover\\s+"), //
-				new RegexOr(//
-						new RegexLeaf("NAME1", "(\\.?[\\p{L}0-9_]+(?:\\.[\\p{L}0-9_]+)*)"), //
-						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
-				new RegexLeaf("\\s*\\{\\s*$"));
+				new RegexLeaf("TYPE", "(usecase)\\s+"), //
+				new RegexLeaf("CODE", "([\\p{L}0-9_.]+)"), //
+				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.+\\>\\>))?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
+				new RegexLeaf("\\s*"), //
+				new RegexLeaf("DESC", "as\\s*\"(.*)$"));
 	}
 
 	public CommandExecutionResult executeNow(List<String> lines) {
 		StringUtils.trim(lines, false);
 		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
-		Code code = Code.of(line0.get("NAME1", 0));
-		if (code == null) {
-			code = Code.of(line0.get("NAME3", 0));
+		final LeafType type = LeafType.getLeafType(line0.get("TYPE", 0).toUpperCase());
+		final Code code = Code.of(line0.get("CODE", 0));
+		final List<String> display = new ArrayList<String>(lines.subList(1, lines.size() - 1));
+		final String descStart = line0.get("DESC", 0);
+		if (StringUtils.isNotEmpty(descStart)) {
+			display.add(0, descStart);
 		}
-		if (getSystem().leafExist(code) == false) {
-			return CommandExecutionResult.error("No such entity");
+
+		final List<String> lineLast = StringUtils.getSplit(Pattern.compile(getPatternEnd()), lines
+				.get(lines.size() - 1));
+		if (StringUtils.isNotEmpty(lineLast.get(0))) {
+			display.add(lineLast.get(0));
 		}
-		final IEntity entity = getSystem().getLeafs().get(code);
-		for (String s : lines.subList(1, lines.size() - 1)) {
-			entity.mouseOver(s);
+
+		final String stereotype = line0.get("STEREO", 0);
+
+		final ILeaf result = getSystem().createLeaf(code, display, type);
+		if (stereotype != null) {
+			result.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
+					getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
 		}
+
+		result.setSpecificBackcolor(HtmlColorUtils.getColorIfValid(line0.get("COLOR", 0)));
 
 		return CommandExecutionResult.ok();
 	}
-
-	// private Entity executeArg0(Map<String, RegexPartialMatch> arg) {
-	//
-	// final EntityType type = EntityType.getEntityType(arg.get("TYPE").get(0).toUpperCase());
-	// final String code;
-	// final String display;
-	// if (arg.get("NAME1").get(1) != null) {
-	// code = arg.get("NAME1").get(1);
-	// display = arg.get("NAME1").get(0);
-	// } else if (arg.get("NAME3").get(0) != null) {
-	// code = arg.get("NAME3").get(0);
-	// display = arg.get("NAME3").get(0);
-	// } else {
-	// code = arg.get("NAME2").get(0);
-	// display = arg.get("NAME2").get(1);
-	// }
-	// final String stereotype = arg.get("STEREO").get(0);
-	// final String generic = arg.get("GENERIC").get(0);
-	//
-	// if (getSystem().entityExist(code)) {
-	// final Entity result = (Entity) getSystem().getOrCreateClass(code);
-	// result.muteToType(type);
-	// return result;
-	// }
-	// final Entity entity = getSystem().createEntity(code, display, type);
-	// if (stereotype != null) {
-	// entity.setStereotype(new Stereotype(stereotype, getSystem().getSkinParam().getCircledCharacterRadius(),
-	// getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
-	// }
-	// if (generic != null) {
-	// entity.setGeneric(generic);
-	// }
-	// return entity;
-	// }
 
 }

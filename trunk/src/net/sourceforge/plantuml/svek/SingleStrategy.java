@@ -27,54 +27,61 @@
  * in the United States and other countries.]
  *
  * Original Author:  Arnaud Roques
+ * Modified by : Arno Peterson
  *
+ * Revision $Revision: 4236 $
+ * 
  */
-package net.sourceforge.plantuml.compositediagram.command;
+package net.sourceforge.plantuml.svek;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.plantuml.command.CommandExecutionResult;
-import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.compositediagram.CompositeDiagram;
-import net.sourceforge.plantuml.cucadiagram.Code;
 import net.sourceforge.plantuml.cucadiagram.IEntity;
+import net.sourceforge.plantuml.cucadiagram.ILeaf;
 import net.sourceforge.plantuml.cucadiagram.Link;
 import net.sourceforge.plantuml.cucadiagram.LinkDecor;
 import net.sourceforge.plantuml.cucadiagram.LinkType;
 
-public class CommandLinkBlock extends SingleLineCommand<CompositeDiagram> {
+public enum SingleStrategy {
 
-	public CommandLinkBlock(CompositeDiagram diagram) {
-		super(diagram, "(?i)^([\\p{L}0-9_.]+)\\s*(\\[\\]|\\*\\))?([=-]+|\\.+)(\\[\\]|\\(\\*)?\\s*([\\p{L}0-9_.]+)\\s*(?::\\s*(\\S*+))?$");
+	SQUARRE, HLINE, VLINE;
+
+	public Collection<Link> generateLinks(List<ILeaf> standalones) {
+		return putInSquare(standalones);
 	}
 
-	@Override
-	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntity cl1 = getSystem().getOrCreateLeaf1(Code.of(arg.get(0)), null);
-		final IEntity cl2 = getSystem().getOrCreateLeaf1(Code.of(arg.get(4)), null);
-
-		final String deco1 = arg.get(1);
-		final String deco2 = arg.get(3);
-		LinkType linkType = new LinkType(getLinkDecor(deco1), getLinkDecor(deco2));
-		
-		if ("*)".equals(deco1)) {
-			linkType = linkType.getInterfaceProvider();
-		} else if ("(*".equals(deco2)) {
-			linkType = linkType.getInterfaceUser();
+	private Collection<Link> putInSquare(List<ILeaf> standalones) {
+		final List<Link> result = new ArrayList<Link>();
+		final LinkType linkType = new LinkType(LinkDecor.NONE, LinkDecor.NONE).getInvisible();
+		final int branch = computeBranch(standalones.size());
+		int headBranch = 0;
+		for (int i = 1; i < standalones.size(); i++) {
+			final int dist = i - headBranch;
+			final IEntity ent2 = standalones.get(i);
+			final Link link;
+			if (dist == branch) {
+				final IEntity ent1 = standalones.get(headBranch);
+				link = new Link(ent1, ent2, linkType, null, 2);
+				headBranch = i;
+			} else {
+				final IEntity ent1 = standalones.get(i - 1);
+				link = new Link(ent1, ent2, linkType, null, 1);
+			}
+			result.add(link);
 		}
-
-		final String queue = arg.get(2);
-
-		final Link link = new Link(cl1, cl2, linkType, arg.get(5), queue.length());
-		getSystem().addLink(link);
-		return CommandExecutionResult.ok();
+		return Collections.unmodifiableCollection(result);
 	}
 
-	private LinkDecor getLinkDecor(String s) {
-		if ("[]".equals(s)) {
-			return LinkDecor.SQUARRE_toberemoved;
+	static int computeBranch(int size) {
+		final double sqrt = Math.sqrt(size);
+		final int r = (int) sqrt;
+		if (r * r == size) {
+			return r;
 		}
-		return LinkDecor.NONE;
+		return r + 1;
 	}
 
 }

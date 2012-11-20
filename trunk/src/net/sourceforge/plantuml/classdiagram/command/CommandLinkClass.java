@@ -33,6 +33,7 @@
  */
 package net.sourceforge.plantuml.classdiagram.command;
 
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +65,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		super(diagram, getRegexConcat(diagram.getUmlDiagramType()));
 	}
 
-	static RegexConcat getRegexConcat(UmlDiagramType umlDiagramType) {
+	static private RegexConcat getRegexConcat(UmlDiagramType umlDiagramType) {
 		return new RegexConcat(
 				new RegexLeaf("HEADER", "^(?:@([\\d.]+)\\s+)?"),
 				new RegexOr(
@@ -75,9 +76,19 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 				new RegexLeaf("\\s*"),
 				new RegexLeaf("FIRST_LABEL", "(?:\"([^\"]+)\")?"),
 				new RegexLeaf("\\s*"),
-				new RegexLeaf(
-						"ARROW",
-						"(( +o|[\\[<*+^]|[<\\[]\\|)?([-=.]+)(?:(left|right|up|down|le?|ri?|up?|do?)(?=[-=.]))?([-=.]*)(o +|[\\]>*+^]|\\|[>\\]])?)"),
+
+				new RegexConcat(
+						//
+						new RegexLeaf("ARROW_HEAD1", "( +o|[\\[<*+^]|[<\\[]\\|)?"), //
+						new RegexLeaf("ARROW_BODY1", "([-=.]+)"), //
+						new RegexLeaf("ARROW_STYLE1",
+						"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"),
+						new RegexLeaf("ARROW_DIRECTION", "(left|right|up|down|le?|ri?|up?|do?)?"), //
+						new RegexLeaf("ARROW_STYLE2",
+						"(?:\\[((?:#\\w+|dotted|dashed|bold|hidden)(?:,#\\w+|,dotted|,dashed|,bold|,hidden)*)\\])?"),
+						new RegexLeaf("ARROW_BODY2", "([-=.]*)"), //
+						new RegexLeaf("ARROW_HEAD2", "(o +|[\\]>*+^]|\\|[>\\]])?")), //
+
 				new RegexLeaf("\\s*"),
 				new RegexLeaf("SECOND_LABEL", "(?:\"([^\"]+)\")?"),
 				new RegexLeaf("\\s*"),
@@ -109,8 +120,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		if (ent2 == null) {
 			return executeArgSpecial2(arg);
 		}
-		ent1 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(ent1);
-		ent2 = StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(ent2);
+		ent1 = ent1.eventuallyRemoveStartingAndEndingDoubleQuote();
+		ent2 = ent2.eventuallyRemoveStartingAndEndingDoubleQuote();
 		if (getSystem().isGroup(ent1) && getSystem().isGroup(ent2)) {
 			return executePackageLink(arg);
 		}
@@ -118,8 +129,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			return CommandExecutionResult.error("Package can be only linked to other package");
 		}
 
-		final ILeaf cl1 = (ILeaf) getSystem().getOrCreateClass(ent1);
-		final ILeaf cl2 = (ILeaf) getSystem().getOrCreateClass(ent2);
+		final ILeaf cl1 = (ILeaf) getSystem().getOrCreateLeaf1(ent1, null);
+		final ILeaf cl2 = (ILeaf) getSystem().getOrCreateLeaf1(ent2, null);
 
 		if (arg.get("ENT1", 0) != null) {
 			final LeafType type = LeafType.getLeafType(arg.get("ENT1", 0));
@@ -134,12 +145,14 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			}
 		}
 		if (arg.get("ENT1", 2) != null) {
-			cl1.setStereotype(new Stereotype(arg.get("ENT1", 2), getSystem().getSkinParam()
-					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
+			cl1.setStereotype(new Stereotype(arg.get("ENT1", 2),
+					getSystem().getSkinParam().getCircledCharacterRadius(), getSystem().getSkinParam().getFont(
+							FontParam.CIRCLED_CHARACTER, null)));
 		}
 		if (arg.get("ENT2", 2) != null) {
-			cl2.setStereotype(new Stereotype(arg.get("ENT2", 2), getSystem().getSkinParam()
-					.getCircledCharacterRadius(), getSystem().getSkinParam().getFont(FontParam.CIRCLED_CHARACTER, null)));
+			cl2.setStereotype(new Stereotype(arg.get("ENT2", 2),
+					getSystem().getSkinParam().getCircledCharacterRadius(), getSystem().getSkinParam().getFont(
+							FontParam.CIRCLED_CHARACTER, null)));
 		}
 
 		final LinkType linkType = getLinkType(arg);
@@ -218,6 +231,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 			link = link.getInv();
 		}
 		link.setLinkArrow(linkArrow);
+		applyStyle(arg.getLazzy("ARROW_STYLE", 0), link);
 
 		addLink(link, arg.get("HEADER", 0));
 
@@ -264,8 +278,8 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		final String labelLink = arg.get("LABEL_LINK", 0);
 		final String firstLabel = arg.get("FIRST_LABEL", 0);
 		final String secondLabel = arg.get("SECOND_LABEL", 0);
-		final Link link = new Link(cl1, cl2, linkType, labelLink, queue,
-				firstLabel, secondLabel, getSystem().getLabeldistance(), getSystem().getLabelangle());
+		final Link link = new Link(cl1, cl2, linkType, labelLink, queue, firstLabel, secondLabel, getSystem()
+				.getLabeldistance(), getSystem().getLabelangle());
 		// if (dir == Direction.LEFT || dir == Direction.UP) {
 		// link = link.getInv();
 		// }
@@ -286,7 +300,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		}
 
 		final Code ent2 = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT2", 1)));
-		final IEntity cl2 = getSystem().getOrCreateClass(ent2);
+		final IEntity cl2 = getSystem().getOrCreateLeaf1(ent2, null);
 
 		final LinkType linkType = getLinkType(arg);
 		final String label = arg.get("LABEL_LINK", 0);
@@ -312,7 +326,7 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		}
 
 		final Code ent1 = Code.of(StringUtils.eventuallyRemoveStartingAndEndingDoubleQuote(arg.get("ENT1", 1)));
-		final IEntity cl1 = getSystem().getOrCreateClass(ent1);
+		final IEntity cl1 = getSystem().getOrCreateLeaf1(ent1, null);
 
 		final LinkType linkType = getLinkType(arg);
 		final String label = arg.get("LABEL_LINK", 0);
@@ -328,7 +342,6 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	private LinkDecor getDecors1(String s) {
-		// Log.println("s1=" + s);
 		if (s == null) {
 			return LinkDecor.NONE;
 		}
@@ -355,7 +368,6 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	private LinkDecor getDecors2(String s) {
-		// Log.println("s2=" + s);
 		if (s == null) {
 			return LinkDecor.NONE;
 		}
@@ -382,37 +394,27 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 	}
 
 	private LinkType getLinkType(RegexResult arg) {
-		final RegexPartialMatch match = arg.get("ARROW");
-		// Log.println("type=" + match);
-		final LinkDecor decors1 = getDecors1(match.get(1));
-		final LinkDecor decors2 = getDecors2(match.get(5));
-		// Log.println("Adecors1=" + decors1);
-		// Log.println("Adecors2=" + decors2);
+		final LinkDecor decors1 = getDecors1(arg.get("ARROW_HEAD1", 0));
+		final LinkDecor decors2 = getDecors2(arg.get("ARROW_HEAD2", 0));
 
 		LinkType result = new LinkType(decors2, decors1);
-		if (match.get(0).contains(".")) {
+		if (arg.get("ARROW_BODY1", 0).contains(".") || arg.get("ARROW_BODY2", 0).contains(".")) {
 			result = result.getDashed();
 		}
 		return result;
 	}
 
 	private int getQueueLength(RegexResult arg) {
-		String s = arg.get("ARROW", 0);
-		// Log.println("queue1=" + s);
+		String s = getFullArrow(arg);
 		s = s.replaceAll("[^-.=]", "");
-		// Log.println("queue2=" + s);
 		return s.length();
 	}
 
 	private Direction getDirection(RegexResult arg) {
-		final RegexPartialMatch match = arg.get("ARROW");
-		final LinkDecor decors1 = getDecors1(match.get(1));
-		final LinkDecor decors2 = getDecors2(match.get(5));
-		// Log.println("Bdecors1=" + decors1);
-		// Log.println("Bdecors2=" + decors2);
+		final LinkDecor decors1 = getDecors1(arg.get("ARROW_HEAD1", 0));
+		final LinkDecor decors2 = getDecors2(arg.get("ARROW_HEAD2", 0));
 
-		String s = arg.get("ARROW", 0);
-		// Log.println("direction1=" + s);
+		String s = getFullArrow(arg);
 		s = s.replaceAll("[^-.=\\w]", "");
 		if (s.startsWith("o")) {
 			s = s.substring(1);
@@ -420,26 +422,49 @@ final public class CommandLinkClass extends SingleLineCommand2<AbstractClassOrOb
 		if (s.endsWith("o")) {
 			s = s.substring(0, s.length() - 1);
 		}
-		// Log.println("direction2=" + s);
-
-		// if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.NONE) {
-		// return StringUtils.getQueueDirection(s);
-		// }
-		// if (decors1 == LinkDecor.ARROW && decors2 == LinkDecor.NONE) {
-		// return StringUtils.getQueueDirection(s);
-		// }
-		// if (decors1 == LinkDecor.NONE && decors2 == LinkDecor.ARROW) {
-		// return StringUtils.getQueueDirection(s);
-		// }
 
 		Direction result = StringUtils.getQueueDirection(s);
 		if (isInversed(decors1, decors2) && s.matches(".*\\w.*")) {
 			result = result.getInv();
 		}
 
-		// Log.println("result="+result);
 		return result;
 	}
+
+	private String getFullArrow(RegexResult arg) {
+		return notNull(arg.get("ARROW_HEAD1", 0)) + notNull(arg.get("ARROW_BODY1", 0)) + notNull(arg.get("ARROW_DIRECTION", 0))
+				+ notNull(arg.get("ARROW_BODY2", 0)) + notNull(arg.get("ARROW_HEAD2", 0));
+	}
+
+	private String notNull(String s) {
+		if (s == null) {
+			return "";
+		}
+		return s;
+	}
+	
+	private void applyStyle(String arrowStyle, Link link) {
+		if (arrowStyle == null) {
+			return;
+		}
+		final StringTokenizer st = new StringTokenizer(arrowStyle, ",");
+		while (st.hasMoreTokens()) {
+			final String s = st.nextToken();
+			if (s.equalsIgnoreCase("dashed")) {
+				link.goDashed();
+			} else if (s.equalsIgnoreCase("bold")) {
+				link.goBold();
+			} else if (s.equalsIgnoreCase("dotted")) {
+				link.goDotted();
+			} else if (s.equalsIgnoreCase("hidden")) {
+				link.goHidden();
+			} else {
+				link.setSpecificColor(s);
+			}
+		}
+	}
+
+
 
 	private boolean isInversed(LinkDecor decors1, LinkDecor decors2) {
 		if (decors1 == LinkDecor.ARROW && decors2 != LinkDecor.ARROW) {

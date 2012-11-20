@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9048 $
+ * Revision $Revision: 9423 $
  *
  */
 package net.sourceforge.plantuml;
@@ -419,6 +419,14 @@ public class SkinParam implements ISkinParam {
 
 	public double getRanksep() {
 		final String value = getValue("ranksep");
+		if (value != null && value.matches("\\d+")) {
+			return Double.parseDouble(value);
+		}
+		return 0;
+	}
+
+	public double getRoundCorner() {
+		final String value = getValue("roundcorner");
 		if (value != null && value.matches("\\d+")) {
 			return Double.parseDouble(value);
 		}

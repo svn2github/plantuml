@@ -28,7 +28,7 @@
  *
  * Original Author:  Arnaud Roques
  *
- * Revision $Revision: 9071 $
+ * Revision $Revision: 9426 $
  *
  */
 package net.sourceforge.plantuml;
@@ -55,7 +55,7 @@ import net.sourceforge.plantuml.classdiagram.ClassDiagramFactory;
 import net.sourceforge.plantuml.code.Transcoder;
 import net.sourceforge.plantuml.code.TranscoderUtil;
 import net.sourceforge.plantuml.command.AbstractUmlSystemCommandFactory;
-import net.sourceforge.plantuml.componentdiagram.ComponentDiagramFactory;
+import net.sourceforge.plantuml.descdiagram.DescriptionDiagramFactory;
 import net.sourceforge.plantuml.ftp.FtpServer;
 import net.sourceforge.plantuml.objectdiagram.ObjectDiagramFactory;
 import net.sourceforge.plantuml.png.MetadataTag;
@@ -65,7 +65,6 @@ import net.sourceforge.plantuml.statediagram.StateDiagramFactory;
 import net.sourceforge.plantuml.swing.MainWindow2;
 import net.sourceforge.plantuml.ugraphic.SpriteGrayLevel;
 import net.sourceforge.plantuml.ugraphic.SpriteUtils;
-import net.sourceforge.plantuml.usecasediagram.UsecaseDiagramFactory;
 import net.sourceforge.plantuml.version.Version;
 
 public class Run {
@@ -191,8 +190,8 @@ public class Run {
 		printPattern(new SequenceDiagramFactory());
 		printPattern(new ClassDiagramFactory());
 		printPattern(new ActivityDiagramFactory());
-		printPattern(new UsecaseDiagramFactory());
-		printPattern(new ComponentDiagramFactory());
+		printPattern(new DescriptionDiagramFactory());
+		//printPattern(new ComponentDiagramFactory());
 		printPattern(new StateDiagramFactory());
 		printPattern(new ObjectDiagramFactory());
 	}

@@ -70,10 +70,12 @@ public class EntityImageObject extends AbstractEntityImage {
 	final private TextBlock stereo;
 	final private TextBlockWidth fields;
 	final private List<Url> url;
+	final private double roundCorner;
 
 	public EntityImageObject(ILeaf entity, ISkinParam skinParam) {
 		super(entity, skinParam);
 		final Stereotype stereotype = entity.getStereotype();
+		this.roundCorner = skinParam.getRoundCorner();
 		this.name = TextBlockUtils.withMargin(
 				TextBlockUtils.create(entity.getDisplay(), new FontConfiguration(getFont(FontParam.OBJECT, stereotype),
 						getFontColor(FontParam.OBJECT, stereotype)), HorizontalAlignement.CENTER, skinParam), 2, 2);
@@ -103,7 +105,6 @@ public class EntityImageObject extends AbstractEntityImage {
 
 	}
 
-	// private int xMarginFieldsOrMethod = 5;
 	private int marginEmptyFieldsOrMethod = 13;
 
 	@Override
@@ -111,9 +112,7 @@ public class EntityImageObject extends AbstractEntityImage {
 		final Dimension2D dimTitle = getTitleDimension(stringBounder);
 		final Dimension2D dimFields = fields.calculateDimension(stringBounder);
 		final double width = Math.max(dimFields.getWidth(), dimTitle.getWidth() + 2 * xMarginCircle);
-		// final double width = Math.max(dimFields.getWidth() + 2 *
-		// xMarginFieldsOrMethod, dimTitle.getWidth() + 2
-		// * xMarginCircle);
+
 		final double height = getMethodOrFieldHeight(dimFields) + dimTitle.getHeight();
 		return new Dimension2DDouble(width, height);
 	}
@@ -148,7 +147,7 @@ public class EntityImageObject extends AbstractEntityImage {
 
 		final double widthTotal = dimTotal.getWidth();
 		final double heightTotal = dimTotal.getHeight();
-		final Shadowable rect = new URectangle(widthTotal, heightTotal);
+		final Shadowable rect = new URectangle(widthTotal, heightTotal, roundCorner, roundCorner);
 		if (getSkinParam().shadowing()) {
 			rect.setDeltaShadow(4);
 		}

@@ -51,11 +51,29 @@ public class ElementFactoryLine implements ElementFactory {
 			throw new IllegalStateException();
 		}
 		final Terminated<String> next = dataSource.next();
-		return new Terminated<Element>(new ElementLine(), next.getTerminator());
+		final String text = next.getElement();
+		return new Terminated<Element>(new ElementLine(text.charAt(0)), next.getTerminator());
 	}
 
 	public boolean ready() {
 		final String text = dataSource.peek(0).getElement();
-		return text.equals("--");
+		if (isLine(text, '-')) {
+			return true;
+		}
+		if (isLine(text, '=')) {
+			return true;
+		}
+		if (isLine(text, '~')) {
+			return true;
+		}
+		if (isLine(text, '.')) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isLine(String text, char c) {
+		final String s = "" + c + c;
+		return text.startsWith(s) && text.endsWith(s);
 	}
 }

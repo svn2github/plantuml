@@ -42,6 +42,7 @@ import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
@@ -64,7 +65,7 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 	};
 
 	public CommandCreateClassMultilines(ClassDiagram diagram) {
-		super(diagram, getRegexConcat());
+		super(diagram, getRegexConcat(), MultilinesStrategy.REMOVE_STARTING_QUOTE);
 	}
 
 	@Override
@@ -76,20 +77,28 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 		return new RegexConcat(new RegexLeaf("^"), //
 				new RegexLeaf("TYPE", "(interface|enum|abstract\\s+class|abstract|class)\\s+"), //
 				new RegexOr(//
-						new RegexLeaf("NAME1", "(?:\"([^\"]+)\"\\s+as\\s+)?((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)"), //
-						new RegexLeaf("NAME2", "((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*)\\s+as\\s+\"([^\"]+)\""), //
-						new RegexLeaf("NAME3", "\"([^\"]+)\"")), //
+						new RegexConcat(//
+								new RegexLeaf("DISPLAY1", "\"([^\"]+)\""), //
+								new RegexLeaf("\\s+as\\s+"), //
+								new RegexLeaf("CODE1", "(" + CommandCreateClass.CODE + ")")), //
+						new RegexConcat(//
+								new RegexLeaf("CODE2", "(" + CommandCreateClass.CODE + ")"), //
+								new RegexLeaf("\\s+as\\s+"), // //
+								new RegexLeaf("DISPLAY2", "\"([^\"]+)\"")), //
+						new RegexLeaf("CODE3", "(" + CommandCreateClass.CODE + ")"), //
+						new RegexLeaf("CODE4", "\"([^\"]+)\"")), //
 				new RegexLeaf("GENERIC", "(?:\\s*\\<(" + GenericRegexProducer.PATTERN + ")\\>)?"), //
 				new RegexLeaf("STEREO", "(?:\\s*(\\<\\<.+\\>\\>))?"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("URL", "(" + UrlBuilder.getRegexp() + ")?"), //
 				new RegexLeaf("\\s*"), //
 				new RegexLeaf("COLOR", "(#\\w+[-\\\\|/]?\\w+)?"), //
-				new RegexLeaf("EXTENDS", "(\\s+(extends|implements)\\s+((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*))?"), //
+				new RegexLeaf("EXTENDS",
+						"(\\s+(extends|implements)\\s+((?:\\.|::)?[\\p{L}0-9_]+(?:(?:\\.|::)[\\p{L}0-9_]+)*))?"), //
 				new RegexLeaf("\\s*\\{\\s*$"));
 	}
 
-	public CommandExecutionResult execute(List<String> lines) {
+	public CommandExecutionResult executeNow(List<String> lines) {
 		StringUtils.trim(lines, false);
 		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 		final IEntity entity = executeArg0(line0);
@@ -133,7 +142,7 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 			if (mode == Mode.EXTENDS && entity.getEntityType() == LeafType.INTERFACE) {
 				type2 = LeafType.INTERFACE;
 			}
-			final IEntity cl2 = system.getOrCreateClass(other, type2);
+			final IEntity cl2 = system.getOrCreateLeaf1(other, type2);
 			LinkType typeLink = new LinkType(LinkDecor.NONE, LinkDecor.EXTENDS);
 			if (type2 == LeafType.INTERFACE && entity.getEntityType() != LeafType.INTERFACE) {
 				typeLink = typeLink.getDashed();
@@ -147,24 +156,16 @@ public class CommandCreateClassMultilines extends CommandMultilines2<ClassDiagra
 	private IEntity executeArg0(RegexResult arg) {
 
 		final LeafType type = LeafType.getLeafType(arg.get("TYPE", 0).toUpperCase());
-		final Code code;
-		final String display;
-		if (arg.get("NAME1", 1) != null) {
-			code = Code.of(arg.get("NAME1", 1));
-			display = arg.get("NAME1", 0);
-		} else if (arg.get("NAME3", 0) != null) {
-			code = Code.of(arg.get("NAME3", 0));
-			display = arg.get("NAME3", 0);
-		} else {
-			code = Code.of(arg.get("NAME2", 0));
-			display = arg.get("NAME2", 1);
-		}
+
+		final Code code = Code.of(arg.getLazzy("CODE", 0)).eventuallyRemoveStartingAndEndingDoubleQuote();
+		final String display = arg.getLazzy("DISPLAY", 0);
+
 		final String stereotype = arg.get("STEREO", 0);
 		final String generic = arg.get("GENERIC", 0);
 
 		final ILeaf result;
 		if (getSystem().leafExist(code)) {
-			result = getSystem().getOrCreateClass(code);
+			result = getSystem().getOrCreateLeaf1(code, null);
 			result.muteToType(type);
 		} else {
 			result = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), type);

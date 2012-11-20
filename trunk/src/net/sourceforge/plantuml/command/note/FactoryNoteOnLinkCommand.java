@@ -41,6 +41,7 @@ import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.Position;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
@@ -71,14 +72,14 @@ public final class FactoryNoteOnLinkCommand implements SingleMultiFactoryCommand
 	}
 
 	public Command createMultiLine(final CucaDiagram system) {
-		return new CommandMultilines2<CucaDiagram>(system, getRegexConcatMultiLine()) {
+		return new CommandMultilines2<CucaDiagram>(system, getRegexConcatMultiLine(), MultilinesStrategy.KEEP_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^end ?note$";
 			}
 
-			public CommandExecutionResult execute(List<String> lines) {
+			public CommandExecutionResult executeNow(List<String> lines) {
 				final List<String> strings = StringUtils.removeEmptyColumns(lines.subList(1, lines.size() - 1));
 				if (strings.size() > 0) {
 					final List<CharSequence> note = StringUtils.manageEmbededDiagrams(strings);

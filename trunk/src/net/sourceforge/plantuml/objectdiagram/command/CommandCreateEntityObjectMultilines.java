@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.StringUtils;
 import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexResult;
@@ -54,7 +55,7 @@ import net.sourceforge.plantuml.skin.VisibilityModifier;
 public class CommandCreateEntityObjectMultilines extends CommandMultilines2<ObjectDiagram> {
 
 	public CommandCreateEntityObjectMultilines(ObjectDiagram diagram) {
-		super(diagram, getRegexConcat());
+		super(diagram, getRegexConcat(), MultilinesStrategy.REMOVE_STARTING_QUOTE);
 	}
 
 	private static RegexConcat getRegexConcat() {
@@ -74,7 +75,7 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines2<Obje
 		return "(?i)^\\s*\\}\\s*$";
 	}
 
-	public CommandExecutionResult execute(List<String> lines) {
+	public CommandExecutionResult executeNow(List<String> lines) {
 		StringUtils.trim(lines, true);
 		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 		final IEntity entity = executeArg0(line0);
@@ -96,7 +97,7 @@ public class CommandCreateEntityObjectMultilines extends CommandMultilines2<Obje
 		final String display = line0.get("NAME", 0);
 		final String stereotype = line0.get("STEREO", 0);
 		if (getSystem().leafExist(code)) {
-			return getSystem().getOrCreateClass(code);
+			return getSystem().getOrCreateLeaf1(code, null);
 		}
 		final IEntity entity = getSystem().createLeaf(code, StringUtils.getWithNewlines(display), LeafType.OBJECT);
 		if (stereotype != null) {

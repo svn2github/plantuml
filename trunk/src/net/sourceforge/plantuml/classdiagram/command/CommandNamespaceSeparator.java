@@ -38,25 +38,21 @@ import java.util.List;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.SingleLineCommand;
-import net.sourceforge.plantuml.cucadiagram.Code;
-import net.sourceforge.plantuml.cucadiagram.IEntity;
-import net.sourceforge.plantuml.skin.VisibilityModifier;
 
-public class CommandAddMethod extends SingleLineCommand<ClassDiagram> {
+public class CommandNamespaceSeparator extends SingleLineCommand<ClassDiagram> {
 
-	public CommandAddMethod(ClassDiagram diagram) {
-		super(diagram, "(?i)^([\\p{L}0-9_.]+|\"[^\"]+\")\\s*:\\s*(.*)$");
+	public CommandNamespaceSeparator(ClassDiagram diagram) {
+		super(diagram, "(?i)^set namespaceseparator (\\S+)$");
 	}
 
 	@Override
 	protected CommandExecutionResult executeArg(List<String> arg) {
-		final IEntity entity = getSystem().getOrCreateLeaf1(Code.of(arg.get(0)), null);
-
-		final String field = arg.get(1);
-		if (field.length() > 0 && VisibilityModifier.isVisibilityCharacter(field.charAt(0))) {
-			getSystem().setVisibilityModifierPresent(true);
+		final String s = arg.get(0);
+		if ("none".equalsIgnoreCase(s)) {
+			getSystem().setNamespaceSeparator(null);
+		} else {
+			getSystem().setNamespaceSeparator(s);
 		}
-		entity.addFieldOrMethod(field);
 		return CommandExecutionResult.ok();
 	}
 }

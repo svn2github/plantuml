@@ -40,6 +40,7 @@ import net.sourceforge.plantuml.classdiagram.AbstractEntityDiagram;
 import net.sourceforge.plantuml.command.Command;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.SingleLineCommand2;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
@@ -83,14 +84,14 @@ public final class FactoryNoteCommand implements SingleMultiFactoryCommand<Abstr
 	}
 
 	public Command createMultiLine(final AbstractEntityDiagram system) {
-		return new CommandMultilines2<AbstractEntityDiagram>(system, getRegexConcatMultiLine()) {
+		return new CommandMultilines2<AbstractEntityDiagram>(system, getRegexConcatMultiLine(), MultilinesStrategy.KEEP_STARTING_QUOTE) {
 
 			@Override
 			public String getPatternEnd() {
 				return "(?i)^end ?note$";
 			}
 
-			public CommandExecutionResult execute(List<String> lines) {
+			public CommandExecutionResult executeNow(List<String> lines) {
 				StringUtils.trim(lines, false);
 				final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 

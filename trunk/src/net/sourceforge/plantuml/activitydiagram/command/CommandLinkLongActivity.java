@@ -43,6 +43,7 @@ import net.sourceforge.plantuml.UrlBuilder;
 import net.sourceforge.plantuml.activitydiagram.ActivityDiagram;
 import net.sourceforge.plantuml.command.CommandExecutionResult;
 import net.sourceforge.plantuml.command.CommandMultilines2;
+import net.sourceforge.plantuml.command.MultilinesStrategy;
 import net.sourceforge.plantuml.command.regex.RegexConcat;
 import net.sourceforge.plantuml.command.regex.RegexLeaf;
 import net.sourceforge.plantuml.command.regex.RegexOr;
@@ -60,7 +61,7 @@ import net.sourceforge.plantuml.graphic.HtmlColorUtils;
 public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram> {
 
 	public CommandLinkLongActivity(final ActivityDiagram diagram) {
-		super(diagram, getRegexConcat());
+		super(diagram, getRegexConcat(), MultilinesStrategy.REMOVE_STARTING_QUOTE);
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class CommandLinkLongActivity extends CommandMultilines2<ActivityDiagram>
 				new RegexLeaf("$"));
 	}
 
-	public CommandExecutionResult execute(List<String> lines) {
+	public CommandExecutionResult executeNow(List<String> lines) {
 		StringUtils.trim(lines, false);
 		final RegexResult line0 = getStartingPattern().matcher(lines.get(0).trim());
 
